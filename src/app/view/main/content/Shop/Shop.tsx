@@ -3,7 +3,7 @@ import styles from './Shop.module.css';
 import ExploreFeaturedHeader from '../searchboard/searchboard-header/ExploreFeaturedHeader';
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {BoldAlert, BoldRuby, BoldStar} from '@ui/Icons';
+import {BoldNotification, BoldRuby, BoldStar} from '@ui/Icons';
 import SinglePlanContent from './SinglePlanContent';
 import ShopTabMenu, {ShopTabType} from './ShopTabMenu';
 import SubscriptionPlan from './SubscriptionPlan';
@@ -78,7 +78,7 @@ const Shop: React.FC = () => {
               </div>
             </div>
             <button className={styles.notification} onClick={() => {}}>
-              <img className={styles.notificationIcon} src={BoldAlert.src} />
+              <img className={styles.notificationIcon} src={BoldNotification.src} />
               <div className={styles.redDot}></div>
             </button>
             {/* <UserDropdown /> */}

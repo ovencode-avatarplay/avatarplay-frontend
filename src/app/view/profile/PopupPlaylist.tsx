@@ -457,6 +457,7 @@ const TabContentComponent = ({
                   playTime: '',
                   urlLinkKey: one.urlLinkKey,
                   isMyFeed: false,
+                  profileType: ProfileType.PD,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}

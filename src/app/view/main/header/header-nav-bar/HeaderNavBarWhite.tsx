@@ -13,7 +13,7 @@ import logoTalkain from '@ui/logo_talkain.png';
 import UserDropdown from '@shared/UserDropdown';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
-import {BoldAlert, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
+import {BoldNotification, BoldRuby, BoldStar, LineMenu} from '@ui/Icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainControl';
 import HamburgerBar from '../../sidebar/HamburgerBar';
@@ -66,7 +66,7 @@ const HeaderNavBarWhite = () => {
         {selectedIndex == 3 && (
           <div className={styles.rightArea}>
             <button className={styles.notification} onClick={() => {}}>
-              <img className={styles.notificationIcon} src={BoldAlert.src} />
+              <img className={styles.notificationIcon} src={BoldNotification.src} />
               <div className={styles.redDot}></div>
             </button>
             {/* <UserDropdown /> */}
