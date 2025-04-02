@@ -32,7 +32,7 @@ import {
   LineMenu,
   LinePlus,
   LineShare,
-  VerifiedLabel,
+  BoldVerifiedLabel,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
@@ -925,7 +925,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {isPD && (
             <div className={styles.verify}>
               <span className={styles.label}>Creator</span>
-              <img className={styles.icon} src={VerifiedLabel.src} alt="" />
+              <img className={styles.icon} src={BoldVerifiedLabel.src} alt="" />
             </div>
           )}
           {isCharacter && (

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styles from './DrawerConnectCharacter.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {BoldArrowDown, LineCheck} from '@ui/Icons';
+import {LineArrowDown, LineCheck} from '@ui/Icons';
 import {getConnectList, GetConnectListReq, getProfileList, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 
@@ -66,7 +66,7 @@ const DrawerConnectCharacter: React.FC<DrawerConnectCharacterProps> = ({
         )}
 
         <button className={styles.dropdownButton}>
-          <img className={styles.dropdownIcon} src={BoldArrowDown.src} alt="Toggle" />
+          <img className={styles.dropdownIcon} src={LineArrowDown.src} alt="Toggle" />
         </button>
       </div>
 

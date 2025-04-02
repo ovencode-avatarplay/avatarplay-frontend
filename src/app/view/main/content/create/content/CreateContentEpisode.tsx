@@ -3,16 +3,7 @@ import styles from './CreateContentEpisode.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
-import {
-  BoldArrowDown,
-  BoldQuestion,
-  BoldStar,
-  LineArrowDown,
-  LineClose,
-  LineDashboard,
-  LineDelete,
-  LineUpload,
-} from '@ui/Icons';
+import {LineArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard, LineDelete, LineUpload} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';

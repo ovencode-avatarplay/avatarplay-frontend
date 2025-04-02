@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styles from './ConversationCard.module.css';
-import {BoldArrowDown, BoldMenuDots, PlusBubble, ProfileChar, ProfileUser} from '@ui/Icons';
+import {LineArrowDown, BoldMenuDots, PlusBubble, ProfileChar, ProfileUser} from '@ui/Icons';
 import {ChatRoundDots, Close, Description2} from '@ui/chatting';
 import TextField from '@mui/material/TextField';
 import ConversationCardDropDown from './ConversationCardDropDown';
@@ -137,10 +137,10 @@ const ConversationCard: React.FC<ConversationCardProps> = ({card, moveUp, moveDo
         {card.priorityType === 0 ? 'Mandatory' : 'Depends on Situation'}
         <div style={{display: 'flex'}}>
           <button className={styles.arrowButton} onClick={moveUp}>
-            <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Move Up" />
+            <img src={LineArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Move Up" />
           </button>
           <button className={styles.arrowButton} onClick={moveDown}>
-            <img src={BoldArrowDown.src} alt="Move Down" />
+            <img src={LineArrowDown.src} alt="Move Down" />
           </button>
           <button className={styles.menuDotButton} onClick={() => setIsDropDown(true)}>
             <img src={BoldMenuDots.src} style={{transform: 'rotate(180deg)'}} alt="Menu" />

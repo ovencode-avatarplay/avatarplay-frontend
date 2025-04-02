@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Plus} from '@ui/chatting';
 import ConversationCard from './ConversationCard';
 import {RootState} from '@/redux-store/ReduxStore';
-import {BoldArrowLeft} from '@ui/Icons';
+import {LineArrowLeft} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {EpisodeInfo, saveConversationTemplateList} from '@/redux-store/slices/StoryInfo';
 
@@ -169,7 +169,7 @@ const EpisodeConversationTemplate: React.FC<{open: boolean; closeModal: () => vo
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <button className={styles.backButton} onClick={closeModal}>
-            <img src={BoldArrowLeft.src} className={styles.backIcon} />
+            <img src={LineArrowLeft.src} className={styles.backIcon} />
           </button>
           <div className={styles.navTitle}>Conversation Template</div>
         </div>

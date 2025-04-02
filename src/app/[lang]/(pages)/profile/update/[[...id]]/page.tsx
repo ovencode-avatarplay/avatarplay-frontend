@@ -89,7 +89,7 @@ export const PortfolioListPopup = ({dataList, onChange, onClose}: PortfolioListP
         <section className={styles.portfolioPreviewSection}>
           <header>
             <img
-              src={BoldArrowLeft.src}
+              src={LineArrowLeft.src}
               alt="back"
               className={styles.back}
               onClick={() => {

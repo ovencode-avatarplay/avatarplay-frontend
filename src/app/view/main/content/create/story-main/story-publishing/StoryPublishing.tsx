@@ -15,7 +15,7 @@ import {
 import {Drawer, Snackbar, Alert, Modal} from '@mui/material';
 
 import styles from './StoryPublishing.module.css';
-import {BoldArrowDown, LineArrowRight, LineRefresh} from '@ui/Icons';
+import {LineArrowDown, LineArrowRight, LineRefresh} from '@ui/Icons';
 
 import llmModelData from '../story-LLMsetup/StoryLLMsetup.json';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
@@ -279,9 +279,9 @@ const StoryPublishing: React.FC<Props> = ({open, onClose, onPublish, LLMOpen, se
               <button className={styles.moreButton} onClick={handleMoreTagsToggle}>
                 {showMoreTags ? 'Less' : `More ${countHiddenTags() > 0 ? `(${countHiddenTags()})` : ''}`}
                 {showMoreTags ? (
-                  <img className={styles.moreIcon} src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} />
+                  <img className={styles.moreIcon} src={LineArrowDown.src} style={{transform: 'rotate(180deg)'}} />
                 ) : (
-                  <img className={styles.moreIcon} src={BoldArrowDown.src} />
+                  <img className={styles.moreIcon} src={LineArrowDown.src} />
                 )}
               </button>
 

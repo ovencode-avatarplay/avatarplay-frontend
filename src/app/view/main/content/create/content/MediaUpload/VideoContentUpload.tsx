@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import styles from './VideoContentUpload.module.css';
 import {
-  BoldArrowDown,
+  LineArrowDown,
   BoldCirclePlus,
   BoldFolderPlus,
   BoldQuestion,
   CircleClose,
-  LineArrowDown,
   LineClose,
   LineDashboard,
   LineDelete,

@@ -3,7 +3,7 @@ import React from 'react';
 import {EpisodeItemProps} from './ChapterTypes';
 
 import styles from './EpisodeItem.module.css';
-import {BoldArrowDown, BoldRadioButton, BoldRadioButtonSelected, LineCorner} from '@ui/Icons';
+import {LineArrowDown, BoldRadioButton, BoldRadioButtonSelected, LineCorner} from '@ui/Icons';
 import {useDispatch, useSelector} from 'react-redux';
 import {adjustEpisodeIndex, setSelectedChapterIdx} from '@/redux-store/slices/StoryInfo';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -58,7 +58,7 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
               handleChangeOrderEpisodeIndex('up');
             }}
           >
-            <img className={styles.moveIcon} src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} />
+            <img className={styles.moveIcon} src={LineArrowDown.src} style={{transform: 'rotate(180deg)'}} />
           </button>
           <button
             className={styles.moveButton}
@@ -66,7 +66,7 @@ const EpisodeItem: React.FC<EpisodeItemProps> = ({
               handleChangeOrderEpisodeIndex('down');
             }}
           >
-            <img className={styles.moveIcon} src={BoldArrowDown.src} />
+            <img className={styles.moveIcon} src={LineArrowDown.src} />
           </button>
         </div>
       </button>
