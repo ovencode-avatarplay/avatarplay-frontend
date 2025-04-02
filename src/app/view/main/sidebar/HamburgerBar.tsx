@@ -139,7 +139,11 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
                     {/* {auth?.user.user_metadata.name} */}
                     {userMetaData ? userMetaData.name : getLocalizedText('common_label_guestmode')}
                   </p>
-                  <img className={styles.profileVerified} src={userMetaData ? VerifiedLabel.src : ''} />
+                  {userMetaData ? (
+                    <img className={styles.profileVerified} src={userMetaData ? VerifiedLabel.src : ''} />
+                  ) : (
+                    ''
+                  )}
                 </div>
                 <p className={styles.profileEmail}>
                   {/* {auth?.user.user_metadata.email} */}
