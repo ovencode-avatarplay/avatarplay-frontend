@@ -39,6 +39,7 @@ import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 export interface CreateContentEpisodeProps {
   contentId?: string;
@@ -345,9 +346,17 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           </div>
         </div>
         <div className={styles.confirmButtonBackground}></div>
-        <button className={styles.confirmButton} onClick={handleConfirm}>
-          {getLocalizedText('common_button_submit')}
-        </button>
+        <div className={styles.confirmButtonContainer}>
+          <CustomButton
+            size="Medium"
+            state="Normal"
+            type="Primary"
+            customClassName={[styles.confirmButton]}
+            onClick={handleConfirm}
+          >
+            {getLocalizedText('common_button_submit')}
+          </CustomButton>
+        </div>
       </div>
 
       <SelectDrawer

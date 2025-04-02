@@ -7,6 +7,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import styles from './WithdrawMembership.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldInfo} from '@ui/Icons';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface WithdrawalModalProps {
   open: boolean;
@@ -56,12 +57,24 @@ const WithdrawMembership: React.FC<WithdrawalModalProps> = ({open, onClose, onWi
         />
 
         <div className={styles.buttonContainer}>
-          <Button className={styles.reconsiderBtn} onClick={onClose}>
+          <CustomButton
+            size="Medium"
+            state="Normal"
+            type="Secondary"
+            onClick={onClose}
+            customClassName={[styles.reconsiderBtn]}
+          >
             Reconsider
-          </Button>
-          <Button className={styles.withdrawBtn} onClick={handleWithdraw}>
+          </CustomButton>
+          <CustomButton
+            size="Medium"
+            state="Normal"
+            type="Primary"
+            onClick={onClose}
+            customClassName={[styles.withdrawBtn]}
+          >
             Withdraw
-          </Button>
+          </CustomButton>
         </div>
       </Box>
     </Modal>

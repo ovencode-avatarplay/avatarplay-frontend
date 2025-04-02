@@ -62,18 +62,10 @@
   }
   
   .reconsiderBtn {
-    flex: 1;
-    background: #F1F3F4 !important;
-    color: #80868B !important;
-    text-transform: none !important;
-    border-radius: 10px !important;
+    flex: 1; 
   }
   
   .withdrawBtn {
-    flex: 1;
-    background: #2C3131 !important;
-    color: #FFFFFF !important;
-    text-transform: none !important;
-    border-radius: 10px !important;
+    flex: 1; 
   }
   

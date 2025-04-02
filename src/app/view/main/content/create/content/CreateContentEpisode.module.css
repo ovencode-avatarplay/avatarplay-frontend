@@ -4,8 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100dvh; 
-  width: 100%;
-  overflow: hidden;
+  width: 100%; 
 }
 .header
 {
@@ -30,12 +29,9 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  width: 100%;
-  height: 100%;
+  width: 100%; 
   padding: 0 16px 0 16px;
   padding-bottom: 120px;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .textInput
@@ -50,28 +46,38 @@
   flex-shrink: 0;
   filter: brightness(0) saturate(100%);
 }
-.confirmButton {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;    
-  transform: translate(-50%, 0%);
-  width: var(--second-width);
-  height: 50px;
-  background: #2c3131;
-  color: #ffffff;
-  font-family: 'Lato';
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;    
+
+.confirmButtonContainer
+{
+  position: fixed; 
+
+  bottom: 0;
+  left: 0;    
+  right: 0;
+  
+  width: 100%;
+  max-width: 1300px;
+
+  margin-left: auto;
+  margin-right: auto;  
+  margin-bottom: 8px;
+
+  padding: 0 16px;
+
+  box-sizing: border-box;
+
 }
+
+.confirmButton {
+  width: 100%;
+}
+
 .confirmButtonBackground {
   position: fixed;
   bottom: 0px;
-  left: 50%;    
-  transform: translate(-50%, 0%);
-  width: var(--second-width);
+  left: 0;
+  right: 0;
+  width: 100%;
   height: 50px;
   background: #ffffff;
   color: #ffffff;
@@ -161,7 +167,7 @@ align-self: flex-start;
     padding: 14px 12px;
     gap: 6px;
   
-    width: 370px;
+    width: 100%;
     height: 46px;
   
     background: #f8f9fa;
@@ -181,7 +187,7 @@ align-self: flex-start;
   
   .infoGroup
   {
-    width: 370;
+    width: 100%;
     height: 76;
     gap: 2px;
 

@@ -64,7 +64,6 @@
   }
   
   .buttonContainer {
-    /* width: var(--second-width); */
     width: 343px;
     display: flex;
     flex-direction: column;

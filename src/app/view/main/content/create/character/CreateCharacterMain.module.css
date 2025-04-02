@@ -181,21 +181,27 @@
  
 .floatButtonArea
 {
-    /* bottom: 8px; */
-    bottom: 0px;
     position: fixed;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+
     display: flex;
     flex-direction: column;
-    /* width: 100%; */
-    width: var(--full-width);
+
+    width: 100%; 
+    max-width: 1300px;
+    
     justify-content: space-between;
-    align-items: center; 
-    overflow: hidden; 
+    align-items: center;  
     padding-bottom: 8px;
     padding-left: 16px;
     padding-right: 16px;
-} 
 
+    margin-left: auto;
+    margin-right: auto; 
+} 
+ 
 .floatButtonBack
 {
     position: absolute;
