@@ -179,7 +179,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
     hairColor: 0,
     bodyType: 0,
     topSize: 0,
-    bottomSize: 2,
+    bottomSize: 0,
     clothing: 0,
     clothingColor: 0,
     personality: 0,
@@ -496,7 +496,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
       case CreateCharacterStep.Style:
         return (
           <div className={styles.createContentBox}>
-            <div className={`${styles.horizontalButtonGroup} ${styles.buttonGap11}`}>
+            <div className={`${styles.horizontalButtonGroup} ${styles.justifyCenter} ${styles.buttonGap11}`}>
               {characterOptions.styleOptions.map((option, index) => (
                 <CharacterCreateImageButton
                   key={option.label}
@@ -915,7 +915,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
                   {(generatedOptions?.imageUrl ?? []).map((imgUrl, index) => (
                     <CharacterCreateImageButton
                       key={index}
-                      sizeType="summary"
+                      sizeType="result"
                       selectType="one"
                       selectButtonType="button"
                       label={null}
@@ -923,8 +923,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
                       selected={selectedOptions.result === index}
                       onSelectClick={() =>
                         selectedOptions.result === index
-                          ? handleImageToggle(imgUrl, generatedOptions?.debugParameter ?? '')
-                          : handleOptionSelect('result', index)
+                          ? () => {
+                              if (onClickPreview) onClickPreview(imgUrl);
+                            }
+                          : // handleImageToggle(imgUrl, generatedOptions?.debugParameter?? '')
+                            handleOptionSelect('result', index)
                       }
                       onImageClick={() => {
                         if (onClickPreview) onClickPreview(imgUrl);
@@ -1006,7 +1009,7 @@ const CharacterCreateSequence: React.FC<Props> = ({
         </div>
       </article>
       <footer className={styles.buttonContainer}>{renderBottom()}</footer>
-      {fullscreenImage && <FullScreenImage imageData={fullscreenImage} onClick={() => setFullscreenImage(null)} />}
+      {/* {fullscreenImage && <FullScreenImage imageData={fullscreenImage} onClick={() => setFullscreenImage(null)} />} */}
       <LoadingOverlay loading={loading} />
     </main>
   );
