@@ -95,13 +95,13 @@ import PopupPlaylist from './PopupPlaylist';
 import {ContentType, sendDeleteContent} from '@/app/NetWork/ContentNetwork';
 import {CharacterProfileDetailComponent} from './ProfileDetail';
 import PopupFriends from './PopupFriends';
-import {PortfolioListPopup} from '@/app/[lang]/(pages)/profile/update/[[...id]]/page';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/CommonNetwork';
 import DrawerDonation from '../main/content/create/common/DrawerDonation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import {ToastMessageAtom} from '@/app/Root';
+import {PortfolioListPopup} from './ProfileUpdate';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
