@@ -1,5 +1,5 @@
 import React from 'react';
-import {BoldArrowDown} from '@ui/Icons'; // 아이콘 임포트
+import {LineArrowDown} from '@ui/Icons'; // 아이콘 임포트
 import styles from './CreateFilterButton.module.css'; // 스타일 임포트
 
 interface CreateFilterButtonProps {
@@ -14,7 +14,7 @@ const CreateFilterButton: React.FC<CreateFilterButtonProps> = ({name, selectedIt
     <button className={`${styles.filterBase} ${styles.filterPublish}`} onClick={onClick} style={style}>
       <div className={styles.filterData}>
         <div className={styles.filterName}>{selectedItem?.name || name}</div>
-        <img className={styles.filterIcon} src={BoldArrowDown.src} />
+        <img className={styles.filterIcon} src={LineArrowDown.src} />
       </div>
     </button>
   );

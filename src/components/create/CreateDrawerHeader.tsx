@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './CreateDrawerHeader.module.css';
-import {BoldArrowLeft} from '@ui/Icons';
+import {LineArrowLeft} from '@ui/Icons';
 
 interface Props {
   title: string;
@@ -13,7 +13,7 @@ const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children}) => {
     <header className={styles.header}>
       <div className={styles.baseArea}>
         <button className={styles.backButton} onClick={onClose}>
-          <img src={BoldArrowLeft.src} className={styles.backIcon} />
+          <img src={LineArrowLeft.src} className={styles.backIcon} />
         </button>
         <h1 className={styles.navTitle}>{title}</h1>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './CustomArrowHeader.module.css';
-import {BoldArrowLeft} from '@ui/Icons';
+import {LineArrowLeft} from '@ui/Icons';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 
@@ -17,11 +17,11 @@ const CustomArrowHeader: React.FC<Props> = ({title, onClose, children, backLink}
       <div className={styles.baseArea}>
         {backLink ? (
           <Link href={getLocalizedLink(backLink)} className={styles.backButton}>
-            <img src={BoldArrowLeft.src} className={styles.backIcon} />
+            <img src={LineArrowLeft.src} className={styles.backIcon} />
           </Link>
         ) : (
           <button className={styles.backButton} onClick={onClose}>
-            <img src={BoldArrowLeft.src} className={styles.backIcon} />
+            <img src={LineArrowLeft.src} className={styles.backIcon} />
           </button>
         )}
 

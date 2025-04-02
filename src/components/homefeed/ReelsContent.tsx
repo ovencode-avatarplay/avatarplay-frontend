@@ -18,8 +18,8 @@ import {
   BoldReward,
   BoldShare,
   BoldVideo,
-  BoldVolumeOff,
-  BoldVolumeOn,
+  LineVolumeOff,
+  LineVolumeOn,
   LineArchive,
   LineScaleUp,
 } from '@ui/Icons';
@@ -580,10 +580,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             {isMute && <div className={styles.volumeCircleIcon}></div>}
 
             {/* 음소거 상태 아이콘 */}
-            {item.mediaState == 2 && isMute && <img src={BoldVolumeOff.src} className={styles.volumeIcon} />}
+            {item.mediaState == 2 && isMute && <img src={LineVolumeOff.src} className={styles.volumeIcon} />}
 
             {/* 볼륨 활성 상태 아이콘 */}
-            {item.mediaState == 2 && !isMute && <img src={BoldVolumeOn.src} className={styles.volumeIcon} />}
+            {item.mediaState == 2 && !isMute && <img src={LineVolumeOn.src} className={styles.volumeIcon} />}
 
             {/* 이미지 확대 아이콘 */}
             {/* {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />} */}

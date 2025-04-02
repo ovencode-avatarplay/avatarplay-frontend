@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import styles from './PopupFriendsSuggestion.module.scss';
-import {BoldArrowLeft, LineFollow, LineSearch} from '@ui/Icons';
+import {LineArrowLeft, LineFollow, LineSearch} from '@ui/Icons';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {Dialog} from '@mui/material';
@@ -27,7 +27,7 @@ const PopupFriendsSuggestion = ({onClose}: Props) => {
           <div className={styles.left}>
             <img
               className={styles.btnBack}
-              src={BoldArrowLeft.src}
+              src={LineArrowLeft.src}
               alt=""
               onClick={() => {
                 onClose();

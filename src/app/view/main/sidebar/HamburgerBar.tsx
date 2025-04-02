@@ -10,7 +10,7 @@ import {useRouter} from 'next/navigation';
 import {supabase} from '@/utils/supabaseClient';
 import {RootState} from '@/redux-store/ReduxStore';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, VerifiedLabel} from '@ui/Icons';
+import {BoldRuby, BoldStar, LineArrowRight, LineSetting, LineWallet, BoldVerifiedLabel} from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import ModalLanguageSelect from './ModalLanguageSelect';
 import PopupAccountChange from '../content/create/common/PopupAccountChange';
@@ -139,7 +139,11 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
                     {/* {auth?.user.user_metadata.name} */}
                     {userMetaData ? userMetaData.name : getLocalizedText('common_label_guestmode')}
                   </p>
-                  <img className={styles.profileVerified} src={userMetaData ? VerifiedLabel.src : ''} />
+                  {userMetaData ? (
+                    <img className={styles.profileVerified} src={userMetaData ? BoldVerifiedLabel.src : ''} />
+                  ) : (
+                    ''
+                  )}
                 </div>
                 <p className={styles.profileEmail}>
                   {/* {auth?.user.user_metadata.email} */}

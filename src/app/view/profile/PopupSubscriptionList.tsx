@@ -1,7 +1,7 @@
 import {Dialog} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import styles from './PopupSubscriptionList.module.scss';
-import {BoldAltArrowDown, BoldArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
+import {BoldAltArrowDown, LineArrowLeft, BoldMenuDots, LineCheck} from '@ui/Icons';
 import cx from 'classnames';
 import {
   cancelSubscribe,
@@ -153,7 +153,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
         <div className={styles.popup}>
           <header className={styles.header}>
             <img
-              src={BoldArrowLeft.src}
+              src={LineArrowLeft.src}
               alt=""
               className={styles.iconBack}
               onClick={() => {

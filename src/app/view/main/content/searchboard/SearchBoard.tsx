@@ -20,7 +20,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import Splitter from '@/components/layout/shared/CustomSplitter';
 import ExploreFeaturedHeader from './searchboard-header/ExploreFeaturedHeader';
 import EmptyState from '@/components/search/EmptyState';
-import {BoldArrowDown, LineArrowRight} from '@ui/Icons';
+import {LineArrowDown, LineArrowRight} from '@ui/Icons';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import ExploreCard from './ExploreCard';
 import {FilterDataItem} from '@/components/search/FilterSelector';
@@ -568,7 +568,7 @@ const SearchBoard: React.FC = () => {
               </div>
               <button className={styles.sortButton} onClick={() => setSortDropDownOpen(true)}>
                 <div>{dropDownMenuItems[selectedSort].name}</div>
-                <img className={styles.buttonIcon} src={BoldArrowDown.src} />
+                <img className={styles.buttonIcon} src={LineArrowDown.src} />
                 {sortDropDownOpen && (
                   <DropDownMenu
                     items={dropDownMenuItems}
