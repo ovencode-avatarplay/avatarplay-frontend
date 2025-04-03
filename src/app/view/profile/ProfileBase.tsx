@@ -104,6 +104,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import {ToastMessageAtom} from '@/app/Root';
 import {PortfolioListPopup} from './ProfileUpdate';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -756,33 +757,42 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     <>
       {isMine && (
         <div className={styles.buttonWrap}>
-          <button
-            className={styles.subscribe}
+          <CustomButton
+            size="Small"
+            state="Normal"
+            type="Tertiary"
             onClick={() => {
               data.isOpenPopupSubscriptionList = true;
               setData({...data});
             }}
+            customClassName={[styles.button]}
           >
             {getLocalizedText('Common', 'common_button_subscribe')}
-          </button>
-          <button
-            className={styles.favorite}
+          </CustomButton>
+          <CustomButton
+            size="Small"
+            state="Normal"
+            type="Tertiary"
             onClick={() => {
               data.isOpenPopupFavoritesList = true;
               setData({...data});
             }}
+            customClassName={[styles.button]}
           >
             {getLocalizedText('Common', 'common_button_favorites')}
-          </button>
-          <button
-            className={styles.playlist}
+          </CustomButton>
+          <CustomButton
+            size="Small"
+            state="Normal"
+            type="Tertiary"
             onClick={() => {
               data.isOpenPopupPlayList = true;
               setData({...data});
             }}
+            customClassName={[styles.button]}
           >
             {getLocalizedText('Common', 'common_button_playlist')}
-          </button>
+          </CustomButton>
         </div>
       )}
       <section ref={refHeader} className={cx(styles.header, !isPath && styles.headerNoPath)}>
@@ -973,44 +983,53 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
           {(isMyPD || isMyChannel) && (
             <div className={styles.buttons}>
-              <button
-                className={styles.ad}
+              <CustomButton
+                size="Small"
+                state="Normal"
+                type="Tertiary"
                 onClick={() => {
                   alert('6월에 기능 추가 예정');
                 }}
+                customClassName={[styles.button]}
               >
                 {getLocalizedText('Common', 'common_button_ad')}
-              </button>
+              </CustomButton>
               {isMyPD && (
-                <button
-                  className={styles.friends}
+                <CustomButton
+                  size="Small"
+                  state="Normal"
+                  type="Primary"
                   onClick={() => {
                     alert('6월에 기능 추가 예정');
                     // data.isOpenPopupFriendsList = true;
                     // setData({...data});
                   }}
+                  customClassName={[styles.button]}
                 >
                   {getLocalizedText('Common', 'common_button_addfriends')}
-                </button>
+                </CustomButton>
               )}
             </div>
           )}
           {isMyCharacter && (
             <div className={styles.buttons}>
-              <button
-                className={styles.ad}
+              <CustomButton
+                size="Small"
+                state="Normal"
+                type="Tertiary"
                 onClick={() => {
                   alert('6월에 기능 추가 예정');
                 }}
+                customClassName={[styles.button]}
               >
                 {getLocalizedText('Common', 'common_button_ad')}
-              </button>
-              <button className={styles.chat}>
+              </CustomButton>
+              <CustomButton size="Small" state="Normal" type="Tertiary" customClassName={[styles.button]}>
                 {/* <Link href={getLocalizedLink(`/character/` + data.profileInfo?.profileInfo.typeValueId)}> */}
                 <Link href={getLocalizedLink(`/chat/?v=${data.urlLinkKey}` || `?v=`)}>
                   {getLocalizedText('Common', 'common_button_chat')}
                 </Link>
-              </button>
+              </CustomButton>
             </div>
           )}
           {isOtherPD && (
