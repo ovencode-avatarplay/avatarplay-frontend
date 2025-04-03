@@ -17,8 +17,12 @@
     
     width: calc(100% - 32px);
     max-width: 416px;  /* 최대화면 기준 416px */ 
-    height: 140px;    
+    height: 110px;    
     color: red;
+
+    @media (max-width: 431px) {
+        height: 100px;       
+    }
 }
 
 .swiper-pagination {
@@ -32,7 +36,7 @@
 
 .customPagination {
     position: absolute;
-    bottom: 25px !important;
+    bottom: 15px !important;
     left: 50% !important;
     translate: -50%;
     width: auto !important;
