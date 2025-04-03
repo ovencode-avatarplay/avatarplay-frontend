@@ -396,15 +396,16 @@
       gap: 6px;
 
       button {
+        flex-grow: 1;
         height: 36px;
         flex: 1;
         border-radius: 8px;
         border: 1px solid var(--Border-1, #EAECF0);
-        background: var(--White, #FFF);
+        // background: var(--White, #FFF);
 
         cursor: pointer;
 
-        color: var(--Black, #000);
+        // color: var(--Black, #000);
         font-feature-settings: 'liga' off, 'clig' off;
         font-family: Lato;
         font-size: 14px;
