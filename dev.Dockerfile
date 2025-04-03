@@ -6,6 +6,7 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
 COPY src ./src
+COPY patches ./patches
 
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
