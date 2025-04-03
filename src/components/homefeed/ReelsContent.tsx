@@ -107,7 +107,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
 
   const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
-  const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
+  const videoProgressRef = useRef(0);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
@@ -126,10 +128,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
   const handleSlideChange = (swiper: SwiperClass) => {
     setActiveIndex(swiper.activeIndex); // Swiper의 activeIndex로 상태 업데이트
-  };
-
-  const handleVideoProgress = (playedSeconds: number) => {
-    setVideoProgress(playedSeconds);
   };
 
   const handleDonation = () => {
@@ -371,10 +369,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   }}
                   progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                   onProgress={({playedSeconds}) => {
-                    handleVideoProgress(playedSeconds);
+                    videoProgressRef.current = playedSeconds;
 
+                    const progressRatio = videoDuration > 0 ? (playedSeconds / videoDuration) * 100 : 0;
+
+                    if (progressBarRef.current) {
+                      progressBarRef.current.style.width = `${progressRatio}%`;
+                    }
+
+                    // 기존 setCurrentProgress 등은 유지 (필요 시만)
                     setCurrentProgress(formatDuration(playedSeconds));
-                  }} // 비디오 진행도 업데이트
+                  }}
                   onDuration={(duration: number) => {
                     setVideoDuration(duration);
                   }} // 영상 길이 설정
@@ -404,10 +409,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
           <div className={styles.progressBar}>
             <div
+              ref={progressBarRef}
               className={styles.progressFill}
               style={{
-                width: `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
-                transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
+                width: '0%',
+                transition: 'width 0.1s linear',
               }}
             ></div>
           </div>

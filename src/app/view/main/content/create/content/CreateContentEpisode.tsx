@@ -25,6 +25,8 @@ import {
   ContentLanguageType,
   sendGetContent,
   sendGetEpisode,
+  CreateContentEpisodeVideoInfo,
+  CreateContentEpisodeInfo,
 } from '@/app/NetWork/ContentNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
@@ -81,7 +83,23 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
           setMediaUrls([content.thumbnailUrl || '']);
 
           setDefaultImage(content.thumbnailUrl);
-          if (content.episodeVideoInfo) setEpisodeVideoInfo(content.episodeVideoInfo);
+          if (content.episodeVideoInfo) {
+            const videoInfo = content.episodeVideoInfo;
+
+            setEpisodeVideoInfo({
+              videoSourceFileInfo: {
+                tempFileName: '',
+                videoFileName: videoInfo.videoSourceFileInfo.videoSourceName,
+                videoLanguageType: videoInfo.videoSourceFileInfo.videoLanguageType,
+              },
+              subTitleFileInfos: videoInfo.subTitleFileInfos,
+              dubbingFileInfos: (videoInfo.dubbingFileInfos ?? []).map(dub => ({
+                videoLanguageType: dub.videoLanguageType ?? '', // ✅ 필수 필드 추가
+                tempFileName: '',
+                videoFileName: dub.videoSourceName,
+              })),
+            });
+          }
           if (content.episodeWebtoonInfo) setEpisodeWebtoonInfo(content.episodeWebtoonInfo);
           if (content.salesStarEa > 0) {
             setIsFree(true);
@@ -127,16 +145,14 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
   const [isFree, setIsFree] = useState<boolean>(false);
 
-  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<ContentEpisodeVideoInfo>({
-    likeCount: 0, // 기본 값: 0
-    videoSourcePlayTime: '00:00', // 기본 값: 빈 시간 또는 "00:00"
+  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<CreateContentEpisodeVideoInfo>({
     videoSourceFileInfo: {
-      videoLanguageType: ContentLanguageType.Korean, // 기본 언어 설정
-      videoSourceUrl: '', // 비디오 URL 초기값
-      videoSourceName: '', // 비디오 이름 초기값
+      videoLanguageType: ContentLanguageType.Korean,
+      tempFileName: 'some.mp4',
+      videoFileName: 'some.mp4',
     },
-    subTitleFileInfos: [], // 자막 파일 정보 (빈 배열)
-    dubbingFileInfos: [], // 더빙 파일 정보 (빈 배열)
+    subTitleFileInfos: [],
+    dubbingFileInfos: [],
   });
   const [episodeWebtoonInfo, setEpisodeWebtoonInfo] = useState<ContentEpisodeWebtoonInfo>({
     likeCount: 0,
@@ -167,7 +183,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
         message: '에피소드 설명을 입력해주세요.',
       },
       {
-        condition: contentInfo?.categoryType === 1 && !episodeVideoInfo?.videoSourceFileInfo?.videoSourceUrl,
+        condition: contentInfo?.categoryType === 1 && !episodeVideoInfo?.videoSourceFileInfo?.videoFileName,
         message: '비디오 파일이 업로드되지 않았습니다.',
       },
       {
@@ -184,7 +200,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       }
     }
 
-    const newEpisode: ContentEpisodeInfo = {
+    const newEpisode: CreateContentEpisodeInfo = {
       id: editContentInfo?.id ?? 0,
       contentId: contentInfo?.id ?? 0, // 이 부분도 동일하게 처리
       seasonNo: curSeason, // 필수: 시즌 번호

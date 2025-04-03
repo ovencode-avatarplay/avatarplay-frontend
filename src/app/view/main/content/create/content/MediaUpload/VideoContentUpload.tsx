@@ -12,8 +12,13 @@ import {
   LineUpload,
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {ContentCategoryType, ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
+import {MediaUploadReq, sendUpload, sendUploadTempFile, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {
+  ContentCategoryType,
+  ContentEpisodeVideoInfo,
+  ContentLanguageType,
+  CreateContentEpisodeVideoInfo,
+} from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
 
@@ -24,7 +29,7 @@ export interface VideoUploadField {
   fileName?: string;
 }
 interface VideoContentUploadProps {
-  setEpisodeVideoInfo: (value: (prev: ContentEpisodeVideoInfo) => ContentEpisodeVideoInfo) => void;
+  setEpisodeVideoInfo: (value: (prev: CreateContentEpisodeVideoInfo) => CreateContentEpisodeVideoInfo) => void;
   defaultEpisodeVideoInfo?: ContentEpisodeVideoInfo; // 기존 데이터가 있으면 전달받음
   hasError?: boolean;
 }
@@ -47,9 +52,11 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
     if (defaultEpisodeVideoInfo) {
-      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceUrl || null);
+      // ✅ videoFile / videoName은 UI 미리보기용으로 여전히 필요하다면 유지
+      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName);
       setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName || null);
 
+      // ✅ subtitle은 구조 그대로 유지 (API 구조 안 바뀜)
       setSubtitleFields(
         defaultEpisodeVideoInfo.subTitleFileInfos.map((info, index) => ({
           id: index,
@@ -59,11 +66,12 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
         })),
       );
 
+      // ✅ dubbing은 tempFileName과 videoFileName으로 세팅 (fileUrl은 미리보기용)
       setDubbingFields(
         defaultEpisodeVideoInfo.dubbingFileInfos.map((info, index) => ({
           id: index,
           selectedCountry: info.videoLanguageType,
-          fileUrl: info.videoSourceUrl,
+          fileUrl: info.videoSourceName, // UI상 썸네일용이므로 임시로 fileName 사용
           fileName: info.videoSourceName,
         })),
       );
@@ -89,107 +97,75 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
   ];
 
   const handleAddUploader = (type: 'subtitle' | 'dubbing') => {
-    if (type === 'subtitle') {
-      setSubtitleFields([...subtitleFields, {id: Date.now(), selectedCountry: ContentLanguageType.Korean}]);
-    } else {
-      setDubbingFields([...dubbingFields, {id: Date.now(), selectedCountry: ContentLanguageType.Korean}]);
-    }
-  };
+    const newItem = {
+      id: Date.now(),
+      selectedCountry: ContentLanguageType.Korean,
+      fileUrl: undefined,
+      fileName: undefined,
+    };
 
-  const handleRemoveSpecificField = (type: 'subtitle' | 'dubbing', index: number) => {
     if (type === 'subtitle') {
-      let id = subtitleFields[index].id;
-      setSubtitleFields(prevFields => prevFields.filter(field => field.id !== Number(id)));
-      console.log('로그', id, subtitleFields);
-    } else if (type === 'dubbing') {
-      let id = dubbingFields[index].id;
-      setDubbingFields(prevFields => prevFields.filter(field => field.id !== Number(id)));
+      setSubtitleFields(prev => [...prev, newItem]);
+      setEpisodeVideoInfo(prev => ({
+        ...prev,
+        subTitleFileInfos: [
+          ...prev.subTitleFileInfos,
+          {
+            videoLanguageType: ContentLanguageType.Korean,
+            videoSourceUrl: '',
+            videoSourceName: '',
+          },
+        ],
+      }));
+    } else {
+      setDubbingFields(prev => [...prev, newItem]);
+      setEpisodeVideoInfo(prev => ({
+        ...prev,
+        dubbingFileInfos: [
+          ...prev.dubbingFileInfos,
+          {
+            videoLanguageType: ContentLanguageType.Korean,
+            tempFileName: '',
+            videoFileName: '',
+          },
+        ],
+      }));
     }
   };
 
   const handleClearFileUrl = (type: 'subtitle' | 'dubbing', index: number) => {
     if (type === 'subtitle') {
-      let id = subtitleFields[index].id;
+      const id = subtitleFields[index].id;
+
       setSubtitleFields(prevFields =>
-        prevFields.map(field => (field.id === id ? {...field, fileUrl: undefined} : field)),
+        prevFields.map(field => (field.id === id ? {...field, fileUrl: undefined, fileName: undefined} : field)),
       );
-    } else if (type === 'dubbing') {
-      let id = dubbingFields[index].id;
-      setDubbingFields(prevFields =>
-        prevFields.map(field => (field.id === id ? {...field, fileUrl: undefined} : field)),
-      );
-    }
-  };
 
-  const handleCountryChange = (type: 'subtitle' | 'dubbing', index: number, country: ContentLanguageType) => {
-    if (type === 'subtitle') {
-      setSubtitleFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)),
-      );
-    } else {
-      setDubbingFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)),
-      );
-    }
-    setCountryDrawerOpen(null);
-  };
-
-  const handleFileUpload = async (type: 'video' | 'subtitle' | 'dubbing', files: File[], index?: number) => {
-    try {
-      let mediaState: UploadMediaState;
-      if (type === 'video') mediaState = UploadMediaState.ContentEpisodeVideo;
-      else if (type === 'subtitle') mediaState = UploadMediaState.ContentEpisodeSubtitle;
-      else mediaState = UploadMediaState.ContentEpisodeDubbing;
-
-      const req: MediaUploadReq = {mediaState, file: files[0]};
-      const response = await sendUpload(req);
-
-      if (response?.data) {
-        const fileUrl = response.data.url;
-        const fileName = response.data.fileName;
-        const playTime = response.data.playTime;
-        console.log(`${type} uploaded:`, fileUrl, fileName);
-
-        if (type === 'video') {
-          setVideoFile(fileUrl);
-          setVideoName(fileName);
-          setEpisodeVideoInfo(prev => ({
-            ...prev,
-            videoSourcePlayTime: playTime || '00:00', // 플레이 타임 업데이트
-            videoSourceFileInfo: {
-              ...prev.videoSourceFileInfo,
-              videoSourceUrl: fileUrl,
-              videoSourceName: fileName,
-            },
-          }));
-        } else if (type === 'subtitle' && index !== undefined) {
-          setSubtitleFields(prevFields =>
-            prevFields.map((field, i) => (i === index ? {...field, fileUrl, fileName} : field)),
-          );
-          setEpisodeVideoInfo(prev => ({
-            ...prev,
-            subTitleFileInfos: prev.subTitleFileInfos.map((info, i) =>
-              i === index ? {...info, videoSourceUrl: fileUrl, videoSourceName: fileName} : info,
-            ),
-          }));
-        } else if (type === 'dubbing' && index !== undefined) {
-          setDubbingFields(prevFields =>
-            prevFields.map((field, i) => (i === index ? {...field, fileUrl, fileName} : field)),
-          );
-          setEpisodeVideoInfo(prev => ({
-            ...prev,
-            dubbingFileInfos: prev.dubbingFileInfos.map((info, i) =>
-              i === index ? {...info, videoSourceUrl: fileUrl, videoSourceName: fileName} : info,
-            ),
-          }));
+      setEpisodeVideoInfo(prev => {
+        const updated = [...prev.subTitleFileInfos];
+        if (updated[index]) {
+          updated[index].videoSourceUrl = '';
+          updated[index].videoSourceName = '';
         }
-      }
-    } catch (error) {
-      console.error('파일 업로드 중 오류 발생:', error);
+        return {...prev, subTitleFileInfos: updated};
+      });
+    } else if (type === 'dubbing') {
+      const id = dubbingFields[index].id;
+
+      setDubbingFields(prevFields =>
+        prevFields.map(field => (field.id === id ? {...field, fileUrl: undefined, fileName: undefined} : field)),
+      );
+
+      setEpisodeVideoInfo(prev => {
+        const updated = [...prev.dubbingFileInfos];
+        if (updated[index]) {
+          updated[index].tempFileName = '';
+          updated[index].videoFileName = '';
+        }
+        return {...prev, dubbingFileInfos: updated};
+      });
     }
   };
-
-  // 파일 삭제 처리
   const handleRemoveFile = (type: 'video' | 'subtitle' | 'dubbing', index?: number) => {
     if (type === 'video') {
       setVideoFile(null);
@@ -198,30 +174,140 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
         ...prev,
         videoSourceFileInfo: {
           ...prev.videoSourceFileInfo,
-          videoSourceUrl: '',
-          videoSourceName: '',
+          tempFileName: '',
+          videoFileName: '',
         },
       }));
     } else if (type === 'subtitle' && index !== undefined) {
-      setSubtitleFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, fileUrl: undefined} : field)),
+      setSubtitleFields(prev =>
+        prev.map((field, i) => (i === index ? {...field, fileUrl: undefined, fileName: undefined} : field)),
       );
-      setEpisodeVideoInfo(prev => ({
-        ...prev,
-        subTitleFileInfos: prev.subTitleFileInfos.map((info, i) =>
-          i === index ? {...info, videoSourceUrl: '', videoSourceName: ''} : info,
-        ),
-      }));
+      setEpisodeVideoInfo(prev => {
+        const updated = [...prev.subTitleFileInfos];
+        if (updated[index]) {
+          updated[index].videoSourceUrl = '';
+          updated[index].videoSourceName = '';
+        }
+        return {...prev, subTitleFileInfos: updated};
+      });
     } else if (type === 'dubbing' && index !== undefined) {
-      setDubbingFields(prevFields =>
-        prevFields.map((field, i) => (i === index ? {...field, fileUrl: undefined} : field)),
+      setDubbingFields(prev =>
+        prev.map((field, i) => (i === index ? {...field, fileUrl: undefined, fileName: undefined} : field)),
       );
+      setEpisodeVideoInfo(prev => {
+        const updated = [...prev.dubbingFileInfos];
+        if (updated[index]) {
+          updated[index].tempFileName = '';
+          updated[index].videoFileName = '';
+        }
+        return {...prev, dubbingFileInfos: updated};
+      });
+    }
+  };
+  const handleCountryChange = (type: 'subtitle' | 'dubbing', index: number, country: ContentLanguageType) => {
+    if (type === 'subtitle') {
+      setSubtitleFields(prev => prev.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)));
+      setEpisodeVideoInfo(prev => {
+        const updated = [...prev.subTitleFileInfos];
+        if (updated[index]) updated[index].videoLanguageType = country;
+        return {...prev, subTitleFileInfos: updated};
+      });
+    } else {
+      setDubbingFields(prev => prev.map((field, i) => (i === index ? {...field, selectedCountry: country} : field)));
+      setEpisodeVideoInfo(prev => {
+        const updated = [...prev.dubbingFileInfos];
+        if (updated[index]) updated[index].videoLanguageType = country;
+        return {...prev, dubbingFileInfos: updated};
+      });
+    }
+    setCountryDrawerOpen(null);
+  };
+
+  const handleRemoveSpecificField = (type: 'subtitle' | 'dubbing', index: number) => {
+    if (type === 'subtitle') {
+      setSubtitleFields(prev => prev.filter((_, i) => i !== index));
       setEpisodeVideoInfo(prev => ({
         ...prev,
-        dubbingFileInfos: prev.dubbingFileInfos.map((info, i) =>
-          i === index ? {...info, videoSourceUrl: '', videoSourceName: ''} : info,
-        ),
+        subTitleFileInfos: prev.subTitleFileInfos.filter((_, i) => i !== index),
       }));
+    } else {
+      setDubbingFields(prev => prev.filter((_, i) => i !== index));
+      setEpisodeVideoInfo(prev => ({
+        ...prev,
+        dubbingFileInfos: prev.dubbingFileInfos.filter((_, i) => i !== index),
+      }));
+    }
+  };
+
+  const handleFileUpload = async (type: 'video' | 'subtitle' | 'dubbing', files: File[], index?: number) => {
+    try {
+      if (type === 'subtitle') {
+        const req: MediaUploadReq = {
+          mediaState: UploadMediaState.ContentEpisodeSubtitle,
+          file: files[0],
+        };
+        const response = await sendUpload(req);
+
+        if (response?.data && index !== undefined) {
+          const {url, fileName} = response.data;
+
+          setSubtitleFields(prev => prev.map((field, i) => (i === index ? {...field, fileUrl: url, fileName} : field)));
+
+          setEpisodeVideoInfo(prev => {
+            const newList = [...prev.subTitleFileInfos];
+            newList[index] = {
+              videoSourceUrl: url,
+              videoSourceName: fileName,
+              videoLanguageType: subtitleFields[index]?.selectedCountry ?? ContentLanguageType.Korean,
+            };
+            return {
+              ...prev,
+              subTitleFileInfos: newList,
+            };
+          });
+        }
+      } else {
+        const response = await sendUploadTempFile(files[0]);
+
+        if (response?.data) {
+          const {tempFileName, uploadFileName} = response.data;
+
+          if (type === 'video') {
+            setVideoFile(tempFileName);
+            setVideoName(uploadFileName);
+
+            setEpisodeVideoInfo(prev => ({
+              ...prev,
+              videoSourceFileInfo: {
+                tempFileName,
+                videoFileName: uploadFileName,
+                videoLanguageType: ContentLanguageType.Korean,
+              },
+            }));
+          } else if (type === 'dubbing' && index !== undefined) {
+            setDubbingFields(prev =>
+              prev.map((field, i) =>
+                i === index ? {...field, fileUrl: tempFileName, fileName: uploadFileName} : field,
+              ),
+            );
+
+            setEpisodeVideoInfo(prev => {
+              const newList = [...prev.dubbingFileInfos];
+              newList[index] = {
+                tempFileName,
+                videoFileName: uploadFileName,
+                videoLanguageType: dubbingFields[index]?.selectedCountry ?? ContentLanguageType.Korean,
+              };
+              return {
+                ...prev,
+                dubbingFileInfos: newList,
+              };
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('파일 업로드 중 오류 발생:', error);
     }
   };
 

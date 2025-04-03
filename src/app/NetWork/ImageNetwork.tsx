@@ -15,7 +15,6 @@ export enum UploadMediaState {
   FeedImage = 10,
   CompressFeedVideo = 11,
   CompressFeedImage = 12,
-
   ContentEpisodeVideo = 13,
   ContentEpisodeSubtitle = 14,
   ContentEpisodeDubbing = 15,
@@ -24,7 +23,6 @@ export enum UploadMediaState {
   ContentImage = 18,
   ContentVideo = 19,
 }
-
 export interface MediaUploadReq {
   mediaState: number; // Enum 타입
   file?: File; // 업로드할 파일
@@ -87,7 +85,7 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
 export interface GenerateParameter {
   name: string;
   value: number;
-  prompt : string;
+  prompt: string;
 }
 export interface GenerateImageReq {
   values: GenerateParameter[];
@@ -202,5 +200,53 @@ export const sendGenerateExpressionReq = async (
   } catch (error: any) {
     console.error('Error generating image:', error);
     throw new Error('Failed to generate image. Please try again.');
+  }
+};
+export interface UploadTempFileRes {
+  uploadFileName: string;
+  tempFileName: string;
+}
+
+export const sendUploadTempFile = async (file?: File): Promise<ResponseAPI<UploadTempFileRes>> => {
+  try {
+    const formData = new FormData();
+
+    // file이 존재하면 추가, 없으면 빈 Blob으로 대체
+    if (file) {
+      formData.append('UploadFile', file); // 필드명 주의
+    } else {
+      formData.append('UploadFile', new Blob()); // 빈 Blob 추가
+    }
+
+    const response = await api.post<ResponseAPI<UploadTempFileRes>>('Resource/uploadTempFile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // 성공
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      // resultCode 별 alert 처리
+      switch (response.data.resultCode) {
+        case 1:
+          alert('Invalid: 업로드할 파일이 없습니다.');
+          break;
+        case 2:
+          alert('Invalid: 허용되지 않는 파일 형식입니다.');
+          break;
+        case 3:
+          alert('Server Error: 서버에서 파일 저장에 실패했습니다.');
+          break;
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+          break;
+      }
+      throw new Error(`UploadTempFile Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('🚨 Temp file upload error:', error);
+    throw new Error('임시 파일 업로드에 실패했습니다. 다시 시도해 주세요.');
   }
 };
