@@ -477,6 +477,16 @@
         border-radius: 8px;
         border: 1px solid var(--Border-1, #EAECF0);
         background: var(--White, #FFF);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .icon{
+          width: 24px;
+          height: 24px;
+          filter: brightness(0) saturate(100%) invert(0%) sepia(6%) saturate(579%) hue-rotate(316deg) brightness(80%) contrast(80%);
+
+        }
       }
     }
 
@@ -540,6 +550,8 @@
         .icon {
           width: 24px;
           height: 24px;
+
+          filter: brightness(0) saturate(100%) invert(0%) sepia(6%) saturate(579%) hue-rotate(316deg) brightness(80%) contrast(80%);
         }
       }
 
