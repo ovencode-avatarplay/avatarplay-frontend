@@ -33,6 +33,7 @@ import {
   LinePlus,
   LineShare,
   BoldVerifiedLabel,
+  LineReward,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
@@ -1055,7 +1056,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   setData({...data});
                 }}
               >
-                <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
+                <img className={styles.icon} src={LineReward.src} alt="" />
               </button>
             </div>
           )}
@@ -1085,7 +1086,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   setData({...data});
                 }}
               >
-                <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
+                <img className={styles.icon} src={LineReward.src} alt="" />
               </button>
               {isOtherCharacter && (
                 <button className={styles.chat}>
