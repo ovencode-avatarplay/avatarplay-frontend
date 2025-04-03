@@ -8,6 +8,7 @@ import RewardContent from './RewardContent';
 import HeaderNavBarWhite from '../../header/header-nav-bar/HeaderNavBarWhite';
 import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
+import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 
 export const dummyBannerList: BannerUrlList[] = [
   {

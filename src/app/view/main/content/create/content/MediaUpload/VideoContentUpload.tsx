@@ -14,7 +14,12 @@ import {
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, sendUploadTempFile, UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {ContentCategoryType, ContentEpisodeVideoInfo, ContentLanguageType} from '@/app/NetWork/ContentNetwork';
+import {
+  ContentCategoryType,
+  ContentEpisodeVideoInfo,
+  ContentLanguageType,
+  CreateContentEpisodeVideoInfo,
+} from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
 
@@ -25,7 +30,7 @@ export interface VideoUploadField {
   fileName?: string;
 }
 interface VideoContentUploadProps {
-  setEpisodeVideoInfo: (value: (prev: ContentEpisodeVideoInfo) => ContentEpisodeVideoInfo) => void;
+  setEpisodeVideoInfo: (value: (prev: CreateContentEpisodeVideoInfo) => CreateContentEpisodeVideoInfo) => void;
   defaultEpisodeVideoInfo?: ContentEpisodeVideoInfo; // 기존 데이터가 있으면 전달받음
   hasError?: boolean;
 }
@@ -49,8 +54,8 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
   useEffect(() => {
     if (defaultEpisodeVideoInfo) {
       // ✅ videoFile / videoName은 UI 미리보기용으로 여전히 필요하다면 유지
-      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoFileName || null);
-      setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoFileName || null);
+      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName);
+      setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName || null);
 
       // ✅ subtitle은 구조 그대로 유지 (API 구조 안 바뀜)
       setSubtitleFields(
@@ -67,8 +72,8 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
         defaultEpisodeVideoInfo.dubbingFileInfos.map((info, index) => ({
           id: index,
           selectedCountry: info.videoLanguageType,
-          fileUrl: info.videoFileName, // UI상 썸네일용이므로 임시로 fileName 사용
-          fileName: info.videoFileName,
+          fileUrl: info.videoSourceName, // UI상 썸네일용이므로 임시로 fileName 사용
+          fileName: info.videoSourceName,
         })),
       );
     }

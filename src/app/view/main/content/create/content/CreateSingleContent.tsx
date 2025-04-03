@@ -23,12 +23,14 @@ import {
   ContentEpisodeVideoInfo,
   sendGetContent,
   ContentInfo,
+  CreateContentEpisodeVideoInfo,
 } from '@/app/NetWork/ContentNetwork';
 import {useRouter} from 'next/navigation';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {useAtom} from 'jotai';
+import {setVisibility} from '@/redux-store/slices/PublishInfo';
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -47,6 +49,7 @@ enum VisibilityType {
   Private = 0,
   Unlisted = 1,
   Public = 2,
+  Create = 3,
 }
 export const getVisibilityTypeKey = (key: number): string => {
   switch (key) {
@@ -56,6 +59,8 @@ export const getVisibilityTypeKey = (key: number): string => {
       return getLocalizedText('common_filter_private');
     case VisibilityType.Unlisted:
       return getLocalizedText('common_filter_unlisted');
+    case VisibilityType.Create:
+      return getLocalizedText('common_filter_create');
     default:
       return '';
   }
@@ -185,6 +190,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
     {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
     {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_create'), onClick: () => setSelectedVisibility(VisibilityType.Create)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);
@@ -217,11 +223,11 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
 
   const [isMonetization, setIsMonetization] = useState<boolean>(false);
 
-  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<ContentEpisodeVideoInfo>({
+  const [episodeVideoInfo, setEpisodeVideoInfo] = useState<CreateContentEpisodeVideoInfo>({
     videoSourceFileInfo: {
       videoLanguageType: ContentLanguageType.Korean,
-      tempFileName: '',
-      videoFileName: '',
+      tempFileName: 'some.mp4',
+      videoFileName: 'some.mp4',
     },
     subTitleFileInfos: [],
     dubbingFileInfos: [],
@@ -257,15 +263,35 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           setSelectedGenres(content.genre ? content.genre.split(', ') : []);
           setSelectedTags(content.tags || []);
           setPositionCountryList(
-            content.postCountry
-              ? content.postCountry.map(country => LanguageType[country as keyof typeof LanguageType]).filter(Boolean) // 유효한 값만 필터링
+            Array.isArray(content.postCountry)
+              ? content.postCountry
+                  .filter((country): country is keyof typeof LanguageType => country in LanguageType)
+                  .map(country => LanguageType[country])
               : [],
           );
 
           setSelectedVisibility(content.visibility);
           setIsNsfw(content.nsfw);
           setDefaultImage(content.thumbnailUrl);
-          if (content.contentVideoInfo) setEpisodeVideoInfo(content.contentVideoInfo);
+          setVisibility(content.visibility);
+          if (content.contentVideoInfo) {
+            const videoInfo = content.contentVideoInfo;
+
+            setEpisodeVideoInfo({
+              videoSourceFileInfo: {
+                tempFileName: '',
+                videoFileName: videoInfo.videoSourceFileInfo.videoSourceName,
+                videoLanguageType: videoInfo.videoSourceFileInfo.videoLanguageType,
+              },
+              subTitleFileInfos: videoInfo.subTitleFileInfos,
+              dubbingFileInfos: (videoInfo.dubbingFileInfos ?? []).map(dub => ({
+                videoLanguageType: dub.videoLanguageType ?? '', // ✅ 필수 필드 추가
+                tempFileName: '',
+                videoFileName: dub.videoSourceName,
+              })),
+            });
+          }
+
           if (content.contentWebtoonInfo) setEpisodeWebtoonInfo(content.contentWebtoonInfo);
           if (content.salesStarEa > 0) {
             setIsFree(true);

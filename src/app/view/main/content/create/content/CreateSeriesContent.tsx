@@ -45,6 +45,7 @@ enum VisibilityType {
   Private = 0,
   Unlisted = 1,
   Public = 2,
+  Create = 3,
 }
 export const getVisibilityTypeKey = (key: number): string => {
   switch (key) {
@@ -54,6 +55,8 @@ export const getVisibilityTypeKey = (key: number): string => {
       return getLocalizedText('common_filter_private');
     case VisibilityType.Unlisted:
       return getLocalizedText('common_filter_unlisted');
+    case VisibilityType.Create:
+      return getLocalizedText('common_filter_create');
     default:
       return '';
   }
@@ -171,6 +174,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
     {name: getLocalizedText('common_filter_private'), onClick: () => setSelectedVisibility(VisibilityType.Private)},
     {name: getLocalizedText('common_filter_unlisted'), onClick: () => setSelectedVisibility(VisibilityType.Unlisted)},
     {name: getLocalizedText('common_filter_public'), onClick: () => setSelectedVisibility(VisibilityType.Public)},
+    {name: getLocalizedText('common_filter_create'), onClick: () => setSelectedVisibility(VisibilityType.Create)},
   ];
 
   const [isPositionCountryOpen, setIsPositionCountryOpen] = useState(false);

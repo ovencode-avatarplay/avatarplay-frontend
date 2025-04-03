@@ -7,7 +7,7 @@ import {MediaState} from './ProfileNetwork';
 
 // 📌 Content 생성 요청
 export interface CreateContentReq {
-  contentInfo: ContentInfo;
+  contentInfo: CreateContentInfo;
 }
 
 export interface ContentInfo {
@@ -29,6 +29,28 @@ export interface ContentInfo {
   salesStarEa: number;
   contentWebtoonInfo?: ContentEpisodeWebtoonInfo;
   contentVideoInfo?: ContentEpisodeVideoInfo;
+  urlLinkKey?: string;
+  thumbnailMediaState?: MediaState;
+}
+export interface CreateContentInfo {
+  id?: number; // 콘텐츠 ID (선택적, 생성 전에는 없음)
+  profileId: number;
+  maxSeasonNo: number;
+  contentType: number;
+  thumbnailUrl: string;
+  name: string;
+  oneLineSummary: string;
+  description: string;
+  categoryType: number;
+  genre: string;
+  tags: string[];
+  postCountry: string[];
+  visibility: number;
+  nsfw: boolean;
+  monetization: boolean;
+  salesStarEa: number;
+  contentWebtoonInfo?: ContentEpisodeWebtoonInfo;
+  contentVideoInfo?: CreateContentEpisodeVideoInfo;
   urlLinkKey?: string;
   thumbnailMediaState?: MediaState;
 }
@@ -73,7 +95,7 @@ export const sendGetContent = async (payload: GetContentReq): Promise<ResponseAP
 };
 // 📌 에피소드 생성 요청
 export interface CreateEpisodeReq {
-  episodeInfo: ContentEpisodeInfo;
+  episodeInfo: CreateContentEpisodeInfo;
 }
 
 // 📌 콘텐츠 에피소드 정보
@@ -91,6 +113,22 @@ export interface ContentEpisodeInfo {
   episodeVideoInfo?: ContentEpisodeVideoInfo;
   episodeWebtoonInfo?: ContentEpisodeWebtoonInfo;
 }
+
+export interface CreateContentEpisodeInfo {
+  id?: number;
+  contentId: number;
+  seasonNo: number;
+  episodeNo: number;
+  thumbnailUrl: string;
+  name: string;
+  description: string;
+  monetization: boolean;
+  salesStarEa: number;
+  likeCount: number;
+  episodeVideoInfo?: CreateContentEpisodeVideoInfo;
+  episodeWebtoonInfo?: ContentEpisodeWebtoonInfo;
+}
+
 export enum ContentLanguageType {
   Korean = 0,
   English = 1,
@@ -106,16 +144,16 @@ export enum ContentLanguageType {
 // 📌 에피소드 비디오 정보
 export interface ContentEpisodeVideoInfo {
   mpdTempUrl: string;
-  videoSourceFileInfo: {
-    videoLanguageType: ContentLanguageType;
-    tempFileName: string; // ✅ 새 필드
-    videoFileName: string; // ✅ 새 필드
-  };
+  videoSourceFileInfo: VideoFileInfo;
   subTitleFileInfos: VideoFileInfo[];
-  dubbingFileInfos: DubbingFileInfo[];
+  dubbingFileInfos: VideoFileInfo[];
 }
-
-export interface DubbingFileInfo {
+export interface CreateContentEpisodeVideoInfo {
+  videoSourceFileInfo: CreateVideoFileInfo;
+  subTitleFileInfos: VideoFileInfo[];
+  dubbingFileInfos: CreateVideoFileInfo[];
+}
+export interface CreateVideoFileInfo {
   videoLanguageType: ContentLanguageType;
   tempFileName: string; // ✅ 새 필드
   videoFileName: string; // ✅ 새 필드
