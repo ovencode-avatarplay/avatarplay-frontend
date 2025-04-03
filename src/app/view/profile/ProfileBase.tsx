@@ -212,6 +212,7 @@ export type TabContentMenuType = {
 };
 
 type DataProfileType = {
+  pathname: string;
   urlLinkKey: string;
   profileId: number;
   indexTab:
@@ -385,10 +386,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       refreshProfileInfo(data.urlLinkKey);
       return;
     } else {
+      if (pathname == data?.pathname) return;
+      console.log('pathName : ', pathname);
       //컴포넌트로 가져다 쓰는 경우 isPath=fase
       const id = pathname?.split('/').filter(Boolean).pop();
       if (id == undefined) return;
       data.urlLinkKey = id;
+      data.pathname = pathname;
       refreshProfileInfo(data.urlLinkKey);
       setData({...data});
       return;
