@@ -30,6 +30,8 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {PaginationRequest} from '@/app/NetWork/ProfileNetwork';
 import {useRouter} from 'next/navigation';
+import {setSelectedIndex} from '@/redux-store/slices/MainControl';
+import {useDispatch} from 'react-redux';
 
 export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 
@@ -46,7 +48,10 @@ const SearchBoard: React.FC = () => {
   const [characterExploreList, setCharacterExploreList] = useState<ExploreItem[] | null>(null);
   const [storyExploreList, setStoryExploreList] = useState<ExploreItem[] | null>(null);
   const [contentExploreList, setContentExploreList] = useState<ExploreItem[] | null>(null);
-
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(setSelectedIndex(1));
+  }, []);
   // Search
   const searchOptionList = [
     'common_tag_male',

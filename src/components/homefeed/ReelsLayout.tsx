@@ -65,6 +65,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const router = useRouter();
   const dispatch = useDispatch();
 
+  React.useEffect(() => {
+    dispatch(setSelectedIndex(0));
+  }, []);
+
   const isSpecificProfile = !!profileUrlLinkKey;
 
   const Header = 'Home';
@@ -130,7 +134,8 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       const mergedFeeds = result?.feedInfoList || [];
       setAllFeeds(mergedFeeds); // 전체 데이터 저장
       const indexContent = mergedFeeds.findIndex(v => v.id == idContent);
-      setInfo(mergedFeeds.slice(0, indexContent + 2)); // 초기 렌더링용 첫 2개
+      setInfo(mergedFeeds.slice(0, indexContent + 6)); // ✅ indexContent 위치까지 + 1~2개만 미리 렌더
+
       setCurrentSlideIndex(indexContent);
 
       const wrapper = reelsWrapperRef.current;
@@ -158,7 +163,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
           const mergedFeeds = initialFeed ? [initialFeed, ...feeds.filter(feed => feed.id !== initialFeed.id)] : feeds;
 
           setAllFeeds(mergedFeeds); // 전체 데이터 저장
-          setInfo(mergedFeeds.slice(0, 2)); // 초기 렌더링용 첫 2개
+          setInfo(mergedFeeds.slice(0, 6)); // ✅ 초기 렌더링용 첫 2개
         }
       } catch (error) {
         setAllFeeds([]);
@@ -262,7 +267,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       setInfo(prev => [...prev, ...nextItems]);
     }
 
-    if (currentSlideIndex >= allFeeds.length - 2 && info.length === allFeeds.length) {
+    if (currentSlideIndex >= allFeeds.length - 4 && info.length === allFeeds.length) {
       if (isSpecificProfile) {
         loadMoreFeedsMine();
       } else {

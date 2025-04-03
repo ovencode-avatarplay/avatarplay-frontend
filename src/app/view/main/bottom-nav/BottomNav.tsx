@@ -159,7 +159,7 @@ export default function BottomNav() {
     if (foundIndex !== -1 && foundIndex !== selectedIndex) {
       dispatch(setSelectedIndex(foundIndex));
     }
-  }, [dispatch]);
+  }, []);
 
   React.useEffect(() => {}, [colorMode]);
 

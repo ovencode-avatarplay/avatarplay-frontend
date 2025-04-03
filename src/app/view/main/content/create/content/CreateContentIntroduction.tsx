@@ -135,7 +135,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
         {/* 상단 네비게이션 */}
         <CustomArrowHeader
           title={getLocalizedText('createcontent001_title_001')}
-          backLink="/"
+          backLink="/main/homefeed"
           children={
             <div className={styles.rightArea}>
               <button className={styles.dashBoard} onClick={() => {}}>
