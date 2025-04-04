@@ -141,6 +141,7 @@ export enum ContentLanguageType {
   Portuguese = 7,
   German = 8,
   Source = 100,
+  Default = 200,
 }
 // 📌 에피소드 비디오 정보
 export interface ContentEpisodeVideoInfo {

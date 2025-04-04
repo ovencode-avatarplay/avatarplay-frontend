@@ -291,10 +291,16 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
       if (info?.episodeVideoInfo?.subTitleFileInfos) {
         console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
-        const subtitleUrl = info.episodeVideoInfo.subTitleFileInfos[0].videoSourceUrl;
-        await player.addTextTrackAsync(subtitleUrl, 'kor', 'subtitles', 'text/vtt');
+        await Promise.all(
+          info?.episodeVideoInfo?.subTitleFileInfos.map(async fileInfo => {
+            const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase(); // ex) 'kor' -> 'kor'
+            const url = fileInfo.videoSourceUrl;
+            await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
+          }) || [],
+        );
 
         player.setTextTrackVisibility(true);
+
         console.log('✅ 자막 추가 완료!');
       } else {
         console.warn('🚨 자막 URL이 없습니다.');
@@ -565,25 +571,88 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const [playSpeed, setPlaySpeed] = useState<number>(1);
 
   //#region 더빙
-  const dubbingDrawerItem: SelectDrawerItem[] =
-    info?.episodeVideoInfo?.dubbingFileInfos?.map((fileInfo, index) => ({
+  const dubbingDrawerItem: SelectDrawerItem[] = [
+    {
+      name: 'Original',
+      onClick: () => {
+        handleSetDubbing(0); // 오리지널은 0번
+        setDubbingLang(ContentLanguageType.Default); // 필요시 타입에 맞게 수정
+      },
+    },
+    ...(info?.episodeVideoInfo?.dubbingFileInfos?.map((fileInfo, index) => ({
       name: ContentLanguageType[fileInfo.videoLanguageType],
       onClick: () => {
-        handleSetDubbing(index + 1); // 여기서 index 사용 가능
+        handleSetDubbing(index + 1); // +1 해서 오리지널 제외
         setDubbingLang(fileInfo.videoLanguageType);
       },
-    })) || [];
+    })) || []),
+  ];
 
   const [isOpenDubbingModal, setIsDubbingModal] = useState(false);
 
   const [dubbingLang, setDubbingLang] = useState<ContentLanguageType>(ContentLanguageType.Korean);
   const handleSetDubbing = (value: number) => {
     info?.episodeVideoInfo?.dubbingFileInfos;
+    console.log(value);
     const track = playerRef.current?.getVariantTracks()[value];
     console.log(track);
     if (track) playerRef.current?.selectVariantTrack(track, true);
   };
   //#endregion
+
+  //#region 자막
+  const subtitleDrawerItems: SelectDrawerItem[] = [
+    {
+      name: 'Original', // 자막 없음
+      onClick: () => {
+        playerRef.current?.setTextTrackVisibility(false); // 자막 끔
+        setSubtitleLang(ContentLanguageType.Default); // 상태에도 반영
+      },
+    },
+    ...(info?.episodeVideoInfo?.subTitleFileInfos?.map(fileInfo => ({
+      name: ContentLanguageType[fileInfo.videoLanguageType],
+      onClick: () => {
+        handleSetSubtitle(fileInfo.videoLanguageType); // 선택한 자막 설정
+      },
+    })) || []),
+  ];
+
+  const [isOpenSubtitleModal, setIsSubtitleModal] = useState(false);
+  const handleSetSubtitle = (value: ContentLanguageType) => {
+    const languageCode = ContentLanguageType[value].toLowerCase(); // ex) 'Korean' → 'korean' or 'ko'로 매핑 필요
+
+    const tracks = playerRef.current?.getTextTracks();
+    const matchedTrack = tracks?.find((track: any) => track.language === languageCode);
+
+    if (matchedTrack) {
+      playerRef.current.selectTextTrack(matchedTrack);
+      playerRef.current.setTextTrackVisibility(true);
+      setSubtitleLang(value);
+    } else {
+      console.warn(`🚨 해당 자막(${value})에 맞는 트랙을 찾지 못했습니다.`);
+    }
+  };
+  //#endregion
+
+  //#region 배속
+  const [isOpenPlaySpeedModal, setIsPlaySpeedModal] = useState(false);
+  const playSpeedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+  const playSpeedItems: SelectDrawerItem[] = playSpeedOptions.map(speed => ({
+    name: `x${speed}`,
+    onClick: () => {
+      handleSetPlaySpeed(speed);
+      setPlaySpeed(speed); // 현재 선택된 속도를 상태에 반영
+    },
+  }));
+
+  const handleSetPlaySpeed = (speedRate: number) => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speedRate;
+    }
+  };
+  //#endregion
+
   //#region 옵션
   const [isOptionModal, setIsOptionModal] = useState(false);
 
@@ -591,7 +660,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     {
       name: 'Subtitle',
       arrowName: ContentLanguageType[subTitleLang],
-      onClick: () => {},
+      onClick: () => {
+        setIsSubtitleModal(true);
+      },
     },
     {
       name: 'Dubbing',
@@ -603,7 +674,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     {
       name: 'Play Speed',
       arrowName: `x${playSpeed}`,
-      onClick: () => {},
+      onClick: () => {
+        setIsPlaySpeedModal(true);
+      },
     },
     {
       name: 'Report',
@@ -628,14 +701,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
   //#endregion
 
-  const handleSetPlaySpeed = (speedRate: number) => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = speedRate;
-    }
-  };
-
-  const handleSetSubtitle = (value: ContentLanguageType) => {};
-
   const renderSelectDrawer = () => {
     return (
       <>
@@ -652,6 +717,24 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           items={dubbingDrawerItem}
           onClose={() => {
             setIsDubbingModal(false);
+          }}
+          isCheck={false}
+          selectedIndex={1}
+        ></SelectDrawer>
+        <SelectDrawer
+          isOpen={isOpenSubtitleModal}
+          items={subtitleDrawerItems}
+          onClose={() => {
+            setIsSubtitleModal(false);
+          }}
+          isCheck={false}
+          selectedIndex={1}
+        ></SelectDrawer>
+        <SelectDrawer
+          isOpen={isOpenPlaySpeedModal}
+          items={playSpeedItems}
+          onClose={() => {
+            setIsPlaySpeedModal(false);
           }}
           isCheck={false}
           selectedIndex={1}

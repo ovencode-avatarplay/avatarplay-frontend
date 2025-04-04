@@ -359,22 +359,25 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     console.log('info:', info);
   }, [info]);
 
-  // useEffect(() => {
-  //   if (isProfile) {
-  //     document.body.style.overflowY = 'hidden'; // 스냅 비활성화
-  //     document.body.style.overflowX = 'hidden';
-  //   } else {
-  //     document.body.style.overflowY = 'scroll'; // 스냅 활성화
-  //     document.body.style.overflowX = 'hidden';
-  //   }
+  useEffect(() => {
+    console.log('isProfile', isProfile);
+    if (!reelsWrapperRef.current) return;
+    if (isProfile) {
+      reelsWrapperRef.current.style.overflowY = 'hidden'; // 스냅 비활성화
+      reelsWrapperRef.current.style.overflowX = 'hidden';
+    } else {
+      reelsWrapperRef.current.style.overflowY = 'scroll'; // 스냅 활성화
+      reelsWrapperRef.current.style.overflowX = 'hidden';
+    }
 
-  //   return () => {
-  //     // 💡 cleanup: 기본 상태로 복구
-  //     // document.body.style.overflowY = 'scroll';
-  //     // document.body.style.overflowX = 'hidden';
-  //     document.body.style.removeProperty('overflow');
-  //   };
-  // }, [isProfile]);
+    return () => {
+      if (!reelsWrapperRef.current) return;
+      // 💡 cleanup: 기본 상태로 복구s
+      reelsWrapperRef.current.style.overflowY = 'scroll';
+      reelsWrapperRef.current.style.overflowX = 'hidden';
+      reelsWrapperRef.current.style.removeProperty('overflow');
+    };
+  }, [isProfile]);
 
   useEffect(() => {
     if (!reelsWrapperRef.current) return;
@@ -399,7 +402,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     setAllFeeds(updatedAllFeeds);
   };
   const [isGrabbing, setIsGrabbing] = useState(false);
-  console.log('isGrabbing', isGrabbing);
   useEffect(() => {
     const wrapper = reelsWrapperRef.current;
     if (!wrapper) return;
