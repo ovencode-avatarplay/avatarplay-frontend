@@ -680,7 +680,22 @@ img.button{
   height: 100%;
 }
 
+.webtoonImageWrapper {
+  position: relative;
+  width: 100%;
+}
+
 .webtoonImage {
-  width: 100%; /* 부모 요소에 맞게 너비 조정 */
-  object-fit: cover; /* 이미지가 꽉 차도록 설정 */
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.webtoonSubtitleImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  object-fit: cover;
+  pointer-events: none; /* 사용자 클릭 막기 */
 }

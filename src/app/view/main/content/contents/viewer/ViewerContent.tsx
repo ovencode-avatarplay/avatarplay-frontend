@@ -601,6 +601,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   //#endregion
 
   //#region 자막
+  const [isOpenSubtitleModal, setIsSubtitleModal] = useState(false);
   const subtitleDrawerItems: SelectDrawerItem[] = [
     {
       name: 'Original', // 자막 없음
@@ -617,7 +618,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     })) || []),
   ];
 
-  const [isOpenSubtitleModal, setIsSubtitleModal] = useState(false);
   const handleSetSubtitle = (value: ContentLanguageType) => {
     const languageCode = ContentLanguageType[value].toLowerCase(); // ex) 'Korean' → 'korean' or 'ko'로 매핑 필요
 
@@ -687,6 +687,22 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     },
   ];
 
+  const selectWebtoonOptionItem: SelectDrawerArrowItem[] = [
+    {
+      name: 'Subtitle',
+      arrowName: ContentLanguageType[subTitleLang],
+      onClick: () => {
+        setIsWebtoonSubtitleModal(true);
+      },
+    },
+    {
+      name: 'Report',
+      arrowName: '',
+      onClick: () => {
+        handleReport();
+      },
+    },
+  ];
   const handleReport = async () => {
     try {
       if (!info) return;
@@ -701,44 +717,85 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
   //#endregion
 
+  //#region 웹툰 자막
+  const [isOpenWebtoonSubtitleModal, setIsWebtoonSubtitleModal] = useState(false);
+  const [webtoonSubtitleLang, setWebtoonSubtitleLang] = useState<ContentLanguageType>(
+    info && info.episodeWebtoonInfo ? info?.episodeWebtoonInfo?.webtoonSourceUrlList[1].webtoonLanguageType : 0,
+  );
+  const webtoonSubtitleItems: SelectDrawerItem[] = [
+    ...(info?.episodeWebtoonInfo?.webtoonSourceUrlList?.map((item, index) => ({
+      name: ContentLanguageType[item.webtoonLanguageType],
+      onClick: () => {
+        setWebtoonSubtitleLang(item.webtoonLanguageType);
+      },
+    })) || []),
+  ];
+  //#endregion
+
   const renderSelectDrawer = () => {
     return (
       <>
-        <SelectDrawerArrow
-          isOpen={isOptionModal}
-          items={selectOptionItem}
-          onClose={() => {
-            setIsOptionModal(false);
-          }}
-          selectedIndex={1}
-        ></SelectDrawerArrow>
-        <SelectDrawer
-          isOpen={isOpenDubbingModal}
-          items={dubbingDrawerItem}
-          onClose={() => {
-            setIsDubbingModal(false);
-          }}
-          isCheck={false}
-          selectedIndex={1}
-        ></SelectDrawer>
-        <SelectDrawer
-          isOpen={isOpenSubtitleModal}
-          items={subtitleDrawerItems}
-          onClose={() => {
-            setIsSubtitleModal(false);
-          }}
-          isCheck={false}
-          selectedIndex={1}
-        ></SelectDrawer>
-        <SelectDrawer
-          isOpen={isOpenPlaySpeedModal}
-          items={playSpeedItems}
-          onClose={() => {
-            setIsPlaySpeedModal(false);
-          }}
-          isCheck={false}
-          selectedIndex={1}
-        ></SelectDrawer>
+        {info?.categoryType == ContentCategoryType.Video ? (
+          <>
+            {' '}
+            <SelectDrawerArrow
+              isOpen={isOptionModal}
+              items={selectOptionItem}
+              onClose={() => {
+                setIsOptionModal(false);
+              }}
+              selectedIndex={1}
+            ></SelectDrawerArrow>
+            <SelectDrawer
+              isOpen={isOpenDubbingModal}
+              items={dubbingDrawerItem}
+              onClose={() => {
+                setIsDubbingModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+            <SelectDrawer
+              isOpen={isOpenSubtitleModal}
+              items={subtitleDrawerItems}
+              onClose={() => {
+                setIsSubtitleModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+            <SelectDrawer
+              isOpen={isOpenPlaySpeedModal}
+              items={playSpeedItems}
+              onClose={() => {
+                setIsPlaySpeedModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+          </>
+        ) : (
+          <>
+            {' '}
+            <SelectDrawerArrow
+              isOpen={isOptionModal}
+              items={selectWebtoonOptionItem}
+              onClose={() => {
+                setIsOptionModal(false);
+              }}
+              selectedIndex={1}
+            ></SelectDrawerArrow>
+            <SelectDrawer
+              isOpen={isOpenWebtoonSubtitleModal}
+              items={webtoonSubtitleItems}
+              onClose={() => {
+                setIsWebtoonSubtitleModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+          </>
+        )}
       </>
     );
   };
@@ -786,11 +843,33 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           </div>
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
-              {info && info?.categoryType === ContentCategoryType.Webtoon && (
+              {info?.categoryType === ContentCategoryType.Webtoon && (
                 <div className={styles.webtoonContainer}>
-                  {info?.episodeWebtoonInfo?.webtoonSourceUrlList?.[0]?.webtoonSourceUrls?.map((url, index) => (
-                    <img key={index} src={url} loading="lazy" className={styles.webtoonImage} />
-                  ))}
+                  {(() => {
+                    const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
+                      item => item.webtoonLanguageType === ContentLanguageType.Source,
+                    );
+
+                    const subtitleLayer =
+                      webtoonSubtitleLang !== ContentLanguageType.Default
+                        ? info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
+                            item => item.webtoonLanguageType === webtoonSubtitleLang,
+                          )
+                        : null;
+
+                    return sourceLayer?.webtoonSourceUrls?.map((url, index) => (
+                      <div key={index} className={styles.webtoonImageWrapper}>
+                        <img src={url} className={styles.webtoonImage} />
+                        {subtitleLayer?.webtoonSourceUrls?.[index] && (
+                          <img
+                            src={subtitleLayer.webtoonSourceUrls[index]}
+                            className={styles.webtoonSubtitleImage}
+                            alt="subtitle"
+                          />
+                        )}
+                      </div>
+                    ));
+                  })()}
                 </div>
               )}
 
