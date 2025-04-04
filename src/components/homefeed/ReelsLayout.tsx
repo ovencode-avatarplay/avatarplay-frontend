@@ -398,6 +398,29 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     setInfo(updatedInfo);
     setAllFeeds(updatedAllFeeds);
   };
+  const [isGrabbing, setIsGrabbing] = useState(false);
+  console.log('isGrabbing', isGrabbing);
+  useEffect(() => {
+    const wrapper = reelsWrapperRef.current;
+    if (!wrapper) return;
+
+    const handleTouchStart = () => {
+      setIsGrabbing(true);
+    };
+    const handleTouchEnd = () => {
+      setIsGrabbing(false);
+    };
+
+    wrapper.addEventListener('touchstart', handleTouchStart);
+    wrapper.addEventListener('touchend', handleTouchEnd);
+    wrapper.addEventListener('touchcancel', handleTouchEnd);
+
+    return () => {
+      wrapper.removeEventListener('touchstart', handleTouchStart);
+      wrapper.removeEventListener('touchend', handleTouchEnd);
+      wrapper.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, []);
 
   return (
     <div ref={containerRef} className={styles.reelsContainer}>
@@ -449,6 +472,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
                 recommendState={selectedTab}
                 setSyncFollow={handleFollow}
                 isFollow={item.isFollowing}
+                isGrabbing={isGrabbing}
               />
             </div>
           );

@@ -56,6 +56,7 @@ interface ReelsContentProps {
   isShowProfile: boolean;
   setSyncFollow: (id: number, value: boolean) => void;
   isFollow: boolean;
+  isGrabbing: boolean;
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({
@@ -68,6 +69,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   recommendState,
   setSyncFollow,
   isFollow,
+  isGrabbing,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -407,7 +409,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
           {/* Progress Bar */}
 
-          <div className={styles.progressBar}>
+          <div className={`${styles.progressBar}  ${isGrabbing ? styles.grabbingDimmed100 : ''}`}>
             <div
               ref={progressBarRef}
               className={styles.progressFill}
@@ -418,7 +420,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             ></div>
           </div>
 
-          <div className={styles.profileBox}>
+          <div className={`${styles.profileBox} ${isGrabbing ? styles.grabbingDimmed40 : ''}`}>
             <div className={styles.dim}></div>
             {/* User Info */}
             <div className={styles.userInfo}>
@@ -497,7 +499,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </div>
 
           {/* CTA Buttons */}
-          <div className={styles.ctaButtons}>
+          <div className={`${styles.ctaButtons} ${isGrabbing ? styles.grabbingDimmed40 : ''}`}>
             {item.isMyFeed == false && (
               <div
                 className={styles.textButtons}
