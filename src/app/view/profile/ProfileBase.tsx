@@ -312,6 +312,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const refDescription = useRef<HTMLDivElement | null>(null);
   const refHeader = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
+    pathname: '',
     urlLinkKey: urlLinkKey,
     profileId: 0,
     indexTab: eTabPDType.Feed,
