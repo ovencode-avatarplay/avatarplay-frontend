@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './CustomButton.module.css';
 
-type Size = 'Large' | 'Medium' | 'Small';
+type Size = 'Large' | 'Medium' | 'Small' | 'XSmall';
 type State = 'Normal' | 'IconLeft' | 'IconRight' | 'Icon';
-type Type = 'ColorPrimary' | 'Primary' | 'Secondary' | 'Tertiary';
+type Type = 'ColorPrimary' | 'ColorSecondary' | 'Primary' | 'Secondary' | 'Tertiary';
 
 interface CustomButtonProps {
   size: Size;
