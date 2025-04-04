@@ -30,6 +30,7 @@ import SharePopup from '@/components/layout/shared/SharePopup';
 
 import {
   ContentCategoryType,
+  ContentLanguageType,
   ContentPlayInfo,
   ContentType,
   GetSeasonEpisodesPopupReq,
@@ -60,6 +61,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import shaka from 'shaka-player/dist/shaka-player.compiled';
+import SelectDrawerArrow, {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 
 interface Props {
   open: boolean;
@@ -121,7 +123,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
   }, [info]);
 
+  const hasRun = useRef(false);
+
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     if (onEpisodeListDrawer) {
       handlePlayNew();
       console.log('playnew');
@@ -134,7 +141,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       handlePlayNew();
       console.log('playnew');
     }
-  }, [contentId, curEpisodeId]);
+  }, []);
 
   const [isVisible, setIsVisible] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -184,43 +191,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
 
-  const [isReportModal, setIsRefortModal] = useState(false);
-  const selectReportItem: SelectDrawerItem[] = [
-    {
-      name: 'Report',
-      onClick: () => {
-        handleReport();
-      },
-    },
-    {
-      name: 'Track0',
-      onClick: () => {
-        const track = playerRef.current?.getVariantTracks()[0];
-        console.log(track);
-        if (track) playerRef.current?.selectVariantTrack(track, true);
-      },
-    },
-    {
-      name: 'Track1',
-      onClick: () => {
-        const track = playerRef.current?.getVariantTracks()[1];
-        console.log(track);
-        if (track) playerRef.current?.selectVariantTrack(track, true);
-      },
-    },
-  ];
-  const handleReport = async () => {
-    try {
-      if (!info) return;
-      const response = await sendReport({
-        interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
-        typeValueId: info?.contentId, // 신고 대상 ID
-        isReport: true, // true = 신고, false = 취소
-      });
-    } catch (error) {
-      console.error('🚨 신고 API 호출 오류:', error);
-    }
-  };
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
@@ -591,6 +561,104 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     );
   }, []);
   const isMobile = checkMobileOrTablet();
+  const [subTitleLang, setSubtitleLang] = useState<ContentLanguageType>(ContentLanguageType.Korean);
+  const [playSpeed, setPlaySpeed] = useState<number>(1);
+
+  //#region 더빙
+  const dubbingDrawerItem: SelectDrawerItem[] =
+    info?.episodeVideoInfo?.dubbingFileInfos?.map((fileInfo, index) => ({
+      name: ContentLanguageType[fileInfo.videoLanguageType],
+      onClick: () => {
+        handleSetDubbing(index + 1); // 여기서 index 사용 가능
+        setDubbingLang(fileInfo.videoLanguageType);
+      },
+    })) || [];
+
+  const [isOpenDubbingModal, setIsDubbingModal] = useState(false);
+
+  const [dubbingLang, setDubbingLang] = useState<ContentLanguageType>(ContentLanguageType.Korean);
+  const handleSetDubbing = (value: number) => {
+    info?.episodeVideoInfo?.dubbingFileInfos;
+    const track = playerRef.current?.getVariantTracks()[value];
+    console.log(track);
+    if (track) playerRef.current?.selectVariantTrack(track, true);
+  };
+  //#endregion
+  //#region 옵션
+  const [isOptionModal, setIsOptionModal] = useState(false);
+
+  const selectOptionItem: SelectDrawerArrowItem[] = [
+    {
+      name: 'Subtitle',
+      arrowName: ContentLanguageType[subTitleLang],
+      onClick: () => {},
+    },
+    {
+      name: 'Dubbing',
+      arrowName: ContentLanguageType[dubbingLang],
+      onClick: () => {
+        setIsDubbingModal(true);
+      },
+    },
+    {
+      name: 'Play Speed',
+      arrowName: `x${playSpeed}`,
+      onClick: () => {},
+    },
+    {
+      name: 'Report',
+      arrowName: '',
+      onClick: () => {
+        handleReport();
+      },
+    },
+  ];
+
+  const handleReport = async () => {
+    try {
+      if (!info) return;
+      const response = await sendReport({
+        interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
+        typeValueId: info?.contentId, // 신고 대상 ID
+        isReport: true, // true = 신고, false = 취소
+      });
+    } catch (error) {
+      console.error('🚨 신고 API 호출 오류:', error);
+    }
+  };
+  //#endregion
+
+  const handleSetPlaySpeed = (speedRate: number) => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speedRate;
+    }
+  };
+
+  const handleSetSubtitle = (value: ContentLanguageType) => {};
+
+  const renderSelectDrawer = () => {
+    return (
+      <>
+        <SelectDrawerArrow
+          isOpen={isOptionModal}
+          items={selectOptionItem}
+          onClose={() => {
+            setIsOptionModal(false);
+          }}
+          selectedIndex={1}
+        ></SelectDrawerArrow>
+        <SelectDrawer
+          isOpen={isOpenDubbingModal}
+          items={dubbingDrawerItem}
+          onClose={() => {
+            setIsDubbingModal(false);
+          }}
+          isCheck={false}
+          selectedIndex={1}
+        ></SelectDrawer>
+      </>
+    );
+  };
   return (
     <Modal
       open={open}
@@ -881,7 +949,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 className={styles.noneTextButton}
                 onClick={event => {
                   event.stopPropagation();
-                  setIsRefortModal(true);
+                  setIsOptionModal(true);
                 }}
               >
                 <img src={BoldMore.src} className={styles.button}></img>
@@ -924,7 +992,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               commentType={episodeId ? CommentContentType.Episode : CommentContentType.Content}
             />
           )}
-
           <SharePopup
             open={isShare}
             title={''}
@@ -1008,7 +1075,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
             </CustomDrawer>
           )}
-
           {isDonation && (
             <DrawerDonation
               isOpen={isDonation}
@@ -1032,15 +1098,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               }}
             ></PopupPurchase>
           )}
-          <SelectDrawer
-            isOpen={isReportModal}
-            items={selectReportItem}
-            onClose={() => {
-              setIsRefortModal(false);
-            }}
-            isCheck={false}
-            selectedIndex={1}
-          ></SelectDrawer>
+          {renderSelectDrawer()}
         </div>
       </Box>
     </Modal>

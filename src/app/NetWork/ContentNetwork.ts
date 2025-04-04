@@ -84,6 +84,7 @@ export interface GetContentRes {
 }
 
 export const sendGetContent = async (payload: GetContentReq): Promise<ResponseAPI<GetContentRes>> => {
+  console.trace();
   try {
     const response = await api.post<ResponseAPI<GetContentRes>>('/Content/get', payload);
     if (response.data.resultCode === 0) return response.data;
