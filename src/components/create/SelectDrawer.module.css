@@ -82,11 +82,6 @@
     background-color: #f8f8f8;
   }
 
-.drawerTextArea
-{
-
-}
-
 .drawerText{
     color: var(--Black, #000);
     font-family: Lato;
