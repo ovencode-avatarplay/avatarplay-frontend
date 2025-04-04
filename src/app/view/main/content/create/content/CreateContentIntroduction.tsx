@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './CreateContentIntroduction.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -88,11 +88,14 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
     if (type == ContentType.Series) pushLocalizedRoute(`/update/content/series/${id}`, router);
     else if (type == ContentType.Single) pushLocalizedRoute(`/update/content/single/${id}`, router);
   };
+  const hasFetched = useRef(false);
+
   useEffect(() => {
-    if (dataProfile?.currentProfile) {
-      fetchContentList();
-    }
-  }, [dataProfile?.currentProfile]);
+    if (!dataProfile?.currentProfile || hasFetched.current) return;
+
+    hasFetched.current = true;
+    fetchContentList();
+  }, [activeTab, dataProfile?.currentProfile]);
 
   const fetchContentList = async () => {
     try {
@@ -117,9 +120,6 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetchContentList();
-  }, [activeTab]);
 
   const publishItems: SelectDrawerItem[] = [
     {name: 'All', onClick: () => setSelectedFilter(FilterTypes.All)},
@@ -151,6 +151,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
             <button
               className={`${styles.tab} ${activeTab === ContentType.Series ? styles.active : ''}`}
               onClick={() => {
+                hasFetched.current = false;
                 setActiveTab(ContentType.Series);
               }}
             >
@@ -159,6 +160,7 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
             <button
               className={`${styles.tab} ${activeTab === ContentType.Single ? styles.active : ''}`}
               onClick={() => {
+                hasFetched.current = false;
                 setActiveTab(ContentType.Single);
               }}
             >

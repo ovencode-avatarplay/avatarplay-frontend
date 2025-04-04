@@ -30,6 +30,7 @@ import SharePopup from '@/components/layout/shared/SharePopup';
 
 import {
   ContentCategoryType,
+  ContentLanguageType,
   ContentPlayInfo,
   ContentType,
   GetSeasonEpisodesPopupReq,
@@ -60,6 +61,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import shaka from 'shaka-player/dist/shaka-player.compiled';
+import SelectDrawerArrow, {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 
 interface Props {
   open: boolean;
@@ -121,7 +123,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
   }, [info]);
 
+  const hasRun = useRef(false);
+
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     if (onEpisodeListDrawer) {
       handlePlayNew();
       console.log('playnew');
@@ -134,7 +141,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       handlePlayNew();
       console.log('playnew');
     }
-  }, [contentId, curEpisodeId]);
+  }, []);
 
   const [isVisible, setIsVisible] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -184,43 +191,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
 
-  const [isReportModal, setIsRefortModal] = useState(false);
-  const selectReportItem: SelectDrawerItem[] = [
-    {
-      name: 'Report',
-      onClick: () => {
-        handleReport();
-      },
-    },
-    {
-      name: 'Track0',
-      onClick: () => {
-        const track = playerRef.current?.getVariantTracks()[0];
-        console.log(track);
-        if (track) playerRef.current?.selectVariantTrack(track, true);
-      },
-    },
-    {
-      name: 'Track1',
-      onClick: () => {
-        const track = playerRef.current?.getVariantTracks()[1];
-        console.log(track);
-        if (track) playerRef.current?.selectVariantTrack(track, true);
-      },
-    },
-  ];
-  const handleReport = async () => {
-    try {
-      if (!info) return;
-      const response = await sendReport({
-        interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
-        typeValueId: info?.contentId, // 신고 대상 ID
-        isReport: true, // true = 신고, false = 취소
-      });
-    } catch (error) {
-      console.error('🚨 신고 API 호출 오류:', error);
-    }
-  };
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
@@ -321,10 +291,16 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
       if (info?.episodeVideoInfo?.subTitleFileInfos) {
         console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
-        const subtitleUrl = info.episodeVideoInfo.subTitleFileInfos[0].videoSourceUrl;
-        await player.addTextTrackAsync(subtitleUrl, 'kor', 'subtitles', 'text/vtt');
+        await Promise.all(
+          info?.episodeVideoInfo?.subTitleFileInfos.map(async fileInfo => {
+            const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase(); // ex) 'kor' -> 'kor'
+            const url = fileInfo.videoSourceUrl;
+            await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
+          }) || [],
+        );
 
         player.setTextTrackVisibility(true);
+
         console.log('✅ 자막 추가 완료!');
       } else {
         console.warn('🚨 자막 URL이 없습니다.');
@@ -591,6 +567,238 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     );
   }, []);
   const isMobile = checkMobileOrTablet();
+  const [subTitleLang, setSubtitleLang] = useState<ContentLanguageType>(ContentLanguageType.Korean);
+  const [playSpeed, setPlaySpeed] = useState<number>(1);
+
+  //#region 더빙
+  const dubbingDrawerItem: SelectDrawerItem[] = [
+    {
+      name: 'Original',
+      onClick: () => {
+        handleSetDubbing(0); // 오리지널은 0번
+        setDubbingLang(ContentLanguageType.Default); // 필요시 타입에 맞게 수정
+      },
+    },
+    ...(info?.episodeVideoInfo?.dubbingFileInfos?.map((fileInfo, index) => ({
+      name: ContentLanguageType[fileInfo.videoLanguageType],
+      onClick: () => {
+        handleSetDubbing(index + 1); // +1 해서 오리지널 제외
+        setDubbingLang(fileInfo.videoLanguageType);
+      },
+    })) || []),
+  ];
+
+  const [isOpenDubbingModal, setIsDubbingModal] = useState(false);
+
+  const [dubbingLang, setDubbingLang] = useState<ContentLanguageType>(ContentLanguageType.Korean);
+  const handleSetDubbing = (value: number) => {
+    info?.episodeVideoInfo?.dubbingFileInfos;
+    console.log(value);
+    const track = playerRef.current?.getVariantTracks()[value];
+    console.log(track);
+    if (track) playerRef.current?.selectVariantTrack(track, true);
+  };
+  //#endregion
+
+  //#region 자막
+  const [isOpenSubtitleModal, setIsSubtitleModal] = useState(false);
+  const subtitleDrawerItems: SelectDrawerItem[] = [
+    {
+      name: 'Original', // 자막 없음
+      onClick: () => {
+        playerRef.current?.setTextTrackVisibility(false); // 자막 끔
+        setSubtitleLang(ContentLanguageType.Default); // 상태에도 반영
+      },
+    },
+    ...(info?.episodeVideoInfo?.subTitleFileInfos?.map(fileInfo => ({
+      name: ContentLanguageType[fileInfo.videoLanguageType],
+      onClick: () => {
+        handleSetSubtitle(fileInfo.videoLanguageType); // 선택한 자막 설정
+      },
+    })) || []),
+  ];
+
+  const handleSetSubtitle = (value: ContentLanguageType) => {
+    const languageCode = ContentLanguageType[value].toLowerCase(); // ex) 'Korean' → 'korean' or 'ko'로 매핑 필요
+
+    const tracks = playerRef.current?.getTextTracks();
+    const matchedTrack = tracks?.find((track: any) => track.language === languageCode);
+
+    if (matchedTrack) {
+      playerRef.current.selectTextTrack(matchedTrack);
+      playerRef.current.setTextTrackVisibility(true);
+      setSubtitleLang(value);
+    } else {
+      console.warn(`🚨 해당 자막(${value})에 맞는 트랙을 찾지 못했습니다.`);
+    }
+  };
+  //#endregion
+
+  //#region 배속
+  const [isOpenPlaySpeedModal, setIsPlaySpeedModal] = useState(false);
+  const playSpeedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+  const playSpeedItems: SelectDrawerItem[] = playSpeedOptions.map(speed => ({
+    name: `x${speed}`,
+    onClick: () => {
+      handleSetPlaySpeed(speed);
+      setPlaySpeed(speed); // 현재 선택된 속도를 상태에 반영
+    },
+  }));
+
+  const handleSetPlaySpeed = (speedRate: number) => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speedRate;
+    }
+  };
+  //#endregion
+
+  //#region 옵션
+  const [isOptionModal, setIsOptionModal] = useState(false);
+
+  const selectOptionItem: SelectDrawerArrowItem[] = [
+    {
+      name: 'Subtitle',
+      arrowName: ContentLanguageType[subTitleLang],
+      onClick: () => {
+        setIsSubtitleModal(true);
+      },
+    },
+    {
+      name: 'Dubbing',
+      arrowName: ContentLanguageType[dubbingLang],
+      onClick: () => {
+        setIsDubbingModal(true);
+      },
+    },
+    {
+      name: 'Play Speed',
+      arrowName: `x${playSpeed}`,
+      onClick: () => {
+        setIsPlaySpeedModal(true);
+      },
+    },
+    {
+      name: 'Report',
+      arrowName: '',
+      onClick: () => {
+        handleReport();
+      },
+    },
+  ];
+
+  const selectWebtoonOptionItem: SelectDrawerArrowItem[] = [
+    {
+      name: 'Subtitle',
+      arrowName: ContentLanguageType[subTitleLang],
+      onClick: () => {
+        setIsWebtoonSubtitleModal(true);
+      },
+    },
+    {
+      name: 'Report',
+      arrowName: '',
+      onClick: () => {
+        handleReport();
+      },
+    },
+  ];
+  const handleReport = async () => {
+    try {
+      if (!info) return;
+      const response = await sendReport({
+        interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
+        typeValueId: info?.contentId, // 신고 대상 ID
+        isReport: true, // true = 신고, false = 취소
+      });
+    } catch (error) {
+      console.error('🚨 신고 API 호출 오류:', error);
+    }
+  };
+  //#endregion
+
+  //#region 웹툰 자막
+  const [isOpenWebtoonSubtitleModal, setIsWebtoonSubtitleModal] = useState(false);
+  const [webtoonSubtitleLang, setWebtoonSubtitleLang] = useState<ContentLanguageType>(
+    info && info.episodeWebtoonInfo ? info?.episodeWebtoonInfo?.webtoonSourceUrlList[1].webtoonLanguageType : 0,
+  );
+  const webtoonSubtitleItems: SelectDrawerItem[] = [
+    ...(info?.episodeWebtoonInfo?.webtoonSourceUrlList?.map((item, index) => ({
+      name: ContentLanguageType[item.webtoonLanguageType],
+      onClick: () => {
+        setWebtoonSubtitleLang(item.webtoonLanguageType);
+      },
+    })) || []),
+  ];
+  //#endregion
+
+  const renderSelectDrawer = () => {
+    return (
+      <>
+        {info?.categoryType == ContentCategoryType.Video ? (
+          <>
+            {' '}
+            <SelectDrawerArrow
+              isOpen={isOptionModal}
+              items={selectOptionItem}
+              onClose={() => {
+                setIsOptionModal(false);
+              }}
+              selectedIndex={1}
+            ></SelectDrawerArrow>
+            <SelectDrawer
+              isOpen={isOpenDubbingModal}
+              items={dubbingDrawerItem}
+              onClose={() => {
+                setIsDubbingModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+            <SelectDrawer
+              isOpen={isOpenSubtitleModal}
+              items={subtitleDrawerItems}
+              onClose={() => {
+                setIsSubtitleModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+            <SelectDrawer
+              isOpen={isOpenPlaySpeedModal}
+              items={playSpeedItems}
+              onClose={() => {
+                setIsPlaySpeedModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+          </>
+        ) : (
+          <>
+            {' '}
+            <SelectDrawerArrow
+              isOpen={isOptionModal}
+              items={selectWebtoonOptionItem}
+              onClose={() => {
+                setIsOptionModal(false);
+              }}
+              selectedIndex={1}
+            ></SelectDrawerArrow>
+            <SelectDrawer
+              isOpen={isOpenWebtoonSubtitleModal}
+              items={webtoonSubtitleItems}
+              onClose={() => {
+                setIsWebtoonSubtitleModal(false);
+              }}
+              isCheck={false}
+              selectedIndex={1}
+            ></SelectDrawer>
+          </>
+        )}
+      </>
+    );
+  };
   return (
     <Modal
       open={open}
@@ -635,11 +843,33 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           </div>
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
-              {info && info?.categoryType === ContentCategoryType.Webtoon && (
+              {info?.categoryType === ContentCategoryType.Webtoon && (
                 <div className={styles.webtoonContainer}>
-                  {info?.episodeWebtoonInfo?.webtoonSourceUrlList?.[0]?.webtoonSourceUrls?.map((url, index) => (
-                    <img key={index} src={url} loading="lazy" className={styles.webtoonImage} />
-                  ))}
+                  {(() => {
+                    const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
+                      item => item.webtoonLanguageType === ContentLanguageType.Source,
+                    );
+
+                    const subtitleLayer =
+                      webtoonSubtitleLang !== ContentLanguageType.Default
+                        ? info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
+                            item => item.webtoonLanguageType === webtoonSubtitleLang,
+                          )
+                        : null;
+
+                    return sourceLayer?.webtoonSourceUrls?.map((url, index) => (
+                      <div key={index} className={styles.webtoonImageWrapper}>
+                        <img src={url} className={styles.webtoonImage} />
+                        {subtitleLayer?.webtoonSourceUrls?.[index] && (
+                          <img
+                            src={subtitleLayer.webtoonSourceUrls[index]}
+                            className={styles.webtoonSubtitleImage}
+                            alt="subtitle"
+                          />
+                        )}
+                      </div>
+                    ));
+                  })()}
                 </div>
               )}
 
@@ -881,7 +1111,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 className={styles.noneTextButton}
                 onClick={event => {
                   event.stopPropagation();
-                  setIsRefortModal(true);
+                  setIsOptionModal(true);
                 }}
               >
                 <img src={BoldMore.src} className={styles.button}></img>
@@ -924,7 +1154,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               commentType={episodeId ? CommentContentType.Episode : CommentContentType.Content}
             />
           )}
-
           <SharePopup
             open={isShare}
             title={''}
@@ -1008,7 +1237,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
             </CustomDrawer>
           )}
-
           {isDonation && (
             <DrawerDonation
               isOpen={isDonation}
@@ -1032,15 +1260,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               }}
             ></PopupPurchase>
           )}
-          <SelectDrawer
-            isOpen={isReportModal}
-            items={selectReportItem}
-            onClose={() => {
-              setIsRefortModal(false);
-            }}
-            isCheck={false}
-            selectedIndex={1}
-          ></SelectDrawer>
+          {renderSelectDrawer()}
         </div>
       </Box>
     </Modal>

@@ -33,6 +33,7 @@ import {
   LinePlus,
   LineShare,
   BoldVerifiedLabel,
+  LineReward,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
@@ -212,6 +213,7 @@ export type TabContentMenuType = {
 };
 
 type DataProfileType = {
+  pathname: string;
   urlLinkKey: string;
   profileId: number;
   indexTab:
@@ -310,6 +312,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const refDescription = useRef<HTMLDivElement | null>(null);
   const refHeader = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<DataProfileType>({
+    pathname: '',
     urlLinkKey: urlLinkKey,
     profileId: 0,
     indexTab: eTabPDType.Feed,
@@ -385,10 +388,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       refreshProfileInfo(data.urlLinkKey);
       return;
     } else {
+      if (pathname == data?.pathname) return;
+      console.log('pathName : ', pathname);
       //컴포넌트로 가져다 쓰는 경우 isPath=fase
       const id = pathname?.split('/').filter(Boolean).pop();
       if (id == undefined) return;
       data.urlLinkKey = id;
+      data.pathname = pathname;
       refreshProfileInfo(data.urlLinkKey);
       setData({...data});
       return;
@@ -1051,7 +1057,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   setData({...data});
                 }}
               >
-                <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
+                <img className={styles.icon} src={LineReward.src} alt="" />
               </button>
             </div>
           )}
@@ -1081,7 +1087,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   setData({...data});
                 }}
               >
-                <img className={styles.icon} src="/ui/profile/icon_gift.svg" alt="" />
+                <img className={styles.icon} src={LineReward.src} alt="" />
               </button>
               {isOtherCharacter && (
                 <button className={styles.chat}>

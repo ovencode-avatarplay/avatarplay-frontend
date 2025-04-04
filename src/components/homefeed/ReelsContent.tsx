@@ -45,6 +45,7 @@ import {
 import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
 import SelectDrawer, {SelectDrawerItem} from '../create/SelectDrawer';
+import {ConstructionOutlined} from '@mui/icons-material';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -56,6 +57,7 @@ interface ReelsContentProps {
   isShowProfile: boolean;
   setSyncFollow: (id: number, value: boolean) => void;
   isFollow: boolean;
+  isGrabbing: boolean;
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({
@@ -68,6 +70,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   recommendState,
   setSyncFollow,
   isFollow,
+  isGrabbing,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -95,6 +98,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       setIsPlaying(false); // 비활성화된 경우 재생 중지
     }
     playerRef.current?.seekTo(0); // 재생 위치를 0으로 설정
+    console.log(item);
   }, [isActive]);
 
   const formatDuration = (seconds: number): string => {
@@ -107,7 +111,9 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
 
   const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
-  const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
+  const videoProgressRef = useRef(0);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
   const [currentProgress, setCurrentProgress] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
   const [commentCount, setCommentCount] = useState(item.commentCount); // 비디오 총 길이
@@ -126,10 +132,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   };
   const handleSlideChange = (swiper: SwiperClass) => {
     setActiveIndex(swiper.activeIndex); // Swiper의 activeIndex로 상태 업데이트
-  };
-
-  const handleVideoProgress = (playedSeconds: number) => {
-    setVideoProgress(playedSeconds);
   };
 
   const handleDonation = () => {
@@ -371,10 +373,17 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   }}
                   progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
                   onProgress={({playedSeconds}) => {
-                    handleVideoProgress(playedSeconds);
+                    videoProgressRef.current = playedSeconds;
 
+                    const progressRatio = videoDuration > 0 ? (playedSeconds / videoDuration) * 100 : 0;
+
+                    if (progressBarRef.current) {
+                      progressBarRef.current.style.width = `${progressRatio}%`;
+                    }
+
+                    // 기존 setCurrentProgress 등은 유지 (필요 시만)
                     setCurrentProgress(formatDuration(playedSeconds));
-                  }} // 비디오 진행도 업데이트
+                  }}
                   onDuration={(duration: number) => {
                     setVideoDuration(duration);
                   }} // 영상 길이 설정
@@ -402,17 +411,18 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
           {/* Progress Bar */}
 
-          <div className={styles.progressBar}>
+          <div className={`${styles.progressBar}  ${isGrabbing ? styles.grabbingDimmed100 : ''}`}>
             <div
+              ref={progressBarRef}
               className={styles.progressFill}
               style={{
-                width: `${(videoProgress / videoDuration) * 100}%`, // 비디오 진행도
-                transition: 'width 0.1s linear', // 부드러운 진행도 애니메이션
+                width: '0%',
+                transition: 'width 0.1s linear',
               }}
             ></div>
           </div>
 
-          <div className={styles.profileBox}>
+          <div className={`${styles.profileBox} ${isGrabbing ? styles.grabbingDimmed40 : ''}`}>
             <div className={styles.dim}></div>
             {/* User Info */}
             <div className={styles.userInfo}>
@@ -491,7 +501,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           </div>
 
           {/* CTA Buttons */}
-          <div className={styles.ctaButtons}>
+          <div className={`${styles.ctaButtons} ${isGrabbing ? styles.grabbingDimmed40 : ''}`}>
             {item.isMyFeed == false && (
               <div
                 className={styles.textButtons}

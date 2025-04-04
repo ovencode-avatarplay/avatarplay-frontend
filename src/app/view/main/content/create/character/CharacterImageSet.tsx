@@ -447,7 +447,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
             {generatedImages.map((image, index) => (
               <CharacterCreateImageButton
                 key={index}
-                sizeType="large"
+                sizeType="portrait"
                 selectType="one"
                 selectButtonType="button"
                 image={image}

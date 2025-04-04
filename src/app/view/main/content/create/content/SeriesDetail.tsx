@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './SeriesDetail.module.css';
 import {
   LineArrowLeft,
@@ -182,7 +182,12 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
     }
   }, [contentInfo?.maxSeasonNo]);
 
+  const prevSeasonRef = useRef<number | null>(null);
+
   useEffect(() => {
+    if (prevSeasonRef.current === selectedSeason) return;
+
+    prevSeasonRef.current = selectedSeason;
     fetchSeasonEpisodes(selectedSeason);
   }, [selectedSeason]);
 
@@ -225,10 +230,6 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
       console.error('에피소드 목록 조회 실패:', error);
     }
   };
-
-  useEffect(() => {
-    fetchSeasonEpisodes(1);
-  }, []);
   const videoExtensions = ['mp4', 'webm', 'ogg']; // 비디오 확장자 목록
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // 이미지 확장자 목록
 

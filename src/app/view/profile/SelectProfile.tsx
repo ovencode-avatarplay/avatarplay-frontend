@@ -7,7 +7,7 @@ import {
 } from '@/app/NetWork/ProfileNetwork';
 import {RootState} from '@/redux-store/ReduxStore';
 import {Drawer} from '@mui/material';
-import {useRouter} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from './SelectProfile.module.scss';
@@ -25,6 +25,7 @@ type SelectProfileType = {
 };
 
 export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
+  const pathname = usePathname();
   const dataProfile = useSelector((state: RootState) => state.profile);
   const dispatch = useDispatch();
   const [data, setData] = useState<{
@@ -115,7 +116,11 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
-                  pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.urlLinkKey, router, false);
+
+                  console.log('pathname : ', pathname);
+                  if (pathname.includes('/profile/')) {
+                    pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.urlLinkKey, router, false);
+                  }
                 }}
               >
                 <div className={styles.left}>

@@ -82,11 +82,6 @@
     background-color: #f8f8f8;
   }
 
-.drawerTextArea
-{
-
-}
-
 .drawerText{
     color: var(--Black, #000);
     font-family: Lato;
@@ -111,4 +106,26 @@
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
+}
+
+.arrowArea
+{display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.arrowName
+{
+    color: var(--Neutral-600, #80868B);
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 10px; /* 66.667% */
+    letter-spacing: -0.3px;
+}
+.arrowIcon
+{filter: brightness(0) saturate(100%) invert(56%) sepia(9%) saturate(250%) hue-rotate(165deg) brightness(92%) contrast(87%);
+    width: 12px;
+    height: 12px;
+    aspect-ratio: 1/1;
 }

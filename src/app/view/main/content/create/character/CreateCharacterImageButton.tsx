@@ -5,7 +5,7 @@ import {NextEpisodeWait} from '@ui/chatting';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 interface ImageButtonProps {
-  sizeType: 'small' | 'middle' | 'large' | 'summary' | 'result';
+  sizeType: 'small' | 'middle' | 'large' | 'summary' | 'result' | 'portrait';
   selectType?: 'one' | 'multiple';
   selectButtonType?: 'image' | 'button';
   label: string | null;

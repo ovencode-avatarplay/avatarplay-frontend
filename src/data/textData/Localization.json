@@ -5314,7 +5314,7 @@
   },
   "common_filterskill_persona": {
     "en-US": "Persona",
-    "ko": "  ",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6623,7 +6623,7 @@
   },
   "common_label_media": {
     "en-US": "Media",
-    "ko": "     ",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6755,7 +6755,7 @@
   },
   "common_sort_mostpopular": {
     "en-US": "Most Popular",
-    "ko": "  ",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6964,7 +6964,7 @@
   },
   "common_genre_sliceoflife": {
     "en-US": "Slice of Life",
-    "ko": "일상",
+    "ko": "스릴러",
     "ja": "",
     "fr": "",
     "es": "",
@@ -6975,7 +6975,7 @@
   },
   "common_genre_thriller": {
     "en-US": "Thriller",
-    "ko": "스릴러",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",
@@ -10385,7 +10385,7 @@
   },
   "createcontent001_button_006": {
     "en-US": "Detail",
-    "ko": " ",
+    "ko": "",
     "ja": "",
     "fr": "",
     "es": "",

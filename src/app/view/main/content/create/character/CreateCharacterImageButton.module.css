@@ -42,6 +42,13 @@
   aspect-ratio: 13 / 19;
 }
 
+.imageButton.portrait
+{
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 13 / 19;
+}
+
 @media screen and (max-width: 431px) {
   .imageButton.result {
     width: calc(100% / 2 - 6px); 

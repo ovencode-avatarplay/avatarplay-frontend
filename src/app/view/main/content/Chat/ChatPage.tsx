@@ -399,7 +399,7 @@ const ChatPage: React.FC = () => {
         // 1. current sender를 가져온다
         let currentSender: SenderType = allMessages[allMessages.length - 1].sender;
         // 같은타입의 말풍선이 새로 만들어져야 하는 경우가 있어서 아래 조건 추가함.
-        if (isNarrationActive.active === true) currentSender = SenderType.PartnerNarration;
+        //if (isNarrationActive.active === true) currentSender = SenderType.PartnerNarration;
         const tempChatId: number = chatId;
         console.log('newMessage.text :==' + newMessage.text + '==');
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
