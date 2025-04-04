@@ -719,11 +719,19 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   //#region 웹툰 자막
   const [isOpenWebtoonSubtitleModal, setIsWebtoonSubtitleModal] = useState(false);
-  const [webtoonSubtitleLang, setWebtoonSubtitleLang] = useState<ContentLanguageType>(
-    info && info.episodeWebtoonInfo && info?.episodeWebtoonInfo?.webtoonSourceUrlList.length >= 1
-      ? info?.episodeWebtoonInfo?.webtoonSourceUrlList[1].webtoonLanguageType
-      : 0,
-  );
+  const [webtoonSubtitleLang, setWebtoonSubtitleLang] = useState<ContentLanguageType>(ContentLanguageType.Default);
+
+  useEffect(() => {
+    if (info?.episodeWebtoonInfo?.webtoonSourceUrlList) {
+      const subtitle = info.episodeWebtoonInfo.webtoonSourceUrlList.find(
+        item => item.webtoonLanguageType !== ContentLanguageType.Source,
+      );
+      if (subtitle) {
+        setWebtoonSubtitleLang(subtitle.webtoonLanguageType);
+      }
+    }
+  }, [info?.episodeWebtoonInfo?.webtoonSourceUrlList]);
+
   const webtoonSubtitleItems: SelectDrawerItem[] = [
     ...(info?.episodeWebtoonInfo?.webtoonSourceUrlList?.map((item, index) => ({
       name: ContentLanguageType[item.webtoonLanguageType],
@@ -1119,32 +1127,29 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 <img src={BoldMore.src} className={styles.button}></img>
               </div>
             </div>
-            <div
-              className={`${styles.volumeButton} ${!isVisible ? styles.fadeOutR : ''}`}
-              onClick={event => {
-                event.stopPropagation();
-                if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
-                else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);
-              }}
-            >
-              {/* 검은색 반투명 배경 */}
-              {isMute && <div className={styles.volumeCircleIcon}></div>}
+            {info?.categoryType == ContentCategoryType.Video && (
+              <div
+                className={`${styles.volumeButton} ${!isVisible ? styles.fadeOutR : ''}`}
+                onClick={event => {
+                  event.stopPropagation();
+                  if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
+                  else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);
+                }}
+              >
+                {/* 검은색 반투명 배경 */}
+                {isMute && <div className={styles.volumeCircleIcon}></div>}
 
-              {/* 음소거 상태 아이콘 */}
-              {info?.categoryType == ContentCategoryType.Video && isMute && (
-                <img src={LineVolumeOff.src} className={styles.volumeIcon} />
-              )}
+                {/* 음소거 상태 아이콘 */}
+                {info?.categoryType == ContentCategoryType.Video && isMute && (
+                  <img src={LineVolumeOff.src} className={styles.volumeIcon} />
+                )}
 
-              {/* 볼륨 활성 상태 아이콘 */}
-              {info?.categoryType == ContentCategoryType.Video && !isMute && (
-                <img src={LineVolumeOn.src} className={styles.volumeIcon} />
-              )}
-
-              {/* 이미지 확대 아이콘 */}
-              {info?.categoryType == ContentCategoryType.Webtoon && (
-                <img src={LineScaleUp.src} className={styles.volumeIcon} />
-              )}
-            </div>
+                {/* 볼륨 활성 상태 아이콘 */}
+                {info?.categoryType == ContentCategoryType.Video && !isMute && (
+                  <img src={LineVolumeOn.src} className={styles.volumeIcon} />
+                )}
+              </div>
+            )}
           </div>
           {isCommentOpen && (
             <Comment

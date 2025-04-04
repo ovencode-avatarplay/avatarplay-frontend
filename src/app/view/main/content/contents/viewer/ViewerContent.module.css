@@ -381,6 +381,8 @@ img.button{
 }
 
 .header {
+  position: absolute;
+  
   display: flex;  
   width: var(--full-width);
   height: 58px;
@@ -395,6 +397,7 @@ img.button{
   background: var(--Black #000000);
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   opacity: 1;
+  z-index: 12;
 }
 
 .baseArea {
