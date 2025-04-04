@@ -22,7 +22,7 @@ interface DrawerDonationProps {
   onClose: () => void;
 }
 
-const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, giveToPDId, onClose}) => {
+const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, sponsoredName, giveToPDId, onClose}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
@@ -176,6 +176,6 @@ const DrawerDonation: React.FC<DrawerDonationProps> = ({isOpen, sponsoredName, g
       </CustomDrawer>
     </>
   );
-};
+});
 
 export default DrawerDonation;
