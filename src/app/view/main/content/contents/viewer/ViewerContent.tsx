@@ -720,7 +720,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   //#region 웹툰 자막
   const [isOpenWebtoonSubtitleModal, setIsWebtoonSubtitleModal] = useState(false);
   const [webtoonSubtitleLang, setWebtoonSubtitleLang] = useState<ContentLanguageType>(
-    info && info.episodeWebtoonInfo ? info?.episodeWebtoonInfo?.webtoonSourceUrlList[1].webtoonLanguageType : 0,
+    info && info.episodeWebtoonInfo && info?.episodeWebtoonInfo?.webtoonSourceUrlList.length >= 1
+      ? info?.episodeWebtoonInfo?.webtoonSourceUrlList[1].webtoonLanguageType
+      : 0,
   );
   const webtoonSubtitleItems: SelectDrawerItem[] = [
     ...(info?.episodeWebtoonInfo?.webtoonSourceUrlList?.map((item, index) => ({
