@@ -88,14 +88,14 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
 
             setEpisodeVideoInfo({
               videoSourceFileInfo: {
-                tempFileName: '',
+                tempFileName: videoInfo.videoSourceFileInfo.videoTempFileName ?? '',
                 videoFileName: videoInfo.videoSourceFileInfo.videoSourceName,
                 videoLanguageType: videoInfo.videoSourceFileInfo.videoLanguageType,
               },
               subTitleFileInfos: videoInfo.subTitleFileInfos,
               dubbingFileInfos: (videoInfo.dubbingFileInfos ?? []).map(dub => ({
                 videoLanguageType: dub.videoLanguageType ?? '', // ✅ 필수 필드 추가
-                tempFileName: '',
+                tempFileName: dub.videoTempFileName ?? '',
                 videoFileName: dub.videoSourceName,
               })),
             });
