@@ -66,7 +66,7 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
         </div>
 
         <div className={styles.infoBox}>
-          <p className={styles.genre}>{content.genre}</p>
+          <p className={styles.genre}>{getLocalizedText(content.genre)}</p>
           <p className={styles.description}>{content.description}</p>
 
           {/* 평점 및 조회수 */}
