@@ -69,6 +69,7 @@ import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 import {DragStatusType, TagDrawerType} from '@/app/view/profile/ProfileUpdate';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 type Props = {
   id: number;
@@ -489,7 +490,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   console.log('errros : ', errors);
 
   return (
-    <>
+    <div>
       <header className={styles.header}>
         <img className={styles.btnBack} src={LineArrowLeft.src} alt="" onClick={routerBack} />
         <div className={styles.title}>
@@ -987,10 +988,10 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             </div>
           </section>
 
-          <button type="submit" className={styles.submitBtn}>
+          <CustomButton size="Medium" state="Normal" type="Primary" customClassName={[styles.submitBtn]}>
             {getLocalizedText('common_button_submit')}
             {/* {isUpdate ? 'Submit' : 'Publish'} */}
-          </button>
+          </CustomButton>
         </form>
       </main>
       <footer></footer>
@@ -1134,7 +1135,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           ]}
         />
       )}
-    </>
+    </div>
   );
 };
 
@@ -1287,15 +1288,18 @@ export const DrawerMultipleTags = ({title, description, tags, open, onClose, onC
           })}
         </div>
       </div>
-      <button
-        className={styles.submitBtn}
+      <CustomButton
+        size="Medium"
+        state="Normal"
+        type="Primary"
+        customClassName={[styles.submitBtn]}
         onClick={() => {
           onChange(data.tagList);
           onClose();
         }}
       >
         Submit
-      </button>
+      </CustomButton>
     </Drawer>
   );
 };

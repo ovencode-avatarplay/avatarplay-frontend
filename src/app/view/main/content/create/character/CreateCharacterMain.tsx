@@ -758,8 +758,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           <div className={styles.imageUploadTitleArea}>
             <div className={styles.imageUploadTitle}>{getLocalizedText(Common, 'common_alert_017')}</div>
             <div className={styles.imageUploadDesc}>{getLocalizedText(Common, 'common_alert_018')}</div>
-            {imgUploadType?.toString()}
-            {imgUploadType === null && 'ISNULL'}
           </div>
           <div className={styles.uploadImageTypeArea}>
             {imgUploadType === null && (

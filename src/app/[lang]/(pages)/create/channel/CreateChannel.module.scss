@@ -1,3 +1,9 @@
+.container
+{
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
 .header {
   padding: 9px 0px;
   display: flex;
@@ -333,30 +339,30 @@
   }
 
   .submitBtn {
-    padding: 8px 16px;
-    position: fixed;
-    bottom: 8px;
+    // padding: 8px 16px;
+    // position: fixed;
+    // bottom: 8px;
     width: calc(var(--full-width) - 16px * 2);
-    height: 46px;
-    box-sizing: border-box;
+    // height: 46px;
+    // box-sizing: border-box;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
 
-    border-radius: 10px;
-    background: var(--Neutral-800, #2C3131);
-    cursor: pointer;
+    // border-radius: 10px;
+    // background: var(--Neutral-800, #2C3131);
+    // cursor: pointer;
 
-    color: var(--White, #FFF);
-    font-feature-settings: 'liga' off, 'clig' off;
-    font-family: Lato;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 20px;
-    /* 142.857% */
-    letter-spacing: -0.4px;
+    // color: var(--White, #FFF);
+    // font-feature-settings: 'liga' off, 'clig' off;
+    // font-family: Lato;
+    // font-size: 14px;
+    // font-style: normal;
+    // font-weight: 600;
+    // line-height: 20px;
+    // /* 142.857% */
+    // letter-spacing: -0.4px;
   }
 
   .membersSection {
