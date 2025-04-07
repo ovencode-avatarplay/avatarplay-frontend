@@ -86,7 +86,7 @@
 
 .typeSecondary {
   background-color: var(--Neutral-100, #F1F3F4);
-  color: var(--Black, #000);
+  color: var(--Neutral-600, #80868B);
 }
 
 .typeTertiary {
