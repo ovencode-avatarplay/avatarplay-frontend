@@ -175,6 +175,7 @@ export interface VideoFileInfo {
   videoLanguageType: ContentLanguageType;
   videoSourceUrl: string;
   videoSourceName: string;
+  videoTempFileName?: string;
 }
 
 // 📌 새로운 에피소드 웹툰 정보 (변경됨)
