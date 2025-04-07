@@ -22,6 +22,7 @@ import {updateProfile} from '@/redux-store/slices/Profile';
 import {useDispatch} from 'react-redux';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
+import CustomButton from '@/components/layout/shared/CustomButton';
 type Props = {
   profileId: number;
 };
@@ -703,9 +704,15 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
             />
           </section>
 
-          <button type="submit" className={styles.submitBtn}>
+          <CustomButton
+            size="Medium"
+            type="Primary"
+            state="Normal"
+            //  type="submit"
+            customClassName={[styles.submitBtn]}
+          >
             {getLocalizedText('common_button_submit')}
-          </button>
+          </CustomButton>
         </form>
         <DrawerSelectTags
           title={data.dataInterests.drawerTitle}
@@ -1027,12 +1034,24 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             <div className={styles.textCount}>{`${watch('description', '').length}/500`}</div>
           </div>
           <div className={styles.buttonWrap}>
-            <button type="submit" className={styles.cancelBtn}>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Tertiary"
+              //  type="submit"
+              customClassName={[styles.cancelBtn]}
+            >
               {isCreate ? getLocalizedText('common_button_cancel') : 'Delete'}
-            </button>
-            <button type="submit" className={styles.saveBtn}>
+            </CustomButton>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Primary"
+              // type="submit"
+              customClassName={[styles.saveBtn]}
+            >
               {getLocalizedText('common_button_submit')}
-            </button>
+            </CustomButton>
           </div>
         </form>
       </div>
@@ -1102,15 +1121,18 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
           })}
         </div>
       </div>
-      <button
-        className={styles.submitBtn}
+      <CustomButton
+        size="Medium"
+        type="Primary"
+        state="Normal"
+        customClassName={[styles.submitBtn]}
         onClick={() => {
           onChange(data.tagList);
           onClose();
         }}
       >
         {getLocalizedText('common_button_submit')}
-      </button>
+      </CustomButton>
     </Drawer>
   );
 };
