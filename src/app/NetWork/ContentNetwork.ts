@@ -40,6 +40,7 @@ export interface ContentInfo {
   contentVideoInfo?: ContentEpisodeVideoInfo;
   urlLinkKey?: string;
   thumbnailMediaState?: MediaState;
+  state: ContentState;
 }
 export interface CreateContentInfo {
   id?: number; // 콘텐츠 ID (선택적, 생성 전에는 없음)
