@@ -551,9 +551,9 @@ section.sessionTab .tabHeader {
 }
 
 button.startNewChat {
-  max-width: 1300px;
-  height: 50px;
-  padding: 14px 20px;
+  // max-width: 1300px;
+  // height: 50px;
+  // padding: 14px 20px;
 
   position: fixed;
   left: 14px;
@@ -561,19 +561,20 @@ button.startNewChat {
   width: calc(100% - 28px);
   left: 50%;
   transform: translateX(-50%);
-  border-radius: 12px;
-  background: var(--Primary-1, #FD55D3);
-  backdrop-filter: blur(0px);
+  
+  // border-radius: 12px;
+  // background: var(--Primary-1, #FD55D3);
+  // backdrop-filter: blur(0px);
 
-  color: var(--White, #FFF);
-  font-feature-settings: 'liga' off, 'clig' off;
-  font-family: Lato;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 21px;
-  /* 116.667% */
-  letter-spacing: -0.4px;
+  // color: var(--White, #FFF);
+  // font-feature-settings: 'liga' off, 'clig' off;
+  // font-family: Lato;
+  // font-size: 18px;
+  // font-style: normal;
+  // font-weight: 600;
+  // line-height: 21px;
+  // /* 116.667% */
+  // letter-spacing: -0.4px;
 
   cursor: pointer;
 
