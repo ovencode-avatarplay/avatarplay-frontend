@@ -4,7 +4,16 @@ import {en} from '@supabase/auth-ui-shared';
 import api, {ResponseAPI} from './ApiInstance';
 import {AxiosError} from 'axios';
 import {MediaState} from './ProfileNetwork';
-
+export enum ContentState {
+  Create,
+  Delete,
+  Upload,
+}
+export enum ContentEpisodeState {
+  Create,
+  Delete,
+  Upload,
+}
 // 📌 Content 생성 요청
 export interface CreateContentReq {
   contentInfo: CreateContentInfo;
@@ -280,6 +289,9 @@ export interface SeasonEpisodeInfo {
   salesStarEa: number;
   isLock: boolean;
   thumbnailMediaState?: MediaState;
+  episodeVideoInfo: ContentEpisodeVideoInfo;
+  episodeWebtoonInfo: ContentEpisodeWebtoonInfo;
+  episodeState: ContentEpisodeState;
 }
 
 export interface GetSeasonEpisodesRes {
@@ -333,6 +345,7 @@ export interface ContentListInfo {
   categoryType: ContentCategoryType;
   tags: string[];
   createAt: Date;
+  state: ContentState;
 }
 
 export enum ContentCategoryType {
@@ -558,5 +571,40 @@ export const sendGetSeasonEpisodesPopup = async (
   } catch (error) {
     console.error('Error fetching season episodes popup:', error);
     throw new Error('Failed to fetch season episodes popup. Please try again.');
+  }
+};
+
+export enum CheckContentType {
+  Content,
+  Episode,
+}
+// ✅ 요청 타입
+export interface CheckContentStateReq {
+  checkContentType: CheckContentType;
+  checkIdList: number[];
+}
+
+// ✅ 응답 내부 항목
+export interface CheckContentItem {
+  id: number;
+  state: number;
+}
+
+// ✅ 응답 타입
+export interface CheckContentStateRes {
+  checkContentType: number;
+  checkContentItemList: CheckContentItem[];
+}
+
+export const sendCheckContentState = async (
+  payload: CheckContentStateReq,
+): Promise<ResponseAPI<CheckContentStateRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<CheckContentStateRes>>('/Content/checkContentState', payload);
+    if (response.data.resultCode === 0) return response.data;
+    throw new Error(`CheckContentState Error: ${response.data.resultCode}`);
+  } catch (error) {
+    console.error('Error checking content state:', error);
+    throw new Error('Failed to check content state. Please try again.');
   }
 };
