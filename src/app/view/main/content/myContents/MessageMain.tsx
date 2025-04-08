@@ -14,7 +14,7 @@ const MessageMain: React.FC = () => {
   return (
     <>
       <HeaderNavBarWhite></HeaderNavBarWhite>
-      <div style={{marginTop: '58px'}}>
+      <div className={styles.Container}>
         <div className={styles.tabContainer}>
           {tabItems.map((label, index) => (
             <div
@@ -27,8 +27,8 @@ const MessageMain: React.FC = () => {
           ))}
         </div>
         {activeIndex === 0 && <CharacterChat></CharacterChat>}
-        {activeIndex === 1 && <CharacterChat></CharacterChat>}
-        {activeIndex === 2 && <CharacterChat></CharacterChat>}
+        {activeIndex === 1 && <></>}
+        {activeIndex === 2 && <></>}
       </div>
     </>
   );

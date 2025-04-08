@@ -3,7 +3,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
   height: 77px;
   border-bottom: 1px solid #F1F3F4;
   padding: 10px 16px;
@@ -58,16 +57,6 @@
   color: #000;
 }
 
-/* 레벨 뱃지 */
-.levelBadge {
-  background: #FFE6F8;
-  color: #FD55D3;
-  font-size: 9px;
-  font-weight: 600;
-  padding: 2px 5px;
-  border-radius: 999px;
-}
-
 /* 타임스탬프 */
 .timestamp {
   font-size: 12px;
@@ -84,14 +73,105 @@
   justify-content: center;
   gap: 8px;
   margin-right: 16px;
-  
 }
-.info
-{
+
+.info {
   filter: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(114%) hue-rotate(184deg) brightness(90%) contrast(97%);
 }
 
-.delete
-{
+.delete {
+  filter: brightness(0) saturate(100%);
+}
+
+/* 뱃지 스타일 */
+.fanBadge {
+  font-size: 10px;
+  font-weight: 600;
+  background: #e9e9e9;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.originalBadge {
+  display: flex;
+  width: 50px;
+  height: 20px;
+  
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 999px;
+  background: var(--Primary-3, #FFE6F8);
+  color: #FD55D3;
+}
+
+/* 팔로우 버튼 */
+.follow {
+  display: flex;
+  height: 36px;
+  padding: 8px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;border-radius: 8px;
+  background: var(--Neutral-800, #2C3131);
+  color: white;
+}
+
+.following {
+  color: #9aa0a6;
+  display: flex;
+  width: 105px;
+  height: 36px;
+  padding: 0px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  border-radius: 8px;
+background: var(--Neutral-100, #F1F3F4);
+}
+
+/* 체크 아이콘 */
+.checkLeft,
+.checkRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkLeft {
+  margin-right: 8px;
+}
+
+.checkRight {
+  margin-left: 8px;
+}
+
+/* 오른쪽 영역 */
+.rightArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 옵션 영역 (핀 + 점 세개) */
+.optionWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.pinIcon,
+.moreIcon {
+  width: 16px;
+  height: 16px;
   filter: brightness(0) saturate(100%)
+}
+
+.moreIcon {
+  cursor: pointer;
 }
