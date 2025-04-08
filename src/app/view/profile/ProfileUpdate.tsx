@@ -22,6 +22,8 @@ import {updateProfile} from '@/redux-store/slices/Profile';
 import {useDispatch} from 'react-redux';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 type Props = {
   profileId: number;
 };
@@ -369,7 +371,7 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
         </div>
       </header>
       <main className={cx(styles.main)}>
-        <form onSubmit={onSubmit}>
+        <form className={styles.container} onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
             <label className={styles.uploadBtn} htmlFor="file-upload">
               <input {...register('iconUrl', {required: true})} type="hidden" />
@@ -441,8 +443,8 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
             </div>
           </section>
           <section className={styles.interestSection}>
-            <h2 className={styles.label}>{getLocalizedText('profile007_label_002')}</h2>
-            <div
+            {/* <h2 className={styles.label}>{getLocalizedText('profile007_label_002')}</h2> */}
+            {/* <div
               className={cx(styles.selectWrap, errors.interests && isSubmitted && styles.error)}
               onClick={() => {
                 data.dataInterests.isOpenTagsDrawer = true;
@@ -451,7 +453,16 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
             >
               <div className={styles.placeholder}>{getLocalizedText('common_sample_079')}</div>
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
-            </div>
+            </div> */}
+            <CustomChipSelector
+              containerStyle={{width: '100%'}}
+              label={getLocalizedText('profile007_label_002')}
+              onClick={() => {
+                data.dataInterests.isOpenTagsDrawer = true;
+                setData({...data});
+              }}
+              tagType="tags"
+            />
             <div className={styles.tagWrap}>
               <input
                 type="hidden"
@@ -494,7 +505,7 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
             </div>
           </section>
           <section className={styles.skillSection}>
-            <h2 className={styles.label}>{getLocalizedText('common_alert_056')}</h2>
+            {/* <h2 className={styles.label}>{getLocalizedText('common_alert_056')}</h2>
             <div
               className={cx(styles.selectWrap, errors.skills && isSubmitted && styles.error)}
               onClick={() => {
@@ -504,7 +515,16 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
             >
               <div className={styles.placeholder}>{getLocalizedText('common_sample_079')}</div>
               <img src={'/ui/profile/update/icon_select.svg'} alt="" />
-            </div>
+            </div> */}
+            <CustomChipSelector
+              containerStyle={{width: '100%'}}
+              label={getLocalizedText('common_alert_056')}
+              onClick={() => {
+                data.dataSkills.isOpenTagsDrawer = true;
+                setData({...data});
+              }}
+              tagType="tags"
+            />
             <div className={cx(styles.tagWrap)}>
               <input
                 type="hidden"
@@ -541,10 +561,6 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
               })}
             </div>
           </section>
-          <section className={styles.personalHistorySection}></section>
-          <section className={styles.honorAwardsSection}></section>
-          <section className={styles.portfolioSection}></section>
-          <section className={styles.urlSection}></section>
 
           <section className={styles.personalHistorySection}>
             <h2 className={styles.label}>{getLocalizedText('profile007_label_003')}</h2>
@@ -703,9 +719,18 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
             />
           </section>
 
-          <button type="submit" className={styles.submitBtn}>
-            {getLocalizedText('common_button_submit')}
-          </button>
+          <div className={styles.submitBtnArea}>
+            <CustomButton
+              size="Medium"
+              type="Primary"
+              state="Normal"
+              //  type="submit"
+              customClassName={[styles.submitBtn]}
+            >
+              {getLocalizedText('common_button_submit')}
+            </CustomButton>
+            <div className={styles.submitButtonBack}></div>
+          </div>
         </form>
         <DrawerSelectTags
           title={data.dataInterests.drawerTitle}
@@ -1027,12 +1052,24 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             <div className={styles.textCount}>{`${watch('description', '').length}/500`}</div>
           </div>
           <div className={styles.buttonWrap}>
-            <button type="submit" className={styles.cancelBtn}>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Tertiary"
+              //  type="submit"
+              customClassName={[styles.cancelBtn]}
+            >
               {isCreate ? getLocalizedText('common_button_cancel') : 'Delete'}
-            </button>
-            <button type="submit" className={styles.saveBtn}>
+            </CustomButton>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Primary"
+              // type="submit"
+              customClassName={[styles.saveBtn]}
+            >
               {getLocalizedText('common_button_submit')}
-            </button>
+            </CustomButton>
           </div>
         </form>
       </div>
@@ -1102,15 +1139,18 @@ export const DrawerSelectTags = ({title, description, tags, open, onClose, onCha
           })}
         </div>
       </div>
-      <button
-        className={styles.submitBtn}
+      <CustomButton
+        size="Medium"
+        type="Primary"
+        state="Normal"
+        customClassName={[styles.submitBtn]}
         onClick={() => {
           onChange(data.tagList);
           onClose();
         }}
       >
         {getLocalizedText('common_button_submit')}
-      </button>
+      </CustomButton>
     </Drawer>
   );
 };

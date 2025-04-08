@@ -46,14 +46,13 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
   );
   const [videoFile, setVideoFile] = useState<string | null>(null); // 비디오 업로드 상태
   const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
-
   const [onPreview, setOnPreview] = useState(false);
 
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
     if (defaultEpisodeVideoInfo) {
       // ✅ videoFile / videoName은 UI 미리보기용으로 여전히 필요하다면 유지
-      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName);
+      setVideoFile(defaultEpisodeVideoInfo.videoSourceFileInfo.videoTempFileName || '');
       setVideoName(defaultEpisodeVideoInfo.videoSourceFileInfo.videoSourceName || null);
 
       // ✅ subtitle은 구조 그대로 유지 (API 구조 안 바뀜)
@@ -71,7 +70,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
         defaultEpisodeVideoInfo.dubbingFileInfos.map((info, index) => ({
           id: index,
           selectedCountry: info.videoLanguageType,
-          fileUrl: info.videoSourceName, // UI상 썸네일용이므로 임시로 fileName 사용
+          fileUrl: info.videoTempFileName, // UI상 썸네일용이므로 임시로 fileName 사용
           fileName: info.videoSourceName,
         })),
       );

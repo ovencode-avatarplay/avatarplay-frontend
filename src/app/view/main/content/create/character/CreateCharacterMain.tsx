@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 // publish가 끝나고 다른곳으로 이동하기
 import {useRouter} from 'next/navigation';
-import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
 
 import styles from './CreateCharacterMain.module.css';
 import {BoldMixture, LineAIImage, LineDashboard, LineEdit, LineUpload} from '@ui/Icons';
@@ -21,11 +21,10 @@ import CharacterCreateMedia from './CharacterCreateMedia';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CharacterMediaInfo, CreateCharacter2Req, sendCreateCharacter2} from '@/app/NetWork/CharacterNetwork';
-import ImageUploadDialog from '../story-main/episode/episode-ImageCharacter/ImageUploadDialog';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
-import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -34,6 +33,7 @@ import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPrompt';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
+import ImageUpload from '@/components/create/ImageUpload';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -62,8 +62,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const [mediaCreateImage, setMediaCreateImage] = useState(
     'https://avatar-play.s3.ap-northeast-2.amazonaws.com/image/e58b0be3-d640-431c-96be-bbeffcfa105f.jpg',
   );
+  const [selectImageTypeOpen, setSelectImageTypeOpen] = useState(false);
+  const [imgUploadSelectModalOpen, setImgUploadSelectModalOpen] = useState(false);
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
-  const [imgUploadModalOpen, setImgUploadModalOpen] = useState(false);
 
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
   const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
@@ -223,7 +224,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     } else if (imageCreate === 'Thumbnail') {
       setMainImageUrl(img);
     }
-    setImgUploadOpen(false);
+    setSelectImageTypeOpen(false);
   };
   //#region File Upload
 
@@ -251,18 +252,18 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   //#endregion
 
   const handleOnClickThumbnail = () => {
-    setImgUploadOpen(true);
+    setSelectImageTypeOpen(true);
     setImageCreate('Thumbnail');
   };
 
   const handleOnClickMediaCreate = () => {
-    setImgUploadModalOpen(true);
+    setImgUploadSelectModalOpen(true);
     setImageCreate('MediaCreate');
   };
 
   const handleOnClickMediaEdit = (index: number) => {
     // setImgUploadOpen(true);
-    setImgUploadModalOpen(true);
+    setImgUploadSelectModalOpen(true);
     setImageCreate('MediaEdit');
     setSelectedMediaItemIdx(index);
   };
@@ -514,10 +515,10 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   };
 
   useEffect(() => {
-    if (imgUploadOpen === false) {
+    if (selectImageTypeOpen === false) {
       setImgUploadType(null);
     }
-  }, [imgUploadOpen]);
+  }, [selectImageTypeOpen]);
 
   useEffect(() => {
     if (essentialWarning) {
@@ -680,8 +681,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               : ''
           }
           onClose={() => {
-            setImgUploadOpen(false);
-            setImgUploadModalOpen(false);
+            setSelectImageTypeOpen(false);
+            setImgUploadSelectModalOpen(false);
           }}
         >
           <button className={styles.dashboardButton}>
@@ -689,10 +690,19 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           </button>
         </CreateDrawerHeader>
         <div className={styles.imageTypeArea}>
-          {imgUploadType === null && (
+          {(imgUploadType === null || imgUploadType === 'Upload') && (
             <div className={styles.verticalButtonGroup}>
               {typeOption.map((option, index) => (
-                <button key={index} className={styles.uploadButton} onClick={() => setImgUploadType(option.type)}>
+                <button
+                  key={index}
+                  className={styles.uploadButton}
+                  onClick={() => {
+                    setImgUploadType(option.type);
+                    if (option.type === 'Upload') {
+                      setImgUploadOpen(true);
+                    }
+                  }}
+                >
                   <div className={styles.buttonIconBack}>
                     <img
                       className={styles.buttonIcon}
@@ -718,11 +728,16 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             <CharacterImageSet createFinishAction={handlerSetImage} onClickPreview={handlePreviewSelected} />
           )}
           {imgUploadType === 'Upload' && (
-            <ImageUploadDialog
-              isOpen={true}
-              onClose={() => setImgUploadType(null)}
-              onFileSelect={handleFileSelection}
-              mediaType={MediaState.Image}
+            <ImageUpload
+              isOpen={imgUploadOpen}
+              onClose={() => {
+                setImgUploadType(null);
+                setImgUploadOpen(false);
+              }}
+              setContentImageUrl={setMainImageUrl}
+              onChoose={() => {
+                setSelectImageTypeOpen(false);
+              }}
             />
           )}
         </div>
@@ -736,7 +751,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
         className={styles.backdrop}
         onClick={() => {
           setImgUploadType(null);
-          setImgUploadModalOpen(false);
+          setImgUploadSelectModalOpen(false);
         }}
       >
         <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>
@@ -753,10 +768,14 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                       <button
                         key={index}
                         className={styles.uploadButton}
-                        onClick={() => {
+                        onClick={e => {
+                          e.stopPropagation();
                           setImgUploadType(option.type);
                           if (option.type === 'AIGenerate') {
-                            setImgUploadModalOpen(false);
+                            setImgUploadSelectModalOpen(false);
+                            setSelectImageTypeOpen(true);
+                          } else if (option.type === 'Upload') {
+                            setImgUploadSelectModalOpen(false);
                             setImgUploadOpen(true);
                           }
                         }}
@@ -775,18 +794,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                 ))}
               </div>
             )}
-            {/* {imgUploadType === 'AIGenerate' && <CharacterImageSet createFinishAction={handlerSetImage} />} */}
-            {imgUploadType === 'Upload' && (
-              <ImageUploadDialog
-                isOpen={true}
-                onClose={() => {
-                  setImgUploadType(null);
-                  setImgUploadModalOpen(false);
-                }}
-                onFileSelect={handleFileSelection}
-                mediaType={MediaState.Image}
-              />
-            )}
           </div>
         </div>
       </div>
@@ -804,7 +811,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   return (
     <>
       <div className={styles.characterContainer}>
-        {!imgUploadOpen && (
+        {!selectImageTypeOpen && (
           <div className={styles.characterMain}>
             <CreateDrawerHeader
               title={getLocalizedText(Header, 'createcharacter001_title_001')}
@@ -893,10 +900,20 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             </footer>
           </div>
         )}
-        {imgUploadOpen && <>{renderSelectImageType()}</>}
+        {selectImageTypeOpen && <>{renderSelectImageType()}</>}
       </div>
-      {imgUploadModalOpen && <>{renderUploadSelectModal()}</>}
+      {imgUploadSelectModalOpen && <>{renderUploadSelectModal()}</>}
       {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
+      {!selectImageTypeOpen && imgUploadType === 'Upload' && (
+        <ImageUpload
+          isOpen={imgUploadOpen}
+          onClose={() => {
+            setImgUploadType(null);
+            setImgUploadOpen(false);
+          }}
+          setContentImageUrl={handlerSetImage}
+        />
+      )}
     </>
   );
 };

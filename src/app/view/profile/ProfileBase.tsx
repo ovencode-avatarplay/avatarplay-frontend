@@ -1040,8 +1040,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
           {isOtherPD && (
             <div className={styles.buttonsOtherPD}>
-              <button
-                className={styles.follow}
+              <CustomButton
+                size="Small"
+                type="Primary"
+                state="Normal"
+                customClassName={[styles.follow]}
                 onClick={() => {
                   handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
@@ -1049,7 +1052,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 {isFollow
                   ? getLocalizedText('Common', 'common_button_following')
                   : getLocalizedText('Common', 'common_button_follow')}
-              </button>
+              </CustomButton>
               <button
                 className={styles.gift}
                 onClick={() => {
@@ -1063,23 +1066,29 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           )}
           {(isOtherChannel || isOtherCharacter) && (
             <div className={styles.buttonsOtherCharacter}>
-              <button
-                className={styles.subscribe}
+              <CustomButton
+                size="Small"
+                type="ColorPrimary"
+                state="Normal"
+                customClassName={[styles.subscribe]}
                 onClick={() => {
                   data.isOpenPopupSubscription = true;
                   setData({...data});
                 }}
               >
                 {getLocalizedText('Common', 'common_button_subscribe')}
-              </button>
-              <button
-                className={styles.follow}
+              </CustomButton>
+              <CustomButton
+                size="Small"
+                type="Primary"
+                state="Normal"
+                customClassName={[styles.follow]}
                 onClick={() => {
                   handleFollow(data.profileId, !isFollow, data.urlLinkKey);
                 }}
               >
                 {isFollow ? getLocalizedText('common_button_following') : getLocalizedText('common_button_follow')}
-              </button>
+              </CustomButton>
               <button
                 className={styles.giftWrap}
                 onClick={() => {

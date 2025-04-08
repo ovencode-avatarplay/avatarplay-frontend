@@ -7,10 +7,13 @@ import {BoldAltArrowDown, LineDashboard} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {SingleInfo} from './SingleDetail';
 import {
+  CheckContentType,
   ContentCategoryType,
   ContentListInfo,
+  ContentState,
   ContentType,
   GetContentListReq,
+  sendCheckContentState,
   sendDeleteContent,
   sendGetContentList,
   VisibilityType,
@@ -58,6 +61,63 @@ const CreateContentIntroduction: React.FC<CreateContentIntroductionProps> = () =
   const [error, setError] = useState<string | null>(null);
   const dataProfile = useSelector((state: RootState) => state.profile);
 
+  useEffect(() => {
+    const intervalRef = {current: null as NodeJS.Timeout | null};
+
+    const checkContentStateLoop = async () => {
+      const uploadingContents = contentList.filter(item => item.state === ContentState.Upload);
+
+      if (uploadingContents.length === 0 || activeTab != ContentType.Single) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+        return;
+      }
+
+      try {
+        const response = await sendCheckContentState({
+          checkContentType: CheckContentType.Content,
+          checkIdList: uploadingContents.map(item => item.id),
+        });
+
+        if (response.resultCode === 0) {
+          const updatedMap = new Map(response?.data?.checkContentItemList.map(i => [i.id, i.state]));
+
+          setContentList(prev =>
+            prev.map(content => {
+              if (updatedMap.has(content.id)) {
+                return {
+                  ...content,
+                  state: updatedMap.get(content.id)!,
+                };
+              }
+              return content;
+            }),
+          );
+        }
+      } catch (error) {
+        console.error('콘텐츠 상태 체크 실패:', error);
+      }
+    };
+
+    const startLoop = () => {
+      if (!intervalRef.current) {
+        intervalRef.current = setInterval(() => {
+          checkContentStateLoop();
+        }, 1000);
+      }
+    };
+
+    startLoop();
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [contentList, activeTab]);
   const [isDeletePopup, setIsDeletePopup] = useState<boolean>(false);
   const [isDeleteNum, setIsDeleteNum] = useState<number>(0);
   const deleteContente = (id: number) => {

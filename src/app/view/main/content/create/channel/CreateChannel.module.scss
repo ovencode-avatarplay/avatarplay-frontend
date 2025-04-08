@@ -340,8 +340,8 @@
 
   .submitBtn {
     // padding: 8px 16px;
-    // position: fixed;
-    // bottom: 8px;
+    position: fixed;
+    bottom: 8px;
     width: calc(var(--full-width) - 16px * 2);
     // height: 46px;
     // box-sizing: border-box;
@@ -451,7 +451,6 @@
               word-wrap: break-word;
               word-break: break-all;
               white-space: pre-line;
-              -webkit-line-clamp: 3;
               overflow: hidden;
               display: -webkit-box;
               -webkit-box-orient: vertical;
@@ -705,7 +704,6 @@
   }
 }
 
-.operatorInvitationContent {}
 
 .submitBtn {
   position: absolute;
@@ -1059,7 +1057,6 @@
         line-height: normal;
         letter-spacing: -0.3px;
 
-        .value {}
 
         .iconCheckWrap {
           height: 18px;
@@ -1328,7 +1325,6 @@
             word-wrap: break-word;
             word-break: break-all;
             white-space: pre-line;
-            -webkit-line-clamp: 3;
             overflow: hidden;
             display: -webkit-box;
             -webkit-box-orient: vertical;

@@ -48,11 +48,16 @@
 { 
     width: 100%;  
     height: 100%;
+    min-height: 110px;
     flex-shrink: 0;
     
     /* margin: 0 auto; */
     border-radius: var(--radius-md, 10px);
     background: lightgray 0px -335.272px / 100% 100% no-repeat contain center;
+
+    @media (max-width: 431px) {
+        min-height: 100px;    
+    }
 }
 
  .paginationBullet

@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './ContentCard.module.css';
 import {BoldChatRoundDots, BoldFollowers, BoldMenuDots, BoldStar, LineDelete, LineEdit, LineMenu} from '@ui/Icons';
-import {ContentListInfo, VisibilityType} from '@/app/NetWork/ContentNetwork';
+import {ContentListInfo, ContentState, VisibilityType} from '@/app/NetWork/ContentNetwork';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import getLocalizedText from '@/utils/getLocalizedText';
 
@@ -36,6 +36,12 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
   return (
     <div className={styles.card}>
       {/* 상단 메뉴 */}
+      {content.state === ContentState.Upload && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingSpinner}></div>
+          Uploading...
+        </div>
+      )}
       <div className={styles.topMenu}>
         {content.name}
         <img src={BoldMenuDots.src} className={styles.menuDots} onClick={() => setDropBoxOpen(true)}></img>
@@ -60,7 +66,7 @@ const ContentCard: React.FC<ContentCardProps> = ({content, onAddEpisode, onEdit,
         </div>
 
         <div className={styles.infoBox}>
-          <p className={styles.genre}>{content.genre}</p>
+          <p className={styles.genre}>{getLocalizedText(content.genre)}</p>
           <p className={styles.description}>{content.description}</p>
 
           {/* 평점 및 조회수 */}

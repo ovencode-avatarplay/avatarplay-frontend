@@ -27,6 +27,10 @@ import {
   DeleteSeasonNoReq,
   sendDeleteEpisode,
   GetSeasonEpisodesRes,
+  SeasonEpisodeInfo,
+  ContentEpisodeState,
+  sendCheckContentState,
+  CheckContentType,
 } from '@/app/NetWork/ContentNetwork';
 import {EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 import {Category} from '@mui/icons-material';
@@ -54,7 +58,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
   const [seasons, setSeasons] = useState<Seasons[]>([]);
   const [contentInfo, setContentInfo] = useState<GetSeasonEpisodesRes>();
 
-  const [episodeList, setEpisodeList] = useState<ContentEpisodeInfo[]>(); // 타입 변경
+  const [episodeList, setEpisodeList] = useState<SeasonEpisodeInfo[]>(); // 타입 변경
 
   const [isShare, setIsShare] = useState(false);
   const [onAddSeasonPopup, setOnAddSeasonPopup] = useState(false);
@@ -205,22 +209,17 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
       }
       setContentInfo(response.data);
       if (response.data?.episodeList) {
-        const transformedEpisodes: ContentEpisodeInfo[] = response.data.episodeList.map(episode => ({
-          id: episode.episodeId,
-          userId: 0, // 기본값 설정 (필요 시 API에서 제공하는 값으로 변경)
-          contentId: 0,
-          seasonNo: index,
+        const transformedEpisodes: SeasonEpisodeInfo[] = response.data.episodeList.map(episode => ({
+          episodeId: episode.episodeId,
+          episodeName: episode.episodeName,
+          episodeState: episode.episodeState,
           episodeNo: episode.episodeNo,
+          thumbnailMediaState: episode.thumbnailMediaState,
+          episodeVideoInfo: episode.episodeVideoInfo,
+          episodeWebtoonInfo: episode.episodeWebtoonInfo,
+          isLock: episode.isLock,
+          salesStarEa: episode.salesStarEa,
           thumbnailUrl: episode.thumbnailUrl,
-          name: episode.episodeName,
-          description: '',
-          categoryType: 0,
-          nsfw: false,
-          monetization: false,
-          salesStarEa: 0,
-          likeCount: 0,
-          episodeVideoInfo: undefined,
-          episodeWebtoonInfo: undefined,
         }));
 
         setEpisodeList(transformedEpisodes);
@@ -237,6 +236,31 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
 
   const isVideo = (url?: string) => videoExtensions.includes(getFileExtension(url));
   const isImage = (url?: string) => imageExtensions.includes(getFileExtension(url));
+  useEffect(() => {
+    const uploadingEpisodes = episodeList?.filter(ep => ep.episodeState === ContentEpisodeState.Upload);
+    if (!uploadingEpisodes || uploadingEpisodes.length === 0) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const ids = uploadingEpisodes.map(ep => ep.episodeId!);
+        const res = await sendCheckContentState({checkContentType: CheckContentType.Episode, checkIdList: ids});
+
+        const updatedList = episodeList?.map(ep => {
+          const updated = res.data?.checkContentItemList.find(item => item.id === ep.episodeId);
+          return updated ? {...ep, episodeState: updated.state} : ep;
+        });
+
+        setEpisodeList(updatedList);
+
+        const stillUploading = updatedList?.some(ep => ep.episodeState === ContentEpisodeState.Upload);
+        if (!stillUploading) clearInterval(interval);
+      } catch (error) {
+        console.error('업로드 상태 체크 실패:', error);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [episodeList]);
 
   return (
     <div className={styles.container}>
@@ -371,7 +395,13 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
             <div className={styles.episodeList}>
               {episodeList &&
                 episodeList.map((ep, index) => (
-                  <div key={ep.id} className={styles.episodeItem}>
+                  <div key={ep.episodeId} className={styles.episodeItem}>
+                    {ep.episodeState === ContentEpisodeState.Upload && (
+                      <div className={styles.loadingOverlay}>
+                        <div className={styles.loadingSpinner}></div>
+                        Uploading...
+                      </div>
+                    )}
                     {isVideo(ep.thumbnailUrl) ? (
                       <video
                         className={styles.episodeThumbnail}
@@ -388,7 +418,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
 
                     <div className={styles.episodeInfo}>
                       <div className={styles.epTitleText}>
-                        {index + 1}. {ep.name}
+                        {index + 1}. {ep.episodeName}
                       </div>
                       {/* {seriesInfo?.categoryType == 1 && (
                     <div className={styles.epDuration}>{ep.episodeVideoInfo?.videoSourcePlayTime}</div>
@@ -399,8 +429,8 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
                         <button
                           className={styles.iconButton}
                           onClick={() => {
-                            if (ep.id) {
-                              setOnDeleteEpisodeNum(ep.id);
+                            if (ep.episodeId) {
+                              setOnDeleteEpisodeNum(ep.episodeId);
                               setOnDeleteEpisodePopup(true);
                             }
                           }}
@@ -414,7 +444,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
                               contentId: urlLinkKey,
                               curSeason: selectedSeason,
                               curEpisodeCount: episodeList ? episodeList.length : 0,
-                              episodeId: ep.id,
+                              episodeId: ep.episodeId,
                             });
                           }}
                         >

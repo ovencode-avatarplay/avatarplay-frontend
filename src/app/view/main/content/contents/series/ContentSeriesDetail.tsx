@@ -29,12 +29,16 @@ import {useRouter} from 'next/navigation';
 import {
   buyContentEpisode,
   BuyContentEpisodeReq,
+  CheckContentType,
+  ContentEpisodeState,
   ContentInfo,
+  ContentState,
   ContentType,
   GetContentReq,
   GetContentRes,
   GetSeasonEpisodesReq,
   GetSeasonEpisodesRes,
+  sendCheckContentState,
   sendGetContent,
   sendGetSeasonEpisodes,
 } from '@/app/NetWork/ContentNetwork';
@@ -164,7 +168,67 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     }
 
     setData({...data});
+    setStartCheck(true);
   };
+
+  const [startCheck, setStartCheck] = useState(false);
+  useEffect(() => {
+    // 🔍 Single인 경우
+    console.log('asd', startCheck, data);
+    if (data.isSingle && data.dataMix && data.dataMix.state === ContentState.Upload) {
+      const interval = setInterval(async () => {
+        try {
+          if (!data.dataMix || !data.dataMix.id) return;
+          const res = await sendCheckContentState({
+            checkContentType: CheckContentType.Content, // Episode
+            checkIdList: [data.dataMix.id],
+          });
+
+          const newState = res.data?.checkContentItemList.find(item => item.id === data.dataMix!.id)?.state;
+
+          if (newState !== undefined && newState !== ContentEpisodeState.Upload) {
+            data.dataMix!.state = newState;
+            setData({...data});
+            clearInterval(interval);
+          }
+        } catch (error) {
+          console.error('싱글 콘텐츠 업로드 상태 체크 실패:', error);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+
+    // 🔍 Series인 경우
+    if (!data.isSingle && data.dataEpisodes?.episodeList.some(ep => ep.episodeState === ContentEpisodeState.Upload)) {
+      const interval = setInterval(async () => {
+        try {
+          const uploadingEpisodes = data.dataEpisodes?.episodeList.filter(
+            ep => ep.episodeState === ContentEpisodeState.Upload,
+          );
+          if (!uploadingEpisodes || uploadingEpisodes.length === 0) return;
+
+          const ids = uploadingEpisodes.map(ep => ep.episodeId!);
+          const res = await sendCheckContentState({checkContentType: CheckContentType.Episode, checkIdList: ids});
+
+          const updatedList = data.dataEpisodes?.episodeList.map(ep => {
+            const updated = res.data?.checkContentItemList.find(item => item.id === ep.episodeId);
+            return updated ? {...ep, episodeState: updated.state} : ep;
+          });
+
+          data.dataEpisodes!.episodeList = updatedList!;
+          setData({...data});
+
+          const stillUploading = updatedList?.some(ep => ep.episodeState === ContentEpisodeState.Upload);
+          if (!stillUploading) clearInterval(interval);
+        } catch (error) {
+          console.error('시리즈 에피소드 업로드 상태 체크 실패:', error);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [startCheck]);
 
   const genreList = data.dataMix?.genre
     ?.split(',')
@@ -390,6 +454,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           thumbnailUrl={data.dataMix?.thumbnailUrl || ''}
                           isLock={data.dataMix?.isSingleContentLock || false}
                           thumbnailMediaState={data.dataMix?.thumbnailMediaState || MediaState.Image}
+                          isUploading={data.dataMix?.state === ContentState.Upload}
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
@@ -429,6 +494,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           thumbnailUrl={one.thumbnailUrl}
                           isLock={one.isLock}
                           thumbnailMediaState={one?.thumbnailMediaState || MediaState.Image}
+                          isUploading={one.episodeState === ContentEpisodeState.Upload}
                           onClick={() => {
                             if (isFree || !isLock) {
                               //TODO : play처리
@@ -566,6 +632,7 @@ type EpisodeComponentType = {
   name: string;
   price: number;
   isLock: boolean;
+  isUploading?: boolean;
   onClick: () => void;
 };
 const EpisodeComponent = ({
@@ -575,11 +642,18 @@ const EpisodeComponent = ({
   price,
   isLock,
   thumbnailMediaState,
+  isUploading = false,
   onClick,
 }: EpisodeComponentType) => {
   const isFree = price == 0;
   return (
-    <li className={styles.item} key={key} onClick={onClick}>
+    <li
+      className={styles.item}
+      key={key}
+      onClick={() => {
+        if (!isUploading) onClick();
+      }}
+    >
       <div className={styles.left}>
         <div className={styles.imgWrap}>
           {thumbnailMediaState == MediaState.Image && <img className={styles.thumbnail} src={thumbnailUrl} alt="" />}
@@ -594,6 +668,12 @@ const EpisodeComponent = ({
             />
           )}
           {isLock && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
+          {isUploading && (
+            <div className={styles.loadingOverlay}>
+              <div className={styles.spinner}></div>
+              <span>Uploading...</span>
+            </div>
+          )}
         </div>
 
         <div className={styles.name}>{name}</div>

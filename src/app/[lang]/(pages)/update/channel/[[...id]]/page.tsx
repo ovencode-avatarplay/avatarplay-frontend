@@ -1,4 +1,4 @@
-import CreateChannel from '../../../create/channel/page';
+import CreateChannel from '@/app/view/main/content/create/channel/CreateChannelMain';
 
 type Props = {
   params: {

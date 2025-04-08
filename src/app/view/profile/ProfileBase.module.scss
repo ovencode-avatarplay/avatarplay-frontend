@@ -132,7 +132,8 @@
 
           &.fan {
             // border: 1px solid var(--Neutral-500, #9AA0A6);
-            background: var(--Neutral-500, #9AA0A6);
+            color: var(--Neutral-700, #5f6368);
+            background: var(--Neutral-200, #e8eaed);
           }
         }
       }
@@ -457,19 +458,7 @@
       }
 
       .follow {
-        flex: 244;
-        border-radius: 8px;
-        background: var(--Neutral-800, #2C3131);
-
-        color: var(--White, #FFF);
-        font-feature-settings: 'liga' off, 'clig' off;
-        font-family: Lato;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-        /* 142.857% */
-        letter-spacing: -0.4px;
+        flex: 244; 
       }
 
       .gift {
@@ -479,6 +468,8 @@
         background: var(--White, #FFF);
 
         display: flex;
+        height: 36px;
+        padding: 8px 20px;
         align-items: center;
         justify-content: center;
         .icon{
@@ -499,42 +490,16 @@
       gap: 6px;
 
       &>* {
-        height: 36px;
-        cursor: pointer;
+        // height: 36px;
+        // cursor: pointer;
       }
 
       .subscribe {
-        flex: 115;
-        border-radius: 8px;
-        background: var(--Primary-1, #FD55D3);
-        /* Inner Button */
-        box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px -4px 4px 0px rgba(255, 255, 255, 0.20) inset;
-
-        color: var(--Grays-White, #FFF);
-        font-feature-settings: 'liga' off, 'clig' off;
-        font-family: Lato;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-        /* 142.857% */
-        letter-spacing: -0.4px;
+        flex: 115; 
       }
 
       .follow {
-        flex: 115;
-        border-radius: 8px;
-        background: var(--Neutral-800, #2C3131);
-
-        color: var(--Grays-White, #FFF);
-        font-feature-settings: 'liga' off, 'clig' off;
-        font-family: Lato;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-        /* 142.857% */
-        letter-spacing: -0.4px;
+        flex: 115; 
       }
 
       .giftWrap {
@@ -544,6 +509,8 @@
         border: 1px solid var(--Border-1, #EAECF0);
         background: var(--White, #FFF);
         display: flex;
+        height: 36px;
+        padding: 8px 20px;
         align-items: center;
         justify-content: center;
 
@@ -558,6 +525,11 @@
       .chat {
         flex: 61;
 
+        height: 36px;
+        padding: 0px 20px;
+        justify-content: center;
+        align-items: center;
+        
         border-radius: 8px;
         border: 1px solid var(--Border-1, #EAECF0);
         background: var(--White, #FFF);
@@ -574,7 +546,7 @@
           justify-content: center;
         }
       }
-    }
+    } 
 
 
   }

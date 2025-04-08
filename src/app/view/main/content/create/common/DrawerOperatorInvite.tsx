@@ -450,7 +450,13 @@ const OperatorInviteDrawer: React.FC<Props> = ({
               onChange={() => {}}
               customClassName={[styles.inviteInput]}
             />
-            <CustomButton size="Medium" state="Normal" type="Primary" onClick={handleCopyToClipboard}>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Primary"
+              onClick={handleCopyToClipboard}
+              customClassName={[styles.copyButton]}
+            >
               {getLocalizedText('common_button_copy')}
             </CustomButton>
           </div>

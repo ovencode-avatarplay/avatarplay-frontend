@@ -2,24 +2,10 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import styles from './ProfileDetail.module.scss';
-import {
-  BoldAI,
-  BoldArchive,
-  BoldComment,
-  BoldDislike,
-  BoldFollowers,
-  BoldHeart,
-  BoldLike,
-  BoldMenuDots,
-  BoldPin,
-  BoldVideo,
-  LineArchive,
-  LineArrowDown,
-  LineClose,
-} from '@ui/Icons';
+import {BoldArchive, BoldComment, BoldDislike, BoldFollowers, BoldLike, LineArchive, LineClose} from '@ui/Icons';
 import cx from 'classnames';
 import {useRouter} from 'next/navigation';
-import {GetCharacterInfoReq, GetCharacterInfoRes, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
+import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import Link from 'next/link';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
@@ -27,6 +13,7 @@ import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/Co
 import getLocalizedText from '@/utils/getLocalizedText';
 import useCustomRouter from '@/utils/useCustomRouter';
 import {COMMON_TAG_HEAD_TAG} from './ProfileBase';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 type Props = {
   profileId: number;
@@ -76,7 +63,10 @@ export const CharacterProfileDetailComponent = ({
     setData(v => ({...v, characterInfo: characterInfo, urlLinkKey: urlLinkKey}));
   }, [characterInfo, urlLinkKey]);
 
-  const metatags = data.characterInfo?.tag?.split(',') || [];
+  let metatags = data.characterInfo?.tag?.split(',') || [];
+  if (data.characterInfo?.tag == '') {
+    metatags = [];
+  }
   const characterImages = data.characterInfo?.mediaTemplateList || [];
   return (
     <>
@@ -261,9 +251,14 @@ export const CharacterProfileDetailComponent = ({
         </div> */}
       {/* <div className={styles.recentSetting}>Recent Setting</div> */}
       <Link href={getLocalizedLink(`/chat/?v=${data?.urlLinkKey}` || `?v=`)}>
-        <button className={cx(styles.startNewChat, !isPath && styles.embedded)}>
+        <CustomButton
+          size="Large"
+          state="Normal"
+          type="ColorPrimary"
+          customClassName={[cx(styles.startNewChat, !isPath && styles.embedded)]}
+        >
           {getLocalizedText('common_button_startnewchat')}
-        </button>
+        </CustomButton>
       </Link>
       {/* </section> */}
     </>

@@ -267,5 +267,12 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     </>
   );
 };
-
-export default ChatMessageBubble;
+export default React.memo(ChatMessageBubble, (prev, next) => {
+  return (
+    prev.text === next.text &&
+    prev.sender === next.sender &&
+    prev.id === next.id &&
+    prev.selectedIndex === next.selectedIndex &&
+    prev.lastMessage?.chatId === next.lastMessage?.chatId
+  );
+});
