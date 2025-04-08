@@ -46,6 +46,9 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
 import SelectDrawer, {SelectDrawerItem} from '../create/SelectDrawer';
 import {ConstructionOutlined} from '@mui/icons-material';
+import {VisibilityType} from '@/app/NetWork/ContentNetwork';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -314,6 +317,20 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     if (swiper.activeIndex === 1) setIsProfile(true);
     else if (swiper.activeIndex === 0) setIsProfile(false);
   };
+
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+  useEffect(() => {
+    if (swiperRef.current) {
+      if (item.profileVisibilityType != VisibilityType.Public) {
+        swiperRef.current.allowSlideNext = false;
+        swiperRef.current.allowSlidePrev = false;
+      } else {
+        swiperRef.current.allowSlideNext = true;
+        swiperRef.current.allowSlidePrev = true;
+      }
+    }
+  }, [item.profileVisibilityType]);
+
   return (
     <div className={styles.reelsContainer}>
       <Swiper
@@ -434,7 +451,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   borderRadius: item.profileType === ProfileType.Channel ? '10px' : '50%',
                 }}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                  if (item.profileVisibilityType === VisibilityType.Public) {
+                    pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                  } else {
+                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                  }
                 }}
               />
 
