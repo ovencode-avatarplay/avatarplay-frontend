@@ -1,0 +1,14 @@
+.scrollArea
+{
+    overflow-y: auto;
+    
+}
+.scrollArea::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollArea {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  

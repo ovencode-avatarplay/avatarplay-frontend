@@ -118,6 +118,8 @@ import LineWallet from "./Line/Wallet.svg";
 import LineNotification from "./Line/Notification.svg";
 import LineReward from "./Line/Reward.svg";
 import LineHome from "./Line/Home.svg";
+import LineFriendList from "./Line/FriendList.svg";
+import LineSearchThin from "./Line/Search_Thin.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -286,4 +288,6 @@ export {
   FacebookLogo,
   GoogleLogo,
   AppleLogo,
+  LineFriendList,
+  LineSearchThin,
 };

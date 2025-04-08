@@ -5,7 +5,7 @@ import ExploreFeaturedHeader from '../searchboard/searchboard-header/ExploreFeat
 import RewardGoods from './RewardGoods'; // 새로 만든 컴포넌트 불러오기
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import RewardContent from './RewardContent';
-import HeaderNavBarWhite from '../../header/header-nav-bar/HeaderNavBarWhite';
+import HeaderNavBarWhite from '../myContents/HeaderNavBarWhite';
 import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
