@@ -63,7 +63,10 @@ export const CharacterProfileDetailComponent = ({
     setData(v => ({...v, characterInfo: characterInfo, urlLinkKey: urlLinkKey}));
   }, [characterInfo, urlLinkKey]);
 
-  const metatags = data.characterInfo?.tag?.split(',') || [];
+  let metatags = data.characterInfo?.tag?.split(',') || [];
+  if (data.characterInfo?.tag == '') {
+    metatags = [];
+  }
   const characterImages = data.characterInfo?.mediaTemplateList || [];
   return (
     <>
