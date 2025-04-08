@@ -180,14 +180,14 @@ const ChatMessageMenuBottom: React.FC<ChatContextTopProps> = ({
       </button> */}
       {lastMessageId === id && isUserChat ? (
         <>
-          <button onClick={e => handleCopy(text, e)} className={styles.actionButton}>
+          <button onClick={e => handleCopy(text, e)} className={styles.actionButtonLast}>
             Copy
             <img className={styles.icon} src={Copy.src} />
           </button>
-          <button onClick={handleStartModifyQuestion} className={styles.actionButtonLast}>
-            Regenerate
-            <img className={styles.icon} src={Regenerate.src} />
-          </button>
+          {/* <button onClick={handleStartModifyQuestion} className={styles.actionButtonLast}>
+          Regenerate
+          <img className={styles.icon} src={Regenerate.src} />
+        </button> */}
         </>
       ) : (
         <button onClick={e => handleCopy(text, e)} className={styles.actionButtonLast}>
