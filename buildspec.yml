@@ -17,6 +17,10 @@ phases:
   build:
     commands:
       - echo Building the project...
+      # .env 파일 생성
+      - env | grep -v '^PWD=' | grep -v '^HOME=' | grep -v '^_=' | grep -v '^SHLVL=' > .env
+      - echo ".env file created:"
+      - cat .env
       - docker-compose -f docker-compose.dev.yml build
 
   post_build:
