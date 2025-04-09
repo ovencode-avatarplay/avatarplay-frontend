@@ -134,7 +134,9 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
         {/* 장르 및 공유 버튼 */}
         <div className={styles.genreShare}>
           <span className={styles.genres}>
-            {[singleInfo?.genre, ...(singleInfo?.tags ?? [])].filter(Boolean).join(' / ')}
+            {[getLocalizedText(singleInfo?.genre ?? ''), ...(singleInfo?.tags.map(v => getLocalizedText(v)) ?? [])]
+              .filter(Boolean)
+              .join(' / ')}
           </span>
 
           <button className={styles.iconButton} onClick={() => handleShare()}>

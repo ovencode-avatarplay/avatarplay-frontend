@@ -14,26 +14,21 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_URL}
-      - echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
-      - echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
-      - echo "DATABASE_URL=$DATABASE_URL" >> .env
-      - echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> .env
-      - echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
-      - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
-      - echo "NEXT_PUBLIC_CHAT_API_URL=$NEXT_PUBLIC_CHAT_API_URL" >> .env
-      - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY" >> .env
-      - echo "NEXT_PUBLIC_FRONT_URL=$NEXT_PUBLIC_FRONT_URL" >> .env
   build:
     commands:
       - echo Building the project...
-      - docker-compose -f docker-compose.dev.yml build
+      # .env 파일 생성
+      - env | grep -v '^PWD=' | grep -v '^HOME=' | grep -v '^_=' | grep -v '^SHLVL=' > .env
+      - echo ".env file created:"
+      - cat .env
+      - docker build -t avatarplay-front -f Dockerfile .
+      - docker tag avatarplay-front:latest ${ECR_URL}/${NAMESPACE}/${IMAGE_NAME}:latest
 
   post_build:
     commands:
       - echo Pushing the Docker image to Amazon ECR...
-      - docker push ${REPOSITORY} ${ECR_URL}/${IMAGE_NAME}:latest
+      - docker push ${ECR_URL}/${NAMESPACE}/${IMAGE_NAME}:latest
       - aws eks update-kubeconfig --region ap-northeast-2 --name ovencode
-      - kubectl set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${ECR_URL}/${IMAGE_NAME}:latest --namespace ${NAMESPACE}
 
 artifacts:
   files:
