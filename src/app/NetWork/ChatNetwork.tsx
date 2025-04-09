@@ -518,7 +518,7 @@ export const getChatting = async (req: GetChatReq): Promise<ResponseAPI<GetChatR
 
 export interface RequestAiQuestionReq {
   episodeId: number;
-  streamKey: string | undefined
+  streamKey: string | undefined;
 }
 
 export interface RequestAiQuestionRes {

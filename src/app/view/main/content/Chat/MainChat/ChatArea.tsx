@@ -13,6 +13,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ChatRetryButton from './ChatRetryButton';
 import ChatLoadingBubble from './ChatLoadingBubble';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
+import {sendStoryLike, StoryInteractionType, StoryLikeReq} from '@/app/NetWork/StoryNetwork';
 
 interface ChatAreaProps {
   messages: MessageGroup;
@@ -206,6 +207,35 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   };
   console.log('aiChatHeight', aiChatHeight);
   const isBlur = selectedBubbleIndex !== null;
+
+  const handleSendStoryLike = (id: number, like: boolean) => {
+    reqStoryChattingLike(id, like);
+  };
+
+  const reqStoryChattingLike = async (id: number, like: boolean) => {
+    const data: StoryLikeReq = {
+      type: StoryInteractionType.ChattingLike,
+      typeValueId: id, // Chat의 Id
+      isLike: like,
+    };
+
+    try {
+      const receive = await sendStoryLike(data);
+
+      if (receive.resultCode === 0) {
+        console.log('Success');
+      } else {
+        alert('Error');
+      }
+    } catch (error) {
+      alert('Error');
+    }
+  };
+
+  {
+    console.log(messages);
+    console.log(messages.Messages);
+  }
   return (
     <>
       <LoadingOverlay loading={loading} />
@@ -289,6 +319,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         e.stopPropagation();
                         handleBubbleClick(index);
                       }}
+                      onClickLike={handleSendStoryLike}
                       onTtsClick={e => {
                         e.stopPropagation();
                         handlePlayAudio(msg.text);

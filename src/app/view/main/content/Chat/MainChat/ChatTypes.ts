@@ -34,6 +34,7 @@ export interface MediaData {
 export interface MessageGroup {
   Messages: Message[];
   emoticonUrl: string[];
+  isLike?: boolean;
   mediaData?: MediaData[];
 }
 

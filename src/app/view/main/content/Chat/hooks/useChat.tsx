@@ -37,7 +37,12 @@ import usePrevChatting from '../MainChat/PrevChatting';
 
 const useChat = () => {
   const TempIdforSendQuestion: number = -222; // sendQuestion 할때 할당되지 않은 기본 값.
-  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({Messages: [], emoticonUrl: [], mediaData: []});
+  const [parsedMessages, setParsedMessages] = useState<MessageGroup>({
+    Messages: [],
+    emoticonUrl: [],
+    isLike: false,
+    mediaData: [],
+  });
   const parsedMessagesRef = useRef(parsedMessages);
   const [hasFetchedPrevMessages, setHasFetchedPrevMessages] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -99,6 +104,10 @@ const useChat = () => {
     setRenderComplete(isComplete);
   };
   const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
+
+  useEffect(() => {
+    setParsedMessages({Messages: [], emoticonUrl: [], isLike: false, mediaData: []});
+  }, []);
 
   useEffect(() => {
     if (parsedMessages.Messages.length > 0) {

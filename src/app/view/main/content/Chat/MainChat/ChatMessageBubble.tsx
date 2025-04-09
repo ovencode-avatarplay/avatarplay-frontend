@@ -1,19 +1,16 @@
-import {Avatar, Box, IconButton, Typography} from '@mui/material';
+import {Box} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from './ChatMessageBubble.module.css';
 // import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
 import {MediaData, Message, SenderType, TriggerMediaState} from './ChatTypes';
-import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
 import 'swiper/css/navigation';
-import {EffectCards} from 'swiper/modules';
 import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
 import ChatMediaDialog from './ChatMediaDialog';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import Visualizer from './Visualizer';
 import {checkChatSystemError} from '@/app/NetWork/ESystemError';
 import ImageGrid from './ImageGrid';
@@ -26,6 +23,7 @@ interface ChatMessageBubbleProps {
   index: number;
   emoticonUrl: string;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClickLike: (id: number, like: boolean) => void;
   onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   setSelectedNull: () => void;
   selectedIndex: number | null;
@@ -43,6 +41,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   index,
   emoticonUrl,
   onClick,
+  onClickLike,
   onTtsClick,
   setSelectedNull,
   selectedIndex,
@@ -135,7 +134,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               )}
               <Box className={styles.chatBubbleJustifyPartner}>
                 {selectedIndex === index && checkCanOpenContextTop() && (
-                  <ChatMessageMenuTop id={id} closeAction={() => setSelectedNull()} />
+                  <ChatMessageMenuTop id={id} onClickLike={onClickLike} closeAction={() => setSelectedNull()} />
                 )}
                 {sender !== 'media' && (
                   <div

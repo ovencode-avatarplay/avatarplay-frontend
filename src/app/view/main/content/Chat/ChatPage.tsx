@@ -116,8 +116,6 @@ const ChatPage: React.FC = () => {
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  console.log('1111 isLoading: ' + isLoading);
-
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
     isSendingMessage,
@@ -326,6 +324,7 @@ const ChatPage: React.FC = () => {
         const updateMessage = {
           Messages: allMessage,
           emoticonUrl: allEmoticon,
+          isLike: false,
           mediaData: allMedia,
         };
 
@@ -351,6 +350,7 @@ const ChatPage: React.FC = () => {
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
       const allMessages = [...(prev?.Messages || [])];
       const allEmoticon = [...(prev?.emoticonUrl || [])];
+      const isLike = false;
       const allMedia = [...(prev?.mediaData || [])];
 
       //return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
@@ -460,6 +460,7 @@ const ChatPage: React.FC = () => {
       return {
         Messages: allMessages,
         emoticonUrl: allEmoticon,
+        isLike: false,
         mediaData: allMedia, // 빈 배열로 기본값 설정
       };
     };

@@ -12,8 +12,6 @@ import {
 } from './ChatTypes';
 import {compareDates} from './NewDate';
 
-// ㅋㅋㅋㅋㅋㅋㅋㅋ
-
 //const patternParsing( pattern : RegExp, )
 
 const parseAnswer = (
@@ -210,7 +208,7 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
     }
 
     if (parsedMessage.Answer) {
-      result.push(...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDateString, createDate));
+      result.push(...parseAnswer(parsedMessage.Answer, chatType, id, createDateString, createDate));
     }
 
     return result;

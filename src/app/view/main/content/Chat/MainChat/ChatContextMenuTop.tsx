@@ -5,15 +5,18 @@ import {LikeOn, LikeOff} from '@ui/chatting';
 
 interface ChatContextTopProps {
   id: number;
+  onClickLike: (id: number, like: boolean) => void;
   closeAction: () => void;
 }
 
-const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id, closeAction}) => {
+const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id, onClickLike, closeAction}) => {
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLikeToggle = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    setIsLiked(prev => !prev);
+    let prevData = isLiked;
+    setIsLiked(!prevData);
+    onClickLike(id, !prevData);
     setTimeout(() => {
       closeAction();
     }, 300);
