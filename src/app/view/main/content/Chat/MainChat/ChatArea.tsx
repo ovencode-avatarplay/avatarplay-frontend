@@ -101,7 +101,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
   const handlePlayAudio = async (text: string) => {
     setloading(true);
-    const url = await GenerateTtsUrl(text, 'defaultVoice');
+    const url = await GenerateTtsUrl(text, 111, 'defaultVoice');
 
     setloading(false);
     setAudioUrl(url); // ChatTtsPlayer로 전달할 audioUrl 상태 업데이트
