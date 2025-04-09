@@ -365,7 +365,6 @@ export enum VisibilityType {
   Private = 0,
   Unlisted = 1,
   Public = 2,
-  Create = 3,
 }
 
 export interface GetContentListRes {
