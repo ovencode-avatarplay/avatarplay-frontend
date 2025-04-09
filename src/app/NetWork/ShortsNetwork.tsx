@@ -1,6 +1,7 @@
 // src/app/Network/ShortsNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
+import { VisibilityType } from './ContentNetwork';
 import {MediaState, ProfileType} from './ProfileNetwork';
 
 // 쇼츠 정보 타입
@@ -66,6 +67,7 @@ export interface FeedInfo {
   profileUrlLinkKey: string;
   isMyFeed: boolean;
   profileType?: ProfileType;
+  profileVisibilityType: VisibilityType;
 }
 
 export interface CreateFeedReq {
