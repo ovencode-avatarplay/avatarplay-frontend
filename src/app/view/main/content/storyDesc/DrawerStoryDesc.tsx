@@ -126,7 +126,6 @@ const DrawerContentDesc = () => {
       const receive = await sendStoryLike(data);
 
       if (receive.resultCode === 0) {
-        console.log('Success');
         setIsLike(like);
       } else {
         alert('Error');
@@ -365,7 +364,6 @@ const DrawerContentDesc = () => {
               <button
                 className={`${styles.contentButton}`}
                 onClick={() => {
-                  console.log('aaa');
                   handleSendStoryLike();
                 }}
               >
