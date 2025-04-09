@@ -1211,7 +1211,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       <div className={styles.genreRow}>
                         {' '}
                         <span className={styles.genres}>
-                          {[episodeListData?.genre, ...(episodeListData?.tags ?? [])].filter(Boolean).join(' / ')}
+                          {[
+                            getLocalizedText(episodeListData?.genre ?? ''),
+                            ...(episodeListData?.tags.map(v => getLocalizedText(v)) ?? []),
+                          ]
+                            .filter(Boolean)
+                            .join(' / ')}
                         </span>
                       </div>
                     </div>
