@@ -304,7 +304,9 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
         {/* 장르 및 공유 버튼 */}
         <div className={styles.genreShare}>
           <span className={styles.genres}>
-            {[contentInfo?.genre, ...(contentInfo?.tags ?? [])].filter(Boolean).join(' / ')}
+            {[getLocalizedText(contentInfo?.genre ?? ''), ...(contentInfo?.tags.map(v => getLocalizedText(v)) ?? [])]
+              .filter(Boolean)
+              .join(' / ')}
           </span>
           <button className={styles.iconButton} onClick={() => handleShare()}>
             <img src={BoldShare.src} alt="Share" />
