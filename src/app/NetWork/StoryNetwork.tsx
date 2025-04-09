@@ -70,6 +70,7 @@ export interface GetStoryByIdRes {
   chatCount: number;
   chatUserCount: number;
   urlLinkKey: string;
+  isLike: boolean;
   publishInfo: PublishInfo;
   chapterInfoList: ChapterInfoForStoryGet[];
   recommandStoryInfoList: recommendStoryInfo[];

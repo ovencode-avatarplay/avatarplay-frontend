@@ -16,7 +16,15 @@ import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 // Network
-import {GetStoryByIdReq, GetStoryByIdRes, sendStoryByIdGet, recommendStoryInfo} from '@/app/NetWork/StoryNetwork';
+import {
+  GetStoryByIdReq,
+  GetStoryByIdRes,
+  sendStoryByIdGet,
+  recommendStoryInfo,
+  StoryLikeReq,
+  StoryInteractionType,
+  sendStoryLike,
+} from '@/app/NetWork/StoryNetwork';
 
 // Css
 import styles from './DrawerStoryDesc.module.css';
@@ -68,6 +76,9 @@ const DrawerContentDesc = () => {
   const [authorName, setAuthorName] = useState('authorName');
   const [chatCount, setChatCount] = useState(0);
   const [chatUserCount, setChatUserCount] = useState(0);
+
+  const [isLike, setIsLike] = useState(false);
+
   const [tagList, setTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [selectTagList, setSelectTaglist] = useState<string[]>(['tag1', 'tag2']);
   const [authorComment, setAuthorComment] = useState('authorComment');
@@ -100,6 +111,31 @@ const DrawerContentDesc = () => {
     setContentDescExpanded(!contentDescExpanded);
   };
 
+  const handleSendStoryLike = () => {
+    reqStoryLike(contentId, !isLike);
+  };
+
+  const reqStoryLike = async (id: number, like: boolean) => {
+    const data: StoryLikeReq = {
+      type: StoryInteractionType.StoryLike,
+      typeValueId: id, // Chat의 Id
+      isLike: like,
+    };
+
+    try {
+      const receive = await sendStoryLike(data);
+
+      if (receive.resultCode === 0) {
+        console.log('Success');
+        setIsLike(like);
+      } else {
+        alert('Error');
+      }
+    } catch (error) {
+      alert('Error');
+    }
+  };
+
   useEffect(() => {
     const chattingState: ChattingState = {
       storyName: currentChattingState.storyName || '',
@@ -122,6 +158,7 @@ const DrawerContentDesc = () => {
       setAuthorComment(contentWholeDesc.publishInfo.authorComment);
       setChatCount(contentWholeDesc.chatCount);
       setChatUserCount(contentWholeDesc.chatUserCount);
+      setIsLike(contentWholeDesc.isLike);
       setTaglist(contentWholeDesc.publishInfo.tagList); // SelectTag가 맞음 //아님 전체 Tag가 맞고 SelectTag는 따로 있음
       setSelectTaglist(contentWholeDesc.publishInfo.selectTagList); // SelectTag가 맞음 //아님 전체 Tag가 맞고 SelectTag는 따로 있음
       if (contentWholeDesc.chapterInfoList) {
@@ -325,9 +362,15 @@ const DrawerContentDesc = () => {
                 </div>
               </button>
               <div className={styles.contentDivider} />
-              <button className={styles.contentButton}>
+              <button
+                className={`${styles.contentButton}`}
+                onClick={() => {
+                  console.log('aaa');
+                  handleSendStoryLike();
+                }}
+              >
                 <div className={styles.contentButtonItem}>
-                  <img className={styles.buttonIcon} src={BoldLike.src} />
+                  <img className={`${styles.buttonIcon}  ${isLike ? styles.isLike : ''}`} src={BoldLike.src} />
                   Rate
                 </div>
               </button>
