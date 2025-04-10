@@ -28,7 +28,7 @@ export default function CallingScreen({ onAccept, onDeny, isHangOn } : Props) {
             audioRef.current.currentTime = 0;
             }
             setVisible(false);
-          }, 10000); // 10초 후 정지
+          }, 60000); // 10초 후 정지
 
         return () => {
             // 컴포넌트 언마운트 시 정지
