@@ -1,0 +1,144 @@
+.container {
+    display: flex;
+    align-items: center;
+    padding: 0px 10px 0px 0px;
+    height: 58px;
+    background: #ffffff;
+    gap: 2px;
+  }
+  
+  /* ← 아이콘 */
+  .iconLeft {
+    display: flex;
+    align-items: center;
+    padding: 14px 0 14px 16px;
+    width: 36px;
+    height: 40px;
+    cursor: pointer;
+  }
+  
+  .arrowIcon {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) saturate(100%)
+  }
+  
+  /* 입력 영역 전체 */
+  .inputArea {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 46px;
+  }
+  
+  .inputBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 46px;
+    padding: 0 12px 0 20px;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 999px;
+  }
+  
+  .input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+    color: #000000; /* ← 텍스트 색상 (검정) */
+  }
+  
+  /* 어덜트 토글 */
+  .adultToggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 32px;
+    height: 30px;
+    cursor: pointer;
+  }
+  
+  .toggleBase {
+    width: 32px;
+    height: 16px;
+    background: #ffe6f8;
+    border-radius: 12px;
+    position: relative;
+  }
+  
+  .toggleButton {
+    width: 12.8px;
+    height: 12.8px;
+    background: #fd55d3;
+    position: absolute;
+    top: 1.6px;
+    left: 1.6px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
+  }
+  
+  .toggleButton.on {
+    left: auto;
+    right: 1.6px;
+  }
+  
+  .adultLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fd55d3;
+  }
+  
+  /* 필터 버튼 */
+  .filterIconWrap {
+    margin-left: 8px;
+    position: relative;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+  }
+  
+
+  .filterIcon {
+    width: 100%;
+    height: 100%;
+  }
+  .clearIcon
+  {
+    filter: brightness(0) saturate(100%) invert(77%) sepia(0%) saturate(1552%) hue-rotate(72deg) brightness(98%) contrast(101%);
+    display: flex;
+    width: 15px;
+    height: 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    transform: rotate(1035deg);
+  }
+  .clearButton {
+    background: #e8eaed;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    color: #5f6368;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+    cursor: pointer;
+  }
+  
+  .buttonBox
+  {display: flex;
+    gap:8px;
+    align-items: center;
+  }

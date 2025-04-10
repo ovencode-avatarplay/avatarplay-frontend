@@ -1,18 +1,18 @@
 import React, {useState} from 'react';
-import styles from './CharacterChat.module.css';
-import MessageTagList, {MessageTagType} from './MessageTagList';
-import MessageProfile, {BadgeType, CheckType, FollowState} from './MessageProfile';
-import FilterBar from './FilterBar';
-
+import styles from './Styles.module.css';
+import MessageProfile, {BadgeType, CheckType, FollowState} from '../01_Layout/MessageProfile';
+import FilterBar from '../FilterBar';
+import MessageTagList from '../01_Layout/MessageTagList';
+const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
 interface Props {
   name?: string;
 }
 
-const CharacterChat: React.FC<Props> = ({name}) => {
-  const [selectedTag, setSelectedTag] = useState<MessageTagType>(MessageTagType.All);
+const DMChat: React.FC<Props> = ({name}) => {
+  const [selectedTag, setSelectedTag] = useState(tags[0]);
   return (
     <>
-      <MessageTagList onTagChange={setSelectedTag} />
+      <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
       <FilterBar
         filters={['Original', 'Fan']}
         sortOptions={['Newest', 'Oldest']}
@@ -36,4 +36,4 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   );
 };
 
-export default CharacterChat;
+export default DMChat;

@@ -1,12 +1,8 @@
 import React, {useState} from 'react';
-import MessageTabMenu, {MessageTabType} from './MessageTabMenu';
-import MessageTagList, {MessageTagType} from './MessageTagList';
 import styles from './MessageMain.module.css';
-import MessageProfile from './MessageProfile';
-import Splitters, {Splitter} from '@/components/layout/shared/CustomSplitter';
-import {LineSearch} from '@ui/Icons';
 import HeaderNavBarWhite from './HeaderNavBarWhite';
-import CharacterChat from './CharacterChat';
+import CharacterChat from './02_ChatList/CharacterChat';
+import DMChat from './02_ChatList/DMChat';
 
 const tabItems = ['Character Chat', 'DM', 'AI Help'];
 const MessageMain: React.FC = () => {
@@ -27,7 +23,7 @@ const MessageMain: React.FC = () => {
           ))}
         </div>
         {activeIndex === 0 && <CharacterChat></CharacterChat>}
-        {activeIndex === 1 && <></>}
+        {activeIndex === 1 && <DMChat></DMChat>}
         {activeIndex === 2 && <></>}
       </div>
     </>
