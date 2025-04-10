@@ -16,12 +16,13 @@ import useCustomRouter from '@/utils/useCustomRouter';
 interface ChatTopBarProps {
   onBackClick: () => void;
   onMoreClick: () => void;
+  onLiveChatClick: () => void;
   iconUrl: string;
   isHideChat: boolean;
   isBlurOn: boolean;
 }
 
-const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, isHideChat, isBlurOn}) => {
+const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onLiveChatClick, iconUrl, isHideChat, isBlurOn}) => {
   const {back} = useCustomRouter();
   const router = useRouter();
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
@@ -65,6 +66,10 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, iconUrl, i
               </div>
             </div>
             <div className={styles.topButtonBox}>
+            <IconButton className={styles.button} onClick={onLiveChatClick}>
+                <img className={styles.buttonImage} src={Image.src} />
+              </IconButton>
+
               <IconButton className={styles.button}>
                 <img className={styles.buttonImage} src={Image.src} />
               </IconButton>
