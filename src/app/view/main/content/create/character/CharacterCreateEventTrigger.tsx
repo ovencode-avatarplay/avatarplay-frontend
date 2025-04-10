@@ -26,7 +26,12 @@ import {
   LineTime,
 } from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {CharacterEventTriggerInfo, CharacterEventTriggerType, EmotionState} from '@/app/NetWork/CharacterNetwork';
+import {
+  CharacterEventTriggerInfo,
+  CharacterEventTriggerType,
+  EmotionState,
+  GetStarType,
+} from '@/app/NetWork/CharacterNetwork';
 import React, {useState} from 'react';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
@@ -214,12 +219,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
             ) : item.elapsedTime !== undefined ? (
               <div className={styles.triggerSummaryBox}>
                 <img className={styles.triggerSummaryIcon} src={LineTime.src} />
-                <div className={styles.triggerSummaryText}>{'30m'}</div>
+                <div className={styles.triggerSummaryText}>{item.elapsedTime + 'h'}</div>
               </div>
             ) : item.getStar !== undefined ? (
               <div className={styles.triggerSummaryBox}>
                 <img className={styles.triggerSummaryIcon} src={BoldStar.src} />
-                <div className={styles.triggerSummaryText}>{400}</div>
+                <div className={styles.triggerSummaryText}>{item.getStar}</div>
               </div>
             ) : (
               ''
@@ -416,7 +421,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={1}
+                value={item.probability || 0}
                 onlyNumber={true}
                 onChange={() => {}}
                 customClassName={[styles.inputNumberArea]}
@@ -427,7 +432,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={'asdf'}
+                value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
                 onChange={() => {}}
                 customClassName={[styles.inputTextArea]}
@@ -450,7 +455,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={1}
+                value={item.probability || 0}
                 onlyNumber={true}
                 onChange={() => {}}
                 customClassName={[styles.inputNumberArea]}
@@ -461,7 +466,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={'asdf'}
+                value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
                 onChange={() => {}}
                 customClassName={[styles.inputTextArea]}
@@ -471,11 +476,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
         ) : item.triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`Elapsed Time (minute)`)}</div>
+              <div className={styles.label}>{getLocalizedText(`Elapsed Time (hour)`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={1}
+                value={item.elapsedTime || 0}
                 onlyNumber={true}
                 onChange={() => {}}
                 customClassName={[styles.inputNumberArea]}
@@ -486,7 +491,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={'asdf'}
+                value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
                 onChange={() => {}}
                 customClassName={[styles.inputTextArea]}
@@ -500,7 +505,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={1}
+                value={item.elapsedTime || 0}
                 onlyNumber={true}
                 onChange={() => {}}
                 customClassName={[styles.inputNumberArea]}
@@ -511,7 +516,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={'asdf'}
+                value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
                 onChange={() => {}}
                 customClassName={[styles.inputTextArea]}
@@ -528,7 +533,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                   label="Total"
                   shapeType="circle"
                   value={0}
-                  selectedValue={0}
+                  selectedValue={item.getType === GetStarType.Accumulated ? 0 : 1}
                   onSelect={() => {}}
                 />
                 <CustomRadioButton
@@ -536,7 +541,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                   label="Once"
                   shapeType="circle"
                   value={1}
-                  selectedValue={0}
+                  selectedValue={item.getType === GetStarType.Accumulated ? 0 : 1}
                   onSelect={() => {}}
                 />
               </div>
@@ -547,7 +552,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 <CustomInput
                   inputType="RightIcon"
                   textType="InputOnly"
-                  value={1}
+                  value={item.getStar || 0}
                   iconRight={<div className={styles.greaterThan}>≥</div>}
                   onlyNumber={true}
                   onChange={() => {}}
@@ -561,7 +566,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
-                value={'asdf'}
+                value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
                 onChange={() => {}}
                 customClassName={[styles.inputTextArea]}
