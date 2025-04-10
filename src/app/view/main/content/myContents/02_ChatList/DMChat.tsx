@@ -3,6 +3,7 @@ import styles from './Styles.module.css';
 import MessageProfile, {BadgeType, CheckType, FollowState} from '../01_Layout/MessageProfile';
 import FilterBar from '../FilterBar';
 import MessageTagList from '../01_Layout/MessageTagList';
+import Chat from '../04_Chat/Chat';
 const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
 interface Props {
   name?: string;
@@ -10,6 +11,7 @@ interface Props {
 
 const DMChat: React.FC<Props> = ({name}) => {
   const [selectedTag, setSelectedTag] = useState(tags[0]);
+  const [openChat, setOpenChat] = useState(false);
   return (
     <>
       <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
@@ -29,9 +31,11 @@ const DMChat: React.FC<Props> = ({name}) => {
           badgeType={BadgeType.Fan}
           followState={FollowState.Following}
           isHighlight={true}
+          onClick={() => setOpenChat(true)}
         />
         <div style={{height: 'calc(48px + 2px)'}}></div>
       </div>
+      <Chat open={openChat} onClose={() => setOpenChat(false)} />
     </>
   );
 };

@@ -13,6 +13,7 @@ interface Props {
   isOption?: boolean;
   isPin?: boolean;
   isHighlight?: boolean;
+  onClick: () => void;
 }
 
 export enum BadgeType {
@@ -46,6 +47,7 @@ const MessageProfile: React.FC<Props> = ({
   isOption = false,
   isPin = false,
   isHighlight = false,
+  onClick,
 }) => {
   const renderBadge = () => {
     if (badgeType === BadgeType.Fan) {
@@ -102,7 +104,12 @@ const MessageProfile: React.FC<Props> = ({
       </div>
 
       {/* 프로필 정보 */}
-      <div className={styles.profileInfo}>
+      <div
+        className={styles.profileInfo}
+        onClick={() => {
+          onClick();
+        }}
+      >
         <div className={styles.profileTop}>
           <span className={styles.profileName}>{profileName}</span>
           {renderBadge()}

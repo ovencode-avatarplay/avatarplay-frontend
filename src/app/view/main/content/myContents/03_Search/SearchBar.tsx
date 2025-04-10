@@ -1,6 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './SearchBar.module.css';
-import {BoldFilter, LineArrowLeft, LineDelete, LinePlus} from '@ui/Icons';
+import {BoldFilter, BoldFilterOn, LineArrowLeft, LineDelete, LinePlus} from '@ui/Icons';
+import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {searchOptionList} from '../../searchboard/SearchBoard';
 
 interface Props {
   onBack?: () => void;
@@ -11,7 +14,35 @@ interface Props {
 
 const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, onFocusChange}) => {
   const [isAdult, setIsAdult] = useState(true);
+  const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
+  useEffect(() => {
+    const items = searchOptionList.map(name => ({
+      name: getLocalizedText(name),
+      state: 'empty', // 초기 상태 설정
+    }));
+    setFilterItem(items);
+  }, []);
+  // Filter State
+  const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
+  const [negativeFilters, setNegativeFilters] = useState<FilterDataItem[]>([]);
+  const handleSave = (filters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => {
+    setPositiveFilters(filters.positive);
+    setNegativeFilters(filters.negative);
+
+    setFilterItem(prevFilterItem =>
+      prevFilterItem.map(item => {
+        if (filters.positive.some(filter => filter.name === item.name)) {
+          return {...item, state: 'selected'};
+        }
+        if (filters.negative.some(filter => filter.name === item.name)) {
+          return {...item, state: 'remove'};
+        }
+        return {...item, state: 'empty'};
+      }),
+    );
+  };
 
   const handleClear = () => {
     setSearchText('');
@@ -62,9 +93,25 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
       </div>
 
       {/* 필터 아이콘 */}
-      <div className={styles.filterIconWrap} onClick={onFilterClick}>
-        <img src={BoldFilter.src} alt="filter" className={styles.filterIcon} />
+      <div
+        className={styles.filterIconWrap}
+        onClick={() => {
+          console.log('asdasd');
+          setFilterDialogOn(true);
+        }}
+      >
+        {positiveFilters.length > 0 || negativeFilters.length > 0 ? (
+          <img src={BoldFilterOn.src} alt="filter" className={styles.filterIcon} />
+        ) : (
+          <img src={BoldFilter.src} alt="filter" className={styles.filterIcon} />
+        )}
       </div>
+      <FilterSelector
+        filterData={filterItem}
+        onSave={handleSave}
+        open={filterDialogOn}
+        onClose={() => setFilterDialogOn(false)}
+      />
     </div>
   );
 };

@@ -1,0 +1,63 @@
+import React, {useState} from 'react';
+import styles from './Chat.module.css';
+import ChatHeader from './ChatHeader';
+import ChatArea from './ChatArea';
+import ChatBottom from './ChatBottom';
+import {Modal, Box} from '@mui/material';
+
+interface Message {
+  id: number;
+  sender: 'me' | 'other';
+  content: string;
+  timestamp: string;
+  isItalic?: boolean;
+}
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+
+const Chat: React.FC<Props> = ({open, onClose}) => {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      sender: 'other',
+      content: 'I am the Guuji of the Grand Narukami Shrine. The purpose of my visit is to monitor your every move...',
+      timestamp: '8:00 am',
+    },
+    {
+      id: 2,
+      sender: 'me',
+      content: 'Ah, Guuji of the Grand Narukami Shrine! Your presence is as radiant as a cherry blossom in full bloom.',
+      timestamp: '8:05 am',
+    },
+  ]);
+
+  const handleSend = (text: string) => {
+    const newMessage: Message = {
+      id: messages.length + 1,
+      sender: 'me',
+      content: text,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+    setMessages(prev => [...prev, newMessage]);
+  };
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box className={styles.modalBox}>
+        <div className={styles.container}>
+          <ChatHeader />
+          <ChatArea messages={messages} />
+          <ChatBottom onSend={handleSend} />
+        </div>
+      </Box>
+    </Modal>
+  );
+};
+
+export default Chat;

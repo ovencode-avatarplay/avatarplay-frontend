@@ -1,0 +1,72 @@
+.chatArea {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.messageWrapper {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 100%;
+}
+
+.left {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.right {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.bubbleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 70%;
+}
+
+.bubble {
+  padding: 8px 12px;
+  border-radius: 0px 12px 12px 12px;
+  backdrop-filter: blur(7.5px);
+  font-size: 14px;
+  line-height: 140%;
+  word-break: break-word;
+  font-family: 'Lato', sans-serif; /* 혹은 Pretendard 등 사용 중인 기본체 */
+}
+
+.otherBubble {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.myBubble {
+  background: rgba(242, 130, 214, 0.6);
+  color: #000;
+  transform: scaleX(-1);
+}
+
+.myBubble p {
+  transform: scaleX(-1);
+}
+
+.italic {
+  font-style: italic;
+}
+
+.timestamp {
+  font-size: 11px;
+  color: #2c3131;
+  align-self: flex-end;
+}
+.gapSmall {
+  margin-top: 4px;
+}
+
+.gapLarge {
+  margin-top: 30px;
+}

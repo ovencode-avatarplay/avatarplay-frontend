@@ -1,0 +1,56 @@
+.messageWrapper {
+    display: flex;
+    width: 100%;
+    
+  }
+  
+  .left {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  
+  .right {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  
+  .bubbleBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 70%;
+  }
+  
+  .bubble {
+    padding: 8px 12px;
+    max-width: 260px;
+    word-break: break-word;
+    border-radius: 0px 12px 12px 12px;
+    backdrop-filter: blur(7.5px);
+  }
+  
+  .otherBubble {
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+  }
+  
+  .myBubble {
+    background: rgba(242, 130, 214, 0.6);
+    color: #000000;
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+  }
+  
+  .myBubble p {
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+  }
+  
+  .timestamp {
+    font-size: 11px;
+    color: #2c3131;
+    padding-left: 4px;
+  }
+  
+  .italic {
+    font-style: italic;
+  }
+  

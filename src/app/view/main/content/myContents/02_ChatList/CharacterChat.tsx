@@ -30,6 +30,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
           badgeType={BadgeType.Fan}
           followState={FollowState.Following}
           isHighlight={true}
+          onClick={() => {}}
         />
         <div style={{height: 'calc(48px + 2px)'}}></div>
       </div>
