@@ -1,7 +1,7 @@
 // src/app/Network/ShortsNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
-import {VisibilityType} from './ContentNetwork';
+import { VisibilityType } from './ContentNetwork';
 import {MediaState, ProfileType} from './ProfileNetwork';
 
 // 쇼츠 정보 타입
