@@ -667,6 +667,7 @@ const ChatPage: React.FC = () => {
 
   const handleOnAccept = () => {
     setShowLiveChat(false);
+    setHangOn(false);
   }
 
   const handleOnDeny = () => {
