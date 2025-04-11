@@ -70,6 +70,7 @@ export interface GetStoryByIdRes {
   chatCount: number;
   chatUserCount: number;
   urlLinkKey: string;
+  isLike: boolean;
   publishInfo: PublishInfo;
   chapterInfoList: ChapterInfoForStoryGet[];
   recommandStoryInfoList: recommendStoryInfo[];
@@ -218,5 +219,45 @@ export const sendGetTagList = async (payload: GetTagListReq): Promise<ResponseAP
     }
   } catch (error: any) {
     throw new Error(`Failed to send getTagList.`);
+  }
+};
+
+export enum StoryInteractionType {
+  StoryLike = 0,
+  ChattingLike = 1,
+}
+export enum StoryInteractionState {
+  Create = 1,
+  Delete = 2,
+}
+
+export interface StoryLikeReq {
+  type: StoryInteractionType;
+  typeValueId: number; // 각각 Story, Chat의 Id
+  messageIndex: number;
+  isLike: boolean;
+}
+
+export interface StoryLikeRes {
+  // empty
+}
+
+export const sendStoryLike = async (req: StoryLikeReq): Promise<ResponseAPI<StoryLikeRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<StoryLikeRes>>('Story/like', req);
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      // ResultCode별 에러 처리
+      switch (response.data.resultCode) {
+        default:
+          alert('Unknown Error: 예상치 못한 에러가 발생했습니다.');
+      }
+      throw new Error(response.data.resultMessage);
+    }
+  } catch (error) {
+    console.error('Error sendStoryLike:', error);
+    throw new Error('Failed to sendStoryLike. Please try again.');
   }
 };

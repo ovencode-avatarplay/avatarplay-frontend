@@ -245,6 +245,7 @@ const FooterChat: React.FC<FooterChatProps> = ({
         onUpdateChatBarCount={onUpdateChatBarCount}
         onUpdateAiBarCount={onUpdateAiChatBarCount}
         onRemoveChat={onRemoveChat}
+        inputRef={null}
       />
       {isExpanded && !isStickerOpen && (
         <Box display="flex" marginTop={1} gap={1}>

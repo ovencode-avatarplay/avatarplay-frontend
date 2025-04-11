@@ -724,7 +724,7 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
               size="Medium"
               type="Primary"
               state="Normal"
-              //  type="submit"
+              buttonType="submit"
               customClassName={[styles.submitBtn]}
             >
               {getLocalizedText('common_button_submit')}
@@ -1056,6 +1056,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               size="Medium"
               state="Normal"
               type="Tertiary"
+              buttonType="submit"
               //  type="submit"
               customClassName={[styles.cancelBtn]}
             >
@@ -1065,6 +1066,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               size="Medium"
               state="Normal"
               type="Primary"
+              buttonType="submit"
               // type="submit"
               customClassName={[styles.saveBtn]}
             >

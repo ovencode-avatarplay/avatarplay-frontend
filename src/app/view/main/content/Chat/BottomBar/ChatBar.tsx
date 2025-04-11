@@ -20,6 +20,7 @@ interface ChatBarProps {
   onUpdateChatBarCount: (count: number) => void;
   onUpdateAiBarCount: (count: number) => void;
   onRemoveChat: (removeId: number) => void;
+  inputRef: any;
 }
 
 const ChatBar: React.FC<ChatBarProps> = ({
@@ -34,6 +35,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   onUpdateChatBarCount,
   onUpdateAiBarCount,
   onRemoveChat,
+  inputRef
 }) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
@@ -267,6 +269,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
             <img src={BotMessage.src} onClick={() => toggleIcon(id)} className={styles.inputButton} />
           )}
           <TextField
+            ref={inputRef}
             placeholder="Type your message..."
             onFocus={handleFocus}
             value={inputValues[id]}

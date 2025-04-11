@@ -4,6 +4,7 @@ import styles from './CustomButton.module.css';
 type Size = 'Large' | 'Medium' | 'Small' | 'XSmall';
 type State = 'Normal' | 'IconLeft' | 'IconRight' | 'Icon';
 type Type = 'ColorPrimary' | 'ColorSecondary' | 'Primary' | 'Secondary' | 'Tertiary';
+type ButtonType = 'button' | 'submit' | 'reset' | undefined;
 
 interface CustomButtonProps {
   size: Size;
@@ -16,6 +17,7 @@ interface CustomButtonProps {
   iconClass?: string;
   style?: React.CSSProperties;
   customClassName?: string[];
+  buttonType?: ButtonType;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -29,6 +31,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   iconClass,
   style,
   customClassName = [],
+  buttonType = 'button',
 }) => {
   const sizeClass = styles[`size${size}`];
   const typeClass = styles[`type${type}`];
@@ -47,7 +50,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   ].join(' ');
 
   return (
-    <button type="button" className={combinedClassName} onClick={onClick} disabled={isDisabled} style={style}>
+    <button type={buttonType} className={combinedClassName} onClick={onClick} disabled={isDisabled} style={style}>
       {state === 'IconLeft' && <img className={`${styles.buttonIcon} ${iconClass}`} src={icon} />}
       {state !== 'Icon' && children}
       {state === 'IconRight' && <img className={`${styles.buttonIcon} ${iconClass}`} src={icon} />}
