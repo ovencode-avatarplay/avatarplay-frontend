@@ -259,6 +259,12 @@
         justify-content: center;
 
         .iconProfileEdit {}
+
+        .Edit {
+          filter: brightness(0) saturate(100%);
+          width: 12px;
+          height: 12px;
+        }
       }
     }
 
