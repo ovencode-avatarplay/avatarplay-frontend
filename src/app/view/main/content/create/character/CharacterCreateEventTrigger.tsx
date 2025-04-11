@@ -36,6 +36,7 @@ import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
+import {Box, Modal} from '@mui/material';
 
 interface Props {
   eventTriggerItems: CharacterEventTriggerInfo[];
@@ -43,7 +44,7 @@ interface Props {
   onEditEventTrigger: (updatedTrigger: CharacterEventTriggerInfo) => void;
   onDuplicateEventTrigger: (item: CharacterEventTriggerInfo) => void;
   onDeleteEventTrigger: (id: number) => void;
-  onClickEditMedia: () => void;
+  onClickEditMedia: (id: number) => void;
 }
 
 const CharacterCreateEventTrigger: React.FC<Props> = ({
@@ -137,6 +138,21 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
     mediaByTimeTriggers.length === 0 ||
     messageByTimeTriggers.length === 0 ||
     mediaByStarsTriggers.length === 0;
+
+  const getDesc = (triggerType: CharacterEventTriggerType) => {
+    switch (triggerType) {
+      case CharacterEventTriggerType.ChangeBackgroundByEmotion:
+      case CharacterEventTriggerType.SendMediaByEmotion:
+      case CharacterEventTriggerType.SendMediaByElapsedTime:
+      case CharacterEventTriggerType.SendMediaByGotStars:
+        return 'common_desc_mediatrigger';
+        break;
+
+      case CharacterEventTriggerType.SendMessageByElapsedTime:
+        return 'common_desc_meesagetrigger';
+        break;
+    }
+  };
   //#endregion
 
   //#region Render
@@ -163,9 +179,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
   const renderEventTriggerBase = () => {
     return (
       <div className={styles.eventTriggerBase}>
-        {renderEventTriggerHeader(
-          formatText(getLocalizedText('TODO : You can add various media while chatting with the characters. ')),
-        )}
+        {renderEventTriggerHeader(formatText(getLocalizedText('eventtrigger001_desc_002')))}
 
         <div className={styles.eventTriggerItemArea}>
           {hasEmptyTriggerType && (
@@ -180,7 +194,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               icon={LinePlus.src}
               customClassName={[styles.eventTriggerAddButton]}
             >
-              {getLocalizedText('TODO : Add Trigger')}
+              {getLocalizedText('eventtrigger001_btn_003')}
             </CustomButton>
           )}
 
@@ -311,31 +325,46 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
   //#region TriggerTypeSelect (AddTrigger)
   const renderEventTriggerTypeSelection = () => {
     return (
-      <div className={styles.eventTriggerTypeSelect}>
-        <div className={styles.typeSelectHeader}>
-          <button
-            className={styles.typeSelectBackButton}
-            onClick={() => {
-              setCurrentState(0);
-              setSelectedTriggerType(null);
-            }}
-          >
-            <img className={styles.backIcon} src={LineArrowLeft.src} />
-          </button>
-          <div className={styles.typeSelectTitle}>{getLocalizedText('TODO : Add Trigger')}</div>
-        </div>
-        <div className={styles.typeSelectContainer}>
-          <div className={styles.searchArea}></div>
-          <div className={styles.typeTabSwiper}></div>
-          <div className={styles.typeButtonList}>
-            {backgroundTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.ChangeBackgroundByEmotion)}
-            {mediaByEmotionTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByEmotion)}
-            {mediaByTimeTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByElapsedTime)}
-            {messageByTimeTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
-            {mediaByStarsTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
+      <Modal
+        className={styles.modal}
+        open={currentState === 1}
+        onClose={() => {
+          setCurrentState(0);
+          setSelectedTriggerType(null);
+        }}
+        aria-labelledby="add-trigger-modal"
+        aria-describedby="add-new-trigger-selection"
+      >
+        <Box className={styles.modalContainer}>
+          <div className={styles.eventTriggerTypeSelect}>
+            <div className={styles.typeSelectHeader}>
+              <button
+                className={styles.typeSelectBackButton}
+                onClick={() => {
+                  setCurrentState(0);
+                  setSelectedTriggerType(null);
+                }}
+              >
+                <img className={styles.backIcon} src={LineArrowLeft.src} />
+              </button>
+              <div className={styles.typeSelectTitle}>{getLocalizedText('eventtrigger001_btn_003')}</div>
+            </div>
+            <div className={styles.typeSelectContainer}>
+              <div className={styles.searchArea}></div>
+              <div className={styles.typeTabSwiper}></div>
+              <div className={styles.typeButtonList}>
+                {backgroundTriggers.length === 0 &&
+                  renderTypeButton(CharacterEventTriggerType.ChangeBackgroundByEmotion)}
+                {mediaByEmotionTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByEmotion)}
+                {mediaByTimeTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByElapsedTime)}
+                {messageByTimeTriggers.length === 0 &&
+                  renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
+                {mediaByStarsTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </Box>
+      </Modal>
     );
   };
 
@@ -394,16 +423,9 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             <div className={styles.detailTitle}>{getLocalizedText('TODO : ' + triggerType.toString())}</div>
           </div>
         </div>
-        {renderEventTriggerHeader(
-          formatText(
-            getLocalizedText(
-              'TODO : Add a media item to define how your character will react.<br>{{char}} → This character <br>{{user}} → Chat User ',
-            ),
-          ),
-          () => {
-            onClickCreateEventTrigger(triggerType);
-          },
-        )}
+        {renderEventTriggerHeader(formatText(getLocalizedText(getDesc(triggerType))), () => {
+          onClickCreateEventTrigger(triggerType);
+        })}
         <ul className={styles.triggerItemList}>
           {items?.map((item, index) => (
             <li className={styles.triggerItem} key={item.id ?? index}>
@@ -445,7 +467,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               <button
                 className={styles.editButton}
                 onClick={() => {
-                  onClickEditMedia();
+                  onClickEditMedia(item.id);
                   // onEditEventTrigger({
                   //   ...item,
                   //   mediaType: MediaState.Image,
@@ -482,7 +504,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }
           >
             <img className={`${styles.buttonIcon} ${styles.iconUser}`} src={BoldProfile.src} />
-            <div className={styles.buttonText}>{`{{User}}`}</div>
+            <div className={styles.buttonText}>{getLocalizedText(`TODO :{{User}}`)}</div>
           </button>
           <button
             className={styles.bottomButton}
@@ -494,7 +516,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }
           >
             <img className={`${styles.buttonIcon} ${styles.iconChar}`} src={BoldCharacter.src} />
-            <div className={styles.buttonText}>{`{{Char}}`}</div>
+            <div className={styles.buttonText}>{getLocalizedText(`TODO :{{Char}}`)}</div>
           </button>
           <button
             className={styles.bottomButton}
@@ -503,7 +525,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }}
           >
             <img className={`${styles.buttonIcon} ${styles.iconDuplicate}`} src={LineCopy.src} />
-            <div className={styles.buttonText}>{`Duplicate`}</div>
+            <div className={styles.buttonText}>{getLocalizedText(`TODO : Duplicate`)}</div>
           </button>
           <button
             className={styles.bottomButton}
@@ -512,7 +534,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }}
           >
             <img className={`${styles.buttonIcon} ${styles.iconDelete}`} src={LineDelete.src} />
-            <div className={`${styles.buttonText} ${styles.deleteText}`}>{`Delete`}</div>
+            <div className={`${styles.buttonText} ${styles.deleteText}`}>{getLocalizedText(`TODO : Delete`)}</div>
           </button>
         </div>
       </div>
@@ -525,7 +547,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         {item.triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Character's Emotion`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_002`)}</div>
               <CustomDropDown
                 initialValue={item.emotionState}
                 displayType="Icon"
@@ -539,7 +561,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Probability (Weight)`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_003`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
@@ -555,12 +577,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Input Prompt`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : input Prompt')}
+                placeholder={getLocalizedText('eventtrigger003_label_004')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -574,7 +596,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         ) : item.triggerType === CharacterEventTriggerType.SendMediaByEmotion ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Character's Emotion`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_002`)}</div>
               <CustomDropDown
                 initialValue={item.emotionState}
                 displayType="Icon"
@@ -588,7 +610,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Probability (Weight)`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_003`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
@@ -604,12 +626,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Input Prompt`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : input Prompt')}
+                placeholder={getLocalizedText('eventtrigger003_label_004')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -623,7 +645,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         ) : item.triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`Elapsed Time (hour)`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger004_label_001`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
@@ -639,12 +661,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Input Prompt`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : input Prompt')}
+                placeholder={getLocalizedText('eventtrigger003_label_004')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -658,7 +680,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         ) : item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`Elapsed Time (hour)`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger004_label_001`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
@@ -674,12 +696,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Input Prompt`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : input Prompt')}
+                placeholder={getLocalizedText('eventtrigger003_label_004')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -693,7 +715,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         ) : item.triggerType === CharacterEventTriggerType.SendMediaByGotStars ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`Get Type`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger005_label_001`)}</div>
               <div className={styles.toggleBox}>
                 <CustomRadioButton
                   displayType="buttonText"
@@ -724,7 +746,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               </div>
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`Get Star`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger005_label_002`)}</div>
               <div className={styles.inputWithHint}>
                 <CustomInput
                   inputType="RightIcon"
@@ -740,16 +762,16 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   }
                   customClassName={[styles.inputNumberArea]}
                 />
-                <div className={styles.inputHint}>{getLocalizedText('TODO : Greater than')}</div>
+                <div className={styles.inputHint}>{getLocalizedText('eventtrigger005_label_003')}</div>
               </div>
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Input Prompt`)}</div>
+              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : input Prompt')}
+                placeholder={getLocalizedText('eventtrigger003_label_004')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,

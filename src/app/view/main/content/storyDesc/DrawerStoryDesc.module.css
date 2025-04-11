@@ -260,6 +260,7 @@
   border-radius: 12px;
 }
 
+
 .contentButtonItem
 {
   display: flex;
@@ -282,6 +283,13 @@
   height: 28px;
   filter: invert(81%) sepia(12%) saturate(101%) hue-rotate(173deg) brightness(97%) contrast(84%);
 }
+
+
+.contentButtonItem > .buttonIcon.isLike
+{
+  filter: brightness(0) saturate(100%) invert(59%) sepia(74%) saturate(3963%) hue-rotate(286deg) brightness(101%) contrast(99%);
+}
+
 
 .contentDivider
 {

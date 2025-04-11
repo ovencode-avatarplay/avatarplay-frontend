@@ -126,6 +126,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   //#region CharacterTrigger
 
   const [characterTrigger, setCharacterTrigger] = useState<CharacterEventTriggerInfo[]>([]);
+  const [selectedTriggerId, setSelectedTriggerId] = useState<number>(0);
 
   //#endregion
 
@@ -240,7 +241,13 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       setMainImageUrl(img);
     } else if (imageCreate === 'TriggerMedia') {
       setMediaCreateImage(img);
-      // handleOnEditTrigger();
+      const prev = characterTrigger.find(t => t.id === selectedTriggerId); // selectedTriggerId는 선택된 트리거의 ID
+      if (prev) {
+        handleOnEditTrigger({
+          ...prev,
+          mediaUrl: img,
+        });
+      }
     }
     setSelectImageTypeOpen(false);
   };
@@ -286,9 +293,11 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setSelectedMediaItemIdx(index);
   };
 
-  const handleOnClickTriggerMediaEdit = () => {
-    setImgUploadSelectModalOpen(true);
+  const handleOnClickTriggerMediaEdit = (id: number) => {
+    setImgUploadOpen(true);
+    setImgUploadType('Upload');
     setImageCreate('TriggerMedia');
+    setSelectedTriggerId(id);
   };
 
   const handleOnAddTrigger = (triggerType: CharacterEventTriggerType) => {

@@ -5,7 +5,7 @@ import { FaPhone } from 'react-icons/fa';
 type Props = {
     onAccept?: () => void;
     onDeny?: () => void;
-    isHangOn? : boolean;
+    isHangOn? : any;
   };
   
 

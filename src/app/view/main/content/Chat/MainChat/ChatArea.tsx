@@ -13,6 +13,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ChatRetryButton from './ChatRetryButton';
 import ChatLoadingBubble from './ChatLoadingBubble';
 import {checkChatSystemError, ESystemError} from '@/app/NetWork/ESystemError';
+import {sendStoryLike, StoryInteractionType, StoryLikeReq} from '@/app/NetWork/StoryNetwork';
 
 interface ChatAreaProps {
   messages: MessageGroup;
@@ -206,6 +207,41 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   };
   console.log('aiChatHeight', aiChatHeight);
   const isBlur = selectedBubbleIndex !== null;
+
+  const handleSendStoryLike = (id: number, bubbleIndex: number, like: boolean) => {
+    reqStoryChattingLike(id, bubbleIndex, like);
+  };
+
+  const reqStoryChattingLike = async (id: number, bubbleIndex: number, like: boolean) => {
+    const data: StoryLikeReq = {
+      type: StoryInteractionType.ChattingLike,
+      typeValueId: id, // Chat의 Id
+      messageIndex: bubbleIndex,
+      isLike: like,
+    };
+
+    try {
+      const receive = await sendStoryLike(data);
+
+      if (receive.resultCode === 0) {
+        console.log('Success');
+        const target = messages.Messages.find(msg => msg.chatId === id && msg.bubbleIndex === bubbleIndex);
+
+        if (target) {
+          target.isLike = like;
+        }
+      } else {
+        alert('Error');
+      }
+    } catch (error) {
+      alert('Error');
+    }
+  };
+
+  {
+    console.log(messages);
+    console.log('Messages :', messages.Messages);
+  }
   return (
     <>
       <LoadingOverlay loading={loading} />
@@ -282,6 +318,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       sender={msg.sender}
                       id={msg.chatId}
                       index={index}
+                      bubbleIndex={msg.bubbleIndex}
+                      isLike={msg.isLike}
                       iconUrl={iconUrl}
                       emoticonUrl={messages.emoticonUrl[index]}
                       mediaData={messages.mediaData?.[index] || null}
@@ -289,6 +327,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         e.stopPropagation();
                         handleBubbleClick(index);
                       }}
+                      onClickLike={handleSendStoryLike}
                       onTtsClick={e => {
                         e.stopPropagation();
                         handlePlayAudio(msg.text);
