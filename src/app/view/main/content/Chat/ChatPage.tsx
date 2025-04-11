@@ -51,6 +51,7 @@ import useChat from './hooks/useChat';
 import {useStreamMessage} from './hooks/useStreamMessage';
 
 import Script from "next/script";
+import { isAllOf } from '@reduxjs/toolkit';
 
 declare global {
   interface Window {
@@ -126,7 +127,7 @@ const ChatPage: React.FC = () => {
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLiveChat, setShowLiveChat] = useState<boolean>(false);
-  const [hangOn, setHangOn] = useState<boolean>(false);
+  const [hangOn, setHangOn] = useState<any>(null);
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
     isSendingMessage,
@@ -134,7 +135,6 @@ const ChatPage: React.FC = () => {
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   // Unity 초기화를 담당하는 함수
   const initUnity = () => {
     // 모바일 기기 감지 및 설정
@@ -155,15 +155,14 @@ const ChatPage: React.FC = () => {
       // body의 텍스트 정렬 수정
       document.body.style.textAlign = "left";
     }
-
     // Unity Loader 스크립트가 로드된 후 createUnityInstance를 호출하여 Unity 인스턴스를 생성
     if (window.createUnityInstance && canvasRef.current) {
       window
         .createUnityInstance(canvasRef.current, {
           arguments: [],
-          dataUrl: "https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.data.br",
-          frameworkUrl: "https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.framework.js.br",
-          codeUrl: "https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.wasm.br",
+          dataUrl: "https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.data",
+          frameworkUrl: "https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.framework.js",
+          codeUrl: "https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.wasm",
           streamingAssetsUrl: "StreamingAssets",
           companyName: "DefaultCompany",
           productName: "Role",
@@ -173,7 +172,8 @@ const ChatPage: React.FC = () => {
         })
         .then((unityInstance) => {
           console.log("Unity 인스턴스가 생성되었습니다.", unityInstance);
-          setHangOn(true);
+          alert(unityInstance);
+          setHangOn(unityInstance);
         })
         .catch((error) => {
           console.error("Unity 초기화 중 오류 발생:", error);
@@ -233,11 +233,11 @@ const ChatPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (window.createUnityInstance != null) {
+    if (window.createUnityInstance) {
       initUnity();
     } else {
       const interval = setInterval(() => {
-        if (window.createUnityInstance != null) {
+        if (window.createUnityInstance) {
           clearInterval(interval);
           initUnity();
         }
@@ -246,7 +246,15 @@ const ChatPage: React.FC = () => {
     }
 
     window.onCloseAction = ()=> {
+      alert('close')
       setShowLiveChat(false);
+      if(hangOn)
+      {
+        hangOn.Quit().then(() => {
+          console.log("Unity WebGL 인스턴스 종료 완료");
+        })
+      }
+      setHangOn(null);
     }
   }, [showLiveChat])
 
@@ -667,7 +675,7 @@ const ChatPage: React.FC = () => {
 
   const handleOnAccept = () => {
     setShowLiveChat(false);
-    setHangOn(false);
+    setHangOn(null);
   }
 
   const handleOnDeny = () => {
@@ -736,9 +744,17 @@ const ChatPage: React.FC = () => {
           onCheatChangeDate={handleChangeNewDate}
         />
 
-      <Script src="https://react4.s3.ap-northeast-2.amazonaws.com/microphone.js" strategy="afterInteractive" />
-      <Script src="https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.loader.js" strategy="afterInteractive" />
+      <Script src="/game/microphone.js" strategy="afterInteractive" />
+      <Script src="/game/web.loader.js" strategy="afterInteractive" />
+      <Script src="/game/RpmGlobal.js" strategy="afterInteractive" />
+      <Script src="/game/ReadyPlayerMeFrame.js" strategy="afterInteractive" />
 
+      <div id='canvas-warp'>
+        <div id='rpm-container'>
+        <iframe id='rpm-frame' className='rpm-frame' allow='camera *;'></iframe>
+        <button id='rpm-hide-button' onClick='hideRpm()'>Hide</button>
+        </div>
+        </div>
       {showLiveChat && (
         <div
         style={{
@@ -748,7 +764,9 @@ const ChatPage: React.FC = () => {
           margin: 0,
         }}
       >
+        
         <CallingScreen onAccept={handleOnAccept} onDeny={handleOnDeny} isHangOn={hangOn}></CallingScreen>
+        
         <canvas
           id="unity-canvas"
           ref={canvasRef}
