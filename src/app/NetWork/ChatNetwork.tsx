@@ -253,6 +253,8 @@ export interface ChattingResultRes {
 }
 
 export interface ChatData {
+  streamChatId: number;
+  answerCreateAt: string;
   chatResultInfoList: ChatResultInfo[];
 }
 

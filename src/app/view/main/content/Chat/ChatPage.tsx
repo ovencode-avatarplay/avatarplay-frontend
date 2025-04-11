@@ -116,6 +116,7 @@ const ChatPage: React.FC = () => {
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const indexBubble = useRef(0); // 말풍선 인덱스.
+  const newTextBubbleArrayList = useRef<number[]>([]); // 채팅을 보냈을때~ 서버로부터 응답받았을 때 추가로 생성된 parsedMessages의  arrayIndex
 
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
@@ -269,6 +270,7 @@ const ChatPage: React.FC = () => {
 
           resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
           allMessage.push(resultSystemMessages); // Media 관련 메시지 추가
+          //newTextBubbleArrayList.current.push(allMessage.length - 1); // 추가된 말풍선 arrayIndex 저장
           allEmoticon.push(''); // 빈 이모티콘 추가
           allMedia.push(noneMedia); // 새 미디어 추가
 
@@ -320,6 +322,7 @@ const ChatPage: React.FC = () => {
                   }
 
                   allMessage.push(mediaMessages); // Media 관련 메시지 추가
+                  //newTextBubbleArrayList.current.push(allMessage.length - 1); // 추가된 말풍선 arrayIndex 저장
                   allEmoticon.push(''); // 빈 이모티콘 추가
                   allMedia.push(newMedia); // 새 미디어 추가
                 }
@@ -327,6 +330,17 @@ const ChatPage: React.FC = () => {
               break;
           }
         });
+
+        // 새로 생성된 말풍선들에 ChatID랑 bubbleIndex 넣어주자 ( 서버 작업방식에 맞추려면 어쩔수가 없다 )
+        let bubbleArrayIndex: number = 0;
+        newTextBubbleArrayList.current.forEach(num => {
+          if (allMessage[num]) {
+            allMessage[num].chatId = response.data.streamChatId;
+            allMessage[num].bubbleIndex = bubbleArrayIndex;
+            bubbleArrayIndex++;
+          }
+        });
+        newTextBubbleArrayList.current = [];
 
         const updateMessage = {
           Messages: allMessage,
@@ -391,6 +405,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = SenderType.User;
         }
+
         dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         if (!isFinish) {
           allMessages.push(newMessage);
@@ -401,6 +416,7 @@ const ChatPage: React.FC = () => {
           allEmoticon.push('');
           allMedia.push(mediaDataValue);
         }
+        newTextBubbleArrayList.current.push(allMessages.length - 1); // 추가된 말풍선 arrayIndex 저장
       } else {
         //
         // 1. current sender를 가져온다
@@ -452,6 +468,7 @@ const ChatPage: React.FC = () => {
               allEmoticon.push('');
               allMedia.push(mediaDataValue);
             }
+            newTextBubbleArrayList.current.push(allMessages.length - 1); // 추가된 말풍선 arrayIndex 저장
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
             allMessages[allMessages.length - 1].text += `${newMessage.text[i]}`;
