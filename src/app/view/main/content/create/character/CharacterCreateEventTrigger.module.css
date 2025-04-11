@@ -26,6 +26,12 @@
  align-self: stretch;
 }
 
+.addItemButton
+{
+    width: 90px;
+}
+
+
 .eventTriggerLeftArea
 {
     display: flex;

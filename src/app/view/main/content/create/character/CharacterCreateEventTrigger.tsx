@@ -57,12 +57,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
 }) => {
   //#region
   const EmotionArray = [
-    {label: 'Happy', value: EmotionState.Happy, icon: EmojiHappy.src},
-    {label: 'Angry', value: EmotionState.Angry, icon: EmojiAngry.src},
-    {label: 'Sad', value: EmotionState.Sad, icon: EmojiSad.src},
-    {label: 'Excited', value: EmotionState.Excited, icon: EmojiExcited.src},
-    {label: 'Scared', value: EmotionState.Scared, icon: EmojiScared.src},
-    {label: 'Bored', value: EmotionState.Bored, icon: EmojiBoring.src},
+    {label: getLocalizedText('common_tagemotion_happy'), value: EmotionState.Happy, icon: EmojiHappy.src},
+    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Angry, icon: EmojiAngry.src},
+    {label: getLocalizedText('common_tagemotion_sad'), value: EmotionState.Sad, icon: EmojiSad.src},
+    {label: getLocalizedText('common_tagemotion_excited'), value: EmotionState.Excited, icon: EmojiExcited.src},
+    {label: getLocalizedText('common_tagemotion_scared'), value: EmotionState.Scared, icon: EmojiScared.src},
+    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Bored, icon: EmojiBoring.src},
   ];
 
   const [currentState, setCurrentState] = useState<number>(0);
@@ -167,8 +167,15 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           <div className={styles.eventTriggerInfoDecs}>{text}</div>
         </div>
         {onClick && (
-          <CustomButton size="Small" state="IconLeft" type="Primary" icon={LinePlus.src} onClick={onClick}>
-            {getLocalizedText('TODO : Add')}
+          <CustomButton
+            size="Small"
+            state="IconLeft"
+            type="Primary"
+            icon={LinePlus.src}
+            onClick={onClick}
+            customClassName={[styles.addItemButton]}
+          >
+            {getLocalizedText('common_button_add')}
           </CustomButton>
         )}
       </div>
@@ -420,10 +427,10 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }`}
               src={getHeaderIcon(triggerType)}
             />
-            <div className={styles.detailTitle}>{getLocalizedText('TODO : ' + triggerType.toString())}</div>
+            <div className={styles.detailTitle}>{getLocalizedText('TODO : ' + triggerType)}</div>
           </div>
         </div>
-        {renderEventTriggerHeader(formatText(getLocalizedText(getDesc(triggerType))), () => {
+        {renderEventTriggerHeader(formatText(getLocalizedText(getDesc(triggerType) || '')), () => {
           onClickCreateEventTrigger(triggerType);
         })}
         <ul className={styles.triggerItemList}>
@@ -504,7 +511,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }
           >
             <img className={`${styles.buttonIcon} ${styles.iconUser}`} src={BoldProfile.src} />
-            <div className={styles.buttonText}>{getLocalizedText(`TODO :{{User}}`)}</div>
+            <div className={styles.buttonText}>{getLocalizedText(`common_button_usercommand`)}</div>
           </button>
           <button
             className={styles.bottomButton}
@@ -516,7 +523,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }
           >
             <img className={`${styles.buttonIcon} ${styles.iconChar}`} src={BoldCharacter.src} />
-            <div className={styles.buttonText}>{getLocalizedText(`TODO :{{Char}}`)}</div>
+            <div className={styles.buttonText}>{getLocalizedText(`common_button_charcommand`)}</div>
           </button>
           <button
             className={styles.bottomButton}
@@ -525,7 +532,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }}
           >
             <img className={`${styles.buttonIcon} ${styles.iconDuplicate}`} src={LineCopy.src} />
-            <div className={styles.buttonText}>{getLocalizedText(`TODO : Duplicate`)}</div>
+            <div className={styles.buttonText}>{getLocalizedText(`common_button_duplicate`)}</div>
           </button>
           <button
             className={styles.bottomButton}
@@ -534,7 +541,9 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }}
           >
             <img className={`${styles.buttonIcon} ${styles.iconDelete}`} src={LineDelete.src} />
-            <div className={`${styles.buttonText} ${styles.deleteText}`}>{getLocalizedText(`TODO : Delete`)}</div>
+            <div className={`${styles.buttonText} ${styles.deleteText}`}>
+              {getLocalizedText(`common_button_charcommand`)}
+            </div>
           </button>
         </div>
       </div>
