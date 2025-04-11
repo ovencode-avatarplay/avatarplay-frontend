@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from './SingleDetail.module.css';
-import {BoldArrowLeft, BoldShare, BoldLock, BoldHeart, BoldVideo, BoldStar, LineEdit, LinePlus} from '@ui/Icons';
+import {LineArrowLeft, BoldShare, BoldLock, BoldHeart, BoldVideo, BoldStar, LineEdit, LinePlus} from '@ui/Icons';
 import {
   ContentInfo,
   ContentListInfo,
@@ -122,7 +122,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
                 back();
               }}
             >
-              <img src={BoldArrowLeft.src} alt="Back" />
+              <img src={LineArrowLeft.src} alt="Back" />
             </button>
 
             <div>{singleInfo?.name}</div>

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './TriggerChapterList.module.css'; // CSS Module import
 import {Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
-import {BoldArrowLeft} from '@ui/Icons';
+import {LineArrowLeft} from '@ui/Icons';
 import ChapterItemList from '../../chapter/ChapterItemList';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -37,7 +37,7 @@ const TriggerChapterList: React.FC<TriggerChapterListProps> = ({open, onClose, o
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <button className={styles.backButton} onClick={onClose}>
-            <img src={BoldArrowLeft.src} className={styles.backIcon} />
+            <img src={LineArrowLeft.src} className={styles.backIcon} />
           </button>
           <div className={styles.navTitle}>Trigger Event</div>
         </div>

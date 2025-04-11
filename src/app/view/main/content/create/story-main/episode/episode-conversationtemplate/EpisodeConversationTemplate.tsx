@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Plus} from '@ui/chatting';
 import ConversationCard from './ConversationCard';
 import {RootState} from '@/redux-store/ReduxStore';
-import {BoldArrowLeft} from '@ui/Icons';
+import {LineArrowLeft} from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {EpisodeInfo, saveConversationTemplateList} from '@/redux-store/slices/StoryInfo';
 

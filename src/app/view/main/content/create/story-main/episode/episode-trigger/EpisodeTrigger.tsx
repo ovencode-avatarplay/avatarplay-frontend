@@ -6,7 +6,7 @@ import {Dialog} from '@mui/material';
 import WriteTriggerName from './WriteTriggerName'; // WriteTriggerName 모달 컴포넌트
 import {EpisodeInfo} from '@/redux-store/slices/StoryInfo';
 import {useDispatch, useSelector} from 'react-redux';
-import {BoldArrowLeft, LineTrigger} from '@ui/Icons';
+import {LineArrowLeft, LineTrigger} from '@ui/Icons';
 import TriggerList from './TriggerList';
 import TriggerCreate from './TriggerCreate';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -79,7 +79,7 @@ const EpisodeTrigger: React.FC<EpisodeTriggerProps> = ({open, closeModal, episod
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <button className={styles.backButton} onClick={closeModal}>
-              <img src={BoldArrowLeft.src} className={styles.backIcon} />
+              <img src={LineArrowLeft.src} className={styles.backIcon} />
             </button>
             <div className={styles.navTitle}>Trigger Event</div>
           </div>

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './EpisodeCard.module.css';
 import {Box, Typography} from '@mui/material';
 import {
-  BoldArrowDown,
+  LineArrowDown,
   BoldCirclePlus,
   BoldMenuDots,
   edit1Pixel,
@@ -148,7 +148,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
               handleChangeOrderEpisodeIndex('up');
             }}
           >
-            <img src={BoldArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
+            <img src={LineArrowDown.src} style={{transform: 'rotate(180deg)'}} alt="Main" />
           </div>
           <div
             className={styles.arrowIcon}
@@ -156,7 +156,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
               handleChangeOrderEpisodeIndex('down');
             }}
           >
-            <img src={BoldArrowDown.src} alt="Main" />
+            <img src={LineArrowDown.src} alt="Main" />
           </div>
           <div
             className={styles.arrowIcon}

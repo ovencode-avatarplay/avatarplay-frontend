@@ -6,7 +6,7 @@ import 'swiper/css/pagination';
 import ReactPlayer from 'react-player';
 import {
   BoldArchive,
-  BoldArrowLeft,
+  LineArrowLeft,
   BoldComment,
   BoldContents,
   BoldDislike,
@@ -18,8 +18,8 @@ import {
   BoldReward,
   BoldShare,
   BoldVideo,
-  BoldVolumeOff,
-  BoldVolumeOn,
+  LineVolumeOff,
+  LineVolumeOn,
   LineArchive,
   LineCheck,
   LineScaleUp,
@@ -236,7 +236,7 @@ const PreviewViewer: React.FC<Props> = ({open, onClose, mediaUrls, type}) => {
             <header className={styles.header}>
               <div className={styles.baseArea}>
                 <button className={styles.backButton} onClick={onClose}>
-                  <img src={BoldArrowLeft.src} className={styles.backIcon} />
+                  <img src={LineArrowLeft.src} className={styles.backIcon} />
                 </button>
 
                 <h1 className={styles.navTitle}></h1>
@@ -471,12 +471,12 @@ const PreviewViewer: React.FC<Props> = ({open, onClose, mediaUrls, type}) => {
 
               {/* 음소거 상태 아이콘 */}
               {type == ContentCategoryType.Video && isMute && (
-                <img src={BoldVolumeOff.src} className={styles.volumeIcon} />
+                <img src={LineVolumeOff.src} className={styles.volumeIcon} />
               )}
 
               {/* 볼륨 활성 상태 아이콘 */}
               {type == ContentCategoryType.Video && !isMute && (
-                <img src={BoldVolumeOn.src} className={styles.volumeIcon} />
+                <img src={LineVolumeOn.src} className={styles.volumeIcon} />
               )}
 
               {/* 이미지 확대 아이콘 */}

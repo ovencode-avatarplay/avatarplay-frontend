@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './StoryDashboardHeader.module.css';
-import {BoldArrowLeft, LinePlus} from '@ui/Icons';
+import {LineArrowLeft, LinePlus} from '@ui/Icons';
 
 interface Props {
   title: string;
@@ -14,7 +14,7 @@ const StoryDashboardHeader: React.FC<Props> = ({title, onClose, onCreate, isCrea
     <div className={styles.header}>
       <div className={styles.headerLeft}>
         <button className={styles.backButton} onClick={onClose}>
-          <img src={BoldArrowLeft.src} className={styles.backIcon} />
+          <img src={LineArrowLeft.src} className={styles.backIcon} />
         </button>
         <div className={styles.navTitle}>{title}</div>
       </div>

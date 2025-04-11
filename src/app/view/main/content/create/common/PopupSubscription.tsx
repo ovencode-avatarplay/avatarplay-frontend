@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styles from './PopupSubscription.module.scss';
-import {BoldArrowLeft} from '@ui/Icons';
+import {LineArrowLeft} from '@ui/Icons';
 import cx from 'classnames';
 import {Dialog, Modal} from '@mui/material';
 import {
@@ -79,7 +79,7 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
       <div ref={popupRef} className={styles.popup}>
         <header className={styles.header}>
           <img
-            src={BoldArrowLeft.src}
+            src={LineArrowLeft.src}
             alt=""
             className={styles.iconBack}
             onClick={() => {

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styles from './SeriesDetail.module.css';
 import {
-  BoldArrowLeft,
+  LineArrowLeft,
   BoldShare,
   BoldLock,
   BoldHeart,
@@ -267,7 +267,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
                 // router.back();
               }}
             >
-              <img src={BoldArrowLeft.src} alt="Back" />
+              <img src={LineArrowLeft.src} alt="Back" />
             </button>
 
             <div>{contentInfo?.contentName}</div>
