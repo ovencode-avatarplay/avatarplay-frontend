@@ -48,7 +48,8 @@ import {useInView} from 'react-intersection-observer';
 import {bookmark, InteractionType, pinFix, PinFixReq, PinTabType, RecordType} from '@/app/NetWork/CommonNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {ContentType} from '@/app/NetWork/ContentNetwork';
+import {ContentType, VisibilityType} from '@/app/NetWork/ContentNetwork';
+import { Visibility } from '@mui/icons-material';
 
 type Props = {
   onClose: () => void;
@@ -436,6 +437,7 @@ const TabContentComponent = ({
                   playTime: '',
                   urlLinkKey: one.urlLinkKey,
                   isMyFeed: false,
+                  profileVisibilityType: VisibilityType.Private
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}

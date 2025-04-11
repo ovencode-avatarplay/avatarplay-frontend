@@ -411,7 +411,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     }
   };
 
-  const visibilityType = getValues('visibilityType');
+  const visibilityType = getValues('visibilityType') ?? VisibilityType.Private;
   const visibilityTypeStr = VisibilityType[visibilityType] as keyof typeof mapVisibilityType;
   const visibilityTypeMapStr = mapVisibilityType[visibilityTypeStr];
   const countMembers = data.dataCharacterSearch.profileList.length;
@@ -944,7 +944,13 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             contentStyle={{padding: '0'}}
           />
 
-          <CustomButton size="Medium" state="Normal" type="Primary" customClassName={[styles.submitBtn]}>
+          <CustomButton
+            size="Medium"
+            state="Normal"
+            type="Primary"
+            buttonType="submit"
+            customClassName={[styles.submitBtn]}
+          >
             {getLocalizedText('common_button_submit')}
             {/* {isUpdate ? 'Submit' : 'Publish'} */}
           </CustomButton>

@@ -24,6 +24,8 @@ import BoldFilterOn from "./Bold/Filter_on.svg";
 import BoldFilter from "./Bold/Filter.svg";
 import BoldFolderPlus from "./Bold/Folder_Plus.svg";
 import BoldFollowers from "./Bold/Followers.svg";
+import BoldFollow from "./Bold/Follow.svg";
+import BoldFollowed from "./Bold/Followed.svg";
 import BoldGrid from "./Bold/Grid.svg";
 import BoldHeart from "./Bold/Heart.svg";
 import BoldHome from "./Bold/Home.svg";
@@ -48,6 +50,7 @@ import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.s
 import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
 import BoldRadioButtonSubtract from "./Bold/Radio_Button_Subtract.svg";
 import BoldRadioButton from "./Bold/Radio_Button.svg";
+import BoldRecording from "./Bold/Recording.svg";
 import BoldReward from "./Bold/Reward.svg";
 import BoldRuby from "./Bold/Ruby.svg";
 import BoldSearch from "./Bold/Search.svg";
@@ -201,6 +204,8 @@ export {
   BoldFilter,
   BoldFolderPlus,
   BoldFollowers,
+  BoldFollow,
+  BoldFollowed,
   BoldGrid,
   BoldHeart,
   BoldHome,
@@ -218,6 +223,7 @@ export {
   BoldRadioButtonSelectedBlack,
   BoldRadioButtonSubtract,
   BoldRadioButton,
+  BoldRecording,
   BoldRuby,
   BoldSend,
   BoldShare,
