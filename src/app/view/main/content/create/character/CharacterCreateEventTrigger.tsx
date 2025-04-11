@@ -37,6 +37,7 @@ import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import {Box, Modal} from '@mui/material';
+import EventTriggerContainer from './EventTriggerContainer';
 
 interface Props {
   eventTriggerItems: CharacterEventTriggerInfo[];
@@ -153,6 +154,38 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         break;
     }
   };
+
+  const getTriggerName = (triggerType: CharacterEventTriggerType) => {
+    switch (triggerType) {
+      case CharacterEventTriggerType.ChangeBackgroundByEmotion:
+        return formatText(getLocalizedText('common_chatbottrigger_name'), [
+          getLocalizedText('common_triggertype_bg'),
+          getLocalizedText('common_conditiontype_emotion'),
+        ]);
+      case CharacterEventTriggerType.SendMediaByEmotion:
+        return formatText(getLocalizedText('common_chatbottrigger_name'), [
+          getLocalizedText('common_triggertype_media'),
+          getLocalizedText('common_conditiontype_emotion'),
+        ]);
+      case CharacterEventTriggerType.SendMediaByElapsedTime:
+        return formatText(getLocalizedText('common_chatbottrigger_name'), [
+          getLocalizedText('common_triggertype_media'),
+          getLocalizedText('common_conditiontype_timer'),
+        ]);
+      case CharacterEventTriggerType.SendMediaByGotStars:
+        return formatText(getLocalizedText('common_chatbottrigger_name'), [
+          getLocalizedText('common_triggertype_media'),
+          getLocalizedText('common_conditiontype_stars'),
+        ]);
+
+      case CharacterEventTriggerType.SendMessageByElapsedTime:
+        return formatText(getLocalizedText('common_chatbottrigger_name'), [
+          getLocalizedText('common_triggertype_message'),
+          getLocalizedText('common_conditiontype_timer'),
+        ]);
+    }
+  };
+
   //#endregion
 
   //#region Render
@@ -206,127 +239,122 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           )}
 
           <ul className={styles.eventTriggerContainers}>
-            {backgroundTriggers.length > 0 &&
-              renderEventTriggerContainer(CharacterEventTriggerType.ChangeBackgroundByEmotion, backgroundTriggers)}
-
-            {mediaByEmotionTriggers.length > 0 &&
-              renderEventTriggerContainer(CharacterEventTriggerType.SendMediaByEmotion, mediaByEmotionTriggers)}
-
-            {mediaByTimeTriggers.length > 0 &&
-              renderEventTriggerContainer(CharacterEventTriggerType.SendMediaByElapsedTime, mediaByTimeTriggers)}
-
-            {messageByTimeTriggers.length > 0 &&
-              renderEventTriggerContainer(CharacterEventTriggerType.SendMessageByElapsedTime, messageByTimeTriggers)}
-
-            {mediaByStarsTriggers.length > 0 &&
-              renderEventTriggerContainer(CharacterEventTriggerType.SendMediaByGotStars, mediaByStarsTriggers)}
+            {backgroundTriggers.length > 0 && (
+              <EventTriggerContainer
+                getEmojiIcon={getEmojiIcon}
+                getHeaderIcon={getHeaderIcon}
+                getTriggerName={getTriggerName(CharacterEventTriggerType.ChangeBackgroundByEmotion)}
+                items={backgroundTriggers}
+                onClick={() => {
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.ChangeBackgroundByEmotion);
+                }}
+                onItemClick={() => {}}
+                triggerType={CharacterEventTriggerType.ChangeBackgroundByEmotion}
+                onAddItem={() => {
+                  onClickCreateEventTrigger(CharacterEventTriggerType.ChangeBackgroundByEmotion);
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.ChangeBackgroundByEmotion);
+                }}
+                onDeleteTriggerType={type => {
+                  setBackgroundTriggers(prev => prev.filter(item => item.triggerType !== type));
+                }}
+              />
+            )}
+            {mediaByEmotionTriggers.length > 0 && (
+              <EventTriggerContainer
+                getEmojiIcon={getEmojiIcon}
+                getHeaderIcon={getHeaderIcon}
+                getTriggerName={getTriggerName(CharacterEventTriggerType.SendMediaByEmotion)}
+                items={mediaByEmotionTriggers}
+                onClick={() => {
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMediaByEmotion);
+                }}
+                onItemClick={() => {}}
+                triggerType={CharacterEventTriggerType.SendMediaByEmotion}
+                onAddItem={() => {
+                  onClickCreateEventTrigger(CharacterEventTriggerType.SendMediaByEmotion);
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMediaByEmotion);
+                }}
+                onDeleteTriggerType={type => {
+                  setMediaByEmotionTriggers(prev => prev.filter(item => item.triggerType !== type));
+                }}
+              />
+            )}
+            {mediaByTimeTriggers.length > 0 && (
+              <EventTriggerContainer
+                getEmojiIcon={getEmojiIcon}
+                getHeaderIcon={getHeaderIcon}
+                getTriggerName={getTriggerName(CharacterEventTriggerType.SendMediaByElapsedTime)}
+                items={mediaByTimeTriggers}
+                onClick={() => {
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMediaByElapsedTime);
+                }}
+                onItemClick={() => {}}
+                triggerType={CharacterEventTriggerType.SendMediaByElapsedTime}
+                onAddItem={() => {
+                  onClickCreateEventTrigger(CharacterEventTriggerType.SendMediaByElapsedTime);
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMediaByElapsedTime);
+                }}
+                onDeleteTriggerType={type => {
+                  setMediaByTimeTriggers(prev => prev.filter(item => item.triggerType !== type));
+                }}
+              />
+            )}
+            {messageByTimeTriggers.length > 0 && (
+              <EventTriggerContainer
+                getEmojiIcon={getEmojiIcon}
+                getHeaderIcon={getHeaderIcon}
+                getTriggerName={getTriggerName(CharacterEventTriggerType.SendMessageByElapsedTime)}
+                items={messageByTimeTriggers}
+                onClick={() => {
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMessageByElapsedTime);
+                }}
+                onItemClick={() => {}}
+                triggerType={CharacterEventTriggerType.SendMessageByElapsedTime}
+                onAddItem={() => {
+                  onClickCreateEventTrigger(CharacterEventTriggerType.SendMessageByElapsedTime);
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMessageByElapsedTime);
+                }}
+                onDeleteTriggerType={type => {
+                  setMessageByTimeTriggers(prev => prev.filter(item => item.triggerType !== type));
+                }}
+              />
+            )}
+            {mediaByStarsTriggers.length > 0 && (
+              <EventTriggerContainer
+                getEmojiIcon={getEmojiIcon}
+                getHeaderIcon={getHeaderIcon}
+                getTriggerName={getTriggerName(CharacterEventTriggerType.SendMediaByGotStars)}
+                items={mediaByStarsTriggers}
+                onClick={() => {
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMediaByGotStars);
+                }}
+                onItemClick={() => {}}
+                triggerType={CharacterEventTriggerType.SendMediaByGotStars}
+                onAddItem={() => {
+                  onClickCreateEventTrigger(CharacterEventTriggerType.SendMediaByGotStars);
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.SendMediaByGotStars);
+                }}
+                onDeleteTriggerType={type => {
+                  setMediaByStarsTriggers(prev => prev.filter(item => item.triggerType !== type));
+                }}
+              />
+            )}
           </ul>
         </div>
       </div>
     );
   };
 
-  const renderEventTriggerContainer = (triggerType: CharacterEventTriggerType, items: CharacterEventTriggerInfo[]) => {
-    // const [isDropDown, setIsDropDown] = useState<boolean>(false);
-
-    return (
-      <div
-        className={styles.eventTriggerItemContainer}
-        onClick={() => {
-          setCurrentState(2);
-          setSelectedTriggerType(triggerType);
-        }}
-      >
-        <div className={styles.eventTriggerHeader}>
-          <div className={styles.headerLeftArea}>
-            <img
-              className={`${styles.headerIcon} ${
-                triggerType !== CharacterEventTriggerType.ChangeBackgroundByEmotion &&
-                triggerType !== CharacterEventTriggerType.SendMediaByEmotion
-                  ? styles.blackIcon
-                  : ''
-              }`}
-              src={getHeaderIcon(triggerType)}
-            />
-            <div className={styles.headerTitle}>{getLocalizedText('TODO:' + triggerType.toString())}</div>
-          </div>
-          <div className={styles.headerRightArea}>
-            <div className={styles.triggerCounter}>{items.length}</div>
-            <button
-              className={styles.headerButton}
-              onClick={e => {
-                // e.stopPropagation();
-                // setIsDropDown(true);
-              }}
-            >
-              <img className={styles.headerButtonIcon} src={BoldMenuDots.src} />
-            </button>
-          </div>
-        </div>
-        <ul className={styles.eventTriggerList}>
-          {items?.map((item, index) => (
-            <li key={item.id ?? index}>{renderEventTriggerItem(item, index, () => {})}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  const renderEventTriggerItem = (
-    item: CharacterEventTriggerInfo,
-    index: number,
-    handlerSelected: (value: number) => void,
-  ) => {
-    return (
-      <div className={styles.eventTriggerItem}>
-        <div className={styles.eventTriggerItemContent}>
-          <div className={`${styles.eventTriggerMedia}`} onClick={() => handlerSelected(index)}>
-            {item.mediaType === MediaState.Video ? (
-              <video
-                src={item.mediaUrl}
-                className={styles.videoPreview}
-                muted
-                preload="metadata"
-                style={{width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none'}}
-                controls={false}
-                playsInline={true}
-              />
-            ) : (
-              <div
-                className={styles.imagePreview}
-                style={{
-                  backgroundImage: item.mediaUrl !== '' ? `url(${item.mediaUrl})` : '',
-                  backgroundSize: 'contain',
-                  width: '100%',
-                  height: '100%',
-                }}
-              />
-            )}
-            {item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime && (
-              <img className={styles.messageIcon} src={BoldMessenger.src}></img>
-            )}
-            {item.emotionState !== undefined ? (
-              <div className={styles.emotionBack}>
-                <img className={styles.emotionIcon} src={getEmojiIcon(item.emotionState)} alt="emotion" />
-              </div>
-            ) : item.elapsedTime !== undefined ? (
-              <div className={styles.triggerSummaryBox}>
-                <img className={styles.triggerSummaryIcon} src={LineTime.src} />
-                <div className={styles.triggerSummaryText}>{item.elapsedTime + 'h'}</div>
-              </div>
-            ) : item.getStar !== undefined ? (
-              <div className={styles.triggerSummaryBox}>
-                <img className={styles.triggerSummaryIcon} src={BoldStar.src} />
-                <div className={styles.triggerSummaryText}>{item.getStar}</div>
-              </div>
-            ) : (
-              ''
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
   //#endregion
 
   //#region TriggerTypeSelect (AddTrigger)
@@ -396,7 +424,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             src={getHeaderIcon(triggerType)}
           />
         </div>
-        <div className={styles.typeText}>{getLocalizedText('TODO :' + triggerType.toString())}</div>
+        <div className={styles.typeText}>{getTriggerName(triggerType)}</div>
       </button>
     );
   };
@@ -427,18 +455,21 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             }`}
               src={getHeaderIcon(triggerType)}
             />
-            <div className={styles.detailTitle}>{getLocalizedText('TODO : ' + triggerType)}</div>
+            <div className={styles.detailTitle}>{getTriggerName(triggerType)}</div>
           </div>
         </div>
         {renderEventTriggerHeader(formatText(getLocalizedText(getDesc(triggerType) || '')), () => {
           onClickCreateEventTrigger(triggerType);
         })}
         <ul className={styles.triggerItemList}>
-          {items?.map((item, index) => (
-            <li className={styles.triggerItem} key={item.id ?? index}>
-              {renderEventTriggerItemSet(item)}
-            </li>
-          ))}
+          {items
+            ?.slice()
+            .reverse()
+            .map((item, index) => (
+              <li className={styles.triggerItem} key={item.id ?? index}>
+                {renderEventTriggerItemSet(item)}
+              </li>
+            ))}
         </ul>
       </div>
     );
@@ -542,7 +573,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           >
             <img className={`${styles.buttonIcon} ${styles.iconDelete}`} src={LineDelete.src} />
             <div className={`${styles.buttonText} ${styles.deleteText}`}>
-              {getLocalizedText(`common_button_charcommand`)}
+              {getLocalizedText(`common_button_delete`)}
             </div>
           </button>
         </div>
