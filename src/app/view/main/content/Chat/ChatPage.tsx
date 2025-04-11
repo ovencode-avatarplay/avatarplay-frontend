@@ -128,6 +128,9 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showLiveChat, setShowLiveChat] = useState<boolean>(false);
   const [hangOn, setHangOn] = useState<any>(null);
+  const indexBubble = useRef(0); // 말풍선 인덱스.
+  const newTextBubbleArrayList = useRef<number[]>([]); // 채팅을 보냈을때~ 서버로부터 응답받았을 때 추가로 생성된 parsedMessages의  arrayIndex
+
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
     isSendingMessage,
@@ -278,6 +281,8 @@ const ChatPage: React.FC = () => {
       sender: SenderType.media,
       createDateString: currentTime,
       createDateLocale: new Date(),
+      isLike: false, // 말풍선 like
+      bubbleIndex: 0,
     };
 
     if (isFinishMessage(isMyMessage, message) === true) {
@@ -293,6 +298,8 @@ const ChatPage: React.FC = () => {
       sender: isMyMessage ? SenderType.User : currentSender,
       createDateString: currentTime,
       createDateLocale: new Date(),
+      isLike: false, // 말풍선 like
+      bubbleIndex: 0,
     };
     const mediaDataValue: MediaData = {
       mediaType: TriggerMediaState.None,
@@ -343,10 +350,13 @@ const ChatPage: React.FC = () => {
             sender: SenderType.System,
             createDateString: isPrintDate ? currentTime : '', // 시스템 메시지에는 시간을 출력하지 않는다.
             createDateLocale: new Date(),
+            isLike: false, // 말풍선 like
+            bubbleIndex: 0,
           };
 
           resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
           allMessage.push(resultSystemMessages); // Media 관련 메시지 추가
+          //newTextBubbleArrayList.current.push(allMessage.length - 1); // 추가된 말풍선 arrayIndex 저장
           allEmoticon.push(''); // 빈 이모티콘 추가
           allMedia.push(noneMedia); // 새 미디어 추가
 
@@ -398,6 +408,7 @@ const ChatPage: React.FC = () => {
                   }
 
                   allMessage.push(mediaMessages); // Media 관련 메시지 추가
+                  //newTextBubbleArrayList.current.push(allMessage.length - 1); // 추가된 말풍선 arrayIndex 저장
                   allEmoticon.push(''); // 빈 이모티콘 추가
                   allMedia.push(newMedia); // 새 미디어 추가
                 }
@@ -406,9 +417,21 @@ const ChatPage: React.FC = () => {
           }
         });
 
+        // 새로 생성된 말풍선들에 ChatID랑 bubbleIndex 넣어주자 ( 서버 작업방식에 맞추려면 어쩔수가 없다 )
+        let bubbleArrayIndex: number = 0;
+        newTextBubbleArrayList.current.forEach(num => {
+          if (allMessage[num]) {
+            allMessage[num].chatId = response.data.streamChatId;
+            allMessage[num].bubbleIndex = bubbleArrayIndex;
+            bubbleArrayIndex++;
+          }
+        });
+        newTextBubbleArrayList.current = [];
+
         const updateMessage = {
           Messages: allMessage,
           emoticonUrl: allEmoticon,
+          isLike: false,
           mediaData: allMedia,
         };
 
@@ -434,6 +457,7 @@ const ChatPage: React.FC = () => {
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
       const allMessages = [...(prev?.Messages || [])];
       const allEmoticon = [...(prev?.emoticonUrl || [])];
+      const isLike = false;
       const allMedia = [...(prev?.mediaData || [])];
 
       //return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
@@ -467,6 +491,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = SenderType.User;
         }
+
         dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         if (!isFinish) {
           allMessages.push(newMessage);
@@ -477,6 +502,7 @@ const ChatPage: React.FC = () => {
           allEmoticon.push('');
           allMedia.push(mediaDataValue);
         }
+        newTextBubbleArrayList.current.push(allMessages.length - 1); // 추가된 말풍선 arrayIndex 저장
       } else {
         //
         // 1. current sender를 가져온다
@@ -514,6 +540,8 @@ const ChatPage: React.FC = () => {
               sender: (newMessage.sender = newSenderResult),
               createDateString: currentTime,
               createDateLocale: new Date(),
+              isLike: false, // 말풍선 like
+              bubbleIndex: 0,
             };
             currentSender = _newMessage.sender;
 
@@ -526,6 +554,7 @@ const ChatPage: React.FC = () => {
               allEmoticon.push('');
               allMedia.push(mediaDataValue);
             }
+            newTextBubbleArrayList.current.push(allMessages.length - 1); // 추가된 말풍선 arrayIndex 저장
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
             allMessages[allMessages.length - 1].text += `${newMessage.text[i]}`;
@@ -543,6 +572,7 @@ const ChatPage: React.FC = () => {
       return {
         Messages: allMessages,
         emoticonUrl: allEmoticon,
+        isLike: false,
         mediaData: allMedia, // 빈 배열로 기본값 설정
       };
     };

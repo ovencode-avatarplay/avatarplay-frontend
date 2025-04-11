@@ -12,14 +12,14 @@ import {
 } from './ChatTypes';
 import {compareDates} from './NewDate';
 
-// ㅋㅋㅋㅋㅋㅋㅋㅋ
-
 //const patternParsing( pattern : RegExp, )
 
 const parseAnswer = (
   answer: string,
   chatType: ChatType,
   id: number,
+  likeTrueIndexList: number[],
+  arrayIndex: number, // 말풍선 arrayIndex
   createDateString: string,
   createDate: Date,
 ): Message[] => {
@@ -35,6 +35,8 @@ const parseAnswer = (
         sender: SenderType.System,
         createDateString: '',
         createDateLocale: new Date(),
+        isLike: likeTrueIndexList.includes(arrayIndex), // 말풍선 like
+        bubbleIndex: arrayIndex,
       });
       return result;
     }
@@ -76,7 +78,10 @@ const parseAnswer = (
           sender: SenderType.PartnerNarration,
           createDateString: '',
           createDateLocale: createDate,
+          isLike: likeTrueIndexList.includes(arrayIndex), // 말풍선 like
+          bubbleIndex: arrayIndex,
         });
+        arrayIndex++;
       }
     }
 
@@ -91,7 +96,10 @@ const parseAnswer = (
           sender: chatType === ChatType.SystemText ? SenderType.System : pattern.type,
           createDateString: i === match.length ? createDateString : '', // AI 채팅은 마지막 말풍선에만 시간을 출력해준다.
           createDateLocale: createDate,
+          isLike: likeTrueIndexList.includes(arrayIndex), // 말풍선 like
+          bubbleIndex: arrayIndex,
         });
+        arrayIndex++;
         break; // 첫 번째 매칭된 그룹만 처리
       }
     }
@@ -110,7 +118,10 @@ const parseAnswer = (
         sender: SenderType.PartnerNarration,
         createDateString: createDateString,
         createDateLocale: createDate,
+        isLike: likeTrueIndexList.includes(arrayIndex), // 말풍선 like
+        bubbleIndex: arrayIndex,
       });
+      arrayIndex++;
     }
   }
 
@@ -161,6 +172,7 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
   let id: number = messageInfo.id;
   let createDateString: string = timeParser(messageInfo.createAt);
   const createDate: Date = messageInfo.createAt;
+  let arrayIndex = 0;
   if (!message) return null;
 
   try {
@@ -169,8 +181,17 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
 
     if (parsedMessage.episodeInfo) {
       result.push(
-        ...parseAnswer(parsedMessage.episodeInfo, chatType, parsedMessage.id, createDateString, messageInfo.createAt),
+        ...parseAnswer(
+          parsedMessage.episodeInfo,
+          chatType,
+          parsedMessage.id,
+          parsedMessage.isLike,
+          arrayIndex,
+          createDateString,
+          messageInfo.createAt,
+        ),
       );
+      arrayIndex++;
     }
 
     if (parsedMessage.Question) {
@@ -178,6 +199,7 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
 
       parts.forEach((part, index, array) => {
         if (part.trim()) {
+          const bLicked = messageInfo.likeTrueIndexList.includes(arrayIndex);
           // 첫번째 메시지에는 날짜 말풍선을 넣을지 체크해서 처리
           if (index === 0) {
             const strNewDate = compareDates(prevMessageDate, messageInfo.createAt);
@@ -190,6 +212,8 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
                 sender: SenderType.NewDate,
                 createDateString: '',
                 createDateLocale: new Date(messageInfo.createAt),
+                isLike: bLicked, // 말풍선 like
+                bubbleIndex: arrayIndex,
               };
               result.push(newDateMessage);
             }
@@ -202,15 +226,29 @@ export const parseMessage = (messageInfo: MessageInfo, prevMessageDate: Date | n
             sender: sender,
             createDateString: index === array.length - 1 ? createDateString : '', // 마지막 항목만 createDate 설정
             createDateLocale: createDate,
+            isLike: bLicked, // 말풍선 like
+            bubbleIndex: arrayIndex,
           };
 
           if (newMessage.text !== '...') result.push(newMessage);
+          arrayIndex++;
         }
       });
     }
 
     if (parsedMessage.Answer) {
-      result.push(...parseAnswer(parsedMessage.Answer, chatType, parsedMessage.id, createDateString, createDate));
+      //const bLicked = parsedMessage.likeTrueIndexList.includes(arrayIndex);
+      result.push(
+        ...parseAnswer(
+          parsedMessage.Answer,
+          chatType,
+          id,
+          messageInfo.likeTrueIndexList,
+          arrayIndex,
+          parsedMessage.createDateString,
+          createDate,
+        ),
+      );
     }
 
     return result;
@@ -296,6 +334,8 @@ export const parsedUserNarration = (messageData: Message): Message => {
     text: messageData.text.slice(1, -1), // 양 옆의 *를 제거
     createDateString: '',
     createDateLocale: new Date(),
+    isLike: false, // 말풍선 like
+    bubbleIndex: 0,
   };
   return parsedMessage;
 };
@@ -421,6 +461,8 @@ export const setSenderType = (
     text: message,
     createDateString: '',
     createDateLocale: new Date(),
+    isLike: false, // 말풍선 like
+    bubbleIndex: 0,
   };
   return resultMessage;
 };
