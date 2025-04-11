@@ -160,6 +160,7 @@ export interface UrlEnterEpisodeChattingReq {
 // 만약 달라지면 따로 분리해서 만들어주자.
 export interface EnterEpisodeChattingRes {
   storyId: number;
+  characterId: number;
   episodeId: number;
   streamKey: string;
   nextEpisodeId: number;

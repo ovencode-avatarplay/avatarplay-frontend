@@ -5,6 +5,7 @@ export type ChattingState = {
   storyName: string;
   episodeName: string;
   storyId: number; // url enter방식일때 필수. 그 외에는 아무값이나 넣어도 됨 ( 24년-11-11 )
+  characterId: number;
   episodeId: number;
   StoryUrl: string;
   streamKey?: string;
@@ -15,6 +16,7 @@ export const initialStateChatting: ChattingState = {
   storyName: '',
   episodeName: '',
   storyId: 0,
+  characterId: 0,
   episodeId: 0,
   StoryUrl: '',
   streamKey: '',
@@ -36,6 +38,9 @@ export const chattingSlice = createSlice({
     setStoryId: (state, action: PayloadAction<number>) => {
       state.storyId = action.payload; // contentId 업데이트하는 reducer
     },
+    setCharacterId: (state, action: PayloadAction<number>) => {
+      state.characterId = action.payload; // contentId 업데이트하는 reducer
+    },
     setStreamKey: (state, action: PayloadAction<string>) => {
       state.streamKey = action.payload;
     },
@@ -44,6 +49,7 @@ export const chattingSlice = createSlice({
       state.storyName = action.payload.storyName;
       state.episodeName = action.payload.episodeName;
       state.episodeId = action.payload.episodeId;
+      state.characterId = action.payload.characterId;
       state.storyId = action.payload.storyId;
       state.streamKey = action.payload.streamKey;
       console.log('state ', state);
@@ -52,6 +58,6 @@ export const chattingSlice = createSlice({
 });
 
 // 액션과 리듀서 내보내기
-export const {setStoryName, setEpisodeName, setEpisodeId, setStoryId, setStreamKey, setStateChatting} =
+export const {setStoryName, setEpisodeName, setEpisodeId, setStoryId, setCharacterId, setStreamKey, setStateChatting} =
   chattingSlice.actions;
 export default chattingSlice.reducer;

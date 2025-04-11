@@ -121,6 +121,7 @@ const DrawerCharacterDesc = () => {
       storyName: currentChattingState.storyName || '',
       episodeName: currentChattingState.episodeName || '',
       storyId: Number(characterId),
+      characterId: Number(characterId),
       episodeId: Number(episodeId),
       StoryUrl: contentUrl,
     };

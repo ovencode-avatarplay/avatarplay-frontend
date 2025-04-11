@@ -3,7 +3,14 @@ import {UrlEnterEpisodeChattingReq, EnterEpisodeChattingRes, sendChattingEnterUr
 import {QueryParams, getWebBrowserUrl} from '@/utils/browserInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setStoryId, setStoryName, setEpisodeId, setEpisodeName, setStreamKey} from '@/redux-store/slices/Chatting';
+import {
+  setStoryId,
+  setStoryName,
+  setEpisodeId,
+  setEpisodeName,
+  setStreamKey,
+  setCharacterId,
+} from '@/redux-store/slices/Chatting';
 import {setRegeneratingQuestion} from '@/redux-store/slices/ModifyQuestion';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 import {getCurrentLanguage} from '@/utils/UrlMove';
@@ -47,6 +54,7 @@ const usePrevChatting = (
         dispatch(setStoryName(response.data.storyName));
         dispatch(setEpisodeName(response.data.episodeName));
         dispatch(setStoryId(response.data.storyId));
+        dispatch(setCharacterId(response.data.characterId));
         dispatch(setEpisodeId(response.data.episodeId));
         dispatch(setStreamKey(response.data.streamKey));
       } else {

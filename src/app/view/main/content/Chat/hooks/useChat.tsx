@@ -68,6 +68,7 @@ const useChat = () => {
 
   const episodeId = useSelector((state: RootState) => state.chatting.episodeId);
   const StoryId = useSelector((state: RootState) => state.chatting.storyId);
+  const characterId = useSelector((state: RootState) => state.chatting.characterId);
   const shortsId = useSelector((state: RootState) => state.chatting.StoryUrl);
   const [isNotEnoughRubyPopupOpen, setNotEnoughRubyPopupOpen] = useState(false); // 팝업 상태 추가
   //const [isSendingMessage, setIsSendingMessage] = useState({state: false}); // 메시지 전송 상태 (렌더링과 관계 없을때 사용가능한 useState 형태)
@@ -165,6 +166,7 @@ const useChat = () => {
       storyName: `content episode${episodeId}`,
       episodeName: `episode${episodeId}`,
       storyId: Number(StoryId),
+      characterId: Number(characterId),
       episodeId: Number(episodeId),
       StoryUrl: shortsId,
     };
