@@ -25,7 +25,7 @@ const ChatArea: React.FC<Props> = ({messages}) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+    messagesEndRef.current?.scrollIntoView({behavior: 'instant'});
   }, [messages]);
 
   return (

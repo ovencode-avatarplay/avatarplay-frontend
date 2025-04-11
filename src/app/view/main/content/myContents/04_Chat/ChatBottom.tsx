@@ -27,7 +27,7 @@ const ChatBottom: React.FC<Props> = ({onSend}) => {
         <div className={styles.inputIcon} /> {/* 왼쪽 아이콘 영역 */}
         <input
           className={styles.inputField}
-          placeholder="Tears on her face.."
+          placeholder="Input..."
           value={text}
           onChange={e => setText(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSend()}

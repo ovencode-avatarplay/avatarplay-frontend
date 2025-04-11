@@ -48,7 +48,13 @@ const Chat: React.FC<Props> = ({open, onClose}) => {
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={() => {}}
+      BackdropProps={{
+        sx: {background: 'rgba(255, 255, 255, 0.7)'},
+      }}
+    >
       <Box className={styles.modalBox}>
         <div className={styles.container}>
           <ChatHeader />

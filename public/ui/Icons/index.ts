@@ -123,6 +123,8 @@ import LineReward from "./Line/Reward.svg";
 import LineHome from "./Line/Home.svg";
 import LineFriendList from "./Line/FriendList.svg";
 import LineSearchThin from "./Line/Search_Thin.svg";
+import LineCam from "./Line/Cam.svg";
+import LinePhone from "./Line/Phone.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -296,4 +298,6 @@ export {
   AppleLogo,
   LineFriendList,
   LineSearchThin,
+  LineCam,
+  LinePhone,
 };

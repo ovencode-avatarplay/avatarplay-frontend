@@ -46,3 +46,23 @@
     gap: 6px;
   }
   
+  .arrowIcon
+  {
+    filter: brightness(0) saturate(100%);
+    width: 20px;
+    height: 20px;
+  }
+
+  .camIcon
+  {
+    filter: brightness(0) saturate(100%);
+    width: 24px;
+    height: 24px;
+  }
+
+  .phoneIcon
+  {
+    filter: brightness(0) saturate(100%);
+    width: 20px;
+    height: 20px;
+  }

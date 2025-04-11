@@ -16,10 +16,13 @@
   
   .bubbleBlock {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 4px;
     max-width: 70%;
+    align-items: flex-end;
+    flex-wrap: nowrap; /* 💡 줄바꿈 방지 */
   }
+  
   
   .bubble {
     padding: 8px 12px;
@@ -43,13 +46,12 @@
   .myBubble p {
     transform: matrix(-1, 0, 0, 1, 0, 0);
   }
-  
   .timestamp {
     font-size: 11px;
     color: #2c3131;
-    padding-left: 4px;
+    white-space: nowrap; /* 💡 줄바꿈 방지 */
+    align-self: flex-end;
   }
-  
   .italic {
     font-style: italic;
   }
