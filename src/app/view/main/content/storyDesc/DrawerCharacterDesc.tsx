@@ -16,7 +16,15 @@ import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
 import {setUrlLinkUse} from '@/redux-store/slices/ChattingEnter';
 
 // Network
-import {GetStoryByIdReq, GetStoryByIdRes, sendStoryByIdGet, recommendStoryInfo} from '@/app/NetWork/StoryNetwork';
+import {
+  GetStoryByIdReq,
+  GetStoryByIdRes,
+  sendStoryByIdGet,
+  recommendStoryInfo,
+  sendStoryLike,
+  StoryLikeReq,
+  StoryInteractionType,
+} from '@/app/NetWork/StoryNetwork';
 
 // Css
 import styles from './DrawerCharacterDesc.module.scss';

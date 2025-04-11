@@ -12,6 +12,7 @@ import {useRouter} from 'next/navigation';
 import {getBackUrl} from '@/utils/util-1';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {LineCam, LineRecording} from '@ui/Icons';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -22,7 +23,14 @@ interface ChatTopBarProps {
   isBlurOn: boolean;
 }
 
-const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onLiveChatClick, iconUrl, isHideChat, isBlurOn}) => {
+const TopBar: React.FC<ChatTopBarProps> = ({
+  onBackClick,
+  onMoreClick,
+  onLiveChatClick,
+  iconUrl,
+  isHideChat,
+  isBlurOn,
+}) => {
   const {back} = useCustomRouter();
   const router = useRouter();
   const chattingState1: ChattingState = useSelector((state: RootState) => state.chatting);
@@ -66,14 +74,9 @@ const TopBar: React.FC<ChatTopBarProps> = ({onBackClick, onMoreClick, onLiveChat
               </div>
             </div>
             <div className={styles.topButtonBox}>
-            <IconButton className={styles.button} onClick={onLiveChatClick}>
-                <img className={styles.buttonImage} src={Image.src} />
+              <IconButton className={styles.button} onClick={onLiveChatClick}>
+                <img className={styles.buttonImage} src={LineCam.src} />
               </IconButton>
-
-              <IconButton className={styles.button}>
-                <img className={styles.buttonImage} src={Image.src} />
-              </IconButton>
-
               <IconButton className={styles.button} onClick={onMoreClick}>
                 <img className={styles.buttonImage} src={MenuDots.src} />
               </IconButton>
