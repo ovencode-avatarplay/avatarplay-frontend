@@ -10,6 +10,7 @@ import styles from '@chats/Styles/StyleChat.module.css';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
 
 import {preventZoom, useBackHandler} from 'utils/util-1';
+import CallingScreen from './CallingScreen';
 
 import {
   cleanString,
@@ -48,6 +49,15 @@ import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDa
 import {TriggerActionType} from '@/redux-store/slices/StoryInfo';
 import useChat from './hooks/useChat';
 import {useStreamMessage} from './hooks/useStreamMessage';
+
+import Script from "next/script";
+
+declare global {
+  interface Window {
+    createUnityInstance: (canvas: HTMLCanvasElement, config: any) => Promise<any>;
+    onCloseAction: () => void;
+  }
+}
 
 const ChatPage: React.FC = () => {
   const {
@@ -115,14 +125,61 @@ const ChatPage: React.FC = () => {
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  console.log('1111 isLoading: ' + isLoading);
-
+  const [showLiveChat, setShowLiveChat] = useState<boolean>(false);
+  const [hangOn, setHangOn] = useState<boolean>(false);
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
     isSendingMessage,
     onMessageProps: onMessage,
   });
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Unity 초기화를 담당하는 함수
+  const initUnity = () => {
+    // 모바일 기기 감지 및 설정
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      // 모바일 기기용 viewport 메타 태그 추가
+      const meta = document.createElement("meta");
+      meta.name = "viewport";
+      meta.content =
+        "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+      document.head.appendChild(meta);
+
+      // canvas 스타일을 브라우저 클라이언트 전체에 맞게 변경
+      if (canvasRef.current) {
+        canvasRef.current.style.width = "100%";
+        canvasRef.current.style.height = "100%";
+        canvasRef.current.style.position = "fixed";
+      }
+      // body의 텍스트 정렬 수정
+      document.body.style.textAlign = "left";
+    }
+
+    // Unity Loader 스크립트가 로드된 후 createUnityInstance를 호출하여 Unity 인스턴스를 생성
+    if (window.createUnityInstance && canvasRef.current) {
+      window
+        .createUnityInstance(canvasRef.current, {
+          arguments: [],
+          dataUrl: "https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.data.br",
+          frameworkUrl: "https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.framework.js.br",
+          codeUrl: "https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.wasm.br",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "Role",
+          productVersion: "0.1.0",
+          // matchWebGLToCanvasSize: false, // 캔버스 사이즈와 렌더 사이즈를 개별 제어할 때 사용
+          // devicePixelRatio: 1, // 고해상도 디스플레이에서 DPI 조정에 사용
+        })
+        .then((unityInstance) => {
+          console.log("Unity 인스턴스가 생성되었습니다.", unityInstance);
+          setHangOn(true);
+        })
+        .catch((error) => {
+          console.error("Unity 초기화 중 오류 발생:", error);
+        });
+    }
+  };
 
   async function onMessage(event: any, eventSource: any) {
     try {
@@ -174,6 +231,24 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     preventZoom(); // 줌인아웃을 막는다.
   }, []);
+
+  useEffect(() => {
+    if (window.createUnityInstance != null) {
+      initUnity();
+    } else {
+      const interval = setInterval(() => {
+        if (window.createUnityInstance != null) {
+          clearInterval(interval);
+          initUnity();
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+
+    window.onCloseAction = ()=> {
+      setShowLiveChat(false);
+    }
+  }, [showLiveChat])
 
   useEffect(() => {
     window.addEventListener('resize', setFullHeight);
@@ -488,6 +563,10 @@ const ChatPage: React.FC = () => {
     console.log('더보기 버튼 클릭');
   };
 
+  const handleLiveChatClick = () => {
+    setShowLiveChat(true);
+  };
+
   const handleToggleBackground = () => {
     console.log('배경 보기/숨기기 버튼 클릭');
     SetHideChat(!isHideChat);
@@ -586,6 +665,15 @@ const ChatPage: React.FC = () => {
     setIsLoading(bool);
   };
 
+  const handleOnAccept = () => {
+    setShowLiveChat(false);
+    setHangOn(false);
+  }
+
+  const handleOnDeny = () => {
+    setShowLiveChat(false);
+  }
+
   return (
     <>
       {/*
@@ -601,6 +689,7 @@ const ChatPage: React.FC = () => {
           <TopBar
             onBackClick={handleBackClick}
             onMoreClick={handleMoreClick}
+            onLiveChatClick={handleLiveChatClick}
             iconUrl={characterImageUrl ?? ''}
             isHideChat={isHideChat}
             isBlurOn={isBlurOn}
@@ -646,6 +735,35 @@ const ChatPage: React.FC = () => {
           onRemoveChat={removeParsedMessage}
           onCheatChangeDate={handleChangeNewDate}
         />
+
+      <Script src="https://react4.s3.ap-northeast-2.amazonaws.com/microphone.js" strategy="afterInteractive" />
+      <Script src="https://react4.s3.ap-northeast-2.amazonaws.com/Build/web.loader.js" strategy="afterInteractive" />
+
+      {showLiveChat && (
+        <div
+        style={{
+          textAlign: "center",
+          padding: 0,
+          border: 0,
+          margin: 0,
+        }}
+      >
+        <CallingScreen onAccept={handleOnAccept} onDeny={handleOnDeny} isHangOn={hangOn}></CallingScreen>
+        <canvas
+          id="unity-canvas"
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 10, // 기존 콘텐츠보다 높은 z-index를 부여하여 위에 표시
+            background: "transparent", // 필요에 따라 배경색 지정 가능
+          }}
+        ></canvas>
+      </div>
+      )}
 
         {showPopup && (
           <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />

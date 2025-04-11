@@ -29,4 +29,30 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+
+  async headers() {
+    return [
+      {
+        source: "/Build/:file*.wasm.br",
+        headers: [
+          { key: "Content-Encoding", value: "br" },
+          { key: "Content-Type", value: "application/wasm" },
+        ],
+      },
+      {
+        source: "/Build/:file*.framework.js.br",
+        headers: [
+          { key: "Content-Encoding", value: "br" },
+          { key: "Content-Type", value: "text/javascript" },
+        ],
+      },
+      {
+        source: "/Build/:file*.data.br",
+        headers: [
+          { key: "Content-Encoding", value: "br" },
+          { key: "Content-Type", value: "application/octet-stream" },
+        ],
+      },
+    ];
+  },
 };
