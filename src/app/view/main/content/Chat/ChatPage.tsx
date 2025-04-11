@@ -746,15 +746,7 @@ const ChatPage: React.FC = () => {
 
       <Script src="/game/microphone.js" strategy="afterInteractive" />
       <Script src="/game/web.loader.js" strategy="afterInteractive" />
-      <Script src="/game/RpmGlobal.js" strategy="afterInteractive" />
-      <Script src="/game/ReadyPlayerMeFrame.js" strategy="afterInteractive" />
 
-      <div id='canvas-warp'>
-        <div id='rpm-container'>
-        <iframe id='rpm-frame' className='rpm-frame' allow='camera *;'></iframe>
-        <button id='rpm-hide-button' onClick='hideRpm()'>Hide</button>
-        </div>
-        </div>
       {showLiveChat && (
         <div
         style={{
