@@ -236,11 +236,11 @@ const ChatPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (window.createUnityInstance) {
+    if (window.createUnityInstance != null) {
       initUnity();
     } else {
       const interval = setInterval(() => {
-        if (window.createUnityInstance) {
+        if (window.createUnityInstance != null) {
           clearInterval(interval);
           initUnity();
         }
