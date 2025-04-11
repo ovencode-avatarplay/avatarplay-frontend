@@ -196,7 +196,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     defaultValues: {
       name: '',
       description: '',
-      visibilityType: VisibilityType.Private,
       tags: [],
       characterIP: CharacterIP.Original,
       isMonetization: 0,
