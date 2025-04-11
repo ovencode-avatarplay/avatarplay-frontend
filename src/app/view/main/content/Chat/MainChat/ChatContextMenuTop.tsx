@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, IconButton} from '@mui/material';
 import styles from '../Styles/ChatMessageMenu.module.css';
 import {LikeOn, LikeOff} from '@ui/chatting';
@@ -23,6 +23,10 @@ const ChatMessageMenuTop: React.FC<ChatContextTopProps> = ({id, index, isLike, o
       closeAction();
     }, 300);
   };
+
+  useEffect(() => {
+    setIsLiked(isLike);
+  }, [isLike]);
 
   return (
     <Box className={styles.topMenuContainer}>

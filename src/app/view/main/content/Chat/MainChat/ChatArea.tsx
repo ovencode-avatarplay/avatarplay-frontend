@@ -225,6 +225,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
       if (receive.resultCode === 0) {
         console.log('Success');
+        const target = messages.Messages.find(msg => msg.chatId === id && msg.bubbleIndex === bubbleIndex);
+
+        if (target) {
+          target.isLike = like;
+        }
       } else {
         alert('Error');
       }
