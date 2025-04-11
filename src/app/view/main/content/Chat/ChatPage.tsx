@@ -115,6 +115,7 @@ const ChatPage: React.FC = () => {
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const indexBubble = useRef(0); // 말풍선 인덱스.
 
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
@@ -193,6 +194,8 @@ const ChatPage: React.FC = () => {
       sender: SenderType.media,
       createDateString: currentTime,
       createDateLocale: new Date(),
+      isLike: false, // 말풍선 like
+      bubbleIndex: 0,
     };
 
     if (isFinishMessage(isMyMessage, message) === true) {
@@ -208,6 +211,8 @@ const ChatPage: React.FC = () => {
       sender: isMyMessage ? SenderType.User : currentSender,
       createDateString: currentTime,
       createDateLocale: new Date(),
+      isLike: false, // 말풍선 like
+      bubbleIndex: 0,
     };
     const mediaDataValue: MediaData = {
       mediaType: TriggerMediaState.None,
@@ -258,6 +263,8 @@ const ChatPage: React.FC = () => {
             sender: SenderType.System,
             createDateString: isPrintDate ? currentTime : '', // 시스템 메시지에는 시간을 출력하지 않는다.
             createDateLocale: new Date(),
+            isLike: false, // 말풍선 like
+            bubbleIndex: 0,
           };
 
           resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
@@ -431,6 +438,8 @@ const ChatPage: React.FC = () => {
               sender: (newMessage.sender = newSenderResult),
               createDateString: currentTime,
               createDateLocale: new Date(),
+              isLike: false, // 말풍선 like
+              bubbleIndex: 0,
             };
             currentSender = _newMessage.sender;
 

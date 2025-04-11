@@ -234,6 +234,7 @@ export enum StoryInteractionState {
 export interface StoryLikeReq {
   type: StoryInteractionType;
   typeValueId: number; // 각각 Story, Chat의 Id
+  messageIndex: number;
   isLike: boolean;
 }
 

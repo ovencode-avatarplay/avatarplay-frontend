@@ -40,7 +40,6 @@ const useChat = () => {
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({
     Messages: [],
     emoticonUrl: [],
-    isLike: false,
     mediaData: [],
   });
   const parsedMessagesRef = useRef(parsedMessages);
@@ -80,6 +79,8 @@ const useChat = () => {
     sender: SenderType.System,
     createDateString: '',
     createDateLocale: new Date('2024-12-17T10:30:00Z'),
+    isLike: false, // 말풍선 like
+    bubbleIndex: 0,
   });
 
   const handleBackClick = useBackHandler();
@@ -104,10 +105,6 @@ const useChat = () => {
     setRenderComplete(isComplete);
   };
   const {prevMessages: enterData} = usePrevChatting(episodeId, isReqPrevCheat, handleRerender, isIdEnter);
-
-  useEffect(() => {
-    setParsedMessages({Messages: [], emoticonUrl: [], isLike: false, mediaData: []});
-  }, []);
 
   useEffect(() => {
     if (parsedMessages.Messages.length > 0) {
@@ -207,6 +204,7 @@ const useChat = () => {
       isReqPrevCheat === true ||
       isRenderComplete === true
     ) {
+      let arrayIndex: number = 0;
       // flatMap을 통해 parsedPrevMessages를 생성
       // parsedPrevMessages와 emoticonUrl을 동시에 생성하여 위치와 길이를 맞춤
       const {parsedPrevMessages, emoticonUrl, mediaData} = enterData?.prevMessageInfoList.reduce<{
@@ -259,12 +257,15 @@ const useChat = () => {
               sender: SenderType.media,
               createDateString: createDate,
               createDateLocale: new Date(),
+              isLike: false, // 말풍선 like
+              bubbleIndex: arrayIndex,
             };
             acc.parsedPrevMessages.push(defaultMessages);
             acc.emoticonUrl.push(emoticonValue);
             acc.mediaData.push(mediaDataValue); // 기본값 추가
           }
 
+          arrayIndex++;
           return acc;
         },
         {parsedPrevMessages: [], emoticonUrl: [], mediaData: []},
@@ -276,6 +277,8 @@ const useChat = () => {
         sender: SenderType.IntroPrompt,
         createDateString: '',
         createDateLocale: new Date(),
+        isLike: false, // 말풍선 like
+        bubbleIndex: 0,
       };
 
       // emoticonUrl.unshift('');

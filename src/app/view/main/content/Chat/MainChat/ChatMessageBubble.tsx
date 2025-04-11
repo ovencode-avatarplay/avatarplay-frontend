@@ -21,9 +21,11 @@ interface ChatMessageBubbleProps {
   id: number;
   iconUrl: string;
   index: number;
+  bubbleIndex: number;
+  isLike: boolean;
   emoticonUrl: string;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onClickLike: (id: number, like: boolean) => void;
+  onClickLike: (id: number, index: number, like: boolean) => void;
   onTtsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   setSelectedNull: () => void;
   selectedIndex: number | null;
@@ -39,6 +41,8 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   id,
   iconUrl,
   index,
+  bubbleIndex,
+  isLike,
   emoticonUrl,
   onClick,
   onClickLike,
@@ -134,7 +138,13 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               )}
               <Box className={styles.chatBubbleJustifyPartner}>
                 {selectedIndex === index && checkCanOpenContextTop() && (
-                  <ChatMessageMenuTop id={id} onClickLike={onClickLike} closeAction={() => setSelectedNull()} />
+                  <ChatMessageMenuTop
+                    id={id}
+                    index={bubbleIndex}
+                    isLike={isLike}
+                    onClickLike={onClickLike}
+                    closeAction={() => setSelectedNull()}
+                  />
                 )}
                 {sender !== 'media' && (
                   <div

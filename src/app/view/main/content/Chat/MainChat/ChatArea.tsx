@@ -208,14 +208,15 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   console.log('aiChatHeight', aiChatHeight);
   const isBlur = selectedBubbleIndex !== null;
 
-  const handleSendStoryLike = (id: number, like: boolean) => {
-    reqStoryChattingLike(id, like);
+  const handleSendStoryLike = (id: number, bubbleIndex: number, like: boolean) => {
+    reqStoryChattingLike(id, bubbleIndex, like);
   };
 
-  const reqStoryChattingLike = async (id: number, like: boolean) => {
+  const reqStoryChattingLike = async (id: number, bubbleIndex: number, like: boolean) => {
     const data: StoryLikeReq = {
       type: StoryInteractionType.ChattingLike,
       typeValueId: id, // Chat의 Id
+      messageIndex: bubbleIndex,
       isLike: like,
     };
 
@@ -234,7 +235,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
 
   {
     console.log(messages);
-    console.log(messages.Messages);
+    console.log('Messages :', messages.Messages);
   }
   return (
     <>
@@ -312,6 +313,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       sender={msg.sender}
                       id={msg.chatId}
                       index={index}
+                      bubbleIndex={msg.bubbleIndex}
+                      isLike={msg.isLike}
                       iconUrl={iconUrl}
                       emoticonUrl={messages.emoticonUrl[index]}
                       mediaData={messages.mediaData?.[index] || null}

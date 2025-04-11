@@ -141,6 +141,7 @@ export interface MessageInfo {
   emoticonUrl: string;
   triggerMediaState: number;
   mediaUrlList: string[];
+  likeTrueIndexList: number[];
   createAt: Date;
 }
 
