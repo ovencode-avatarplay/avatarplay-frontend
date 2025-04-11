@@ -1084,6 +1084,9 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                 );
                 data.dataCharacterSearch.profileList = profileList;
                 data.dataPopupRemove.isOpen = false;
+
+                const profileListSimpleList = profileList.map(v => v.profileSimpleInfo);
+                setValue('memberProfileIdList', profileListSimpleList);
                 setData({...data});
               },
             },
