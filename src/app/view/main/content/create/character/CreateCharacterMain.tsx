@@ -82,7 +82,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   //#region Edit Thumbnail
   type UploadType = 'Mixture' | 'AIGenerate' | 'Upload';
-  type ImageCreateType = 'Thumbnail' | 'MediaCreate' | 'MediaEdit';
+  type ImageCreateType = 'Thumbnail' | 'MediaCreate' | 'MediaEdit' | 'TriggerMedia';
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
   const [imageCreate, setImageCreate] = useState<ImageCreateType>('Thumbnail');
 
@@ -123,270 +123,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   //#endregion
 
-  //#region
-  const exampleTrigger: CharacterEventTriggerInfo[] = [
-    {
-      id: 1,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'Feeling good!',
-      emotionState: EmotionState.Happy,
-      probability: 70,
-    },
-    {
-      id: 2,
-      mediaUrl: '/images/profile_sample/video_sample_upload1.mp4',
-      mediaType: MediaState.Video,
-      triggerType: CharacterEventTriggerType.ChangeBackgroundByEmotion,
-      inputPrompt: 'I Like Star!',
-      emotionState: EmotionState.Excited,
-      probability: 80,
-    },
-    {
-      id: 3,
-      mediaUrl: '/images/profile_sample/video_sample_upload1.mp4',
-      mediaType: MediaState.Video,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'Thanks for the stars!',
-      getType: GetStarType.Instant,
-      getStar: 100,
-    },
-    {
-      id: 4,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'I’m so happy right now!',
-      emotionState: EmotionState.Happy,
-      probability: 90,
-    },
-    {
-      id: 5,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'That made me mad!',
-      emotionState: EmotionState.Angry,
-      probability: 50,
-    },
-    {
-      id: 6,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'I feel down...',
-      emotionState: EmotionState.Sad,
-      probability: 40,
-    },
-    {
-      id: 7,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.ChangeBackgroundByEmotion,
-      inputPrompt: 'What a beautiful day!',
-      emotionState: EmotionState.Happy,
-      probability: 85,
-    },
-    {
-      id: 8,
-      mediaUrl: '',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMessageByElapsedTime,
-      inputPrompt: 'Are you still there?',
-      elapsedTime: 3,
-    },
-    {
-      id: 9,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByElapsedTime,
-      inputPrompt: 'Time for a break!',
-      elapsedTime: 10,
-    },
-    {
-      id: 10,
-      mediaUrl: '',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMessageByElapsedTime,
-      inputPrompt: 'Let’s keep going!',
-      elapsedTime: 5,
-    },
-    {
-      id: 11,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'Let’s celebrate!',
-      getType: GetStarType.Accumulated,
-      getStar: 1000,
-    },
-    {
-      id: 12,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'That scared me!',
-      emotionState: EmotionState.Scared,
-      probability: 30,
-    },
-    {
-      id: 13,
-      mediaUrl: '',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMessageByElapsedTime,
-      inputPrompt: 'Still hanging in there?',
-      elapsedTime: 15,
-    },
-    {
-      id: 14,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'Bonus time!',
-      getType: GetStarType.Instant,
-      getStar: 300,
-    },
-    {
-      id: 15,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'I’m getting bored...',
-      emotionState: EmotionState.Bored,
-      probability: 60,
-    },
-    {
-      id: 16,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.ChangeBackgroundByEmotion,
-      inputPrompt: 'Mood just shifted!',
-      emotionState: EmotionState.Angry,
-      probability: 50,
-    },
-    {
-      id: 17,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByElapsedTime,
-      inputPrompt: 'You can do it!',
-      elapsedTime: 20,
-    },
-    {
-      id: 18,
-      mediaUrl: '',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMessageByElapsedTime,
-      inputPrompt: 'Great job hanging in!',
-      elapsedTime: 25,
-    },
-    {
-      id: 19,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'That was amazing!',
-      getType: GetStarType.Instant,
-      getStar: 500,
-    },
-    {
-      id: 20,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'Let’s hug it out.',
-      emotionState: EmotionState.Sad,
-      probability: 75,
-    },
-    {
-      id: 21,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'So delightful!',
-      emotionState: EmotionState.Excited,
-      probability: 85,
-    },
-    {
-      id: 22,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.ChangeBackgroundByEmotion,
-      inputPrompt: 'Things feel gloomy...',
-      emotionState: EmotionState.Sad,
-      probability: 70,
-    },
-    {
-      id: 23,
-      mediaUrl: '',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMessageByElapsedTime,
-      inputPrompt: 'Time passes by quickly...',
-      elapsedTime: 7,
-    },
-    {
-      id: 24,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'Thank you for the stars!',
-      getType: GetStarType.Accumulated,
-      getStar: 2000,
-    },
-    {
-      id: 25,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByEmotion,
-      inputPrompt: 'I’m pumped!',
-      emotionState: EmotionState.Excited,
-      probability: 90,
-    },
-    {
-      id: 26,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByElapsedTime,
-      inputPrompt: 'Here’s a sticker for you!',
-      elapsedTime: 8,
-    },
-    {
-      id: 27,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'Epic support!',
-      getType: GetStarType.Instant,
-      getStar: 999,
-    },
-    {
-      id: 28,
-      mediaUrl: '',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMessageByElapsedTime,
-      inputPrompt: 'I’m still here if you need me!',
-      elapsedTime: 12,
-    },
-    {
-      id: 29,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.SendMediaByGotStars,
-      inputPrompt: 'Wow! You did it!',
-      getType: GetStarType.Accumulated,
-      getStar: 1500,
-    },
-    {
-      id: 30,
-      mediaUrl: '/images/001.png',
-      mediaType: MediaState.Image,
-      triggerType: CharacterEventTriggerType.ChangeBackgroundByEmotion,
-      inputPrompt: 'Everything is peaceful now.',
-      emotionState: EmotionState.Bored,
-      probability: 60,
-    },
-  ];
+  //#region CharacterTrigger
+
+  const [characterTrigger, setCharacterTrigger] = useState<CharacterEventTriggerInfo[]>([]);
 
   //#endregion
 
@@ -499,6 +238,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       );
     } else if (imageCreate === 'Thumbnail') {
       setMainImageUrl(img);
+    } else if (imageCreate === 'TriggerMedia') {
+      setMediaCreateImage(img);
+      // handleOnEditTrigger();
     }
     setSelectImageTypeOpen(false);
   };
@@ -542,6 +284,65 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setImgUploadSelectModalOpen(true);
     setImageCreate('MediaEdit');
     setSelectedMediaItemIdx(index);
+  };
+
+  const handleOnClickTriggerMediaEdit = () => {
+    setImgUploadSelectModalOpen(true);
+    setImageCreate('TriggerMedia');
+  };
+
+  const handleOnAddTrigger = (triggerType: CharacterEventTriggerType) => {
+    const newItem: CharacterEventTriggerInfo = {
+      id: getMinTriggerId(characterTrigger),
+      mediaUrl: '',
+      triggerType: triggerType,
+      inputPrompt: '',
+      mediaType: MediaState.None,
+      // 나머지는 조건부로 추가
+    };
+
+    // 조건에 따라 필드 채워주기
+    if (
+      triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion ||
+      triggerType === CharacterEventTriggerType.SendMediaByEmotion
+    ) {
+      newItem.emotionState = EmotionState.Happy;
+      newItem.probability = 100;
+    } else if (
+      triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ||
+      triggerType === CharacterEventTriggerType.SendMessageByElapsedTime
+    ) {
+      newItem.elapsedTime = 1;
+    } else if (triggerType === CharacterEventTriggerType.SendMediaByGotStars) {
+      newItem.getType = GetStarType.Accumulated;
+      newItem.getStar = 10;
+    }
+
+    setCharacterTrigger(prev => [...prev, newItem]);
+  };
+
+  const handleOnEditTrigger = (updatedTrigger: CharacterEventTriggerInfo) => {
+    setCharacterTrigger(prev => prev.map(item => (item.id === updatedTrigger.id ? updatedTrigger : item)));
+  };
+
+  const getMinTriggerId = (list: CharacterEventTriggerInfo[]): number => {
+    const listId = list.flatMap(item => item.id);
+    if (listId.length === 0) return 0;
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId - 1;
+  };
+
+  const handleDuplicateTrigger = (item: CharacterEventTriggerInfo) => {
+    const newItem = {
+      ...item,
+      id: getMinTriggerId(characterTrigger),
+      inputPrompt: item.inputPrompt + ' (copy)',
+    };
+    setCharacterTrigger(prev => [...prev, newItem]);
+  };
+
+  const handleDeleteTrigger = (id: number) => {
+    setCharacterTrigger(prev => prev.filter(trigger => trigger.id !== id));
   };
 
   const CheckEssential = () => {
@@ -710,7 +511,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   //#endregion
 
   //#region Conversation
-  const getMinId = (list: CardData[]): number => {
+  const getMinConversationId = (list: CardData[]): number => {
     const listId = list.flatMap(item => item.id);
     if (listId.length === 0) return 0;
     const minId = Math.min(...listId);
@@ -735,7 +536,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setConversationCards(prevCards => {
       const newCards = [...prevCards];
       const cardToDuplicate = newCards[index];
-      const newId = getMinId(newCards);
+      const newId = getMinConversationId(newCards);
 
       const duplicatedCard: CardData = {
         ...cardToDuplicate,
@@ -772,10 +573,10 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setConversationCards(prevCards => [
       ...prevCards,
       {
-        id: getMinId(prevCards),
+        id: getMinConversationId(prevCards),
         priorityType: 0,
-        userBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
-        charBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
+        userBars: [{id: getMinConversationId(prevCards), inputValue: '', type: 'dots'}],
+        charBars: [{id: getMinConversationId(prevCards), inputValue: '', type: 'dots'}],
       },
     ]);
   };
@@ -880,7 +681,16 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     {
       label: getLocalizedText('TODO : EventTrigger'),
       preContent: '',
-      content: <CharacterCreateEventTrigger eventTriggerItems={exampleTrigger} onClickCreateEventTrigger={() => {}} />,
+      content: (
+        <CharacterCreateEventTrigger
+          eventTriggerItems={characterTrigger}
+          onClickCreateEventTrigger={handleOnAddTrigger}
+          onEditEventTrigger={handleOnEditTrigger}
+          onDuplicateEventTrigger={handleDuplicateTrigger}
+          onDeleteEventTrigger={handleDeleteTrigger}
+          onClickEditMedia={handleOnClickTriggerMediaEdit}
+        />
+      ),
     },
     {
       label: getLocalizedText(Header, 'createcharacter001_label_006'),

@@ -18,7 +18,6 @@ import {
   EmojiSad,
   EmojiScared,
   LineArrowLeft,
-  LineArrowSwap,
   LineCopy,
   LineDelete,
   LineEdit,
@@ -32,7 +31,7 @@ import {
   EmotionState,
   GetStarType,
 } from '@/app/NetWork/CharacterNetwork';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import CustomDropDown from '@/components/layout/shared/CustomDropDown';
 import CustomInput from '@/components/layout/shared/CustomInput';
@@ -40,13 +39,67 @@ import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 
 interface Props {
   eventTriggerItems: CharacterEventTriggerInfo[];
-  onClickCreateEventTrigger: () => void;
+  onClickCreateEventTrigger: (triggertype: CharacterEventTriggerType) => void;
+  onEditEventTrigger: (updatedTrigger: CharacterEventTriggerInfo) => void;
+  onDuplicateEventTrigger: (item: CharacterEventTriggerInfo) => void;
+  onDeleteEventTrigger: (id: number) => void;
+  onClickEditMedia: () => void;
 }
 
-const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClickCreateEventTrigger}) => {
+const CharacterCreateEventTrigger: React.FC<Props> = ({
+  eventTriggerItems,
+  onClickCreateEventTrigger,
+  onEditEventTrigger,
+  onDuplicateEventTrigger,
+  onDeleteEventTrigger,
+  onClickEditMedia,
+}) => {
+  //#region
+  const EmotionArray = [
+    {label: 'Happy', value: EmotionState.Happy, icon: EmojiHappy.src},
+    {label: 'Angry', value: EmotionState.Angry, icon: EmojiAngry.src},
+    {label: 'Sad', value: EmotionState.Sad, icon: EmojiSad.src},
+    {label: 'Excited', value: EmotionState.Excited, icon: EmojiExcited.src},
+    {label: 'Scared', value: EmotionState.Scared, icon: EmojiScared.src},
+    {label: 'Bored', value: EmotionState.Bored, icon: EmojiBoring.src},
+  ];
+
   const [currentState, setCurrentState] = useState<number>(0);
   const [selectedTriggerType, setSelectedTriggerType] = useState<CharacterEventTriggerType | null>(null);
 
+  const [backgroundTriggers, setBackgroundTriggers] = useState<CharacterEventTriggerInfo[]>([]);
+  const [mediaByEmotionTriggers, setMediaByEmotionTriggers] = useState<CharacterEventTriggerInfo[]>([]);
+  const [mediaByTimeTriggers, setMediaByTimeTriggers] = useState<CharacterEventTriggerInfo[]>([]);
+  const [messageByTimeTriggers, setMessageByTimeTriggers] = useState<CharacterEventTriggerInfo[]>([]);
+  const [mediaByStarsTriggers, setMediaByStarsTriggers] = useState<CharacterEventTriggerInfo[]>([]);
+  //#endregion
+
+  //#region Handler
+
+  //#endregion
+
+  //#region Hook
+  useEffect(() => {
+    setBackgroundTriggers(
+      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion),
+    );
+    setMediaByEmotionTriggers(
+      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByEmotion),
+    );
+    setMediaByTimeTriggers(
+      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByElapsedTime),
+    );
+    setMessageByTimeTriggers(
+      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime),
+    );
+    setMediaByStarsTriggers(
+      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByGotStars),
+    );
+  }, [eventTriggerItems]);
+
+  //#endregion
+
+  //#region  Func
   const getHeaderIcon = (triggerType: CharacterEventTriggerType) => {
     switch (triggerType) {
       case CharacterEventTriggerType.ChangeBackgroundByEmotion:
@@ -78,14 +131,13 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
     }
   };
 
-  const EmotionArray = [
-    {label: 'Happy', value: EmotionState.Happy, icon: EmojiHappy.src},
-    {label: 'Angry', value: EmotionState.Angry, icon: EmojiAngry.src},
-    {label: 'Sad', value: EmotionState.Sad, icon: EmojiSad.src},
-    {label: 'Excited', value: EmotionState.Excited, icon: EmojiExcited.src},
-    {label: 'Scared', value: EmotionState.Scared, icon: EmojiScared.src},
-    {label: 'Bored', value: EmotionState.Bored, icon: EmojiBoring.src},
-  ];
+  const hasEmptyTriggerType =
+    backgroundTriggers.length === 0 ||
+    mediaByEmotionTriggers.length === 0 ||
+    mediaByTimeTriggers.length === 0 ||
+    messageByTimeTriggers.length === 0 ||
+    mediaByStarsTriggers.length === 0;
+  //#endregion
 
   //#region Render
 
@@ -116,7 +168,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
         )}
 
         <div className={styles.eventTriggerItemArea}>
-          {
+          {hasEmptyTriggerType && (
             <CustomButton
               size="Large"
               type="Tertiary"
@@ -130,17 +182,23 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
             >
               {getLocalizedText('TODO : Add Trigger')}
             </CustomButton>
-          }
+          )}
 
           <ul className={styles.eventTriggerContainers}>
-            {Object.values(CharacterEventTriggerType)
-              .filter(value => typeof value === 'number') // enum에서 숫자값만
-              .map(triggerType =>
-                renderEventTriggerContainer(
-                  triggerType as CharacterEventTriggerType,
-                  eventTriggerItems.filter(item => item.triggerType === triggerType),
-                ),
-              )}
+            {backgroundTriggers.length > 0 &&
+              renderEventTriggerContainer(CharacterEventTriggerType.ChangeBackgroundByEmotion, backgroundTriggers)}
+
+            {mediaByEmotionTriggers.length > 0 &&
+              renderEventTriggerContainer(CharacterEventTriggerType.SendMediaByEmotion, mediaByEmotionTriggers)}
+
+            {mediaByTimeTriggers.length > 0 &&
+              renderEventTriggerContainer(CharacterEventTriggerType.SendMediaByElapsedTime, mediaByTimeTriggers)}
+
+            {messageByTimeTriggers.length > 0 &&
+              renderEventTriggerContainer(CharacterEventTriggerType.SendMessageByElapsedTime, messageByTimeTriggers)}
+
+            {mediaByStarsTriggers.length > 0 &&
+              renderEventTriggerContainer(CharacterEventTriggerType.SendMediaByGotStars, mediaByStarsTriggers)}
           </ul>
         </div>
       </div>
@@ -201,14 +259,28 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
     return (
       <div className={styles.eventTriggerItem}>
         <div className={styles.eventTriggerItemContent}>
-          <div
-            className={`${styles.eventTriggerMedia}`}
-            style={{
-              backgroundImage: item.mediaUrl !== '' ? `url(${item.mediaUrl})` : '',
-              backgroundSize: 'cover',
-            }}
-            onClick={() => handlerSelected(index)}
-          >
+          <div className={`${styles.eventTriggerMedia}`} onClick={() => handlerSelected(index)}>
+            {item.mediaType === MediaState.Video ? (
+              <video
+                src={item.mediaUrl}
+                className={styles.videoPreview}
+                muted
+                preload="metadata"
+                style={{width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none'}}
+                controls={false}
+                playsInline={true}
+              />
+            ) : (
+              <div
+                className={styles.imagePreview}
+                style={{
+                  backgroundImage: item.mediaUrl !== '' ? `url(${item.mediaUrl})` : '',
+                  backgroundSize: 'contain',
+                  width: '100%',
+                  height: '100%',
+                }}
+              />
+            )}
             {item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime && (
               <img className={styles.messageIcon} src={BoldMessenger.src}></img>
             )}
@@ -256,11 +328,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
           <div className={styles.searchArea}></div>
           <div className={styles.typeTabSwiper}></div>
           <div className={styles.typeButtonList}>
-            {renderTypeButton(CharacterEventTriggerType.ChangeBackgroundByEmotion)}
-            {renderTypeButton(CharacterEventTriggerType.SendMediaByEmotion)}
-            {renderTypeButton(CharacterEventTriggerType.SendMediaByElapsedTime)}
-            {renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
-            {renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
+            {backgroundTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.ChangeBackgroundByEmotion)}
+            {mediaByEmotionTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByEmotion)}
+            {mediaByTimeTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByElapsedTime)}
+            {messageByTimeTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
+            {mediaByStarsTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
           </div>
         </div>
       </div>
@@ -274,7 +346,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
         onClick={() => {
           setCurrentState(2);
           setSelectedTriggerType(triggerType);
-          onClickCreateEventTrigger();
+          onClickCreateEventTrigger(triggerType);
         }}
       >
         <div className={styles.typeIconBack}>
@@ -328,7 +400,9 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
               'TODO : Add a media item to define how your character will react.<br>{{char}} → This character <br>{{user}} → Chat User ',
             ),
           ),
-          () => {},
+          () => {
+            onClickCreateEventTrigger(triggerType);
+          },
         )}
         <ul className={styles.triggerItemList}>
           {items?.map((item, index) => (
@@ -368,11 +442,28 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                   }}
                 />
               )}
-              <button className={styles.editButton} onClick={() => {}}>
+              <button
+                className={styles.editButton}
+                onClick={() => {
+                  onClickEditMedia();
+                  // onEditEventTrigger({
+                  //   ...item,
+                  //   mediaType: MediaState.Image,
+                  // });
+                }}
+              >
                 <img className={styles.editIcon} src={LineEdit.src} />
               </button>
               {item.mediaType === MediaState.Video && (
-                <button className={styles.playButton} onClick={() => {}}>
+                <button
+                  className={styles.playButton}
+                  onClick={() => {
+                    // onEditEventTrigger({
+                    //   ...item,
+                    //   mediaType: MediaState.Video,
+                    // });
+                  }}
+                >
                   <img className={styles.playIcon} src={BoldPlay.src} />
                 </button>
               )}
@@ -381,19 +472,45 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
           <div className={styles.rightInputPanel}>{renderInputPrompt(item)}</div>
         </div>
         <div className={styles.buttonArea}>
-          <button className={styles.bottomButton}>
+          <button
+            className={styles.bottomButton}
+            onClick={() =>
+              onEditEventTrigger({
+                ...item,
+                inputPrompt: (item.inputPrompt || '') + '{{User}}',
+              })
+            }
+          >
             <img className={`${styles.buttonIcon} ${styles.iconUser}`} src={BoldProfile.src} />
             <div className={styles.buttonText}>{`{{User}}`}</div>
           </button>
-          <button className={styles.bottomButton}>
+          <button
+            className={styles.bottomButton}
+            onClick={() =>
+              onEditEventTrigger({
+                ...item,
+                inputPrompt: (item.inputPrompt || '') + '{{Char}}',
+              })
+            }
+          >
             <img className={`${styles.buttonIcon} ${styles.iconChar}`} src={BoldCharacter.src} />
             <div className={styles.buttonText}>{`{{Char}}`}</div>
           </button>
-          <button className={styles.bottomButton}>
+          <button
+            className={styles.bottomButton}
+            onClick={() => {
+              onDuplicateEventTrigger(item);
+            }}
+          >
             <img className={`${styles.buttonIcon} ${styles.iconDuplicate}`} src={LineCopy.src} />
             <div className={styles.buttonText}>{`Duplicate`}</div>
           </button>
-          <button className={styles.bottomButton}>
+          <button
+            className={styles.bottomButton}
+            onClick={() => {
+              onDeleteEventTrigger(item.id);
+            }}
+          >
             <img className={`${styles.buttonIcon} ${styles.iconDelete}`} src={LineDelete.src} />
             <div className={`${styles.buttonText} ${styles.deleteText}`}>{`Delete`}</div>
           </button>
@@ -413,7 +530,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 initialValue={item.emotionState}
                 displayType="Icon"
                 items={EmotionArray}
-                onSelect={() => {}}
+                onSelect={value =>
+                  onEditEventTrigger({
+                    ...item,
+                    emotionState: value as EmotionState,
+                  })
+                }
               />
             </div>
             <div className={styles.promptItem}>
@@ -423,7 +545,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.probability || 0}
                 onlyNumber={true}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    probability: parseInt(e.target.value || '0'),
+                  })
+                }
                 customClassName={[styles.inputNumberArea]}
               />
             </div>
@@ -434,7 +561,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    inputPrompt: e.target.value,
+                  })
+                }
                 customClassName={[styles.inputTextArea]}
               />
             </div>
@@ -447,7 +579,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 initialValue={item.emotionState}
                 displayType="Icon"
                 items={EmotionArray}
-                onSelect={() => {}}
+                onSelect={value =>
+                  onEditEventTrigger({
+                    ...item,
+                    emotionState: value as EmotionState,
+                  })
+                }
               />
             </div>
             <div className={styles.promptItem}>
@@ -457,7 +594,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.probability || 0}
                 onlyNumber={true}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    probability: parseInt(e.target.value || '0'),
+                  })
+                }
                 customClassName={[styles.inputNumberArea]}
               />
             </div>
@@ -468,7 +610,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    inputPrompt: e.target.value,
+                  })
+                }
                 customClassName={[styles.inputTextArea]}
               />
             </div>
@@ -482,7 +629,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.elapsedTime || 0}
                 onlyNumber={true}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    elapsedTime: parseInt(e.target.value || '0'),
+                  })
+                }
                 customClassName={[styles.inputNumberArea]}
               />
             </div>
@@ -493,7 +645,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    inputPrompt: e.target.value,
+                  })
+                }
                 customClassName={[styles.inputTextArea]}
               />
             </div>
@@ -501,13 +658,18 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
         ) : item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`Elapsed Time (minute)`)}</div>
+              <div className={styles.label}>{getLocalizedText(`Elapsed Time (hour)`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.elapsedTime || 0}
                 onlyNumber={true}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    elapsedTime: parseInt(e.target.value || '0'),
+                  })
+                }
                 customClassName={[styles.inputNumberArea]}
               />
             </div>
@@ -518,7 +680,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    inputPrompt: e.target.value,
+                  })
+                }
                 customClassName={[styles.inputTextArea]}
               />
             </div>
@@ -534,7 +701,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                   shapeType="circle"
                   value={0}
                   selectedValue={item.getType === GetStarType.Accumulated ? 0 : 1}
-                  onSelect={() => {}}
+                  onSelect={() =>
+                    onEditEventTrigger({
+                      ...item,
+                      getType: GetStarType.Accumulated,
+                    })
+                  }
                 />
                 <CustomRadioButton
                   displayType="buttonText"
@@ -542,7 +714,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                   shapeType="circle"
                   value={1}
                   selectedValue={item.getType === GetStarType.Accumulated ? 0 : 1}
-                  onSelect={() => {}}
+                  onSelect={() =>
+                    onEditEventTrigger({
+                      ...item,
+                      getType: GetStarType.Instant,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -555,7 +732,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                   value={item.getStar || 0}
                   iconRight={<div className={styles.greaterThan}>≥</div>}
                   onlyNumber={true}
-                  onChange={() => {}}
+                  onChange={e =>
+                    onEditEventTrigger({
+                      ...item,
+                      getStar: parseInt(e.target.value || '0'),
+                    })
+                  }
                   customClassName={[styles.inputNumberArea]}
                 />
                 <div className={styles.inputHint}>{getLocalizedText('TODO : Greater than')}</div>
@@ -568,7 +750,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({eventTriggerItems, onClic
                 textType="InputOnly"
                 value={item.inputPrompt}
                 placeholder={getLocalizedText('TODO : input Prompt')}
-                onChange={() => {}}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    inputPrompt: e.target.value,
+                  })
+                }
                 customClassName={[styles.inputTextArea]}
               />
             </div>
