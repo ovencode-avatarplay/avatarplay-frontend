@@ -6,6 +6,7 @@ import {
   BoldInfo,
   BoldMenuDots,
   BoldMessenger,
+  BoldPause,
   BoldPlay,
   BoldProfile,
   BoldReward,
@@ -485,30 +486,47 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           {item.triggerType !== CharacterEventTriggerType.SendMessageByElapsedTime && (
             <div className={styles.informationTracking}>
               {item.mediaType === MediaState.Video ? (
-                <video
-                  // src={item.mediaUrl}
-                  // className={styles.videoPreview}
-                  // muted
-                  // playsInline
-                  // loop
-                  // preload="metadata"
-                  // style={{width: '100%', height: '100%', objectFit: 'contain'}}
-                  src={item.mediaUrl}
-                  className={styles.videoPreview}
-                  muted
-                  playsInline
-                  loop
-                  preload="metadata"
-                  style={{width: '100%', height: '100%', objectFit: 'contain'}}
-                  onClick={e => {
-                    const videoElement = e.currentTarget as HTMLVideoElement;
-                    if (videoElement.paused) {
-                      videoElement.play();
-                    } else {
-                      videoElement.pause();
-                    }
-                  }}
-                />
+                <div className={styles.videoWrapper}>
+                  <video
+                    src={item.mediaUrl}
+                    className={styles.videoPreview}
+                    muted
+                    playsInline
+                    loop
+                    preload="metadata"
+                    style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                    onClick={e => {
+                      const video = e.currentTarget as HTMLVideoElement;
+                      const playIcon = video.nextSibling?.firstChild as HTMLImageElement;
+
+                      if (video.paused) {
+                        video.play();
+                        if (playIcon) playIcon.src = BoldPause.src;
+                      } else {
+                        video.pause();
+                        if (playIcon) playIcon.src = BoldPlay.src;
+                      }
+                    }}
+                  />
+                  <button
+                    className={styles.playButton}
+                    onClick={e => {
+                      e.stopPropagation();
+                      const video = e.currentTarget.previousSibling as HTMLVideoElement;
+                      const playIcon = e.currentTarget.firstChild as HTMLImageElement;
+
+                      if (video.paused) {
+                        video.play();
+                        if (playIcon) playIcon.src = BoldPause.src;
+                      } else {
+                        video.pause();
+                        if (playIcon) playIcon.src = BoldPlay.src;
+                      }
+                    }}
+                  >
+                    <img className={styles.playIcon} src={BoldPlay.src} />
+                  </button>
+                </div>
               ) : (
                 <div
                   className={`${styles.imagePreview} ${item.mediaUrl === '' ? styles.emptyImage : ''}`}
@@ -537,19 +555,6 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               >
                 <img className={styles.editIcon} src={LineEdit.src} />
               </button>
-              {item.mediaType === MediaState.Video && (
-                <button
-                  className={styles.playButton}
-                  onClick={() => {
-                    // onEditEventTrigger({
-                    //   ...item,
-                    //   mediaType: MediaState.Video,
-                    // });
-                  }}
-                >
-                  <img className={styles.playIcon} src={BoldPlay.src} />
-                </button>
-              )}
             </div>
           )}
           <div className={styles.rightInputPanel}>{renderInputPrompt(item)}</div>

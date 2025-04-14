@@ -201,6 +201,11 @@
     overflow: hidden;
 }
 
+.videoWrapper
+{
+    
+}
+
 .videoPreview
 {
     /* style 에서 컨트롤중*/
@@ -276,7 +281,7 @@
 }
 
 
-.informationTracking > .playButton
+.videoWrapper > .playButton
 {
     cursor: pointer;
 
@@ -289,10 +294,10 @@
     height: 18px;
     flex-shrink: 0;
  
-    filter: var(--black-icon-filter);
+    /* filter: var(--black-icon-filter); */
 }
 
-.informationTracking > .playButton > .playIcon
+.videoWrapper > .playButton > .playIcon
 {
     width: 18px;
     height: 18px;

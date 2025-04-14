@@ -712,7 +712,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     },
     // EventTrigger
     {
-      label: getLocalizedText('TODO : EventTrigger'),
+      label: getLocalizedText('eventtrigger001_label_001'),
       preContent: '',
       content: (
         <CharacterCreateEventTrigger
@@ -1046,7 +1046,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           isOpen={videoUploadOpen}
           onClose={() => {
             setImgUploadType(null);
-            setImgUploadOpen(false);
+            setVideoUploadOpen(false);
           }}
           setVideoUrl={handlerSetVideo}
         />
