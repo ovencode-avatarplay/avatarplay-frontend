@@ -1,0 +1,280 @@
+  /*---------------------------------------
+      Pre Loader Style              
+  -----------------------------------------*/
+  
+  .preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    background: none repeat scroll 0 0 #000;
+  }
+  
+  .sk-spinner-pulse {
+    width: 60px;
+    height: 60px;
+    background-color: #222;
+    border-radius: 100%;
+    margin: 40px auto;
+    -webkit-animation: sk-pulseScaleOut 1s infinite ease-in-out;
+    animation: sk-pulseScaleOut 1s infinite ease-in-out;
+  }
+  
+  .container {
+    position: relative;
+    overflow: hidden;
+    width: 297px;
+    height: 597px;
+    margin: 50px auto;
+    z-index: 1000;
+  }
+  .container .iphone {
+    width: 100%;
+    height: 100%;
+  }
+  .phone {
+    width: 247px;
+    height: 460px;
+    position: absolute;
+    overflow: hidden;
+    margin: 50px auto;
+    font-family: "Nunito", sans-serif;
+    top: 8px;
+    right: 24px;
+  }
+  .phone .bg {
+    width: 130%;
+    height: 100%;
+    filter: blur(3px);
+  }
+  .phone .caption {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    text-align: center;
+  }
+  .phone .caption h3 {
+    color: #fff;
+    font-weight: bold;
+  }
+  .phone .caption img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 25px auto;
+    position: relative;
+  }
+  .phone .caption h4 {
+    margin: 0;
+    color: #fff;
+  }
+  .phone .caption p {
+    margin: 0;
+    color: #fff;
+    font-size: 13px;
+    margin-top: 5px;
+    color: #aaa;
+  }
+  .phone .caption .content {
+    position: absolute;
+    bottom: 35px;
+    width: 100%;
+  }
+  .phone .caption .content ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-flex;
+    width: 250px;
+  }
+  .phone .caption .content .accept {
+    background: #47b239;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    line-height: 60px;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+    margin: 30px auto;
+    font-size: 25px;
+    cursor: pointer;
+  }
+  .phone .caption .content .accept:before,
+  .phone .caption .content .accept:after {
+    content: "";
+    position: absolute;
+    display: block;
+    border: 1px solid #47b239;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    animation: animate 1.5s infinite linear;
+    opacity: 0;
+    backface-visibility: hidden;
+  }
+  .phone .caption .content .accept:after {
+    animation-delay: 0.5s;
+  }
+  @keyframes animate {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.2);
+    }
+  }
+  
+  .phone .caption .content .deny {
+    background: #b23939;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    line-height: 60px;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+    margin: 30px auto;
+    font-size: 25px;
+    float: right;
+    cursor: pointer;
+  }
+  .phone .caption .content .deny:before,
+  .phone .caption .content .deny:after {
+    content: "";
+    position: absolute;
+    display: block;
+    border: 1px solid #b23939;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    animation: animate 1.5s infinite linear;
+    opacity: 0;
+    backface-visibility: hidden;
+  }
+  .phone .caption .content .deny:after {
+    animation-delay: 0.5s;
+  }
+  @keyframes animate {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.2);
+    }
+  }
+  
+  .phone .open {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    text-align: center;
+    color: #fff;
+    display: none;
+  }
+  .phone .open h2 {
+    font-weight: 100;
+    margin-bottom: 0;
+  }
+  .phone .open h4 {
+    margin: 2px;
+    color: #aaa;
+    font-weight: 100;
+  }
+  .phone .open h5 {
+    color: #aaa;
+    font-weight: 100;
+  }
+  .phone .open .options {
+    margin-top: 23%;
+  }
+  .phone .open ul {
+    display: inline-flex;
+    list-style: none;
+    margin: 0;
+    width: 100%;
+  }
+  .phone .open ul li i {
+    color: #fff;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 50%;
+    font-size: 21px;
+    margin-right: 15px;
+    margin-bottom: 21px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .phone .open ul li i:hover {
+    background: #fff;
+    border-color: #fff;
+    color: #1a1a1a;
+  }
+  .phone .open .end {
+    background: #b23939;
+    color: #fff;
+    font-size: 22px;
+    transform: rotate(139deg);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+  }
+  
+  .phone .menu {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    display: none;
+  }
+  .phone .menu img {
+    width: 100%;
+    height: 100%;
+  }
+  .phone .menu .time {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+  }
+  .phone .menu .time h2 {
+    color: #fff;
+    font-size: 35px;
+    font-weight: 100;
+    letter-spacing: 5px;
+    margin-bottom: 0;
+  }
+  .phone .menu .time h2 > span {
+    font-size: 20px;
+  }
+  .phone .menu .time h5 {
+    margin: 0;
+    padding: 0;
+    color: #aaa;
+  }
+  

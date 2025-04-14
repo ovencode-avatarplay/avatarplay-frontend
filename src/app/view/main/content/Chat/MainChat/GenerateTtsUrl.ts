@@ -1,10 +1,10 @@
 import {GenerateAudioReq, sendGenerateAudio} from '@/app/NetWork/AudioResourceNetwork';
 
-export const GenerateTtsUrl = async (text: string, voiceId: string): Promise<string | null> => {
+export const GenerateTtsUrl = async (text: string, characterId: number, voiceId: string): Promise<string | null> => {
   try {
     console.log('generate tts' + text);
 
-    const req: GenerateAudioReq = {text, voiceId};
+    const req: GenerateAudioReq = {text, characterId, voiceId};
     const response = await sendGenerateAudio(req);
 
     if (response?.audioUrl) {

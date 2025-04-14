@@ -86,7 +86,7 @@
 
 .typeSecondary {
   background-color: var(--Neutral-100, #F1F3F4);
-  color: var(--Black, #000);
+  color: var(--Neutral-600, #80868B);
 }
 
 .typeTertiary {
@@ -94,6 +94,15 @@
   border: 1px solid var(--Border-1, #EAECF0);
   color: var(--Black, #000);
 }
+
+
+.typeDashed {
+  background-color: var( --background-fill-light-theme-primary);
+  border: 4px dashed var(--Neutral-400, #BDC1C6);
+  color: var(--Black, #000);
+}
+
+
 
 .stateNormal {
   /* No additional styles for normal state */
@@ -133,6 +142,12 @@
   background-color: var(--Neutral-50, #F8F9FA);
 }
 
+.typeDashed.hover:hover {
+  border: 4px dashed var(--Neutral-500, #9aa0a6);
+  background-color: var(--Neutral-50, #F8F9FA);
+}
+
+
 .typeColorPrimary.disabled {
   background-color: var(--Primary-3, #ffe6f8);
   color: var(--Primary-2, #FEBBEA);
@@ -162,6 +177,13 @@
     background: var(--Neutral-100, #F1F3F4);
     color: var(--Neutral-400, #BDC1C6);
 }
+
+.typeDashed.disabled {    
+  border: 4px dashed var(--Neutral-400, #BDC1C6);
+  background: var(--Neutral-100, #F1F3F4);
+  color: var(--Neutral-400, #BDC1C6);
+}
+
 
 .buttonIcon {
   width: 12px;

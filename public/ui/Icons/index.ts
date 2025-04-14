@@ -24,6 +24,8 @@ import BoldFilterOn from "./Bold/Filter_on.svg";
 import BoldFilter from "./Bold/Filter.svg";
 import BoldFolderPlus from "./Bold/Folder_Plus.svg";
 import BoldFollowers from "./Bold/Followers.svg";
+import BoldFollow from "./Bold/Follow.svg";
+import BoldFollowed from "./Bold/Followed.svg";
 import BoldGrid from "./Bold/Grid.svg";
 import BoldHeart from "./Bold/Heart.svg";
 import BoldHome from "./Bold/Home.svg";
@@ -48,6 +50,7 @@ import BoldRadioButtonSquareSelected from "./Bold/Radio_Button_Square_selected.s
 import BoldRadioButtonSquare from "./Bold/Radio_Button_Square.svg";
 import BoldRadioButtonSubtract from "./Bold/Radio_Button_Subtract.svg";
 import BoldRadioButton from "./Bold/Radio_Button.svg";
+import BoldRecording from "./Bold/Recording.svg";
 import BoldReward from "./Bold/Reward.svg";
 import BoldRuby from "./Bold/Ruby.svg";
 import BoldSearch from "./Bold/Search.svg";
@@ -67,7 +70,7 @@ import LineAIImage from "./Line/AI_Image.svg";
 import LineArchive from "./Line/Archive.svg";
 import LineCorner from "./Line/Arrow_Corner.svg";
 import LineArrowDown from "./Line/Arrow_Down.svg";
-import LineDownloadMini from "./Line/DownloadMini.svg";
+import LineDownload from "./Line/Download.svg";
 import LineArrowLeft from "./Line/Arrow_Left.svg";
 import LineArrowRight from "./Line/Arrow_Right.svg";
 import LineArrowSwap from "./Line/Arrow_swap.svg";
@@ -118,6 +121,8 @@ import LineWallet from "./Line/Wallet.svg";
 import LineNotification from "./Line/Notification.svg";
 import LineReward from "./Line/Reward.svg";
 import LineHome from "./Line/Home.svg";
+import LineCam from "./Line/Cam.svg";
+import LinePhone from "./Line/Phone.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -193,6 +198,8 @@ export {
   BoldFilter,
   BoldFolderPlus,
   BoldFollowers,
+  BoldFollow,
+  BoldFollowed,
   BoldGrid,
   BoldHeart,
   BoldHome,
@@ -210,6 +217,7 @@ export {
   BoldRadioButtonSelectedBlack,
   BoldRadioButtonSubtract,
   BoldRadioButton,
+  BoldRecording,
   BoldRuby,
   BoldSend,
   BoldShare,
@@ -236,7 +244,7 @@ export {
   LineArchive,
   LineArrowLeft,
   LineArrowDown,
-  LineDownloadMini,
+  LineDownload,
   LineArrowRight,
   LineArrowSwap,
   LineCharacter,
@@ -286,4 +294,6 @@ export {
   FacebookLogo,
   GoogleLogo,
   AppleLogo,
+  LineCam,
+  LinePhone,
 };

@@ -6,7 +6,7 @@ import {
   LineArrowLeft,
   BoldAudioPause,
   BoldAudioPlay,
-  LineDownloadMini,
+  LineDownload,
   BoldLock,
   BoldRadioButtonSquare,
   BoldRadioButtonSquareSelected,
@@ -355,7 +355,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             <div className={styles.lineVertical}></div>
 
             <div className={styles.iconWrap}>
-              <img src={LineDownloadMini.src} alt="" />
+              <img src={LineDownload.src} alt="" />
               <div className={styles.label}>{getLocalizedText('common_button_download')}</div>
             </div>
             {!data.dataMix?.isMyContent && (
@@ -618,9 +618,7 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
       <div key={data.id} className={styles.labelOption}>
         {data.value}
       </div>
-      {isSelected && (
-        <img className={styles.iconCheck} src={'/ui/profile/icon-park-solid_check-one.svg'} alt="altArrowDown" />
-      )}
+      {isSelected && <img className={styles.iconCheck} src={LineCheck.src} alt="altArrowDown" />}
     </div>
   </>
 );
