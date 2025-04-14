@@ -87,19 +87,19 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
   //#region Hook
   useEffect(() => {
     setBackgroundTriggers(
-      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion),
+      eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion),
     );
     setMediaByEmotionTriggers(
-      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByEmotion),
+      eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByEmotion),
     );
     setMediaByTimeTriggers(
-      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByElapsedTime),
+      eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByElapsedTime),
     );
     setMessageByTimeTriggers(
-      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime),
+      eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.SendMessageByElapsedTime),
     );
     setMediaByStarsTriggers(
-      eventTriggerItems.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByGotStars),
+      eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByGotStars),
     );
   }, [eventTriggerItems]);
 
@@ -138,11 +138,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
   };
 
   const hasEmptyTriggerType =
-    backgroundTriggers.length === 0 ||
-    mediaByEmotionTriggers.length === 0 ||
-    mediaByTimeTriggers.length === 0 ||
-    messageByTimeTriggers.length === 0 ||
-    mediaByStarsTriggers.length === 0;
+    backgroundTriggers?.length === 0 ||
+    mediaByEmotionTriggers?.length === 0 ||
+    mediaByTimeTriggers?.length === 0 ||
+    messageByTimeTriggers?.length === 0 ||
+    mediaByStarsTriggers?.length === 0;
 
   const getDesc = (triggerType: CharacterEventTriggerType) => {
     switch (triggerType) {
@@ -243,7 +243,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           )}
 
           <ul className={styles.eventTriggerContainers}>
-            {backgroundTriggers.length > 0 && (
+            {backgroundTriggers?.length > 0 && (
               <EventTriggerContainer
                 getEmojiIcon={getEmojiIcon}
                 getHeaderIcon={getHeaderIcon}
@@ -265,7 +265,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 }}
               />
             )}
-            {mediaByEmotionTriggers.length > 0 && (
+            {mediaByEmotionTriggers?.length > 0 && (
               <EventTriggerContainer
                 getEmojiIcon={getEmojiIcon}
                 getHeaderIcon={getHeaderIcon}
@@ -287,7 +287,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 }}
               />
             )}
-            {mediaByTimeTriggers.length > 0 && (
+            {mediaByTimeTriggers?.length > 0 && (
               <EventTriggerContainer
                 getEmojiIcon={getEmojiIcon}
                 getHeaderIcon={getHeaderIcon}
@@ -309,7 +309,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 }}
               />
             )}
-            {messageByTimeTriggers.length > 0 && (
+            {messageByTimeTriggers?.length > 0 && (
               <EventTriggerContainer
                 getEmojiIcon={getEmojiIcon}
                 getHeaderIcon={getHeaderIcon}
@@ -331,7 +331,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 }}
               />
             )}
-            {mediaByStarsTriggers.length > 0 && (
+            {mediaByStarsTriggers?.length > 0 && (
               <EventTriggerContainer
                 getEmojiIcon={getEmojiIcon}
                 getHeaderIcon={getHeaderIcon}
@@ -392,13 +392,14 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               <div className={styles.searchArea}></div>
               <div className={styles.typeTabSwiper}></div>
               <div className={styles.typeButtonList}>
-                {backgroundTriggers.length === 0 &&
+                {backgroundTriggers?.length === 0 &&
                   renderTypeButton(CharacterEventTriggerType.ChangeBackgroundByEmotion)}
-                {mediaByEmotionTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByEmotion)}
-                {mediaByTimeTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByElapsedTime)}
-                {messageByTimeTriggers.length === 0 &&
+                {mediaByEmotionTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByEmotion)}
+                {mediaByTimeTriggers?.length === 0 &&
+                  renderTypeButton(CharacterEventTriggerType.SendMediaByElapsedTime)}
+                {messageByTimeTriggers?.length === 0 &&
                   renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
-                {mediaByStarsTriggers.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
+                {mediaByStarsTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
               </div>
             </div>
           </div>

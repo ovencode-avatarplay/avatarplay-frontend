@@ -149,6 +149,7 @@ export interface CharacterProfilePayload {
   secret: string;
   mainImageUrl: string;
   mediaTemplateList: CharacterMediaInfo[];
+  eventTriggerList: CharacterEventTriggerInfo[];
   conversationTemplateList: ConversationInfo[];
   visibilityType: VisibilityType;
   llmModel: LLMModel;

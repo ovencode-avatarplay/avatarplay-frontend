@@ -129,7 +129,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   //#region CharacterTrigger
 
-  const [characterTrigger, setCharacterTrigger] = useState<CharacterEventTriggerInfo[]>([]);
+  const [characterTrigger, setCharacterTrigger] = useState<CharacterEventTriggerInfo[]>(
+    character.characterEventTriggerList,
+  );
   const [selectedTriggerId, setSelectedTriggerId] = useState<number>(0);
   const [triggerMediaUrls, setTriggerMediaUrls] = useState<string[]>([]);
 
@@ -411,6 +413,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             activationCondition: item.activationCondition,
             isSpoiler: item.isSpoiler,
           })),
+          eventTriggerList: characterTrigger,
           conversationTemplateList: convertCardsToConversations(conversationCards),
           visibilityType: visibilityType,
           llmModel: llmModel,
