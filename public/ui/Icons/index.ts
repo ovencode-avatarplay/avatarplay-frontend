@@ -70,7 +70,7 @@ import LineAIImage from "./Line/AI_Image.svg";
 import LineArchive from "./Line/Archive.svg";
 import LineCorner from "./Line/Arrow_Corner.svg";
 import LineArrowDown from "./Line/Arrow_Down.svg";
-import LineDownloadMini from "./Line/DownloadMini.svg";
+import LineDownload from "./Line/Download.svg";
 import LineArrowLeft from "./Line/Arrow_Left.svg";
 import LineArrowRight from "./Line/Arrow_Right.svg";
 import LineArrowSwap from "./Line/Arrow_swap.svg";
@@ -246,7 +246,7 @@ export {
   LineArchive,
   LineArrowLeft,
   LineArrowDown,
-  LineDownloadMini,
+  LineDownload,
   LineArrowRight,
   LineArrowSwap,
   LineCharacter,

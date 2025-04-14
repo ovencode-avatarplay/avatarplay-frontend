@@ -24,6 +24,8 @@ export interface Message {
   sender: SenderType;
   createDateString: string;
   createDateLocale: Date | null; // 서버는 UTC로 주지만 프론트에서는 로컬타임으로 변환해서 쓴다.
+  isLike: boolean; // true 면 좋아요.
+  bubbleIndex: number; // 순차적으로 내 말풍선 포함 0부터 시작
 }
 
 export interface MediaData {

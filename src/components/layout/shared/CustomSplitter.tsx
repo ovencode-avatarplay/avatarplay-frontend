@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import styles from './CustomSplitter.module.css';
+import styles from './CustomSplitter.module.scss';
 
 export type SplitterLabelType = 'OnlyLabel' | 'OnlyIcon';
 
@@ -23,6 +23,7 @@ interface SplittersProps {
   itemStyle?: React.CSSProperties;
   isDark?: boolean;
   placeholderWidth?: string;
+  isRemainContent?: boolean;
 }
 
 const Splitters: React.FC<SplittersProps> = ({
@@ -35,6 +36,7 @@ const Splitters: React.FC<SplittersProps> = ({
   itemStyle,
   isDark = false,
   placeholderWidth = '50vw',
+  isRemainContent = false,
 }) => {
   const [activeSplitter, setActiveSplitter] = useState(initialActiveSplitter);
   useEffect(() => {
@@ -101,9 +103,27 @@ const Splitters: React.FC<SplittersProps> = ({
 
       {splitters[activeSplitter] && splitters[activeSplitter].preContent}
 
-      <div className={`${styles.splitterContent} ${isDark ? styles.darkContent : ''}`} style={contentStyle}>
-        {splitters[activeSplitter] && splitters[activeSplitter].content}
-      </div>
+      {!isRemainContent && (
+        <div className={`${styles.splitterContent} ${isDark ? styles.darkContent : ''}`} style={contentStyle}>
+          {splitters[activeSplitter] && splitters[activeSplitter].content}
+        </div>
+      )}
+      {isRemainContent && (
+        <div className={`${styles.splitterContent} ${isDark ? styles.darkContent : ''}`} style={contentStyle}>
+          {splitters.map((splitter, index) => {
+            const isActive = activeSplitter == index;
+            return (
+              <div
+                key={index}
+                className={styles.contentWrap}
+                style={{zIndex: isActive ? 0 : -1, opacity: isActive ? 1 : 0}}
+              >
+                {splitter.content}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

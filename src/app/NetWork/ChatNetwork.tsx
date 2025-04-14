@@ -141,6 +141,7 @@ export interface MessageInfo {
   emoticonUrl: string;
   triggerMediaState: number;
   mediaUrlList: string[];
+  likeTrueIndexList: number[];
   createAt: Date;
 }
 
@@ -252,6 +253,8 @@ export interface ChattingResultRes {
 }
 
 export interface ChatData {
+  streamChatId: number;
+  answerCreateAt: string;
   chatResultInfoList: ChatResultInfo[];
 }
 
@@ -518,7 +521,7 @@ export const getChatting = async (req: GetChatReq): Promise<ResponseAPI<GetChatR
 
 export interface RequestAiQuestionReq {
   episodeId: number;
-  streamKey: string | undefined
+  streamKey: string | undefined;
 }
 
 export interface RequestAiQuestionRes {

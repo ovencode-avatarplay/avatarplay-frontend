@@ -99,6 +99,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const {back, replace} = useCustomRouter();
   const router = useRouter();
+  const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
   const [data, setData] = useState<DataProfileUpdateType>({
     idChannel: 0,
     thumbnail: null,
@@ -193,6 +194,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
   } = useForm<ChannelInfoForm>({
     shouldFocusError: true,
     defaultValues: {
+      name: '',
+      description: '',
       tags: [],
       characterIP: CharacterIP.Original,
       isMonetization: 0,
@@ -385,7 +388,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     tag = typeof tag === 'string' ? [] : tag;
 
     const idChannel = isUpdate ? data.idChannel : 0;
-    const visibilityType = Number(dataForm.visibilityType);
+    const visibilityType = Number(dataForm.visibilityType) || VisibilityType.Private;
     let isMonetization = Boolean(Number(dataForm.isMonetization));
     let nsfw = Boolean(Number(dataForm.nsfw));
     let characterIP = Number(dataForm.characterIP);
@@ -428,9 +431,11 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     }
 
     if (errors.name || errors.description) {
+      setSelectedSplitMenu(0);
       data.indexTab = 0;
       setData({...data});
     } else if (errors.visibilityType || errors.tags || errors.postCountry) {
+      setSelectedSplitMenu(2);
       data.indexTab = 2;
       setData({...data});
     }
@@ -494,7 +499,6 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     );
   };
 
-  const [selectedSplitMenu, setSelectedSplitMenu] = useState(0);
   const splitterData = [
     {
       label: getLocalizedText('createchannel001_label_003'),
@@ -942,6 +946,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             headerStyle={{padding: '0', gap: '10px'}}
             itemStyle={{marginLeft: 'auto', marginRight: 'auto'}}
             contentStyle={{padding: '0'}}
+            isRemainContent={true}
           />
 
           <CustomButton
