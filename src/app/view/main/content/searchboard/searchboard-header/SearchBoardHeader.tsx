@@ -81,10 +81,10 @@ const SearchBoardHeader: React.FC<Props> = ({
 
     setFilterItem(prevFilterItem =>
       prevFilterItem.map(item => {
-        if (filters.positive.some(filter => filter.name === item.name)) {
+        if (filters.positive.some(filter => filter.key === item.key)) {
           return {...item, state: 'selected'};
         }
-        if (filters.negative.some(filter => filter.name === item.name)) {
+        if (filters.negative.some(filter => filter.key === item.key)) {
           return {...item, state: 'remove'};
         }
         return {...item, state: 'empty'};
@@ -94,8 +94,8 @@ const SearchBoardHeader: React.FC<Props> = ({
 
   useEffect(() => {
     if (filterData) {
-      const items = filterData.map(name => ({
-        name: getLocalizedText(name),
+      const items = filterData.map(key => ({
+        key: key,
         state: 'empty', // 초기 상태 설정
       }));
       setFilterItem(items);
