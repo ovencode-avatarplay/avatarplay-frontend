@@ -23,6 +23,7 @@ import {
   LineEdit,
   LinePlus,
   LineTime,
+  LineUpload,
 } from '@ui/Icons';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {
@@ -45,7 +46,8 @@ interface Props {
   onEditEventTrigger: (updatedTrigger: CharacterEventTriggerInfo) => void;
   onDuplicateEventTrigger: (item: CharacterEventTriggerInfo) => void;
   onDeleteEventTrigger: (id: number) => void;
-  onClickEditMedia: (id: number) => void;
+  onClickEditTriggerMedia: (triggerType: CharacterEventTriggerType, id: number) => void;
+  onClickPreview?: (imgUrl: string) => void;
 }
 
 const CharacterCreateEventTrigger: React.FC<Props> = ({
@@ -54,7 +56,8 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
   onEditEventTrigger,
   onDuplicateEventTrigger,
   onDeleteEventTrigger,
-  onClickEditMedia,
+  onClickEditTriggerMedia,
+  onClickPreview,
 }) => {
   //#region
   const EmotionArray = [
@@ -483,6 +486,13 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             <div className={styles.informationTracking}>
               {item.mediaType === MediaState.Video ? (
                 <video
+                  // src={item.mediaUrl}
+                  // className={styles.videoPreview}
+                  // muted
+                  // playsInline
+                  // loop
+                  // preload="metadata"
+                  // style={{width: '100%', height: '100%', objectFit: 'contain'}}
                   src={item.mediaUrl}
                   className={styles.videoPreview}
                   muted
@@ -490,26 +500,39 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   loop
                   preload="metadata"
                   style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                  onClick={e => {
+                    const videoElement = e.currentTarget as HTMLVideoElement;
+                    if (videoElement.paused) {
+                      videoElement.play();
+                    } else {
+                      videoElement.pause();
+                    }
+                  }}
                 />
               ) : (
                 <div
-                  className={styles.imagePreview}
+                  className={`${styles.imagePreview} ${item.mediaUrl === '' ? styles.emptyImage : ''}`}
                   style={{
                     backgroundImage: item.mediaUrl !== '' ? `url(${item.mediaUrl})` : '',
                     backgroundSize: 'contain',
                     width: '100%',
                     height: '100%',
                   }}
-                />
+                  onClick={() => {
+                    if (onClickPreview && item.mediaUrl !== '') {
+                      onClickPreview(item.mediaUrl);
+                    } else {
+                      onClickEditTriggerMedia(item.triggerType, item.id);
+                    }
+                  }}
+                >
+                  {item.mediaUrl === '' && <img className={styles.uploadIcon} src={LineUpload.src} />}
+                </div>
               )}
               <button
                 className={styles.editButton}
                 onClick={() => {
-                  onClickEditMedia(item.id);
-                  // onEditEventTrigger({
-                  //   ...item,
-                  //   mediaType: MediaState.Image,
-                  // });
+                  onClickEditTriggerMedia(item.triggerType, item.id);
                 }}
               >
                 <img className={styles.editIcon} src={LineEdit.src} />

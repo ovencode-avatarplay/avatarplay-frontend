@@ -43,6 +43,8 @@ import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPr
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import VideoUpload from '@/components/create/VideoUpload';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -74,6 +76,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const [selectImageTypeOpen, setSelectImageTypeOpen] = useState(false);
   const [imgUploadSelectModalOpen, setImgUploadSelectModalOpen] = useState(false);
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
+  const [mediaUploadOpen, setMediaUploadOpen] = useState(false);
+  const [videoUploadOpen, setVideoUploadOpen] = useState(false);
 
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
   const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
@@ -127,6 +131,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   const [characterTrigger, setCharacterTrigger] = useState<CharacterEventTriggerInfo[]>([]);
   const [selectedTriggerId, setSelectedTriggerId] = useState<number>(0);
+  const [triggerMediaUrls, setTriggerMediaUrls] = useState<string[]>([]);
 
   //#endregion
 
@@ -246,8 +251,22 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
         handleOnEditTrigger({
           ...prev,
           mediaUrl: img,
+          mediaType: MediaState.Image,
         });
       }
+    }
+    setSelectImageTypeOpen(false);
+  };
+
+  const handlerSetVideo = (video: string) => {
+    setMediaCreateImage(video);
+    const prev = characterTrigger.find(t => t.id === selectedTriggerId); // selectedTriggerId는 선택된 트리거의 ID
+    if (prev) {
+      handleOnEditTrigger({
+        ...prev,
+        mediaUrl: video,
+        mediaType: MediaState.Video,
+      });
     }
     setSelectImageTypeOpen(false);
   };
@@ -293,10 +312,15 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setSelectedMediaItemIdx(index);
   };
 
-  const handleOnClickTriggerMediaEdit = (id: number) => {
-    setImgUploadOpen(true);
+  const handleOnClickTriggerMediaEdit = (triggerType: CharacterEventTriggerType, id: number) => {
+    if (triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion) {
+      setImgUploadOpen(true);
+    } else {
+      setMediaUploadOpen(true);
+    }
     setImgUploadType('Upload');
     setImageCreate('TriggerMedia');
+
     setSelectedTriggerId(id);
   };
 
@@ -697,7 +721,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           onEditEventTrigger={handleOnEditTrigger}
           onDuplicateEventTrigger={handleDuplicateTrigger}
           onDeleteEventTrigger={handleDeleteTrigger}
-          onClickEditMedia={handleOnClickTriggerMediaEdit}
+          onClickEditTriggerMedia={handleOnClickTriggerMediaEdit}
+          onClickPreview={handlePreviewSelected}
         />
       ),
     },
@@ -1014,6 +1039,36 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadOpen(false);
           }}
           setContentImageUrl={handlerSetImage}
+        />
+      )}
+      {!selectImageTypeOpen && imgUploadType === 'Upload' && (
+        <VideoUpload
+          isOpen={videoUploadOpen}
+          onClose={() => {
+            setImgUploadType(null);
+            setImgUploadOpen(false);
+          }}
+          setVideoUrl={handlerSetVideo}
+        />
+      )}
+      {!selectImageTypeOpen && imgUploadType === 'Upload' && mediaUploadOpen && (
+        <SelectDrawer
+          items={[
+            {
+              name: 'Image',
+              onClick: () => {
+                setImgUploadOpen(true);
+              },
+            },
+            {
+              name: 'Video',
+              onClick: () => {
+                setVideoUploadOpen(true);
+              },
+            },
+          ]}
+          isOpen={mediaUploadOpen}
+          onClose={() => {}}
         />
       )}
     </>

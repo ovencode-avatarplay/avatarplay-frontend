@@ -212,10 +212,30 @@
 
 .imagePreview
 {
+    cursor: pointer;
+
     /* style 에서 컨트롤중*/
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+}
+
+.imagePreview.emptyImage
+{
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
+    cursor: pointer;
+
+}
+
+.uploadIcon
+{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    filter: var(--black-icon-filter);
 }
 
 .informationTracking > .editButton
