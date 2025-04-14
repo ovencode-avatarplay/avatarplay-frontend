@@ -119,6 +119,7 @@ const DrawerContentDesc = () => {
     const data: StoryLikeReq = {
       type: StoryInteractionType.StoryLike,
       typeValueId: id, // Chat의 Id
+      messageIndex: 0,
       isLike: like,
     };
 
