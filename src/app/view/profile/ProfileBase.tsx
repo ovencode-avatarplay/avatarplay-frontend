@@ -2433,7 +2433,7 @@ export const TabContentComponentWrap = ({
             if (data.tabContentMenu.isSingle) {
               router.push(getLocalizedLink(`/update/content/single/` + data.tabContentMenu.urlLinkKey));
             } else {
-              router.push(getLocalizedLink(`/update/content/series/` + data.tabContentMenu.urlLinkKey));
+              router.push(getLocalizedLink(`/create/content/series/` + data.tabContentMenu.urlLinkKey));
             }
           }
 
