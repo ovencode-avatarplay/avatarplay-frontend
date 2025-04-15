@@ -280,8 +280,9 @@ export const getProfilePdTabInfo = async (
     if (resProfileSelect.status != 200) return;
 
     return resProfileSelect.data?.data;
-  } catch (e) {
-    alert('api 에러' + e);
+  } catch (e: any) {
+    //alert('api 에러' + e.);
+    console.log('api 에러' + e.message);
   }
 };
 

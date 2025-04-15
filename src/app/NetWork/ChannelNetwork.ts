@@ -54,9 +54,9 @@ export const createUpdateChannel = async (payload: CreateChannelReq) => {
     }
 
     return res.data;
-  } catch (e) {
-    console.error('createUpdateChannel API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
+  } catch (e: any) {
+    console.error('createUpdateChannel API 요청 실패:', e.message);
+    //alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
