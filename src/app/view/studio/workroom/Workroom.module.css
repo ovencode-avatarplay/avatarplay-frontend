@@ -1,0 +1,20 @@
+.workroomContainer
+{
+    width: var(--full-width);
+    height:  calc(100% - 58px);
+    padding-top: 58px;
+    /* box-sizing: content-box; */
+}
+
+/* .tagListContainer
+{
+    display: flex;
+    padding: 10px 16px;
+    align-items: center;
+    align-self: stretch;
+
+    gap: 5px;
+
+    border-bottom: 1px solid var(--Border-1, #EAECF0);
+    background: var(--Neutral-50, #F8F9FA);
+} */

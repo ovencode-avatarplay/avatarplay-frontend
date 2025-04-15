@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import styles from './EpisodeAiImageGeneration.module.css'; // CSS Module import
 import {Dialog, DialogTitle, Button, Box, Typography, TextField} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {Swiper, SwiperSlide} from 'swiper/react'; // Swiper components import
-import 'swiper/css'; // 기본 Swiper 스타일 가져오기
+import {Swiper, SwiperSlide} from 'swiper/react'; // Swiper components import // 기본 Swiper 스타일 가져오기
+import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import DiamondIcon from '@mui/icons-material/Diamond';
@@ -15,11 +15,8 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 // Import Swiper React components
 
 // Import Swiper styles
-import 'swiper/css';
 import 'swiper/css/grid';
-import 'swiper/css/pagination';
 
-import {Grid, Pagination} from 'swiper/modules';
 interface EpisodeAiImageGenerationProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수

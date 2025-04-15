@@ -1,9 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ReelsContent.module.scss';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import {Pagination} from 'swiper/modules';
 import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
@@ -21,7 +18,6 @@ import {
   LineVolumeOff,
   LineVolumeOn,
   LineArchive,
-  LineScaleUp,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import Comment from '../layout/shared/Comment';
@@ -45,7 +41,6 @@ import {
 import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
 import SelectDrawer, {SelectDrawerItem} from '../create/SelectDrawer';
-import {ConstructionOutlined} from '@mui/icons-material';
 import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';

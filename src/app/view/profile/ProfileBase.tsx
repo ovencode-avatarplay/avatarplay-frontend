@@ -39,7 +39,6 @@ import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
 import Select, {components, SelectInstance, StylesConfig} from 'react-select';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
 import {redirect, RedirectType, useParams, usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {
   CharacterProfileTabType,
@@ -83,14 +82,10 @@ import {
   sendDeleteCharacter,
   sendGetCharacterProfileInfo,
 } from '@/app/NetWork/CharacterNetwork';
-import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {copyCurrentUrlToClipboard, getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
 import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
 import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
-import {channel} from 'diagnostics_channel';
-import 'swiper/css';
-import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
 import PopupSubscription from '../main/content/create/common/PopupSubscription';
 import PopupSubscriptionList from './PopupSubscriptionList';
 import PopupFavoriteList from './PopupFavoriteList';

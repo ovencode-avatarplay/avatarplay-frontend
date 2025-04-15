@@ -1,5 +1,5 @@
 'use client';
-import {LineArrowLeft, BoldMenuDots, LineArrowDown, LineClose, LineUpload} from '@ui/Icons';
+import {LineArrowLeft, LineUpload} from '@ui/Icons';
 import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import styles from './ProfileUpdate.module.scss';
 import {useFieldArray, useForm} from 'react-hook-form';
@@ -9,13 +9,9 @@ import cx from 'classnames';
 
 import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {getBackUrl} from '@/utils/util-1';
 import {getPdInfo, MediaState, PdPortfolioInfo, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
 import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation'; // 필요시 다른 모듈도 가져오기
-import {DataUsageSharp} from '@mui/icons-material';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {getAuth} from '@/app/NetWork/AuthNetwork';
 import {updateProfile} from '@/redux-store/slices/Profile';

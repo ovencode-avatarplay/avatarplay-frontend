@@ -1,16 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Box, IconButton, Modal} from '@mui/material';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
+import {Pagination, Navigation} from 'swiper/modules';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import {Pagination, Navigation} from 'swiper/modules';
 import {MediaData, TriggerMediaState} from './ChatTypes';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import styles from './ChatMediaDialog.module.css';
 import ReactPlayer from 'react-player';
 import {LineArrowLeft} from '@ui/Icons';
-import {displayType} from '@/components/create/MaxTextInput';
 
 interface ChatMediaDialogProps {
   mediaData: MediaData | null;

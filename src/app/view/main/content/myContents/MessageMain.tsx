@@ -5,6 +5,7 @@ import styles from './MessageMain.module.css';
 import MessageProfile from './MessageProfile';
 import Splitters, {Splitter} from '@/components/layout/shared/CustomSplitter';
 import {LineSearch} from '@ui/Icons';
+import WorkroomTagList from '@/app/view/studio/workroom/WorkroomTagList';
 
 const MessageMain: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<MessageTabType>(MessageTabType.Chat);
@@ -17,7 +18,11 @@ const MessageMain: React.FC = () => {
       preContent: '',
       content: (
         <>
-          <MessageTagList onTagChange={setSelectedTag} />
+          <WorkroomTagList
+            tags={['All', 'Forders', 'Image', 'Video', 'Audio']}
+            currentTag="All"
+            onTagChange={() => {}}
+          />
 
           <div className={styles.scrollArea}>
             <MessageProfile
