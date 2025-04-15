@@ -4,17 +4,135 @@
     height:  calc(100% - 58px);
     padding-top: 58px;
     /* box-sizing: content-box; */
+
+    overflow: hidden;
 }
 
-/* .tagListContainer
+.buttonArea
+{
+    display: flex;
+    align-items: center;
+    padding-right: 6px;
+}
+
+.topButton
+{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonIcon
+{
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1; 
+
+    filter: var(--black-icon-filter);
+
+}
+ 
+.myWorkContainer
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.listArea
+{
+    width: 100%;
+}
+
+
+
+.listTitleArea
+{
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    justify-content: space-between;
+    
+    padding: 10px 16px; 
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    
+}
+
+.listTitle
+{
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+}
+
+.listShowMore
+{
+    color: var(--Neutral-500, #9AA0A6);
+    text-align: right;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.28px;
+
+}
+
+
+.workroomSwiper
+{
+  width: 100%;
+  height: 210px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  align-self: stretch;
+  padding-left: 5px !important;
+  padding-right: 16px !important;
+} 
+
+.workroomSwiper :global(.swiper-slide) {
+  width: auto;
+}
+
+
+.gridContainer {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    padding: 0 16px;
+}
+
+.filterArea
 {
     display: flex;
     padding: 10px 16px;
+    justify-content: space-between;
     align-items: center;
-    align-self: stretch;
+    align-self: stretch;  
+}  
 
-    gap: 5px;
-
-    border-bottom: 1px solid var(--Border-1, #EAECF0);
-    background: var(--Neutral-50, #F8F9FA);
-} */
+.gridArea {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  
+    padding: 0px 16px;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
