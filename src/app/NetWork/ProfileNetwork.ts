@@ -63,6 +63,7 @@ export const getProfileList = async (profileTabType: ProfileTabType = ProfileTab
     return resProfileList.data?.data?.profileList;
   } catch (e) {
     // alert('api 에러' + e);
+    console.log('api 에러');
   }
 };
 
@@ -100,7 +101,8 @@ export const selectProfile = async (profileId: number, profileTabType: ProfileTa
 
     return resProfileSelect.data?.data;
   } catch (e) {
-    alert('api 에러' + e);
+    //alert('api 에러' + e);
+    console.log('api 에러');
   }
 };
 
@@ -200,7 +202,8 @@ export const getProfileInfo = async (urlLinkKey: string) => {
 
     return resProfileSelect.data?.data;
   } catch (e) {
-    alert('api 에러' + e);
+    //alert('api 에러' + e);
+    console.log('api 에러');
   }
 };
 export interface GetPdTabInfoeReq {
@@ -389,7 +392,8 @@ export const getProfileCharacterTabInfo = async (
 
     return resProfileSelect.data?.data;
   } catch (e) {
-    alert('api 에러' + e);
+    //alert('api 에러' + e);
+    console.log('api 에러');
   }
 };
 
