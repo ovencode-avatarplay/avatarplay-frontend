@@ -50,8 +50,10 @@ import {TriggerActionType} from '@/redux-store/slices/StoryInfo';
 import useChat from './hooks/useChat';
 import {useStreamMessage} from './hooks/useStreamMessage';
 
-import Script from "next/script";
-import { isAllOf } from '@reduxjs/toolkit';
+import Script from 'next/script';
+import {isAllOf} from '@reduxjs/toolkit';
+import StoryLLMSetup from '../create/story-main/story-LLMsetup/StoryLLMsetup';
+import {LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
 
 declare global {
   interface Window {
@@ -130,6 +132,9 @@ const ChatPage: React.FC = () => {
   const [hangOn, setHangOn] = useState<any>(null);
   const indexBubble = useRef(0); // 말풍선 인덱스.
   const newTextBubbleArrayList = useRef<number[]>([]); // 채팅을 보냈을때~ 서버로부터 응답받았을 때 추가로 생성된 parsedMessages의  arrayIndex
+  const [showLLMSet, setShowLLMSet] = useState<boolean>(false);
+  const [selectedLLM, setSelectedLLM] = useState<LLMModel>(LLMModel.GPT_4o);
+  const [customAPI, setCustomAPI] = useState<string>('');
 
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
@@ -143,43 +148,43 @@ const ChatPage: React.FC = () => {
     // 모바일 기기 감지 및 설정
     if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
       // 모바일 기기용 viewport 메타 태그 추가
-      const meta = document.createElement("meta");
-      meta.name = "viewport";
-      meta.content =
-        "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
       document.head.appendChild(meta);
 
       // canvas 스타일을 브라우저 클라이언트 전체에 맞게 변경
       if (canvasRef.current) {
-        canvasRef.current.style.width = "100%";
-        canvasRef.current.style.height = "100%";
-        canvasRef.current.style.position = "fixed";
+        canvasRef.current.style.width = '100%';
+        canvasRef.current.style.height = '100%';
+        canvasRef.current.style.position = 'fixed';
       }
       // body의 텍스트 정렬 수정
-      document.body.style.textAlign = "left";
+      document.body.style.textAlign = 'left';
     }
     // Unity Loader 스크립트가 로드된 후 createUnityInstance를 호출하여 Unity 인스턴스를 생성
     if (window.createUnityInstance && canvasRef.current) {
       window
         .createUnityInstance(canvasRef.current, {
           arguments: [],
-          dataUrl: "https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.data",
-          frameworkUrl: "https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.framework.js",
-          codeUrl: "https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.wasm",
-          streamingAssetsUrl: "StreamingAssets",
-          companyName: "DefaultCompany",
-          productName: "Role",
-          productVersion: "0.1.0",
+          dataUrl: 'https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.data',
+          frameworkUrl:
+            'https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.framework.js',
+          codeUrl: 'https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.wasm',
+          streamingAssetsUrl: 'StreamingAssets',
+          companyName: 'DefaultCompany',
+          productName: 'Role',
+          productVersion: '0.1.0',
           // matchWebGLToCanvasSize: false, // 캔버스 사이즈와 렌더 사이즈를 개별 제어할 때 사용
           // devicePixelRatio: 1, // 고해상도 디스플레이에서 DPI 조정에 사용
         })
-        .then((unityInstance) => {
-          console.log("Unity 인스턴스가 생성되었습니다.", unityInstance);
+        .then(unityInstance => {
+          console.log('Unity 인스턴스가 생성되었습니다.', unityInstance);
           alert(unityInstance);
           setHangOn(unityInstance);
         })
-        .catch((error) => {
-          console.error("Unity 초기화 중 오류 발생:", error);
+        .catch(error => {
+          console.error('Unity 초기화 중 오류 발생:', error);
         });
     }
   };
@@ -248,18 +253,17 @@ const ChatPage: React.FC = () => {
       return () => clearInterval(interval);
     }
 
-    window.onCloseAction = ()=> {
-      alert('close')
+    window.onCloseAction = () => {
+      alert('close');
       setShowLiveChat(false);
-      if(hangOn)
-      {
+      if (hangOn) {
         hangOn.Quit().then(() => {
-          console.log("Unity WebGL 인스턴스 종료 완료");
-        })
+          console.log('Unity WebGL 인스턴스 종료 완료');
+        });
       }
       setHangOn(null);
-    }
-  }, [showLiveChat])
+    };
+  }, [showLiveChat]);
 
   useEffect(() => {
     window.addEventListener('resize', setFullHeight);
@@ -598,7 +602,7 @@ const ChatPage: React.FC = () => {
 
   //#region HeaderChat handler
   const handleMoreClick = () => {
-    console.log('더보기 버튼 클릭');
+    setShowLLMSet(true);
   };
 
   const handleLiveChatClick = () => {
@@ -706,11 +710,11 @@ const ChatPage: React.FC = () => {
   const handleOnAccept = () => {
     setShowLiveChat(false);
     setHangOn(null);
-  }
+  };
 
   const handleOnDeny = () => {
     setShowLiveChat(false);
-  }
+  };
 
   return (
     <>
@@ -774,36 +778,35 @@ const ChatPage: React.FC = () => {
           onCheatChangeDate={handleChangeNewDate}
         />
 
-      <Script src="/game/microphone.js" strategy="afterInteractive" />
-      <Script src="/game/web.loader.js" strategy="afterInteractive" />
+        <Script src="/game/microphone.js" strategy="afterInteractive" />
+        <Script src="/game/web.loader.js" strategy="afterInteractive" />
 
-      {showLiveChat && (
-        <div
-        style={{
-          textAlign: "center",
-          padding: 0,
-          border: 0,
-          margin: 0,
-        }}
-      >
-        
-        <CallingScreen onAccept={handleOnAccept} onDeny={handleOnDeny} isHangOn={hangOn}></CallingScreen>
-        
-        <canvas
-          id="unity-canvas"
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 10, // 기존 콘텐츠보다 높은 z-index를 부여하여 위에 표시
-            background: "transparent", // 필요에 따라 배경색 지정 가능
-          }}
-        ></canvas>
-      </div>
-      )}
+        {showLiveChat && (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 0,
+              border: 0,
+              margin: 0,
+            }}
+          >
+            <CallingScreen onAccept={handleOnAccept} onDeny={handleOnDeny} isHangOn={hangOn}></CallingScreen>
+
+            <canvas
+              id="unity-canvas"
+              ref={canvasRef}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 10, // 기존 콘텐츠보다 높은 z-index를 부여하여 위에 표시
+                background: 'transparent', // 필요에 따라 배경색 지정 가능
+              }}
+            ></canvas>
+          </div>
+        )}
 
         {showPopup && (
           <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
@@ -815,6 +818,16 @@ const ChatPage: React.FC = () => {
             rubyAmount={5} //필요 루비 임시
           />
         )}
+        <StoryLLMSetup
+          open={showLLMSet}
+          onClose={() => setShowLLMSet(false)}
+          onModelSelected={(number: number) => {
+            setSelectedLLM(number);
+          }}
+          initialValue={selectedLLM}
+          customAPIKey={customAPI}
+          onCustomAPIKeyChange={setCustomAPI}
+        />
       </main>
     </>
   );
