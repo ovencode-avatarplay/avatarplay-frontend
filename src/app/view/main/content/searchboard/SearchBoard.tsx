@@ -158,6 +158,9 @@ const SearchBoard: React.FC = () => {
     const finalFilter = [encodedPositive, encodedNegative].filter(Boolean).join('::');
 
     changeParams('filter', finalFilter);
+
+    setSearchResultList(null);
+    setRequestFetch(true);
   };
 
   // Func
