@@ -3,6 +3,8 @@ import styles from './Styles.module.css';
 import MessageProfile, {BadgeType, CheckType, FollowState} from '../01_Layout/MessageProfile';
 import FilterBar from '../FilterBar';
 import MessageTagList from '../01_Layout/MessageTagList';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 
 const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
 interface Props {
@@ -11,6 +13,19 @@ interface Props {
 
 const CharacterChat: React.FC<Props> = ({name}) => {
   const [selectedTag, setSelectedTag] = useState(tags[0]);
+  const [openOption, setOpenOption] = useState(false);
+  const optionItems: SelectDrawerArrowItem[] = [
+    {
+      name: 'Subtitle',
+      arrowName: '',
+      onClick: () => {},
+    },
+    {
+      name: 'Report',
+      arrowName: '',
+      onClick: () => {},
+    },
+  ];
   return (
     <>
       <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
@@ -20,6 +35,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
         onFilterChange={filter => console.log('선택된 필터:', filter)}
         onSortChange={sort => console.log('선택된 정렬:', sort)}
       />
+      <div className={styles.name}>Favorite ({3})</div>
       <div className={styles.name}>Chat</div>
       <div className={styles.scrollArea}>
         <MessageProfile
@@ -31,9 +47,22 @@ const CharacterChat: React.FC<Props> = ({name}) => {
           followState={FollowState.Following}
           isHighlight={true}
           onClick={() => {}}
+          isOption={true}
+          onClickOption={() => {
+            setOpenOption(true);
+          }}
         />
         <div style={{height: 'calc(48px + 2px)'}}></div>
       </div>
+      <SelectDrawer
+        isOpen={openOption}
+        items={optionItems}
+        onClose={() => {
+          setOpenOption(false);
+        }}
+        isCheck={false}
+        selectedIndex={1}
+      ></SelectDrawer>
     </>
   );
 };

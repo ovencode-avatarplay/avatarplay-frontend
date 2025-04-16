@@ -4,6 +4,8 @@ import {BoldFilter, BoldFilterOn, LineArrowLeft, LineDelete, LinePlus} from '@ui
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {searchOptionList} from '../../searchboard/SearchBoard';
+import TagsData from 'data/create/tags.json';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 interface Props {
   onBack?: () => void;
@@ -17,31 +19,51 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
-  useEffect(() => {
-    const items = searchOptionList.map(name => ({
-      name: getLocalizedText(name),
-      state: 'empty', // 초기 상태 설정
-    }));
-    setFilterItem(items);
-  }, []);
+
   // Filter State
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
   const [negativeFilters, setNegativeFilters] = useState<FilterDataItem[]>([]);
+  const tagGroups = TagsData;
+  const themeGroup = tagGroups.tagGroups.find(group => group.category === 'Theme');
+  useEffect(() => {
+    const items = themeGroup?.tags.map(item => ({
+      state: 'empty', // 초기 상태 설정
+      key: item,
+    }));
+    setFilterItem(items || []);
+  }, []);
+  const {changeParams, getParam} = useCustomRouter();
+  const handlerFilterSaved = (positive: FilterDataItem[], negative: FilterDataItem[]) => {
+    const positiveResult = positive.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    const negativeResult = negative.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+
+    const localizedPositive = positiveResult.map(key => getLocalizedText('placehold', key, 'en-us'));
+    const localizedNegative = negativeResult.map(key => getLocalizedText('placehold', key, 'en-us'));
+
+    const encodedPositive = localizedPositive.join('&&');
+    const encodedNegative = localizedNegative.join('!!');
+
+    const finalFilter = [encodedPositive, encodedNegative].filter(Boolean).join('::');
+
+    changeParams('filter', finalFilter);
+  };
+
   const handleSave = (filters: {positive: FilterDataItem[]; negative: FilterDataItem[]}) => {
     setPositiveFilters(filters.positive);
     setNegativeFilters(filters.negative);
 
     setFilterItem(prevFilterItem =>
       prevFilterItem.map(item => {
-        if (filters.positive.some(filter => filter.name === item.name)) {
+        if (filters.positive.some(filter => filter.key === item.key)) {
           return {...item, state: 'selected'};
         }
-        if (filters.negative.some(filter => filter.name === item.name)) {
+        if (filters.negative.some(filter => filter.key === item.key)) {
           return {...item, state: 'remove'};
         }
         return {...item, state: 'empty'};
       }),
     );
+    handlerFilterSaved(filters.positive, filters.negative);
   };
 
   const handleClear = () => {

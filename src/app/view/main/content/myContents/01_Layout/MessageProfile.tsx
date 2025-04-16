@@ -14,6 +14,7 @@ interface Props {
   isPin?: boolean;
   isHighlight?: boolean;
   onClick: () => void;
+  onClickOption?: () => void;
 }
 
 export enum BadgeType {
@@ -48,6 +49,7 @@ const MessageProfile: React.FC<Props> = ({
   isPin = false,
   isHighlight = false,
   onClick,
+  onClickOption,
 }) => {
   const renderBadge = () => {
     if (badgeType === BadgeType.Fan) {
@@ -123,10 +125,15 @@ const MessageProfile: React.FC<Props> = ({
         {checkType === CheckType.Right && renderCheck()}
 
         {isOption && (
-          <div className={styles.optionWrap}>
+          <button
+            className={styles.optionWrap}
+            onClick={() => {
+              if (onClickOption) onClickOption();
+            }}
+          >
             {isPin && <img src={BoldPin.src} alt="pin" className={styles.pinIcon} />}
             <img src={BoldMore.src} alt="more" className={styles.moreIcon} />
-          </div>
+          </button>
         )}
       </div>
     </div>
