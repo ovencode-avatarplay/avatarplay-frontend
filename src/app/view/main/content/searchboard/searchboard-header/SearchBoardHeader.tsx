@@ -35,6 +35,7 @@ interface Props {
   setContentOffset: React.Dispatch<React.SetStateAction<number>>;
   setCharacterOffset: React.Dispatch<React.SetStateAction<number>>;
   setStoryOffset: React.Dispatch<React.SetStateAction<number>>;
+  onFilterSaved: (positive: FilterDataItem[], negative: FilterDataItem[]) => void;
 }
 
 const SearchBoardHeader: React.FC<Props> = ({
@@ -54,6 +55,7 @@ const SearchBoardHeader: React.FC<Props> = ({
   setContentOffset,
   setCharacterOffset,
   setStoryOffset,
+  onFilterSaved,
 }) => {
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
@@ -81,26 +83,41 @@ const SearchBoardHeader: React.FC<Props> = ({
 
     setFilterItem(prevFilterItem =>
       prevFilterItem.map(item => {
-        if (filters.positive.some(filter => filter.name === item.name)) {
+        if (filters.positive.some(filter => filter.key === item.key)) {
           return {...item, state: 'selected'};
         }
-        if (filters.negative.some(filter => filter.name === item.name)) {
+        if (filters.negative.some(filter => filter.key === item.key)) {
           return {...item, state: 'remove'};
         }
         return {...item, state: 'empty'};
       }),
     );
+    onFilterSaved(filters.positive, filters.negative);
   };
 
   useEffect(() => {
     if (filterData) {
-      const items = filterData.map(name => ({
-        name: getLocalizedText(name),
+      const items = filterData.map(key => ({
+        key: key,
         state: 'empty', // 초기 상태 설정
       }));
       setFilterItem(items);
     }
   }, [filterData]);
+
+  useEffect(() => {
+    setFilterItem(prevItems =>
+      prevItems.map(item => {
+        if (positiveFilter.some(p => p.key === item.key)) {
+          return {...item, state: 'selected'};
+        } else if (negativeFilter.some(n => n.key === item.key)) {
+          return {...item, state: 'remove'};
+        } else {
+          return {...item, state: 'empty'};
+        }
+      }),
+    );
+  }, [positiveFilter, negativeFilter]);
 
   return (
     <div className={styles.searchHeaderContainer}>
