@@ -5,6 +5,7 @@ import FilterBar from '../FilterBar';
 import MessageTagList from '../01_Layout/MessageTagList';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
+import ProfilePopup from '../ProfilePopup';
 
 const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
 interface Props {
@@ -14,16 +15,25 @@ interface Props {
 const CharacterChat: React.FC<Props> = ({name}) => {
   const [selectedTag, setSelectedTag] = useState(tags[0]);
   const [openOption, setOpenOption] = useState(false);
+  const [openLeavePopup, setOpenLeavePopup] = useState(false);
+
   const optionItems: SelectDrawerArrowItem[] = [
     {
-      name: 'Subtitle',
+      name: 'Favorites /Unfavorites',
       arrowName: '',
       onClick: () => {},
     },
     {
-      name: 'Report',
+      name: 'Pin to Top / Unpin ',
       arrowName: '',
       onClick: () => {},
+    },
+    {
+      name: 'Leave',
+      arrowName: '',
+      onClick: () => {
+        setOpenLeavePopup(true);
+      },
     },
   ];
   return (
@@ -63,6 +73,33 @@ const CharacterChat: React.FC<Props> = ({name}) => {
         isCheck={false}
         selectedIndex={1}
       ></SelectDrawer>
+      {openLeavePopup && (
+        <ProfilePopup
+          type="alert"
+          title="Alert"
+          description="Do uou want to leave the Chatroom?"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => {
+                setOpenLeavePopup(false);
+              },
+              isPrimary: false,
+            },
+            {
+              label: 'Leave',
+              onClick: () => {
+                setOpenLeavePopup(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+          badgeType={BadgeType.Original}
+          profileDesc="asdasdad"
+          profileImage="/lora/meina_hentai.png"
+          profileName="asdasds"
+        ></ProfilePopup>
+      )}
     </>
   );
 };
