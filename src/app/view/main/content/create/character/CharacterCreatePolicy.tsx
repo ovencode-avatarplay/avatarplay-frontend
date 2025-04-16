@@ -53,6 +53,7 @@ interface Props {
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
   essentialWarning: boolean;
   curCharacterId: number;
+  urlLink?: string;
 }
 
 const Header = 'CreateCharacter';
@@ -87,6 +88,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   setCharacterDesc,
   essentialWarning,
   curCharacterId,
+  urlLink,
 }) => {
   let VisibilityData = {items: ['common_dropdown_private', 'common_dropdown_unlisted', 'common_filter_public']};
 
@@ -419,6 +421,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           operatorList={operatorProfileIdList}
           onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
+          urlLink={urlLink}
         />
       </>
     );
