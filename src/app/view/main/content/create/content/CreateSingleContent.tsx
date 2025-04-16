@@ -32,6 +32,8 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import {useAtom} from 'jotai';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {setVisibility} from '@/redux-store/slices/PublishInfo';
+import TagsData from 'data/create/tags.json';
+
 enum CategoryTypes {
   Webtoon = 0,
   Drama = 1,
@@ -125,54 +127,10 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
     }
   };
 
-  const tagGroups = [
-    {
-      category: 'Genre',
-      tags: [
-        'common_genre_romance',
-        'common_genre_fantasy',
-        'common_genre_action',
-        'common_genre_comedy',
-        'common_genre_sliceoflife',
-        'common_genre_thriller',
-        'common_genre_comedy', // 중복 있음
-        'common_genre_bl/gl',
-        'common_genre_drama',
-        'common_genre_historicaldrama',
-        'common_genre_emotional',
-        'common_genre_sports',
-        'common_genre_wuxia',
-      ],
-    },
-    {
-      category: 'Theme',
-      tags: [
-        'common_tag_male',
-        'common_tag_female',
-        'common_tag_boyfriend',
-        'common_tag_girlfriend',
-        'common_tag_hero',
-        'common_tag_elf',
-        'common_tag_romance',
-        'common_tag_vanilla',
-        'common_tag_contemporaryfantasy',
-        'common_tag_isekai',
-        'common_tag_flirting',
-        'common_tag_dislike',
-        'common_tag_comedy',
-        'common_tag_noir',
-        'common_tag_horror',
-        'common_tag_demon',
-        'common_tag_sf',
-        'common_tag_vampire',
-        'common_tag_office',
-        'common_tag_monster',
-        'common_tag_anime',
-        'common_tag_books',
-        'common_tag_aliens',
-      ],
-    },
-  ];
+  const tagGroups = TagsData;
+  const themeGroup = tagGroups.tagGroups.find(group => group.category === 'Theme');
+  const genreGroup = tagGroups.tagGroups.find(group => group.category === 'Genre');
+
   const [selectedCategory, setSelectedCategory] = useState<CategoryTypes>(CategoryTypes.Webtoon);
   const [CategoryDrawerOpen, setCategoryDrawerOpen] = useState<boolean>(false);
 
@@ -439,7 +397,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             title={getLocalizedText('createcontent003_label_005')}
             selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
-              setGenreList(tagGroups[0].tags);
+              setGenreList(genreGroup?.tags || []);
               setGenreOpen(true);
             }}
             error={triggerWarning}
@@ -463,7 +421,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
             title={getLocalizedText('common_label_002')}
             selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
             onClick={() => {
-              setTagList(tagGroups[1].tags);
+              setTagList(themeGroup?.tags || []);
               setTagOpen(true);
             }}
             error={triggerWarning}
