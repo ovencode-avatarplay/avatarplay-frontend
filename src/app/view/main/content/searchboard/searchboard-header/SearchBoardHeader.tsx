@@ -15,7 +15,7 @@ interface Props {
   search: searchType;
   setSearchResultList: React.Dispatch<React.SetStateAction<ExploreItem[] | null>>;
   adultToggleOn: boolean;
-  setAdultToggleOn: React.Dispatch<React.SetStateAction<boolean>>;
+  setAdultToggleOn: (isAdult: boolean) => void;
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   filterData: string[] | null;
