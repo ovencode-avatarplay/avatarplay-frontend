@@ -709,7 +709,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderConnect()}
         {renderOperatorInvite()}
         {/*renderMonetization()*/}
-        {renderMembershipPlan()}
+        {characterIP === 1 && renderMembershipPlan()}
         {renderNSFW()}
         {renderComment()}
       </div>

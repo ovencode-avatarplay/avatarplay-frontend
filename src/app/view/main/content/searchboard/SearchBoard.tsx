@@ -234,22 +234,11 @@ const SearchBoard: React.FC = () => {
   };
 
   // Func
-  const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
-    const positiveFilterList = positiveFilters
-      .map(filter => ({
-        searchFilterType: searchOptionList.indexOf(filter.name),
-        searchFilterState: 0, // Positive
-      }))
-      .filter(item => item.searchFilterType !== -1);
-
-    const negativeFilterList = negativeFilters
-      .map(filter => ({
-        searchFilterType: searchOptionList.indexOf(filter.name),
-        searchFilterState: 1, // Negative
-      }))
-      .filter(item => item.searchFilterType !== -1);
-
-    return [...positiveFilterList, ...negativeFilterList];
+  const generatePositiveFilterList = (): string[] => {
+    return positiveFilters.map(filter => filter.key).filter(key => searchOptionList.includes(key));
+  };
+  const generateNegativeFilterList = (): string[] => {
+    return negativeFilters.map(filter => filter.key).filter(key => searchOptionList.includes(key));
   };
 
   const fetchSearchData = async (
@@ -281,9 +270,11 @@ const SearchBoard: React.FC = () => {
             : 0,
         sort: selectedSort,
         // filterList: generateFilterList(),
-        // isOnlyAdults: adultToggleOn,
         // storyPage: contentPage,
         // characterPage,
+        positiveFilterTags: generatePositiveFilterList(),
+        nagativeFilterTags: generateNegativeFilterList(),
+        isOnlyAdults: adultToggleOn,
         storyOffset: storyOffset,
         characterOffset: characterOffset,
         contentOffset: contentOffset,

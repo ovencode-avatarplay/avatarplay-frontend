@@ -124,6 +124,7 @@ export const getAuth = async () => {
     const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
     return data;
   } catch (e) {
-    alert('api 에러' + e);
+    //alert('api 에러' + e);
+    console.log('api 에러');
   }
 };

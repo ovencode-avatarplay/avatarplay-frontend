@@ -4,6 +4,9 @@ import {getLocalizedLink} from '@/utils/UrlMove';
 import axios, {AxiosInstance} from 'axios';
 import {showPopup} from './networkPopup/popupManager';
 import getLocalizedText from '@/utils/getLocalizedText';
+
+const pendingRequests = new Set<string>(); // 동일한 패킷이 처리되기 전에 또 호출되었는지 체크하기 위한 용도
+
 // Axios 인스턴스 생성
 const api: AxiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/`, // 새로운 베이스 URL
@@ -19,6 +22,13 @@ const api: AxiosInstance = axios.create({
 // Axios 인터셉터로 Bearer JWT 토큰 자동 추가
 api.interceptors.request.use(
   config => {
+    document.body.style.pointerEvents = 'none';
+    const requestKey = config.url ?? '';
+
+    if (pendingRequests.has(requestKey)) {
+      console.warn('Busy processing an existing API request.');
+      return Promise.reject({message: 'Busy processing an existing API request.'});
+    }
     // 로컬 스토리지 또는 세션 스토리지에서 JWT 토큰을 가져옴
     const token = localStorage.getItem('jwt');
 
@@ -27,9 +37,13 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    console.log('request packet add: ' + requestKey);
+    pendingRequests.add(requestKey);
+
     return config;
   },
   error => {
+    document.body.style.pointerEvents = 'auto';
     // 요청 전 오류 처리
     return Promise.reject(error);
   },
@@ -37,6 +51,11 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   async response => {
+    document.body.style.pointerEvents = 'auto';
+    const requestKey = response.config.url ?? '';
+    console.log('request packet delete: ' + requestKey);
+    pendingRequests.delete(requestKey);
+
     // 정상 응답인 경우 그대로 반환
     if (response.data.errorCode !== null) {
       const errorDescription = getLocalizedText(response.data.errorCode) || response.data.errorCode;
@@ -50,11 +69,15 @@ api.interceptors.response.use(
     return response;
   },
   error => {
+    document.body.style.pointerEvents = 'auto';
     // 401 에러가 발생했을 때 처리
     if (error.response && error.response.status === 401) {
       // 여기서 auth 페이지로 리다이렉트
       window.location.href = getLocalizedLink('/auth');
     }
+    const requestKey = error?.config?.url ?? '';
+    console.log('request packet delete: ' + requestKey);
+    pendingRequests.delete(requestKey);
     return Promise.reject(error);
   },
 );

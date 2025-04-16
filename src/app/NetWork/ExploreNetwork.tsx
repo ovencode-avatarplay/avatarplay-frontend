@@ -128,7 +128,9 @@ interface SearchReq {
   category: number;
   sort: number;
   // filterList: filterList[];
-  // isOnlyAdults: boolean;
+  positiveFilterTags: string[];
+  nagativeFilterTags: string[];
+  isOnlyAdults: boolean;
   storyOffset: number;
   characterOffset: number;
   contentOffset: number;
