@@ -47,14 +47,14 @@
     align-self: stretch;
 }
 
-.listArea
+.categoryArea
 {
     width: 100%;
 }
 
 
 
-.listTitleArea
+.categoryTitleArea
 {
     display: flex;
     flex-direction: row;
@@ -69,7 +69,7 @@
     
 }
 
-.listTitle
+.categoryTitle
 {
     color: var(--Black, #000);
     font-size: 14px;
@@ -79,7 +79,7 @@
     letter-spacing: -0.28px;
 }
 
-.listShowMore
+.categoryShowMore
 {
     color: var(--Neutral-500, #9AA0A6);
     text-align: right;
@@ -109,12 +109,13 @@
 }
 
 
-.gridContainer {
+
+.itemContainer
+{
     display: flex;
     flex-direction: column;
 
     width: 100%;
-    padding: 0 16px;
 }
 
 .filterArea
@@ -134,5 +135,18 @@
     align-content: center;
     gap: 10px;
     flex-wrap: wrap;
-  }
+}
   
+.listArea
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.dataItem
+{
+    width: 100%;
+}

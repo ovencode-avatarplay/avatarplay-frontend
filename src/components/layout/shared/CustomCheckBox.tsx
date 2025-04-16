@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './CustomCheckBox.module.css';
-import {LineCheckBoxFill, LineCheckBoxEmpty} from '@ui/Icons';
+import {LineCheckBoxFill, LineCheckBoxEmpty, BoldRadioButtonSelected, BoldRadioButton} from '@ui/Icons';
 
 interface CustomCheckboxProps {
   shapeType: 'circle' | 'square';
@@ -19,8 +19,8 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   checked,
   containerStyle,
 }) => {
-  const checkboxImage = shapeType === 'circle' ? LineCheckBoxEmpty.src : LineCheckBoxEmpty.src;
-  const checkedImg = shapeType === 'circle' ? LineCheckBoxFill.src : LineCheckBoxFill.src;
+  const checkboxImage = shapeType === 'circle' ? BoldRadioButton.src : LineCheckBoxEmpty.src;
+  const checkedImg = shapeType === 'circle' ? BoldRadioButtonSelected.src : LineCheckBoxFill.src;
 
   const handleClick = () => {
     onToggle(!checked);

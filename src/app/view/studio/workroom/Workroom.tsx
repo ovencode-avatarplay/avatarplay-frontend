@@ -20,7 +20,7 @@ const Workroom: React.FC<Props> = ({}) => {
   //#endregion
 
   //#region TmpDefine
-  // All 에서 보여지는 리스트는 20개 까지입니다.
+  // All 에서 보여지는 Recent 리스트는 20개 까지입니다. (기획)
   const recentData: WorkroomItemInfo[] = [
     {imgUrl: '/images/001.png', name: 'workroom0', detail: 'detail0'},
     {imgUrl: '/images/001.png', name: 'workroom1', detail: 'detail1'},
@@ -30,6 +30,7 @@ const Workroom: React.FC<Props> = ({}) => {
     {imgUrl: '/images/001.png', name: 'workroom5', detail: 'detail5'},
   ];
 
+  // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
   const folderData: WorkroomItemInfo[] = [
     {imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
     {imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
@@ -39,21 +40,9 @@ const Workroom: React.FC<Props> = ({}) => {
     {imgUrl: '/images/001.png', name: 'folder5', detail: 'detail5'},
     {imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
     {imgUrl: '/images/001.png', name: 'folder7', detail: 'detail7'},
-    {imgUrl: '/images/001.png', name: 'folder8', detail: 'detail8'},
-    {imgUrl: '/images/001.png', name: 'folder9', detail: 'detail9'},
-    {imgUrl: '/images/001.png', name: 'folder10', detail: 'detail10'},
-    {imgUrl: '/images/001.png', name: 'folder11', detail: 'detail11'},
-    {imgUrl: '/images/001.png', name: 'folder12', detail: 'detail12'},
-    {imgUrl: '/images/001.png', name: 'folder13', detail: 'detail13'},
-    {imgUrl: '/images/001.png', name: 'folder14', detail: 'detail14'},
-    {imgUrl: '/images/001.png', name: 'folder15', detail: 'detail15'},
-    {imgUrl: '/images/001.png', name: 'folder16', detail: 'detail16'},
-    {imgUrl: '/images/001.png', name: 'folder17', detail: 'detail17'},
-    {imgUrl: '/images/001.png', name: 'folder18', detail: 'detail18'},
-    {imgUrl: '/images/001.png', name: 'folder19', detail: 'detail19'},
-    {imgUrl: '/images/001.png', name: 'folder20', detail: 'detail20'},
   ];
 
+  // All 에서 보여지는 image 그리드는 4개 입니다. (기획)
   const imageData: WorkroomItemInfo[] = [
     {imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
     {imgUrl: '/images/001.png', name: 'image1', detail: 'detail1'},
@@ -61,8 +50,11 @@ const Workroom: React.FC<Props> = ({}) => {
     {imgUrl: '/images/001.png', name: 'image3', detail: 'detail3'},
     {imgUrl: '/images/001.png', name: 'image4', detail: 'detail4'},
     {imgUrl: '/images/001.png', name: 'image5', detail: 'detail5'},
+    {imgUrl: '/images/001.png', name: 'image6', detail: 'detail6'},
+    {imgUrl: '/images/001.png', name: 'image7', detail: 'detail7'},
   ];
 
+  // All 에서 보여지는 video 그리드는 4개 입니다. (기획)
   const videoData: WorkroomItemInfo[] = [
     {imgUrl: '/images/001.png', name: 'video0', detail: 'detail0'},
     {imgUrl: '/images/001.png', name: 'video1', detail: 'detail1'},
@@ -70,8 +62,11 @@ const Workroom: React.FC<Props> = ({}) => {
     {imgUrl: '/images/001.png', name: 'video3', detail: 'detail3'},
     {imgUrl: '/images/001.png', name: 'video4', detail: 'detail4'},
     {imgUrl: '/images/001.png', name: 'video5', detail: 'detail5'},
+    {imgUrl: '/images/001.png', name: 'video6', detail: 'detail6'},
+    {imgUrl: '/images/001.png', name: 'video7', detail: 'detail7'},
   ];
 
+  // All 에서 보여지는 audio 그리드는 4개 입니다. (기획)
   const audioData: WorkroomItemInfo[] = [
     {imgUrl: '/images/001.png', name: 'audio0', detail: 'detail0'},
     {imgUrl: '/images/001.png', name: 'audio1', detail: 'detail1'},
@@ -79,6 +74,8 @@ const Workroom: React.FC<Props> = ({}) => {
     {imgUrl: '/images/001.png', name: 'audio3', detail: 'detail3'},
     {imgUrl: '/images/001.png', name: 'audio4', detail: 'detail4'},
     {imgUrl: '/images/001.png', name: 'audio5', detail: 'detail5'},
+    {imgUrl: '/images/001.png', name: 'audio6', detail: 'detail6'},
+    {imgUrl: '/images/001.png', name: 'audio7', detail: 'detail7'},
   ];
   //#endregion
 
@@ -101,50 +98,78 @@ const Workroom: React.FC<Props> = ({}) => {
       <div className={styles.myWorkContainer}>
         {tagStates.work === 'All' && (
           <>
-            <div className={styles.listArea}>
-              <div className={styles.listTitleArea}>
-                <div className={styles.listTitle}>{getLocalizedText('TODO : Recent')}</div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Recent')}</div>
               </div>
               {renderSwiper(recentData)}
             </div>
-            <div className={styles.listArea}>
-              <div className={styles.listTitleArea}>
-                <div className={styles.listTitle}>{getLocalizedText('TODO : Folder')}</div>
-                <div className={styles.listShowMore}>{getLocalizedText('TODO : Show more')}</div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Folder')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    setTagStates(prev => ({...prev, work: 'Folders'}));
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
               </div>
-              {renderSwiper(folderData)}
+              {renderDataItems(folderData, true, false, 4)}
             </div>
-            <div className={styles.listArea}>
-              <div className={styles.listTitleArea}>
-                <div className={styles.listTitle}>{getLocalizedText('TODO : Image')}</div>
-                <div className={styles.listShowMore}>{getLocalizedText('TODO : Show more')}</div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Image')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    setTagStates(prev => ({...prev, work: 'Image'}));
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
               </div>
-              {renderSwiper(imageData)}
-            </div>{' '}
-            <div className={styles.listArea}>
-              <div className={styles.listTitleArea}>
-                <div className={styles.listTitle}>{getLocalizedText('TODO : Video')}</div>
-                <div className={styles.listShowMore}>{getLocalizedText('TODO : Show more')}</div>
+              {renderDataItems(imageData, detailView, false, 4)}
+            </div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Video')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    setTagStates(prev => ({...prev, work: 'Video'}));
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
               </div>
-              {renderSwiper(videoData)}
-            </div>{' '}
-            <div className={styles.listArea}>
-              <div className={styles.listTitleArea}>
-                <div className={styles.listTitle}>{getLocalizedText('TODO : Audio')}</div>
-                <div className={styles.listShowMore}>{getLocalizedText('TODO : Show more')}</div>
+              {renderDataItems(videoData, detailView, false, 4)}
+            </div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Audio')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    setTagStates(prev => ({...prev, work: 'Audio'}));
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
               </div>
-              {renderSwiper(audioData)}
+              {renderDataItems(audioData, true, false, 4)}
             </div>
           </>
         )}
 
-        {tagStates.work === 'Folders' && renderGrid(folderData)}
+        {tagStates.work === 'Folders' && renderDataItems(folderData, true, true)}
 
-        {tagStates.work === 'Image' && renderGrid(imageData)}
+        {tagStates.work === 'Image' && renderDataItems(imageData, detailView, true)}
 
-        {tagStates.work === 'Video' && renderGrid(videoData)}
+        {tagStates.work === 'Video' && renderDataItems(videoData, detailView, true)}
 
-        {tagStates.work === 'Audio' && renderGrid(audioData)}
+        {tagStates.work === 'Audio' && renderDataItems(audioData, detailView, true)}
       </div>
     );
   };
@@ -167,13 +192,14 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
-  const renderGrid = (data: WorkroomItemInfo[]) => {
+  const renderDataItems = (data: WorkroomItemInfo[], detailView: boolean, filterArea?: boolean, limit?: number) => {
+    const limitedData = limit ? data.slice(0, limit) : data;
     return (
-      <div className={styles.gridContainer}>
-        <div className={styles.filterArea}>FILTER</div>
-        <ul className={styles.gridArea}>
-          {data.map((item, index) => (
-            <div key={index}>
+      <div className={`${styles.itemContainer}`}>
+        {filterArea && <div className={styles.filterArea}>{getLocalizedText('TODO: FILTER')}</div>}
+        <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
+          {limitedData.map((item, index) => (
+            <div className={styles.dataItem} key={index}>
               <WorkroomItem detailView={detailView} item={item} />
             </div>
           ))}

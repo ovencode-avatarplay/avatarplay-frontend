@@ -1,5 +1,6 @@
-import {BoldMenuDots} from '@ui/Icons';
+import {BoldMenuDots, LineBookMark} from '@ui/Icons';
 import styles from './WorkroomItem.module.css';
+import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 
 interface Props {
   detailView: boolean;
@@ -21,6 +22,11 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
           <div className={styles.fileDetail}>{item.detail}</div>
         </div>
         <div className={styles.infoRightArea}>
+          {detailView && (
+            <button className={styles.bookMarkButton}>
+              <img className={`${styles.bookMarkIcon} ${styles.selected}`} src={LineBookMark.src} />
+            </button>
+          )}
           <button className={styles.btnMenu}>
             <img className={styles.btnIcon} src={BoldMenuDots.src} />
           </button>
@@ -33,6 +39,15 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
     <div className={styles.workroomItem}>
       {detailView ? (
         <div className={styles.detailViewContainer}>
+          <div className={styles.selectButton}>
+            <CustomCheckbox
+              displayType="buttonOnly"
+              shapeType="square"
+              checked={true}
+              onToggle={() => {}}
+              containerStyle={{width: '100%', height: '100%'}}
+            />
+          </div>
           <div
             className={styles.fileImage}
             style={{
@@ -41,7 +56,7 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
               })`,
               backgroundSize: 'cover',
             }}
-          />
+          ></div>
           {renderFileInfoArea()}
         </div>
       ) : (
@@ -54,7 +69,20 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
               })`,
               backgroundSize: 'cover',
             }}
-          />
+          >
+            <div className={styles.selectButton}>
+              <CustomCheckbox
+                displayType="buttonOnly"
+                shapeType="square"
+                checked={true}
+                onToggle={() => {}}
+                containerStyle={{width: '100%', height: '100%'}}
+              />
+            </div>
+            <button className={styles.bookMarkButton}>
+              <img className={`${styles.bookMarkIcon} ${styles.selected}`} src={LineBookMark.src} />
+            </button>
+          </div>
           {renderFileInfoArea()}
         </div>
       )}

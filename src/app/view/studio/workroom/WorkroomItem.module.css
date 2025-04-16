@@ -25,6 +25,15 @@
     background: #FFF;
 }
 
+.detailViewContainer > .selectButton
+{
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+
+    margin-right: 6px;
+}
+
 .largeViewContainer
 {
     display: inline-flex;
@@ -40,13 +49,49 @@
 
 .largeViewContainer > .fileImage
 {
-     width: 160px;
+    position: relative;
+
+    width: 160px;
     height: 160px;
     aspect-ratio: 1/1;
 
     border-radius: 12px;
     background: #FFF;
 }
+
+.largeViewContainer > .fileImage > .selectButton
+{
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+}
+
+.largeViewContainer > .fileImage > .bookMarkButton
+{
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0; 
+}
+
+.bookMarkIcon
+{
+    width: 100%;
+    height: 100%;    
+}
+ 
+.bookMarkIcon.selected
+{
+    filter: brightness(0) saturate(100%) invert(57%) sepia(17%) saturate(7411%) hue-rotate(285deg) brightness(97%) contrast(106%);
+}
+
 
 .onlyImageViewContainer
 {
@@ -75,8 +120,7 @@
     align-items: flex-start;
     gap: 6px;
 
-    box-sizing: border-box;
-
+    box-sizing: border-box; 
 }
 
 .infoLeftArea
@@ -91,126 +135,21 @@
 }
 
 .infoRightArea
-{
-    width: 20px;
-    height: 20px;
-
-}
-
-.fileName
-{
-    align-self: stretch;
-    color: var(--Black, #000);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 150%; /* 21px */
-    letter-spacing: 0.14px;
-}
-
-.fileDetail
-{
-    align-self: stretch;
-    color: var(--Black, #000);
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.18px;
-
-}
-
-.btnMenu
-{
-    width: 20px;
-    height: 20px;
-
-}
-
-.btnIcon
-{
-    width: 20px;
-    height: 20px;
-
-    filter: var(--black-icon-filter);
-}
-.workroomItem
-{
-    width: 100%;
-}
-
-.detailViewContainer
 {
     display: flex;
     flex-direction: row;
 
-    width: 100%;
-
-    padding: 0px 16px 5px 16px;
-    align-items: center;     
+    gap: 6px; 
 }
 
-.detailViewContainer > .fileImage
+
+.infoRightArea > .bookMarkButton
 {
-    width: 50px;
-    height: 50px;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
     flex-shrink: 0;
-    aspect-ratio: 1/1;
-    
-    border-radius: 8px;
-    background: #FFF;
-}
-
-.largeViewContainer
-{
-    display: inline-flex;
-    flex-direction: column;
-
-    width: 100%;
-
-    padding-bottom: 13px;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
-}
-
-.largeViewContainer > .fileImage
-{
-     width: 160px;
-    height: 160px;
-    aspect-ratio: 1/1;
-
-    border-radius: 12px;
-    background: #FFF;
-}
-
-.fileInfoArea
-{
-    display: flex;
-    width: 100%;
-    padding-left: 8px;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 6px;
-
-}
-
-.infoLeftArea
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 4px;
-    flex: 1 0 0;
-
-}
-
-.infoRightArea
-{
-    width: 20px;
-    height: 20px;
-
 }
 
 .fileName
