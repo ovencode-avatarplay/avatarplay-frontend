@@ -50,6 +50,21 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
     setTimeout(() => setIsRotating(false), 600); // 애니메이션 길이와 맞춰야 함
   };
 
+  useEffect(() => {
+    if (!filterData || filterData.length === 0) return;
+
+    const initialState: {[key: string]: 'empty' | 'selected' | 'remove'} = {};
+    filterData.forEach(item => {
+      if (item.state === 'selected' || item.state === 'remove') {
+        initialState[item.key] = item.state;
+      } else {
+        initialState[item.key] = 'empty';
+      }
+    });
+
+    setSelectedFilters(initialState);
+  }, [filterData]);
+
   return (
     <Modal open={open} onClose={onClose} style={{zIndex: '3001'}}>
       <Box className={styles.modalBox}>

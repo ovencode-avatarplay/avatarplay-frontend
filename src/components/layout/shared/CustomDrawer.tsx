@@ -27,25 +27,25 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({
   const [translateY, setTranslateY] = useState(0);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setStartY(e.touches[0].clientY);
+    // setStartY(e.touches[0].clientY);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (startY !== null) {
-      const currentY = e.touches[0].clientY;
-      const distance = Math.max(currentY - startY, 0); // 음수 방지
-      setTranslateY(distance);
-    }
+    // if (startY !== null) {
+    //   const currentY = e.touches[0].clientY;
+    //   const distance = Math.max(currentY - startY, 0); // 음수 방지
+    //   setTranslateY(distance);
+    // }
   };
 
   const handleTouchEnd = () => {
-    const threshold = 100; // 닫히는 기준 거리
-    if (translateY > threshold) {
-      onClose(); // 기준 거리 이상이면 Drawer 닫기
-    } else {
-      setTranslateY(0); // 기준 거리 미만이면 원위치로
-    }
-    setStartY(null);
+    // const threshold = 100; // 닫히는 기준 거리
+    // if (translateY > threshold) {
+    //   onClose(); // 기준 거리 이상이면 Drawer 닫기
+    // } else {
+    //   setTranslateY(0); // 기준 거리 미만이면 원위치로
+    // }
+    // setStartY(null);
   };
 
   return (

@@ -32,6 +32,8 @@ import {PaginationRequest} from '@/app/NetWork/ProfileNetwork';
 import {useRouter} from 'next/navigation';
 import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
+import TagsData from 'data/create/tags.json';
+import {getLocalizationKeyByText} from '@/utils/getLocalizationKeyByText';
 
 export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 export const searchOptionList = [
@@ -148,6 +150,11 @@ const SearchBoard: React.FC = () => {
     dispatch(setSelectedIndex(1));
   }, []);
   // Search
+  const tagGroups = TagsData;
+
+  const themeGroup = tagGroups.tagGroups.find(group => group.category === 'Theme');
+
+  const genreGroup = tagGroups.tagGroups.find(group => group.category === 'Genre');
 
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
@@ -233,12 +240,29 @@ const SearchBoard: React.FC = () => {
     pushLocalizedRoute('/create/character', router);
   };
 
+  const handlerFilterSaved = (positive: FilterDataItem[], negative: FilterDataItem[]) => {
+    const positiveResult = positive.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    const negativeResult = negative.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+
+    const localizedPositive = positiveResult.map(key => getLocalizedText('placehold', key, 'en-us'));
+    const localizedNegative = negativeResult.map(key => getLocalizedText('placehold', key, 'en-us'));
+
+    const encodedPositive = localizedPositive.join('&&');
+    const encodedNegative = localizedNegative.join('!!');
+
+    const finalFilter = [encodedPositive, encodedNegative].filter(Boolean).join('::');
+
+    changeParams('filter', finalFilter);
+  };
+
   // Func
   const generatePositiveFilterList = (): string[] => {
-    return positiveFilters.map(filter => filter.key).filter(key => searchOptionList.includes(key));
+    let filterResult = positiveFilters.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    return filterResult;
   };
   const generateNegativeFilterList = (): string[] => {
-    return negativeFilters.map(filter => filter.key).filter(key => searchOptionList.includes(key));
+    let filterResult = negativeFilters.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    return filterResult;
   };
 
   const fetchSearchData = async (
@@ -395,11 +419,42 @@ const SearchBoard: React.FC = () => {
   useLayoutEffect(() => {
     const search = getParam('search');
     const indexTab = getParam('indexTab');
+    const filters = getParam('filter');
     data.indexTab = Number(indexTab);
     setData({...data});
 
     if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
       handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
+    }
+    if (filters) {
+      const [positiveRaw, negativeRaw] = decodeURIComponent(filters).split('::');
+      const positiveList = (positiveRaw || '').split('&&').filter(Boolean);
+      const negativeList = (negativeRaw || '').split('!!').filter(Boolean);
+
+      const enTags = themeGroup?.en || [];
+      const tagKeys = themeGroup?.tags || [];
+
+      // 역으로 key를 찾아서 FilterDataItem[] 생성
+      // 영어 텍스트 -> key로 매핑
+      const positiveItems: FilterDataItem[] = positiveList
+        .map(text => {
+          const index = enTags.indexOf(text);
+          const key = tagKeys[index];
+          return {key};
+        })
+        .filter(item => item.key);
+
+      const negativeItems: FilterDataItem[] = negativeList
+        .map(text => {
+          const index = enTags.indexOf(text);
+          const key = tagKeys[index];
+          return {key};
+        })
+        .filter(item => item.key);
+
+      setPositiveFilters(positiveItems);
+      setNegativeFilters(negativeItems);
+      handlerFilterSaved(positiveItems, negativeItems);
     }
   }, []);
 
@@ -512,7 +567,7 @@ const SearchBoard: React.FC = () => {
               setAdultToggleOn={setAdultToggleOn}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
-              filterData={searchOptionList}
+              filterData={themeGroup?.tags || []}
               positiveFilter={positiveFilters}
               setPositiveFilter={setPositiveFilters}
               negativeFilter={negativeFilters}
@@ -522,6 +577,7 @@ const SearchBoard: React.FC = () => {
               setContentOffset={setContentOffset}
               setCharacterOffset={setCharacterOffset}
               setStoryOffset={setStoryOffset}
+              onFilterSaved={handlerFilterSaved}
             />
             <header className={styles.filterArea}>
               <div className={styles.tagArea}>
