@@ -3,6 +3,7 @@ import styles from './ChatBottom.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
+import {BoldSend} from '@ui/Icons';
 
 interface Props {
   onSend: (text: string) => void;
@@ -22,9 +23,7 @@ const ChatBottom: React.FC<Props> = ({onSend}) => {
       <div className={styles.plusButton}>
         <AddIcon />
       </div>
-
       <div className={styles.inputWrap}>
-        <div className={styles.inputIcon} /> {/* 왼쪽 아이콘 영역 */}
         <input
           className={styles.inputField}
           placeholder="Input..."
@@ -33,9 +32,10 @@ const ChatBottom: React.FC<Props> = ({onSend}) => {
           onKeyDown={e => e.key === 'Enter' && handleSend()}
         />
         <div className={styles.sendWrap} onClick={handleSend}>
-          <SendIcon className={styles.sendIcon} />
+          <img src={BoldSend.src} className={styles.sendIcon}></img>
         </div>
       </div>
+      asd
     </div>
   );
 };
