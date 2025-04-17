@@ -205,12 +205,25 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       console.error('Error while viewing feed:', error);
     }
   };
+
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const handleScroll = () => {
     const container = containerRef.current;
     const wrapper = reelsWrapperRef.current;
 
     if (!container || !wrapper) return;
 
+    setIsGrabbing(true); // 스크롤 중일 때는 grabbing
+    // 스크롤이 멈춘 뒤 일정 시간 후 grabbing 해제
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsGrabbing(false); // 스크롤이 멈춘 후
+    }, 150); // 150ms 간 스크롤 이벤트가 없으면 멈춘 것으로 판단
+
+    // 아래는 기존 로직
     const scrollY = wrapper.scrollTop;
     const slides = Array.from(wrapper.children || []);
     let cumulativeHeight = 0;
@@ -381,11 +394,11 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   useEffect(() => {
     if (!reelsWrapperRef.current) return;
-    reelsWrapperRef.current.addEventListener('scroll', handleScroll);
+    reelsWrapperRef.current.addEventListener('scroll', handleScroll, {passive: false});
     return () => {
       if (!reelsWrapperRef.current) return;
 
-      reelsWrapperRef.current.removeEventListener('scroll', handleScroll);
+      reelsWrapperRef.current.removeEventListener('scroll', handleScroll), {passive: false};
     };
   }, [allFeeds, currentSlideIndex]);
 
@@ -413,9 +426,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       setIsGrabbing(false);
     };
 
-    wrapper.addEventListener('touchstart', handleTouchStart);
-    wrapper.addEventListener('touchend', handleTouchEnd);
-    wrapper.addEventListener('touchcancel', handleTouchEnd);
+    wrapper.addEventListener('touchstart', handleTouchStart, {passive: false});
+    wrapper.addEventListener('touchend', handleTouchEnd, {passive: false});
+    wrapper.addEventListener('touchcancel', handleTouchEnd, {passive: false});
 
     return () => {
       wrapper.removeEventListener('touchstart', handleTouchStart);
