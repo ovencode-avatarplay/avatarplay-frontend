@@ -430,7 +430,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
 
         console.log('Updated Trigger Info with Media URLs:', validImageUrls);
       } else {
-        console.error('Failed to upload files:', files.map(file => file.name).join(', '));
+        console.error('Failed to upload files:', files.map(file => file.name).join(','));
       }
     } catch (error) {
       console.error('Error during file upload:', error);

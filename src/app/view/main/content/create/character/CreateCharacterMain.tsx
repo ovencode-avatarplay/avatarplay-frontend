@@ -647,6 +647,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           setCharacterDesc={setCreatorComment}
           essentialWarning={essentialWarning}
           curCharacterId={id || 0}
+          urlLink={character.urlLinkKey || ''}
         />
       ),
     },
