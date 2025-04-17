@@ -106,6 +106,7 @@ import formatText from '@/utils/formatText';
 import {ToastMessageAtom} from '@/app/Root';
 import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import ReactDOM from 'react-dom';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -1370,8 +1371,14 @@ const ContentSetting = ({
     uploadImageItems = isMine ? uploadImageItemsMine : uploadImageItems;
   }
 
-  return (
-    <SelectDrawer isOpen={tabContentMenu.isSettingOpen} onClose={onClose} items={uploadImageItems} selectedIndex={-1} />
+  return ReactDOM.createPortal(
+    <SelectDrawer
+      isOpen={tabContentMenu.isSettingOpen}
+      onClose={onClose}
+      items={uploadImageItems}
+      selectedIndex={-1}
+    />,
+    document.body,
   );
 };
 

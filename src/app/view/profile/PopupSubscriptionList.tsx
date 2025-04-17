@@ -89,11 +89,11 @@ const PopupSubscriptionList = ({onClose}: Props) => {
       data.dataSubscriptionInactive.dataList = [];
       setData({...data});
     }
-    await refreshList(true, data.dataSubscription.offset);
-    await refreshList(false, data.dataSubscriptionInactive.offset);
+    await refreshList(true, data.dataSubscription.offset, 10, isClearAll);
+    await refreshList(false, data.dataSubscriptionInactive.offset, 10, isClearAll);
   };
 
-  const refreshList = async (isValidSubscription: boolean = true, offset = 0, limit = 10) => {
+  const refreshList = async (isValidSubscription: boolean = true, offset = 0, limit = 10, isRefresh = false) => {
     const dataGetSubscriptionListReq: GetSubscriptionListReq = {
       isValidSubscription: isValidSubscription,
       page: {
@@ -104,11 +104,20 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     };
     const resSubscriptionList = await getSubscriptionList(dataGetSubscriptionListReq);
     console.log('resSubScriptionList : ', resSubscriptionList);
+
+    if (isRefresh) {
+      if (isValidSubscription) {
+        data.dataSubscription.dataList = [];
+      } else {
+        data.dataSubscriptionInactive.dataList = [];
+      }
+    }
+
     if (isValidSubscription) {
-      data.dataSubscription.dataList = resSubscriptionList?.data?.subscriptionList || [];
+      data.dataSubscription.dataList.push(...(resSubscriptionList?.data?.subscriptionList || []));
       data.dataSubscription.offset += resSubscriptionList?.data?.subscriptionList?.length || 0;
     } else {
-      data.dataSubscriptionInactive.dataList = resSubscriptionList?.data?.subscriptionList || [];
+      data.dataSubscriptionInactive.dataList.push(...(resSubscriptionList?.data?.subscriptionList || []));
       data.dataSubscriptionInactive.offset += resSubscriptionList?.data?.subscriptionList?.length || 0;
     }
     setData({...data});

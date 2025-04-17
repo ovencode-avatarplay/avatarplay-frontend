@@ -353,7 +353,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <img
                 src={item?.mediaUrlList[0]}
                 loading="lazy"
-                style={{width: '100%'}}
+                style={{width: '100%', height: '100%'}}
                 onClick={() => setIsImageModal(true)}
               />
             )}

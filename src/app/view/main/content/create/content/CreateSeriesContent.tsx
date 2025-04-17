@@ -217,7 +217,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         description: descValue || '',
         thumbnailUrl: mediaUrls[0], // 썸네일 업로드 구현 필요
         categoryType: selectedCategory,
-        genre: selectedGenres.length > 0 ? selectedGenres.join(', ') : '',
+        genre: selectedGenres.length > 0 ? selectedGenres.join(',') : '',
         tags: selectedTags,
         postCountry: positionCountryList.map(country => LanguageType[country]), // 국가 정보
         visibility: selectedVisibility,
@@ -335,7 +335,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('createcontent003_label_005')}
-            selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(', ') : ''}
+            selectedItem={selectedGenres.length > 0 ? selectedGenres.map(v => getLocalizedText(v)).join(',') : ''}
             onClick={() => {
               setGenreList(genreGroup?.tags || []);
               setGenreOpen(true);
@@ -359,7 +359,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
         <div className={styles.tagContainer}>
           <CustomDropDownSelectDrawer
             title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
+            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(',') : ''}
             onClick={() => {
               setTagList(themeGroup?.tags || []);
               setTagOpen(true);
@@ -385,7 +385,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
             title={getLocalizedText('common_label_003')}
             selectedItem={
               positionCountryList.map(country => LanguageType[country]).length > 0
-                ? positionCountryList.map(country => LanguageType[country]).join(', ')
+                ? positionCountryList.map(country => LanguageType[country]).join(',')
                 : ''
             }
             onClick={() => setIsPositionCountryOpen(true)}
