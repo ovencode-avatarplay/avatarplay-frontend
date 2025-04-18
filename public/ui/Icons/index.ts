@@ -64,6 +64,7 @@ import BoldVerifiedLabel from "./Bold/VerifiedLabel.svg";
 import BoldVerticalGrid from "./Bold/Vertical_Grid.svg";
 import BoldVideo from "./Bold/Video.svg";
 import BoldViewGallery from "./Bold/View_Gallery.svg";
+import BoldMessenger from "./Bold/Messenger.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -121,6 +122,7 @@ import LineWallet from "./Line/Wallet.svg";
 import LineNotification from "./Line/Notification.svg";
 import LineReward from "./Line/Reward.svg";
 import LineHome from "./Line/Home.svg";
+import LineTime from "./Line/line_time.svg";
 import LineFriendList from "./Line/FriendList.svg";
 import LineSearchThin from "./Line/Search_Thin.svg";
 import LineCam from "./Line/Cam.svg";
@@ -149,6 +151,12 @@ import KakatalkLogo from "./Custom/KakatalkLogo.svg";
 import FacebookLogo from "./Custom/FaceBookLogo.svg";
 import GoogleLogo from "./Custom/GoogleLogo.svg";
 import AppleLogo from "./Custom/AppleLogo.svg";
+import EmojiAngry from "./Custom/emoji_angry.svg";
+import EmojiBoring from "./Custom/emoji_boring.svg";
+import EmojiExcited from "./Custom/emoji_excited.svg";
+import EmojiHappy from "./Custom/emoji_happy.svg";
+import EmojiSad from "./Custom/emoji_sad.svg";
+import EmojiScared from "./Custom/emoji_scared.svg";
 
 export {
   editCircle,
@@ -241,6 +249,7 @@ export {
   BoldLetter,
   BoldContentLists,
   BoldSearch,
+  BoldMessenger,
   LineAddButton,
   LineAIImage,
   LineArchive,
@@ -292,10 +301,17 @@ export {
   LineHome,
   LineVolumeOn,
   LineVolumeOff,
+  LineTime,
   KakatalkLogo,
   FacebookLogo,
   GoogleLogo,
   AppleLogo,
+  EmojiAngry,
+  EmojiBoring,
+  EmojiExcited,
+  EmojiHappy,
+  EmojiSad,
+  EmojiScared,
   LineFriendList,
   LineSearchThin,
   LineCam,

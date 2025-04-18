@@ -1,0 +1,647 @@
+.eventTriggerContainer
+{
+    align-self: stretch;
+
+    overflow: hidden; 
+
+    margin-top: 14px;
+    margin-bottom: calc(46px + 20px + 43px);
+}
+
+.eventTriggerBase
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.eventTriggerInfoArea
+{
+ display: flex;
+ padding: 10px 0px;
+ align-items: flex-start;
+ justify-content: space-between;
+ gap: 10px;
+ align-self: stretch;
+}
+
+.addItemButton
+{
+    width: 90px;
+}
+
+
+.eventTriggerLeftArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+
+}
+
+
+.eventTriggerInfoButton
+{
+   cursor: pointer;
+   width: 24px;
+   height: 24px;
+}
+
+.eventTriggerInfoIcon
+{
+   width: 24px;
+   height: 24px;
+   filter: brightness(0) saturate(100%) invert(72%) sepia(1%) saturate(2486%) hue-rotate(136deg) brightness(87%) contrast(108%);
+}
+
+.eventTriggerInfoDecs
+{
+  color: var(--Neutral-500, #9AA0A6); 
+   font-size: 12px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: 140%; /* 16.8px */
+
+}
+
+.eventTriggerItemArea
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.eventTriggerAddButton
+{
+    width: 100%;
+}
+
+.eventTriggerContainers
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.eventTriggerSet
+{
+
+} 
+
+.triggerDetailMenu
+{
+    display: flex;
+    width: 100% - 32px;
+    padding: 10px;
+    align-items: center;
+    gap: 30px;
+}
+
+.backButton
+{
+    cursor: pointer;
+    align-content: center;
+
+}
+
+.backButton > .buttonIcon
+{  
+    filter: var(--black-icon-filter);
+}
+
+.detailTitleArea
+{
+    display: flex;
+    flex: 1 0 0;
+    height: 30px;
+    padding: 8px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    
+    border-radius: 8px;
+    background: var(--Neutral-50, #F8F9FA);
+}
+
+.detailIcon
+{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.detailIcon.emotion
+{
+    
+}
+
+.detailIcon.icon
+{
+    filter: var(--black-icon-filter);
+}
+
+.detailText
+{
+    color: var(--Black, #000);
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 155%; /* 15.5px */
+}
+
+.triggerItemList
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.triggerItemList > .triggerItem
+{
+    width: 100%;
+}
+
+.triggerItemSetContainer
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    
+    border-radius: 10px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--White, #FFF);
+}
+
+.inputPanel
+{
+    display: flex;
+    padding: 10px;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.informationTracking
+{
+    position: relative;
+
+    width: 121px;
+    height: 165px;
+    
+    border-radius: 6px;
+
+    overflow: hidden;
+}
+
+.videoWrapper
+{
+    
+}
+
+.videoPreview
+{
+    /* style 에서 컨트롤중*/
+    width: 100%;
+    height: 100%;
+    object-fit: contain;    
+    border-radius: 8px;
+}
+
+.imagePreview
+{
+    cursor: pointer;
+
+    /* style 에서 컨트롤중*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.imagePreview.emptyImage
+{
+    border-radius: 10px;
+    border: 1px dashed var(--Neutral-400, #BDC1C6);
+    background: var(--White, #FFF);
+    cursor: pointer;
+
+}
+
+.uploadIcon
+{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    filter: var(--black-icon-filter);
+}
+
+.informationTracking > .editButton
+{
+    cursor: pointer;
+
+    position: absolute;
+    top: 5px;
+    right: 6px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    
+    background-color: rgba(0, 0, 0, 0.60);
+    
+    border-radius: 999px;
+    border-width: 1px;
+    border-color: var(--White, #FFF);
+}
+
+.informationTracking > .editButton > .editIcon
+{
+    display: flex;
+    width: 12px;
+    height: 12px;
+    padding: 1.683px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+
+    box-sizing: content-box;
+
+}
+
+
+.videoWrapper > .playButton
+{
+    cursor: pointer;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+ 
+    /* filter: var(--black-icon-filter); */
+}
+
+.videoWrapper > .playButton > .playIcon
+{
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;    
+}
+
+/*InputArea*/
+
+.rightInputPanel
+{
+    width: 100%;
+    /* height: 165px;  */
+} 
+
+.inputPrompt
+{
+    width: 100%;
+    height: 100%;
+
+}
+
+.inputPromptContainer
+{ 
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    flex: 1 0 0;
+    align-self: stretch;
+} 
+
+/*ButtonArea*/
+
+.buttonArea
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+    
+    border-radius: 0px 0px 10px 10px;
+    border-top: 1px solid var(--Border-1, #EAECF0);
+    background: var(--White, #FFF);
+}
+
+.bottomButton
+{
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    /* min-width: 100px; */
+    flex : 1 0 0;
+    padding: 10px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    align-self: stretch;
+    
+    border-right: 1px solid var(--Border-1, #EAECF0);
+}
+
+.bottomButton > .buttonIcon
+{
+    display: flex;
+    width: 16px;
+    height: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.bottomButton > .buttonIcon.iconUser
+{
+    filter: brightness(0) saturate(100%) invert(98%) sepia(1%) saturate(5079%) hue-rotate(186deg) brightness(101%) contrast(86%);
+}
+.bottomButton > .buttonIcon.iconChar
+{
+    filter: brightness(0) saturate(100%) invert(98%) sepia(1%) saturate(5079%) hue-rotate(186deg) brightness(101%) contrast(86%);
+}
+.bottomButton > .buttonIcon.iconDuplicate
+{
+    filter: brightness(0) saturate(100%) invert(98%) sepia(1%) saturate(5079%) hue-rotate(186deg) brightness(101%) contrast(86%);
+}
+.bottomButton > .buttonIcon.iconDelete
+{
+    filter: brightness(0) saturate(100%) invert(39%) sepia(38%) saturate(1348%) hue-rotate(318deg) brightness(112%) contrast(93%);
+}
+
+.bottomButton > .buttonText
+{
+    color: var(--Black, #000);
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%; /* 20.8px */
+    letter-spacing: 0.2px;
+}
+
+.bottomButton > .buttonText.deleteText
+{
+    color: #F75555;
+}
+
+
+
+.inputPrompt
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.promptItem
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.inputNumberArea
+{
+    width: 100%;
+}
+
+.inputTextArea
+{
+    width: 100%;
+}
+
+.label
+{
+    color: var(--Neutral-500, #9AA0A6);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 16.5px */
+}
+
+.toggleBox
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+
+}
+
+.inputWithHint
+{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.inputHint
+{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+
+    color: var(--Neutral-500, #9AA0A6);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 12px */
+
+}
+
+.greaterThan
+{
+    width: 12px;
+    color: #000;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 16.5px */
+
+}
+
+.modal
+{
+    width: var(--full-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.modalContainer
+{
+    background-color: white;
+    width: 100%;   
+    height: 100%; 
+    overflow-y: auto;
+
+}
+
+
+.eventTriggerTypeSelect
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.typeSelectHeader
+{
+    display: flex;
+    width: 100%;
+    height: 58px;
+    padding: 9px auto 9px 0px;
+    align-items: center;
+    gap: 6.967px; 
+    flex-shrink: 0; 
+}
+
+.typeSelectBackButton
+{
+    cursor: pointer;
+
+    display: flex;
+    height: 40px;
+    padding: 14px 0px 14px 16px;
+    align-items: center;
+    gap: 8px;
+}
+
+.typeSelectBackButton > .backIcon
+{
+    width: 20px;
+    height: 20px;    
+
+    filter: var(--black-icon-filter);
+}
+
+.typeSelectTitle
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    color: var(--Black, #000);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 100% */
+    letter-spacing: -0.4px;
+}
+
+.typeSelectContainer
+{
+    display: flex;
+    width: 100%;
+    padding: 0 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.searchArea
+{
+
+}
+
+.typeTabSwiper
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+}
+
+.typeButtonList
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.typeButton
+{
+    cursor: pointer;
+
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-24, 24px) var(--Gap-and-Padding-Positive-GapPadding-16, 16px) var(--Gap-and-Padding-Positive-GapPadding-20, 20px);
+    align-items: center;
+    gap: 18px;
+    align-self: stretch;
+    
+    border-radius: 12px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--Neutral-50, #F8F9FA);
+}
+
+.typeButton:hover
+{ 
+    background: var(--Neutral-800, #2C3131);
+}
+
+.typeIconBack
+{
+    width: 50px;
+    height: 50px;
+    border-radius: 100px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.typeIcon
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.typeIcon.emotion
+{
+    
+}
+
+.typeIcon.icon
+{
+    filter: var(--black-icon-filter);
+}
