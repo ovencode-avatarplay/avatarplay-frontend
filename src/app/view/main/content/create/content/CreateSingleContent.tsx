@@ -33,6 +33,9 @@ import {useAtom} from 'jotai';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import {setVisibility} from '@/redux-store/slices/PublishInfo';
 import TagsData from 'data/create/tags.json';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
+import {profile} from 'console';
 
 enum CategoryTypes {
   Webtoon = 0,
@@ -263,6 +266,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
 
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
 
+  const dataProfile = useSelector((state: RootState) => state.profile);
   const handleConfirm = async () => {
     console.log(episodeVideoInfo);
     const validations = [
@@ -312,7 +316,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
       if (response.data) {
         console.log('콘텐츠 생성 성공:', response.data.contentId);
 
-        pushLocalizedRoute(`/create/content`, router);
+        pushLocalizedRoute('/profile/' + dataProfile.currentProfile?.urlLinkKey + '?indexTab=1', router);
       }
     } catch (error) {
       console.error('콘텐츠 생성 실패:', error);
