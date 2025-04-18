@@ -103,7 +103,7 @@ import {bookmark, InteractionType, sendDisLike, sendLike} from '@/app/NetWork/Co
 import DrawerDonation from '../main/content/create/common/DrawerDonation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
-import {ToastMessageAtom} from '@/app/Root';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
@@ -304,7 +304,7 @@ export const COMMON_TAG_HEAD_TAG = 'common_tag';
 // /profile?type=pd?id=123123
 const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath = false}: ProfileBaseProps) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
-  const {back, changeParams, getParam} = useCustomRouter();
+  const {back, changeParams, getParam, replace} = useCustomRouter();
   const searchParams = useSearchParams();
   const isNeedBackBtn = searchParams?.get('from') || !isPath; // "from" 쿼리 파라미터 값 가져오기
   const [dataUserDropDown, setUserDropDown] = useAtom(userDropDownAtom);
@@ -637,14 +637,22 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   };
 
   const refreshProfileInfo = async (urlLink: string) => {
-    const resProfileInfo = await getProfileInfo(urlLink);
-    if (!resProfileInfo) return;
-    data.profileInfo = resProfileInfo;
-    data.profileId = resProfileInfo.profileInfo.id;
+    let resProfileInfo = await getProfileInfo(urlLink);
+    if (resProfileInfo?.resultCode != 0) {
+      dataToast.open('프로필 접근불가', ToastType.Normal);
+      replace('/main/homefeed');
+
+      return;
+    }
+
+    const dataProfileInfo = resProfileInfo.data;
+    if (!dataProfileInfo) return;
+    data.profileInfo = dataProfileInfo;
+    data.profileId = dataProfileInfo.profileInfo.id;
     data.isRefresh = true;
 
     const indexTab = Number(data?.indexTab);
-    await refreshProfileTab(resProfileInfo.profileInfo.id, indexTab);
+    await refreshProfileTab(dataProfileInfo.profileInfo.id, indexTab);
 
     setData({...data});
   };
@@ -673,8 +681,15 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       const response = await followProfile(profileId, value);
 
       const resProfileInfo = await getProfileInfo(urlLinkKey);
-      if (!resProfileInfo) return;
-      data.profileInfo = resProfileInfo;
+      if (resProfileInfo?.resultCode != 0) {
+        dataToast.open('프로필 접근불가', ToastType.Normal);
+        replace('/main/homefeed');
+        return;
+      }
+      const dataProfileInfo = resProfileInfo.data;
+      if (!dataProfileInfo) return;
+
+      data.profileInfo = dataProfileInfo;
       setData({...data});
     } catch (error) {
       console.error('An error occurred while Following:', error);
