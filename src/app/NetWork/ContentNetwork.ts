@@ -67,6 +67,7 @@ export interface CreateContentInfo {
 
 export interface CreateContentRes {
   contentId: number;
+  urlLinkKey: string;
 }
 
 export const sendCreateContent = async (payload: CreateContentReq): Promise<ResponseAPI<CreateContentRes>> => {

@@ -462,7 +462,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                  if (item.profileVisibilityType === VisibilityType.Public) {
+                    pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                  } else {
+                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                  }
                 }}
               >
                 <span className={styles.username}>{item.profileName}</span>

@@ -233,7 +233,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
       const response = await sendCreateContent(payload);
       if (response.data) {
         console.log('콘텐츠 생성 성공:', response.data.contentId);
-        pushLocalizedRoute(`/create/content`, router);
+        pushLocalizedRoute(`/create/content/series/${response.data.urlLinkKey}`, router);
       }
     } catch (error) {
       console.error('콘텐츠 생성 실패:', error);

@@ -289,7 +289,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
               <button
                 className={styles.iconButton}
                 onClick={() => {
-                  back();
+                  back('/profile/' + contentInfo?.profileUrlLinkKey + '?indexTab=1');
                 }}
               >
                 <img src={LineArrowLeft.src} alt="Back" />
