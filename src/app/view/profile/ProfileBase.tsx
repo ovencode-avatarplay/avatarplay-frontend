@@ -1741,7 +1741,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
             <div
               className={cx(
                 styles.iconWrap,
-                styles.bg,
+
                 filterCluster.indexFilterMedia == FeedMediaType.Total && styles.active,
               )}
               data-filter={FeedMediaType.Total}
@@ -1749,13 +1749,21 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
               <img src={BoldViewGallery.src} alt="" />
             </div>
             <div
-              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Video && styles.active)}
+              className={cx(
+                styles.iconWrap,
+
+                filterCluster.indexFilterMedia == FeedMediaType.Video && styles.active,
+              )}
               data-filter={FeedMediaType.Video}
             >
               <img src={BoldVideo.src} alt="" />
             </div>
             <div
-              className={cx(styles.iconWrap, filterCluster.indexFilterMedia == FeedMediaType.Image && styles.active)}
+              className={cx(
+                styles.iconWrap,
+
+                filterCluster.indexFilterMedia == FeedMediaType.Image && styles.active,
+              )}
               data-filter={FeedMediaType.Image}
             >
               <img src={BoldImage.src} alt="" />
