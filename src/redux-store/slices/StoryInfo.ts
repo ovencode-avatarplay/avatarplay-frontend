@@ -12,6 +12,7 @@ import {
   VisibilityType,
 } from '../../app/NetWork/network-interface/CommonEnums';
 import {
+  CharacterEventTriggerInfo,
   CharacterIP,
   CharacterMediaInfo,
   CharacterState,
@@ -110,6 +111,7 @@ export interface CharacterInfo {
   poseGalleryImageUrl: GalleryImageInfo[];
   expressionGalleryImageUrl: GalleryImageInfo[];
   mediaTemplateList: CharacterMediaInfo[];
+  characterEventTriggerList: CharacterEventTriggerInfo[];
   conversationTemplateList: ConversationInfo[];
   visibilityType: VisibilityType;
   llmModel: LLMModel;

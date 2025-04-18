@@ -22,6 +22,7 @@ import MaxTextInput, {displayType, inputState, inputType} from '@/components/cre
 import {getLangKey, LanguageType, MembershipSetting} from '@/app/NetWork/network-interface/CommonEnums';
 import formatText from '@/utils/formatText';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import TagsData from 'data/create/tags.json';
 
 interface Props {
   visibility: number;
@@ -52,6 +53,7 @@ interface Props {
   setCharacterDesc: React.Dispatch<React.SetStateAction<string>>;
   essentialWarning: boolean;
   curCharacterId: number;
+  urlLink?: string;
 }
 
 const Header = 'CreateCharacter';
@@ -86,6 +88,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   setCharacterDesc,
   essentialWarning,
   curCharacterId,
+  urlLink,
 }) => {
   let VisibilityData = {items: ['common_dropdown_private', 'common_dropdown_unlisted', 'common_filter_public']};
 
@@ -94,39 +97,10 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagOpen, setTagOpen] = useState(false);
 
-  const tagGroups = [
-    {
-      category: 'Theme',
-      tags: [
-        'common_tag_male',
-        'common_tag_female',
-        'common_tag_boyfriend',
-        'common_tag_girlfriend',
-        'common_tag_hero',
-        'common_tag_elf',
-        'common_tag_romance',
-        'common_tag_vanilla',
-        'common_tag_contemporaryFantasy',
-        'common_tag_isekai',
-        'common_tag_flirting',
-        'common_tag_dislike',
-        'common_tag_comedy',
-        'common_tag_noir',
-        'common_tag_horror',
-        'common_tag_demon',
-        'common_tag_sf',
-        'common_tag_vampire',
-        'common_tag_office',
-        'common_tag_monster',
-        'common_tag_anime',
-        'common_tag_books',
-        'common_tag_aliens',
-      ],
-    },
-  ];
+  const tagGroups = TagsData;
 
   const [tagList, setTagList] = useState<string[]>(() => {
-    const themeGroup = tagGroups.find(group => group.category === 'Theme');
+    const themeGroup = tagGroups.tagGroups.find(group => group.category === 'Theme');
     return themeGroup ? themeGroup.tags : [];
   });
 
@@ -241,7 +215,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
 
   useEffect(() => {
     if (tag) {
-      const parsedTags = tag.split(', ').map(tag => tag.trim());
+      const parsedTags = tag.split(',').map(tag => tag.trim());
       setSelectedTags(parsedTags);
     } else {
       setSelectedTags([]);
@@ -249,8 +223,8 @@ const CharacterCreatePolicy: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    onTagChange(selectedTags.join(', '));
-    console.log(selectedTags.join(', '));
+    onTagChange(selectedTags.join(','));
+    console.log(selectedTags.join(','));
   }, [selectedTags, onTagChange]);
 
   useEffect(() => {
@@ -447,6 +421,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           operatorList={operatorProfileIdList}
           onUpdateOperatorList={onOperatorProfileIdListChange}
           setInviteSearchValue={setInviteSearchValue}
+          urlLink={urlLink}
         />
       </>
     );
@@ -709,7 +684,7 @@ const CharacterCreatePolicy: React.FC<Props> = ({
         {renderConnect()}
         {renderOperatorInvite()}
         {/*renderMonetization()*/}
-        {renderMembershipPlan()}
+        {characterIP === 1 && renderMembershipPlan()}
         {renderNSFW()}
         {renderComment()}
       </div>

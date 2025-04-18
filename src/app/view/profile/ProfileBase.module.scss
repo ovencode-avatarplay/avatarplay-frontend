@@ -259,6 +259,7 @@
         align-items: center;
         justify-content: center;
 
+<<<<<<< HEAD
         .iconProfileEdit {
           width: 16px;
           height: 16px;
@@ -269,6 +270,14 @@
             filter: brightness(0) saturate(100%); // 검정색으로 보이게
           }
 
+=======
+        .iconProfileEdit {}
+
+        .Edit {
+          filter: brightness(0) saturate(100%);
+          width: 12px;
+          height: 12px;
+>>>>>>> origin/main
         }
       }
     }

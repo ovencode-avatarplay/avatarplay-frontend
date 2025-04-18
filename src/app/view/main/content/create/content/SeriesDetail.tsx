@@ -284,18 +284,27 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
 
         {/* 기존 UI 요소들 */}
         <div className={styles.overlayContent}>
-          <div className={styles.topNav}>
+          <div className={styles.topNav} style={{justifyContent: 'space-between'}}>
+            <div style={{display: 'flex'}}>
+              <button
+                className={styles.iconButton}
+                onClick={() => {
+                  back('/profile/' + contentInfo?.profileUrlLinkKey + '?indexTab=1');
+                }}
+              >
+                <img src={LineArrowLeft.src} alt="Back" />
+              </button>
+
+              <div>{contentInfo?.contentName}</div>
+            </div>
             <button
-              className={styles.iconButton}
+              style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
               onClick={() => {
-                pushLocalizedRoute('/create/content', router);
-                // router.back();
+                pushLocalizedRoute('/update/content/series/' + urlLinkKey, router);
               }}
             >
-              <img src={LineArrowLeft.src} alt="Back" />
+              <img src={LineEdit.src} className={styles.iconButton} alt="" />
             </button>
-
-            <div>{contentInfo?.contentName}</div>
           </div>
         </div>
       </div>

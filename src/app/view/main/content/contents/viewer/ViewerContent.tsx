@@ -62,6 +62,7 @@ import formatText from '@/utils/formatText';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import shaka from 'shaka-player/dist/shaka-player.compiled';
 import SelectDrawerArrow, {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface Props {
   open: boolean;
@@ -82,6 +83,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     isLocked: boolean;
   }
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [episodeListData, setEpisodeListData] = useState<GetSeasonEpisodesPopupRes>();
 
   const [isDonation, setDonation] = useState(false);
@@ -95,7 +98,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
         contentId: contentId,
       };
 
+      setIsLoading(true);
       const playResponse = await sendPlayButton(playRequest);
+
+      setIsLoading(false);
       console.log('✅ PlayButton API 응답:', playResponse.data);
       setInfo(playResponse.data?.recentlyPlayInfo);
       setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
@@ -110,8 +116,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
         contentId: contentId,
         episodeId: curEpisodeId,
       };
-
+      setIsLoading(true);
       const playData = await sendPlay(playRequest);
+      setIsLoading(false);
       console.log('✅ Play API 응답:', playData.data);
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
@@ -1273,6 +1280,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             ></PopupPurchase>
           )}
           {renderSelectDrawer()}
+
+          <LoadingOverlay loading={isLoading} />
         </div>
       </Box>
     </Modal>

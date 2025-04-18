@@ -207,7 +207,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
             </Link>
             <Link
               className={styles.drawerLink}
-              href={canCreateContent ? getLocalizedLink('/create/content') : ''}
+              href={canCreateContent ? getLocalizedLink('/create/content/condition/series') : ''}
               passHref
             >
               <button
@@ -219,7 +219,29 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               >
                 <div className={styles.buttonItem}>
                   <img className={styles.buttonIcon} src={LineStory.src} />
-                  <div className={styles.buttonText}>{getLocalizedText('common_label_contents')}</div>
+                  <div className={styles.buttonText}>
+                    {getLocalizedText('common_label_contents') + '-' + getLocalizedText('common_filter_series')}
+                  </div>
+                </div>
+              </button>
+            </Link>
+            <Link
+              className={styles.drawerLink}
+              href={canCreateContent ? getLocalizedLink('/create/content/condition/single') : ''}
+              passHref
+            >
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonMid} ${canCreateContent ? '' : styles.disable}`}
+                onClick={() => {
+                  if (!canCreateContent) return;
+                  onClose();
+                }}
+              >
+                <div className={styles.buttonItem}>
+                  <img className={styles.buttonIcon} src={LineStory.src} />
+                  <div className={styles.buttonText}>
+                    {getLocalizedText('common_label_contents') + '-' + getLocalizedText('common_filter_single')}
+                  </div>
                 </div>
               </button>
             </Link>

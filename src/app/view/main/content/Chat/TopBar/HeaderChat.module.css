@@ -106,6 +106,8 @@
 }
 
 .topButtonBox > .button{
+    cursor: pointer;
+
     display: flex; 
     width: 40px;
     height: 40px;

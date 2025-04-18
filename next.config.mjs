@@ -4,7 +4,13 @@ import process from "process"; // ✅ process 명시적 import
 const nextConfig = {
   reactStrictMode: false,
   basePath: process.env.BASEPATH || "", // ✅ 환경 변수 적용
-
+  ...(!process?.env?.NEXT_PUBLIC_NODE_ENV && {
+    compiler: {
+      removeConsole: {
+        exclude: [],
+      },
+    },
+  }),
   // redirects: async () => [
   //   {
   //     source: "/", // 루트 경로
@@ -29,4 +35,32 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+
+  async headers() {
+    return [
+      {
+        source: "/Build/:file*.wasm.br",
+        headers: [
+          { key: "Content-Encoding", value: "br" },
+          { key: "Content-Type", value: "application/wasm" },
+        ],
+      },
+      {
+        source: "/Build/:file*.framework.js.br",
+        headers: [
+          { key: "Content-Encoding", value: "br" },
+          { key: "Content-Type", value: "text/javascript" },
+        ],
+      },
+      {
+        source: "/Build/:file*.data.br",
+        headers: [
+          { key: "Content-Encoding", value: "br" },
+          { key: "Content-Type", value: "application/octet-stream" },
+        ],
+      },
+    ];
+  },
 };
+
+export default nextConfig;

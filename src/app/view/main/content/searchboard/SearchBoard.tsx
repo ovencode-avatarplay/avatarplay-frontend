@@ -32,6 +32,8 @@ import {PaginationRequest} from '@/app/NetWork/ProfileNetwork';
 import {useRouter} from 'next/navigation';
 import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {useDispatch} from 'react-redux';
+import TagsData from 'data/create/tags.json';
+import {getLocalizationKeyByText} from '@/utils/getLocalizationKeyByText';
 
 export type searchType = 'All' | 'Story' | 'Character' | 'Content';
 
@@ -53,102 +55,12 @@ const SearchBoard: React.FC = () => {
     dispatch(setSelectedIndex(1));
   }, []);
   // Search
-  const searchOptionList = [
-    'common_tag_male',
-    'common_tag_female',
-    'common_tag_boyfriend',
-    'common_tag_girlfriend',
-    'common_tag_firstlove',
-    'common_tag_flirting',
-    'common_tag_friends',
-    'common_tag_livingtogether',
-    'common_tag_lovers',
-    'common_tag_romance',
-    'common_tag_middle-aged',
-    'common_tag_older',
-    'common_tag_younger',
-    'common_tag_academy',
-    'common_tag_bully',
-    'common_tag_childhoodfriend',
-    'common_tag_love-hate',
-    'common_tag_schoollife',
-    'common_tag_unrequitedlove',
-    'common_tag_vanilla',
-    'common_tag_kuudere',
-    'common_tag_tsundere',
-    'common_tag_yandere',
-    'common_tag_gentlemale',
-    'common_tag_puremale',
-    'common_tag_slymale',
-    'common_tag_muscular',
-    'common_tag_tomboy',
-    'common_tag_adventure',
-    'common_tag_castaway',
-    'common_tag_contemporaryfantasy',
-    'common_tag_disaster',
-    'common_tag_dungeon',
-    'common_tag_emperor',
-    'common_tag_escaperoom',
-    'common_tag_fairy',
-    'common_tag_fantasy',
-    'common_tag_ghost',
-    'common_tag_isekai',
-    'common_tag_knight',
-    'common_tag_noble',
-    'common_tag_noir',
-    'common_tag_oriental',
-    'common_tag_training',
-    'common_tag_western',
-    'common_tag_wizard',
-    'common_tag_wuxia',
-    'common_tag_possession',
-    'common_tag_possessiveness',
-    'common_tag_punishment',
-    'common_tag_redemption',
-    'common_tag_regret',
-    'common_tag_revenge',
-    'common_tag_secrets',
-    'common_tag_action',
-    'common_tag_alien',
-    'common_tag_anime',
-    'common_tag_books',
-    'common_tag_comedy',
-    'common_tag_cosplay',
-    'common_tag_fairytale',
-    'common_tag_famouspeople',
-    'common_tag_games',
-    'common_tag_healing',
-    'common_tag_heroheroine',
-    'common_tag_history',
-    'common_tag_horror',
-    'common_tag_moviestv',
-    'common_tag_mythology',
-    'common_tag_oc',
-    'common_tag_robot',
-    'common_tag_sf',
-    'common_tag_simulator',
-    'common_tag_sports',
-    'common_tag_vampire',
-    'common_tag_vtuber',
-    'common_tag_orc',
-    'common_tag_monmusu',
-    'common_tag_demon',
-    'common_tag_angel',
-    'common_tag_elf',
-    'common_tag_villain',
-    'common_tag_military',
-    'common_tag_transsexual',
-    'common_tag_bl',
-    'common_tag_gl',
-    'common_tag_lgbtq',
-    'common_tag_animal',
-    'common_tag_maid',
-    'common_tag_butler',
-    'common_tag_furry',
-    'common_tag_detective',
-    'common_tag_monster',
-    'common_tag_office',
-  ];
+  const tagGroups = TagsData;
+
+  const themeGroup = tagGroups.tagGroups.find(group => group.category === 'Theme');
+
+  const genreGroup = tagGroups.tagGroups.find(group => group.category === 'Genre');
+
   const [searchResultList, setSearchResultList] = useState<ExploreItem[] | null>(null);
 
   const [search, setSearch] = useState<searchType>('All');
@@ -233,23 +145,39 @@ const SearchBoard: React.FC = () => {
     pushLocalizedRoute('/create/character', router);
   };
 
+  const handlerFilterSaved = (positive: FilterDataItem[], negative: FilterDataItem[]) => {
+    const positiveResult = positive.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    const negativeResult = negative.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+
+    const localizedPositive = positiveResult.map(key => getLocalizedText('placehold', key, 'en-us'));
+    const localizedNegative = negativeResult.map(key => getLocalizedText('placehold', key, 'en-us'));
+
+    const encodedPositive = localizedPositive.join('&&');
+    const encodedNegative = localizedNegative.join('!!');
+
+    const finalFilter = [encodedPositive, encodedNegative].filter(Boolean).join('::');
+
+    changeParams('filter', finalFilter);
+
+    setSearchResultList(null);
+    setRequestFetch(true);
+  };
+
+  const handleAdultToggleOn = (isAdult: boolean) => {
+    setAdultToggleOn(isAdult);
+
+    changeParams('adult', isAdult ? 1 : 0);
+    localStorage.setItem('isAdult', isAdult ? 'true' : 'false');
+  };
+
   // Func
-  const generateFilterList = (): {searchFilterType: number; searchFilterState: number}[] => {
-    const positiveFilterList = positiveFilters
-      .map(filter => ({
-        searchFilterType: searchOptionList.indexOf(filter.name),
-        searchFilterState: 0, // Positive
-      }))
-      .filter(item => item.searchFilterType !== -1);
-
-    const negativeFilterList = negativeFilters
-      .map(filter => ({
-        searchFilterType: searchOptionList.indexOf(filter.name),
-        searchFilterState: 1, // Negative
-      }))
-      .filter(item => item.searchFilterType !== -1);
-
-    return [...positiveFilterList, ...negativeFilterList];
+  const generatePositiveFilterList = (): string[] => {
+    let filterResult = positiveFilters.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    return filterResult;
+  };
+  const generateNegativeFilterList = (): string[] => {
+    let filterResult = negativeFilters.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
+    return filterResult;
   };
 
   const fetchSearchData = async (
@@ -281,9 +209,11 @@ const SearchBoard: React.FC = () => {
             : 0,
         sort: selectedSort,
         // filterList: generateFilterList(),
-        // isOnlyAdults: adultToggleOn,
         // storyPage: contentPage,
         // characterPage,
+        positiveFilterTags: generatePositiveFilterList(),
+        nagativeFilterTags: generateNegativeFilterList(),
+        isAdults: adultToggleOn,
         storyOffset: storyOffset,
         characterOffset: characterOffset,
         contentOffset: contentOffset,
@@ -404,11 +334,46 @@ const SearchBoard: React.FC = () => {
   useLayoutEffect(() => {
     const search = getParam('search');
     const indexTab = getParam('indexTab');
+    const filters = getParam('filter');
+    const adult = getParam('adult');
     data.indexTab = Number(indexTab);
     setData({...data});
 
     if (search && ['All', 'Story', 'Character', 'Content'].includes(search)) {
       handleSearchChange(search as 'All' | 'Story' | 'Character' | 'Content');
+    }
+    if (filters) {
+      const [positiveRaw, negativeRaw] = decodeURIComponent(filters).split('::');
+      const positiveList = (positiveRaw || '').split('&&').filter(Boolean);
+      const negativeList = (negativeRaw || '').split('!!').filter(Boolean);
+
+      const enTags = themeGroup?.en || [];
+      const tagKeys = themeGroup?.tags || [];
+
+      // 역으로 key를 찾아서 FilterDataItem[] 생성
+      // 영어 텍스트 -> key로 매핑
+      const positiveItems: FilterDataItem[] = positiveList
+        .map(text => {
+          const index = enTags.indexOf(text);
+          const key = tagKeys[index];
+          return {key};
+        })
+        .filter(item => item.key);
+
+      const negativeItems: FilterDataItem[] = negativeList
+        .map(text => {
+          const index = enTags.indexOf(text);
+          const key = tagKeys[index];
+          return {key};
+        })
+        .filter(item => item.key);
+
+      setPositiveFilters(positiveItems);
+      setNegativeFilters(negativeItems);
+      handlerFilterSaved(positiveItems, negativeItems);
+    }
+    if (adult) {
+      setAdultToggleOn(adult === '1' ? true : false || false);
     }
   }, []);
 
@@ -518,10 +483,10 @@ const SearchBoard: React.FC = () => {
               search={search}
               setSearchResultList={setSearchResultList}
               adultToggleOn={adultToggleOn}
-              setAdultToggleOn={setAdultToggleOn}
+              setAdultToggleOn={handleAdultToggleOn}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
-              filterData={searchOptionList}
+              filterData={themeGroup?.tags || []}
               positiveFilter={positiveFilters}
               setPositiveFilter={setPositiveFilters}
               negativeFilter={negativeFilters}
@@ -531,6 +496,7 @@ const SearchBoard: React.FC = () => {
               setContentOffset={setContentOffset}
               setCharacterOffset={setCharacterOffset}
               setStoryOffset={setStoryOffset}
+              onFilterSaved={handlerFilterSaved}
             />
             <header className={styles.filterArea}>
               <div className={styles.tagArea}>

@@ -6,7 +6,7 @@ import CustomButton from '../layout/shared/CustomButton';
 import getLocalizedText from '@/utils/getLocalizedText';
 
 export interface FilterDataItem {
-  name: string;
+  key: string;
   icon?: string;
   state?: string;
 }
@@ -32,8 +32,8 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
   };
 
   const handleSave = () => {
-    const positive = filterData.filter(item => selectedFilters[item.name] === 'selected');
-    const negative = filterData.filter(item => selectedFilters[item.name] === 'remove');
+    const positive = filterData.filter(item => selectedFilters[item.key] === 'selected');
+    const negative = filterData.filter(item => selectedFilters[item.key] === 'remove');
     onSave({positive, negative});
     onClose();
   };
@@ -41,7 +41,7 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
   const handleReset = () => {
     const resetState: {[key: string]: 'empty'} = {};
     filterData.forEach(item => {
-      resetState[item.name] = 'empty';
+      resetState[item.key] = 'empty';
     });
     setSelectedFilters(resetState);
 
@@ -50,6 +50,21 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
     setTimeout(() => setIsRotating(false), 600); // 애니메이션 길이와 맞춰야 함
   };
 
+  useEffect(() => {
+    if (!filterData || filterData.length === 0) return;
+
+    const initialState: {[key: string]: 'empty' | 'selected' | 'remove'} = {};
+    filterData.forEach(item => {
+      if (item.state === 'selected' || item.state === 'remove') {
+        initialState[item.key] = item.state;
+      } else {
+        initialState[item.key] = 'empty';
+      }
+    });
+
+    setSelectedFilters(initialState);
+  }, [filterData]);
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box className={styles.modalBox}>
@@ -57,19 +72,19 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
           <h1 className={styles.filterTitle}>{getLocalizedText('common_alert_029')}</h1>
           <ul className={styles.filterList}>
             {filterData.map(item => (
-              <li key={item.name} className={styles.filterItem}>
+              <li key={item.key} className={styles.filterItem}>
                 <div className={styles.filterContent}>
                   <div className={styles.textArea}>
-                    <span className={styles.filterText}>{item.name}</span>
-                    {item.icon && <img className={styles.filterIcon} src={item.icon} alt={`${item.name} icon`} />}
+                    <span className={styles.filterText}>{getLocalizedText(item.key)}</span>
+                    {item.icon && <img className={styles.filterIcon} src={item.icon} alt={`${item.key} icon`} />}
                   </div>
-                  <button className={`${styles.filterButton}`} onClick={() => handleToggleFilter(item.name)}>
+                  <button className={`${styles.filterButton}`} onClick={() => handleToggleFilter(item.key)}>
                     <img
                       className={styles.buttonIcon}
                       src={
-                        selectedFilters[item.name] === 'selected'
+                        selectedFilters[item.key] === 'selected'
                           ? BoldRadioButtonSelected.src
-                          : selectedFilters[item.name] === 'remove'
+                          : selectedFilters[item.key] === 'remove'
                           ? BoldRadioButtonSubtract.src
                           : BoldRadioButton.src
                       }
@@ -84,7 +99,7 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
             onClick={() => {
               const resetState: {[key: string]: 'empty'} = {};
               filterData.forEach(item => {
-                resetState[item.name] = 'empty';
+                resetState[item.key] = 'empty';
                 handleReset();
               });
               setSelectedFilters(resetState);

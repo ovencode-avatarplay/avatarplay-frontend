@@ -10,6 +10,7 @@ import styles from '@chats/Styles/StyleChat.module.css';
 import usePrevChatting from '@chats/MainChat/PrevChatting';
 
 import {preventZoom, useBackHandler} from 'utils/util-1';
+import CallingScreen from './CallingScreen';
 
 import {
   cleanString,
@@ -48,6 +49,18 @@ import {addNewDateMessage, compareDates, NewDateType, refreshNewDateAll, shiftDa
 import {TriggerActionType} from '@/redux-store/slices/StoryInfo';
 import useChat from './hooks/useChat';
 import {useStreamMessage} from './hooks/useStreamMessage';
+
+import Script from 'next/script';
+import {isAllOf} from '@reduxjs/toolkit';
+import StoryLLMSetup from '../create/story-main/story-LLMsetup/StoryLLMsetup';
+import {LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
+
+declare global {
+  interface Window {
+    createUnityInstance: (canvas: HTMLCanvasElement, config: any) => Promise<any>;
+    onCloseAction: () => void;
+  }
+}
 
 const ChatPage: React.FC = () => {
   const {
@@ -115,14 +128,66 @@ const ChatPage: React.FC = () => {
   const [emoticonGroupInfoList, setEmoticonGroupInfoList] = useState<EmoticonGroupInfo[]>([]);
   const [isHideChat, SetHideChat] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  console.log('1111 isLoading: ' + isLoading);
+  const [showLiveChat, setShowLiveChat] = useState<boolean>(false);
+  const [hangOn, setHangOn] = useState<any>(null);
+  const indexBubble = useRef(0); // 말풍선 인덱스.
+  const newTextBubbleArrayList = useRef<number[]>([]); // 채팅을 보냈을때~ 서버로부터 응답받았을 때 추가로 생성된 parsedMessages의  arrayIndex
+  const [showLLMSet, setShowLLMSet] = useState<boolean>(false);
+  const [selectedLLM, setSelectedLLM] = useState<LLMModel>(LLMModel.GPT_4o);
+  const [customAPI, setCustomAPI] = useState<string>('');
 
   const {streamKey, setStreamKey, retryStreamKey, setRetryStreamKey, changeStreamKey} = useStreamMessage({
     handleSendMessage,
     isSendingMessage,
     onMessageProps: onMessage,
   });
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Unity 초기화를 담당하는 함수
+  const initUnity = () => {
+    // 모바일 기기 감지 및 설정
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      // 모바일 기기용 viewport 메타 태그 추가
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.head.appendChild(meta);
+
+      // canvas 스타일을 브라우저 클라이언트 전체에 맞게 변경
+      if (canvasRef.current) {
+        canvasRef.current.style.width = '100%';
+        canvasRef.current.style.height = '100%';
+        canvasRef.current.style.position = 'fixed';
+      }
+      // body의 텍스트 정렬 수정
+      document.body.style.textAlign = 'left';
+    }
+    // Unity Loader 스크립트가 로드된 후 createUnityInstance를 호출하여 Unity 인스턴스를 생성
+    if (window.createUnityInstance && canvasRef.current) {
+      window
+        .createUnityInstance(canvasRef.current, {
+          arguments: [],
+          dataUrl: 'https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.data',
+          frameworkUrl:
+            'https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.framework.js',
+          codeUrl: 'https://ovencode-webgame.s3.ap-northeast-2.amazonaws.com/livechat/Build/250411-04.wasm',
+          streamingAssetsUrl: 'StreamingAssets',
+          companyName: 'DefaultCompany',
+          productName: 'Role',
+          productVersion: '0.1.0',
+          // matchWebGLToCanvasSize: false, // 캔버스 사이즈와 렌더 사이즈를 개별 제어할 때 사용
+          // devicePixelRatio: 1, // 고해상도 디스플레이에서 DPI 조정에 사용
+        })
+        .then(unityInstance => {
+          console.log('Unity 인스턴스가 생성되었습니다.', unityInstance);
+          alert(unityInstance);
+          setHangOn(unityInstance);
+        })
+        .catch(error => {
+          console.error('Unity 초기화 중 오류 발생:', error);
+        });
+    }
+  };
 
   async function onMessage(event: any, eventSource: any) {
     try {
@@ -176,6 +241,31 @@ const ChatPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (window.createUnityInstance != null) {
+      initUnity();
+    } else {
+      const interval = setInterval(() => {
+        if (window.createUnityInstance != null) {
+          clearInterval(interval);
+          initUnity();
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+
+    window.onCloseAction = () => {
+      alert('close');
+      setShowLiveChat(false);
+      if (hangOn) {
+        hangOn.Quit().then(() => {
+          console.log('Unity WebGL 인스턴스 종료 완료');
+        });
+      }
+      setHangOn(null);
+    };
+  }, [showLiveChat]);
+
+  useEffect(() => {
     window.addEventListener('resize', setFullHeight);
     window.addEventListener('orientationchange', setFullHeight);
     setFullHeight();
@@ -195,6 +285,8 @@ const ChatPage: React.FC = () => {
       sender: SenderType.media,
       createDateString: currentTime,
       createDateLocale: new Date(),
+      isLike: false, // 말풍선 like
+      bubbleIndex: 0,
     };
 
     if (isFinishMessage(isMyMessage, message) === true) {
@@ -210,6 +302,8 @@ const ChatPage: React.FC = () => {
       sender: isMyMessage ? SenderType.User : currentSender,
       createDateString: currentTime,
       createDateLocale: new Date(),
+      isLike: false, // 말풍선 like
+      bubbleIndex: 0,
     };
     const mediaDataValue: MediaData = {
       mediaType: TriggerMediaState.None,
@@ -260,10 +354,13 @@ const ChatPage: React.FC = () => {
             sender: SenderType.System,
             createDateString: isPrintDate ? currentTime : '', // 시스템 메시지에는 시간을 출력하지 않는다.
             createDateLocale: new Date(),
+            isLike: false, // 말풍선 like
+            bubbleIndex: 0,
           };
 
           resultSystemMessages.text = triggerInfo.systemText.replace(/^%|%$/g, '');
           allMessage.push(resultSystemMessages); // Media 관련 메시지 추가
+          //newTextBubbleArrayList.current.push(allMessage.length - 1); // 추가된 말풍선 arrayIndex 저장
           allEmoticon.push(''); // 빈 이모티콘 추가
           allMedia.push(noneMedia); // 새 미디어 추가
 
@@ -315,6 +412,7 @@ const ChatPage: React.FC = () => {
                   }
 
                   allMessage.push(mediaMessages); // Media 관련 메시지 추가
+                  //newTextBubbleArrayList.current.push(allMessage.length - 1); // 추가된 말풍선 arrayIndex 저장
                   allEmoticon.push(''); // 빈 이모티콘 추가
                   allMedia.push(newMedia); // 새 미디어 추가
                 }
@@ -323,9 +421,21 @@ const ChatPage: React.FC = () => {
           }
         });
 
+        // 새로 생성된 말풍선들에 ChatID랑 bubbleIndex 넣어주자 ( 서버 작업방식에 맞추려면 어쩔수가 없다 )
+        let bubbleArrayIndex: number = 0;
+        newTextBubbleArrayList.current.forEach(num => {
+          if (allMessage[num]) {
+            allMessage[num].chatId = response.data.streamChatId;
+            allMessage[num].bubbleIndex = bubbleArrayIndex;
+            bubbleArrayIndex++;
+          }
+        });
+        newTextBubbleArrayList.current = [];
+
         const updateMessage = {
           Messages: allMessage,
           emoticonUrl: allEmoticon,
+          isLike: false,
           mediaData: allMedia,
         };
 
@@ -351,6 +461,7 @@ const ChatPage: React.FC = () => {
       // 이전 메시지 정보를 복사하고 메시지만 가져와 배열 업데이트 준비
       const allMessages = [...(prev?.Messages || [])];
       const allEmoticon = [...(prev?.emoticonUrl || [])];
+      const isLike = false;
       const allMedia = [...(prev?.mediaData || [])];
 
       //return {Messages: allMessages, emoticonUrl: prev?.emoticonUrl || []};
@@ -384,6 +495,7 @@ const ChatPage: React.FC = () => {
         } else {
           newMessage.sender = SenderType.User;
         }
+
         dispatch(setRegeneratingQuestion({lastMessageId: chatId, lastMessageQuestion: message ?? ''}));
         if (!isFinish) {
           allMessages.push(newMessage);
@@ -394,6 +506,7 @@ const ChatPage: React.FC = () => {
           allEmoticon.push('');
           allMedia.push(mediaDataValue);
         }
+        newTextBubbleArrayList.current.push(allMessages.length - 1); // 추가된 말풍선 arrayIndex 저장
       } else {
         //
         // 1. current sender를 가져온다
@@ -431,6 +544,8 @@ const ChatPage: React.FC = () => {
               sender: (newMessage.sender = newSenderResult),
               createDateString: currentTime,
               createDateLocale: new Date(),
+              isLike: false, // 말풍선 like
+              bubbleIndex: 0,
             };
             currentSender = _newMessage.sender;
 
@@ -443,6 +558,7 @@ const ChatPage: React.FC = () => {
               allEmoticon.push('');
               allMedia.push(mediaDataValue);
             }
+            newTextBubbleArrayList.current.push(allMessages.length - 1); // 추가된 말풍선 arrayIndex 저장
           } else {
             // sender Type이 같으니 기존 말풍선에 계속 넣어준다.
             allMessages[allMessages.length - 1].text += `${newMessage.text[i]}`;
@@ -460,6 +576,7 @@ const ChatPage: React.FC = () => {
       return {
         Messages: allMessages,
         emoticonUrl: allEmoticon,
+        isLike: false,
         mediaData: allMedia, // 빈 배열로 기본값 설정
       };
     };
@@ -485,7 +602,11 @@ const ChatPage: React.FC = () => {
 
   //#region HeaderChat handler
   const handleMoreClick = () => {
-    console.log('더보기 버튼 클릭');
+    setShowLLMSet(true);
+  };
+
+  const handleLiveChatClick = () => {
+    setShowLiveChat(true);
   };
 
   const handleToggleBackground = () => {
@@ -586,6 +707,15 @@ const ChatPage: React.FC = () => {
     setIsLoading(bool);
   };
 
+  const handleOnAccept = () => {
+    setShowLiveChat(false);
+    setHangOn(null);
+  };
+
+  const handleOnDeny = () => {
+    setShowLiveChat(false);
+  };
+
   return (
     <>
       {/*
@@ -601,6 +731,7 @@ const ChatPage: React.FC = () => {
           <TopBar
             onBackClick={handleBackClick}
             onMoreClick={handleMoreClick}
+            onLiveChatClick={handleLiveChatClick}
             iconUrl={characterImageUrl ?? ''}
             isHideChat={isHideChat}
             isBlurOn={isBlurOn}
@@ -647,6 +778,36 @@ const ChatPage: React.FC = () => {
           onCheatChangeDate={handleChangeNewDate}
         />
 
+        <Script src="/game/microphone.js" strategy="afterInteractive" />
+        <Script src="/game/web.loader.js" strategy="afterInteractive" />
+
+        {showLiveChat && (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 0,
+              border: 0,
+              margin: 0,
+            }}
+          >
+            <CallingScreen onAccept={handleOnAccept} onDeny={handleOnDeny} isHangOn={hangOn}></CallingScreen>
+
+            <canvas
+              id="unity-canvas"
+              ref={canvasRef}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 10, // 기존 콘텐츠보다 높은 z-index를 부여하여 위에 표시
+                background: 'transparent', // 필요에 따라 배경색 지정 가능
+              }}
+            ></canvas>
+          </div>
+        )}
+
         {showPopup && (
           <NextEpisodePopup onYes={handlePopupYes} onNo={handlePopupNo} open={showPopup} data={nextPopupData} />
         )}
@@ -657,6 +818,16 @@ const ChatPage: React.FC = () => {
             rubyAmount={5} //필요 루비 임시
           />
         )}
+        <StoryLLMSetup
+          open={showLLMSet}
+          onClose={() => setShowLLMSet(false)}
+          onModelSelected={(number: number) => {
+            setSelectedLLM(number);
+          }}
+          initialValue={selectedLLM}
+          customAPIKey={customAPI}
+          onCustomAPIKeyChange={setCustomAPI}
+        />
       </main>
     </>
   );

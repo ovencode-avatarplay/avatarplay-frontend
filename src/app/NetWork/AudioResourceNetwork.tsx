@@ -1,8 +1,9 @@
 import api from './ApiInstance';
 
 export interface GenerateAudioReq {
-  text: string;
   voiceId: string;
+  characterId: number;
+  text: string;
 }
 
 export interface GenerateAudioRes {

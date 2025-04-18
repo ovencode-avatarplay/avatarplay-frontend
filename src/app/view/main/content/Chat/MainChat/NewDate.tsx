@@ -137,6 +137,8 @@ export function addNewDateMessage(
     sender: SenderType.NewDate,
     createDateString: '',
     createDateLocale: dateCurrent,
+    isLike: false, // 말풍선 like
+    bubbleIndex: 0,
   };
   allMessages.push(newDateMessage);
   allEmoticon.push('');

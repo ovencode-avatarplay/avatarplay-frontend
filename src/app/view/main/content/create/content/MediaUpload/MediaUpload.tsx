@@ -234,7 +234,7 @@ const MediaUpload: React.FC<Props> = ({
             <button
               className={styles.deleteButton}
               onClick={() => {
-                handleMediaRemove(0);
+                setIsOpenMediaDrawer(true);
               }}
             >
               <img src={editCircle.src} alt="Delete" />
@@ -272,7 +272,7 @@ const MediaUpload: React.FC<Props> = ({
             <button
               className={styles.deleteButton}
               onClick={() => {
-                handleMediaRemove(0);
+                setIsOpenMediaDrawer(true);
               }}
             >
               <img src={editCircle.src} alt="Delete" />

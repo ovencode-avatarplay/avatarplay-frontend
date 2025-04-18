@@ -8,9 +8,11 @@ import {setLanguage} from '@/redux-store/slices/UserInfo';
 import {store} from '@/redux-store/ReduxStore';
 import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText, getWebBrowserUrl} from './browserInfo';
 import {updateProfile} from '@/redux-store/slices/Profile';
+import {supabase} from './supabaseClient';
 
 // 로그인상태인가
 export const isLogined = async () => {
+  1;
   const dispatch = store.dispatch;
   const jwt = localStorage.getItem('jwt');
   if (!jwt) {
@@ -19,6 +21,8 @@ export const isLogined = async () => {
 
   const resAuth = await getAuth();
   if (resAuth?.resultCode != 0) {
+    localStorage.removeItem('jwt');
+    await supabase.auth.signOut();
     return false;
   }
 
