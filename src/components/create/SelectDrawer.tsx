@@ -15,7 +15,7 @@ interface SelectDrawerProps {
   items: SelectDrawerItem[];
   isOpen: boolean;
   onClose: () => void;
-  selectedIndex: number;
+  selectedIndex?: number;
   tooltip?: string;
   children?: ReactNode;
   name?: string;
@@ -84,7 +84,8 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
                 {item.icon && <img src={item.icon} alt="" className={styles.drawerIcon} />}
                 <span className={styles.drawerText}>{item.name}</span>
               </div>
-              {idx === selectedIndex && isCheck == true && (
+
+              {selectedIndex != null && idx === selectedIndex && isCheck == true && (
                 <img className={styles.drawerCheckIcon} src={LineCheck.src} />
               )}
             </button>

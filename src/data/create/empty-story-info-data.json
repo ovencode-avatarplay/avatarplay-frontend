@@ -36,6 +36,7 @@
                 "poseGalleryImageUrl": [],
                 "expressionGalleryImageUrl": [],
                 "mediaTemplateList": [],
+                "characterEventTriggerList" : [],
                 "conversationTemplateList": [],
 
                 "visibilityType": 0,

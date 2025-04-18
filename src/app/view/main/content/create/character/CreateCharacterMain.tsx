@@ -18,13 +18,22 @@ import CharacterImageSet from './CharacterImageSet';
 import CharacterCreateBasic from './CharacterCreateBasic';
 import CharacterCreateLLM from './CharacterCreateLLM';
 import CharacterCreateMedia from './CharacterCreateMedia';
+import CharacterCreateEventTrigger from './CharacterCreateEventTrigger';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
-import {CharacterMediaInfo, CreateCharacter2Req, sendCreateCharacter2} from '@/app/NetWork/CharacterNetwork';
+import {
+  CharacterEventTriggerInfo,
+  CharacterEventTriggerType,
+  CharacterMediaInfo,
+  CreateCharacter2Req,
+  EmotionState,
+  GetStarType,
+  sendCreateCharacter2,
+} from '@/app/NetWork/CharacterNetwork';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import CharacterCreateViewImage from './CharacterCreateViewImage';
-import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -34,12 +43,15 @@ import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPr
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import VideoUpload from '@/components/create/VideoUpload';
+import { profile } from 'console';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
 
 interface CreateCharacterProps {
-  id?: number;
+  id: number;
   isUpdate?: boolean;
   characterInfo?: CharacterInfo;
   onClose?: () => void;
@@ -65,6 +77,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const [selectImageTypeOpen, setSelectImageTypeOpen] = useState(false);
   const [imgUploadSelectModalOpen, setImgUploadSelectModalOpen] = useState(false);
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
+  const [mediaUploadOpen, setMediaUploadOpen] = useState(false);
+  const [videoUploadOpen, setVideoUploadOpen] = useState(false);
 
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
   const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
@@ -73,7 +87,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   //#region Edit Thumbnail
   type UploadType = 'Mixture' | 'AIGenerate' | 'Upload';
-  type ImageCreateType = 'Thumbnail' | 'MediaCreate' | 'MediaEdit';
+  type ImageCreateType = 'Thumbnail' | 'MediaCreate' | 'MediaEdit' | 'TriggerMedia';
   const [imgUploadType, setImgUploadType] = useState<UploadType | null>(null);
   const [imageCreate, setImageCreate] = useState<ImageCreateType>('Thumbnail');
 
@@ -111,6 +125,16 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   const [mediaTemplateList, setMediaTemplateList] = useState<CharacterMediaInfo[]>(character.mediaTemplateList);
   const [selectedMediaItemIdx, setSelectedMediaItemIdx] = useState<number>(0);
+
+  //#endregion
+
+  //#region CharacterTrigger
+
+  const [characterTrigger, setCharacterTrigger] = useState<CharacterEventTriggerInfo[]>(
+    character.characterEventTriggerList,
+  );
+  const [selectedTriggerId, setSelectedTriggerId] = useState<number>(0);
+  const [triggerMediaUrls, setTriggerMediaUrls] = useState<string[]>([]);
 
   //#endregion
 
@@ -223,6 +247,29 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       );
     } else if (imageCreate === 'Thumbnail') {
       setMainImageUrl(img);
+    } else if (imageCreate === 'TriggerMedia') {
+      setMediaCreateImage(img);
+      const prev = characterTrigger.find(t => t.id === selectedTriggerId); // selectedTriggerId는 선택된 트리거의 ID
+      if (prev) {
+        handleOnEditTrigger({
+          ...prev,
+          mediaUrl: img,
+          mediaType: MediaState.Image,
+        });
+      }
+    }
+    setSelectImageTypeOpen(false);
+  };
+
+  const handlerSetVideo = (video: string) => {
+    setMediaCreateImage(video);
+    const prev = characterTrigger.find(t => t.id === selectedTriggerId); // selectedTriggerId는 선택된 트리거의 ID
+    if (prev) {
+      handleOnEditTrigger({
+        ...prev,
+        mediaUrl: video,
+        mediaType: MediaState.Video,
+      });
     }
     setSelectImageTypeOpen(false);
   };
@@ -268,6 +315,72 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setSelectedMediaItemIdx(index);
   };
 
+  const handleOnClickTriggerMediaEdit = (triggerType: CharacterEventTriggerType, id: number) => {
+    if (triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion) {
+      setImgUploadOpen(true);
+    } else {
+      setMediaUploadOpen(true);
+    }
+    setImgUploadType('Upload');
+    setImageCreate('TriggerMedia');
+
+    setSelectedTriggerId(id);
+  };
+
+  const handleOnAddTrigger = (triggerType: CharacterEventTriggerType) => {
+    const newItem: CharacterEventTriggerInfo = {
+      id: getMinTriggerId(characterTrigger),
+      mediaUrl: '',
+      triggerType: triggerType,
+      inputPrompt: '',
+      mediaType: MediaState.None,
+      // 나머지는 조건부로 추가
+    };
+
+    // 조건에 따라 필드 채워주기
+    if (
+      triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion ||
+      triggerType === CharacterEventTriggerType.SendMediaByEmotion
+    ) {
+      newItem.emotionState = EmotionState.Happy;
+      newItem.probability = 100;
+    } else if (
+      triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ||
+      triggerType === CharacterEventTriggerType.SendMessageByElapsedTime
+    ) {
+      newItem.elapsedTime = 1;
+    } else if (triggerType === CharacterEventTriggerType.SendMediaByGotStars) {
+      newItem.getType = GetStarType.Accumulated;
+      newItem.getStar = 10;
+    }
+
+    setCharacterTrigger(prev => [...prev, newItem]);
+  };
+
+  const handleOnEditTrigger = (updatedTrigger: CharacterEventTriggerInfo) => {
+    setCharacterTrigger(prev => prev.map(item => (item.id === updatedTrigger.id ? updatedTrigger : item)));
+  };
+
+  const getMinTriggerId = (list: CharacterEventTriggerInfo[]): number => {
+    const listId = list.flatMap(item => item.id);
+    if (listId.length === 0) return 0;
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId - 1;
+  };
+
+  const handleDuplicateTrigger = (item: CharacterEventTriggerInfo) => {
+    const newItem = {
+      ...item,
+      id: getMinTriggerId(characterTrigger),
+      inputPrompt: item.inputPrompt + ' (copy)',
+    };
+    setCharacterTrigger(prev => [...prev, newItem]);
+  };
+
+  const handleDeleteTrigger = (id: number) => {
+    setCharacterTrigger(prev => prev.filter(trigger => trigger.id !== id));
+  };
+
   const CheckEssential = () => {
     if (mainimageUrl === '') return false;
 
@@ -287,7 +400,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       const req: CreateCharacter2Req = {
         languageType: getCurrentLanguage(),
         payload: {
-          id: character.id,
+          id: id,
           referenceLanguage: languageType,
           name: characterName,
           introduction: replaceChipsWithKeywords(introduction, KEYWORDS),
@@ -301,6 +414,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             activationCondition: item.activationCondition,
             isSpoiler: item.isSpoiler,
           })),
+          eventTriggerList: characterTrigger,
           conversationTemplateList: convertCardsToConversations(conversationCards),
           visibilityType: visibilityType,
           llmModel: llmModel,
@@ -434,7 +548,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   //#endregion
 
   //#region Conversation
-  const getMinId = (list: CardData[]): number => {
+  const getMinConversationId = (list: CardData[]): number => {
     const listId = list.flatMap(item => item.id);
     if (listId.length === 0) return 0;
     const minId = Math.min(...listId);
@@ -459,7 +573,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setConversationCards(prevCards => {
       const newCards = [...prevCards];
       const cardToDuplicate = newCards[index];
-      const newId = getMinId(newCards);
+      const newId = getMinConversationId(newCards);
 
       const duplicatedCard: CardData = {
         ...cardToDuplicate,
@@ -496,10 +610,10 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     setConversationCards(prevCards => [
       ...prevCards,
       {
-        id: getMinId(prevCards),
+        id: getMinConversationId(prevCards),
         priorityType: 0,
-        userBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
-        charBars: [{id: getMinId(prevCards), inputValue: '', type: 'dots'}],
+        userBars: [{id: getMinConversationId(prevCards), inputValue: '', type: 'dots'}],
+        charBars: [{id: getMinConversationId(prevCards), inputValue: '', type: 'dots'}],
       },
     ]);
   };
@@ -581,6 +695,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     //     />
     //   ),
     // },
+    // Media
     {
       label: getLocalizedText(Header, 'createcharacter001_label_005'),
       preContent: '',
@@ -596,6 +711,22 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           handleDeleteMediaItem={handleDeleteMediaItem}
           handleEditMediaItem={handleOnClickMediaEdit}
           handleMoveMediaItem={handleMoveMediaItem}
+        />
+      ),
+    },
+    // EventTrigger
+    {
+      label: getLocalizedText('eventtrigger001_label_001'),
+      preContent: '',
+      content: (
+        <CharacterCreateEventTrigger
+          eventTriggerItems={characterTrigger}
+          onClickCreateEventTrigger={handleOnAddTrigger}
+          onEditEventTrigger={handleOnEditTrigger}
+          onDuplicateEventTrigger={handleDuplicateTrigger}
+          onDeleteEventTrigger={handleDeleteTrigger}
+          onClickEditTriggerMedia={handleOnClickTriggerMediaEdit}
+          onClickPreview={handlePreviewSelected}
         />
       ),
     },
@@ -913,6 +1044,36 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadOpen(false);
           }}
           setContentImageUrl={handlerSetImage}
+        />
+      )}
+      {!selectImageTypeOpen && imgUploadType === 'Upload' && (
+        <VideoUpload
+          isOpen={videoUploadOpen}
+          onClose={() => {
+            setImgUploadType(null);
+            setVideoUploadOpen(false);
+          }}
+          setVideoUrl={handlerSetVideo}
+        />
+      )}
+      {!selectImageTypeOpen && imgUploadType === 'Upload' && mediaUploadOpen && (
+        <SelectDrawer
+          items={[
+            {
+              name: 'Image',
+              onClick: () => {
+                setImgUploadOpen(true);
+              },
+            },
+            {
+              name: 'Video',
+              onClick: () => {
+                setVideoUploadOpen(true);
+              },
+            },
+          ]}
+          isOpen={mediaUploadOpen}
+          onClose={() => {}}
         />
       )}
     </>

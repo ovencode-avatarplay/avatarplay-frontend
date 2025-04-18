@@ -4,7 +4,7 @@ import {LanguageType, LLMModel, MembershipSetting} from '@/app/NetWork/network-i
 import api, {ResponseAPI} from './ApiInstance';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import {VisibilityType} from './ContentNetwork';
-import {ProfileSimpleInfo} from './ProfileNetwork';
+import {MediaState, ProfileSimpleInfo} from './ProfileNetwork';
 
 export interface CharacterMediaInfo {
   id: number;
@@ -36,6 +36,48 @@ export interface GalleryImageInfo {
   isGenerate: boolean;
   debugParameter: string;
   imageUrl: string;
+}
+
+export interface CharacterEventTriggerInfo {
+  id: number;
+  mediaUrl: string;
+  mediaType: MediaState; // 미디어의 종류 확인용
+
+  triggerType: CharacterEventTriggerType;
+  inputPrompt: string;
+
+  // 감정 기반 트리거에만 사용
+  emotionState?: EmotionState;
+  probability?: number;
+
+  // 시간 기반 트리거에만 사용
+  elapsedTime?: number; // minutes
+
+  // 스타 획득 기반 트리거에만 사용
+  getType?: GetStarType;
+  getStar?: number;
+}
+
+export enum CharacterEventTriggerType {
+  ChangeBackgroundByEmotion = 0,
+  SendMediaByEmotion = 1,
+  SendMediaByElapsedTime = 2,
+  SendMessageByElapsedTime = 3,
+  SendMediaByGotStars = 4,
+}
+
+export enum EmotionState {
+  Happy = 0,
+  Angry = 1,
+  Sad = 2,
+  Excited = 3,
+  Scared = 4,
+  Bored = 5,
+}
+
+export enum GetStarType {
+  Accumulated = 0,
+  Instant = 1,
 }
 
 // GetCharacterList
@@ -107,6 +149,7 @@ export interface CharacterProfilePayload {
   secret: string;
   mainImageUrl: string;
   mediaTemplateList: CharacterMediaInfo[];
+  eventTriggerList: CharacterEventTriggerInfo[];
   conversationTemplateList: ConversationInfo[];
   visibilityType: VisibilityType;
   llmModel: LLMModel;
