@@ -250,6 +250,7 @@
         border-radius: 50%;
         width: 27px;
         height: 27px;
+        
 
         background: var(--Color-Tokens-White, #FEFEFE);
         filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.16));
@@ -258,7 +259,17 @@
         align-items: center;
         justify-content: center;
 
-        .iconProfileEdit {}
+        .iconProfileEdit {
+          width: 16px;
+          height: 16px;
+        
+          img {
+            width: 100%;
+            height: 100%;
+            filter: brightness(0) saturate(100%); // 검정색으로 보이게
+          }
+
+        }
       }
     }
 
@@ -1039,36 +1050,39 @@ li.itemTab {
 
 .filter.character {
   .left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
     .textWrap {
-      margin-left: 5px;
       padding: 9px 10px;
-      border-radius: 4px;
+      border-radius: 6px;
       background: var(--Neutral-100, #F1F3F4);
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       .text {
         color: var(--Neutral-400, #BDC1C6);
         font-family: Lato;
         font-size: 14px;
-        font-style: normal;
         font-weight: 700;
         line-height: 14px;
-        /* 100% */
         letter-spacing: -0.28px;
-
       }
 
       &.active {
-        background: var(--Primary-1, #FD55D3);
+        background: var(--Neutral-600, #80868b);;
 
         .text {
           color: var(--White, #FFF);
         }
       }
     }
-
   }
 }
+
 
 .filter {
   padding: 7px 16px;
@@ -1081,6 +1095,7 @@ li.itemTab {
   .left {
     display: flex;
     align-items: center;
+    gap: 6px;
 
     .iconWrap {
       cursor: pointer;
@@ -1089,25 +1104,29 @@ li.itemTab {
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--Neutral-100, #F1F3F4);
 
-      &.bg {
-        background: var(--Neutral-100, #F1F3F4);
-      }
-
-      img {
-        filter: brightness(0) saturate(100%) invert(70%) sepia(8%) saturate(241%) hue-rotate(169deg) brightness(88%) contrast(93%);
-      }
+      // &.bg {
+      //   background: var(--Neutral-100, #F1F3F4);
+      // }
 
       &.active {
+        background: var(--Neutral-600, #80868b); // 원하는 배경색
+      
         img {
-          filter: brightness(0) saturate(100%);
+          filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(260deg) brightness(103%) contrast(102%);
         }
       }
+      
+      img {
+        filter: brightness(0) saturate(100%) invert(81%) sepia(8%) saturate(145%) hue-rotate(173deg) brightness(94%) contrast(94%);
+      }
+
     }
 
-    .iconWrap+.iconWrap {
-      margin-left: 5px;
-    }
+    // .iconWrap+.iconWrap {
+    //   margin-left: 5px;
+    // }
 
 
     img {
