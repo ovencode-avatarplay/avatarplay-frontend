@@ -57,7 +57,11 @@ const Chat: React.FC<Props> = ({open, onClose}) => {
     >
       <Box className={styles.modalBox}>
         <div className={styles.container}>
-          <ChatHeader />
+          <ChatHeader
+            onClose={() => {
+              onClose();
+            }}
+          />
           <ChatArea messages={messages} />
           <ChatBottom onSend={handleSend} />
         </div>

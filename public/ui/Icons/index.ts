@@ -157,6 +157,8 @@ import EmojiExcited from "./Custom/emoji_excited.svg";
 import EmojiHappy from "./Custom/emoji_happy.svg";
 import EmojiSad from "./Custom/emoji_sad.svg";
 import EmojiScared from "./Custom/emoji_scared.svg";
+import Emoticon from "./Custom/Emoticon.svg";
+import VideoFrame from "./Custom/Video_Frame.svg";
 
 export {
   editCircle,
@@ -316,4 +318,6 @@ export {
   LineSearchThin,
   LineCam,
   LinePhone,
+  Emoticon,
+  VideoFrame,
 };

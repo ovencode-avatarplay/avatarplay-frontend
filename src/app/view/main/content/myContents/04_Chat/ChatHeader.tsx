@@ -8,11 +8,15 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {LineArrowLeft, LineCam, LinePhone, LineRecording} from '@ui/Icons';
 
-const ChatHeader: React.FC = () => {
+interface Props {
+  onClose: () => void;
+}
+
+const ChatHeader: React.FC<Props> = ({onClose}) => {
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
-      <IconButton className={styles.backButton}>
+      <IconButton className={styles.backButton} onClick={() => onClose()}>
         <img src={LineArrowLeft.src} className={styles.arrowIcon}></img>
       </IconButton>
 

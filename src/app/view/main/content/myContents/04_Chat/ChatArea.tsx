@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import styles from './ChatArea.module.css';
 import ChatBubble from './ChatBubble';
+import ChatBlur from './ChatBlur';
 
 interface Message {
   id: number;
@@ -52,11 +53,13 @@ const ChatArea: React.FC<Props> = ({messages}) => {
               content={msg.content}
               timestamp={shouldShowTimestamp ? msg.timestamp : ''}
               isItalic={msg.isItalic}
+              id={idx}
             />
           </div>
         );
       })}
       <div ref={messagesEndRef} />
+      <ChatBlur></ChatBlur>
     </div>
   );
 };

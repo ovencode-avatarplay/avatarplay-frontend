@@ -1,17 +1,24 @@
+
 .container {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 6px 10px;
-    gap: 7px;
+    flex-direction: column;
     width: 100%;
-    height: 50px;
-    background: #ffffff;    position: absolute;
+    height: auto;
     bottom: 0;
     left: 0;
-    width: 100%;
+    width: 100%; position: absolute;
   }
   
+.box
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 6px 10px;
+  gap: 7px;
+  background: #ffffff;   
+}
+
   .plusButton {
     width: 26px;
     height: 26px;
@@ -20,6 +27,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    
   }
   
   .inputWrap {
@@ -66,5 +75,59 @@
     font-size: 18px;
     width: 20px;
     height: 20px;
+    cursor: pointer;
   }
   
+  .micIcon{
+    filter: brightness(0) saturate(100%);    
+    cursor: pointer;
+  }
+
+  .addContent
+  {
+    display: flex;
+padding: 12px 25px;
+height: 90px;
+align-items: center;
+gap: 26px;
+border-top: 1px solid var(--Border-1, #EAECF0);
+border-bottom: 1px solid var(--Border-1, #EAECF0);
+background: #FFF;
+  }
+  .addItem
+  {
+    display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+width: 44px;
+height: 64px;
+  }
+
+  .addItemRound
+  {
+    display: flex;
+padding: 10px;
+align-items: center;
+gap: 10px;
+border-radius: 999px;
+background: var(--Neutral-100, #F1F3F4);
+width: 34px;
+height: 34px;
+justify-content: center;
+cursor: pointer;
+}
+
+  .addItemText{
+    color: #000;
+font-family: Lato;
+font-size: 14px;
+font-style: normal;
+font-weight: 500;
+line-height: 140%; /* 19.6px */
+  }
+
+  .addItemIcon{
+    filter: brightness(0) saturate(100%);
+  
+  }
