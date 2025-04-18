@@ -12,6 +12,7 @@ import {setLlmSetupInfo} from '@/redux-store/slices/PublishInfo';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import getLocalizedText from '@/utils/getLocalizedText';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface ModelOption {
   value: number;
@@ -141,11 +142,17 @@ const StoryLLMSetup: React.FC<StoryLLMSetupProps> = ({
             />
           </div>
         </div>
-
         {/* 저장 버튼 */}
-        <button className={styles.confirmButton} onClick={handleSaveAndClose}>
+        <CustomButton
+          size="Large"
+          state="Normal"
+          type="Primary"
+          customClassName={[styles.confirmButton]}
+          onClick={handleSaveAndClose}
+        >
+          {' '}
           {getLocalizedText('Common', 'common_button_confirm')}
-        </button>
+        </CustomButton>
       </div>
     </Modal>
   );

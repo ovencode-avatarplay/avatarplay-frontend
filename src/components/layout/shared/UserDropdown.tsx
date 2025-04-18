@@ -207,6 +207,7 @@ const UserDropdown = () => {
           updateAuth(session);
         }
       } else if (event === 'INITIAL_SESSION') {
+        if (!session) return;
         setAuth(session);
 
         const language = getLanguageTypeFromText(getCurrentLanguage());

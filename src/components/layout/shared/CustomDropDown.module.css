@@ -203,3 +203,17 @@
     box-sizing: content-box;
     flex-shrink: 0;
 }
+
+.leftArea
+{
+    display: flex;
+    flex-direction: row;
+    gap : 6px;
+}
+
+.rightArea
+{
+    display: flex;
+    flex-direction: row;
+    gap:  6px;
+}

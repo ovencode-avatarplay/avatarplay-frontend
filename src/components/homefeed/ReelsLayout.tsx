@@ -155,7 +155,10 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       try {
         const lang = getCurrentLanguage();
         const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
-
+        const firstFeed = initialFeed || (result?.data?.feedInfoList?.[0] ?? null);
+        if (firstFeed?.id) {
+          viewFeed(firstFeed.id);
+        }
         if (result.resultCode === 0 && result.data) {
           const feeds = result.data.feedInfoList;
 

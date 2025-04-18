@@ -200,7 +200,7 @@ export const getProfileInfo = async (urlLinkKey: string) => {
     );
     if (resProfileSelect.status != 200) return;
 
-    return resProfileSelect.data?.data;
+    return resProfileSelect?.data;
   } catch (e) {
     //alert('api 에러' + e);
     console.log('api 에러');

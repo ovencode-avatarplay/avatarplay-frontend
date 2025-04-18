@@ -163,6 +163,13 @@ const SearchBoard: React.FC = () => {
     setRequestFetch(true);
   };
 
+  const handleAdultToggleOn = (isAdult: boolean) => {
+    setAdultToggleOn(isAdult);
+
+    changeParams('adult', isAdult ? 1 : 0);
+    localStorage.setItem('isAdult', isAdult ? 'true' : 'false');
+  };
+
   // Func
   const generatePositiveFilterList = (): string[] => {
     let filterResult = positiveFilters.map(filter => filter.key).filter(key => themeGroup?.tags.includes(key));
@@ -206,7 +213,7 @@ const SearchBoard: React.FC = () => {
         // characterPage,
         positiveFilterTags: generatePositiveFilterList(),
         nagativeFilterTags: generateNegativeFilterList(),
-        isOnlyAdults: adultToggleOn,
+        isAdults: adultToggleOn,
         storyOffset: storyOffset,
         characterOffset: characterOffset,
         contentOffset: contentOffset,
@@ -328,6 +335,7 @@ const SearchBoard: React.FC = () => {
     const search = getParam('search');
     const indexTab = getParam('indexTab');
     const filters = getParam('filter');
+    const adult = getParam('adult');
     data.indexTab = Number(indexTab);
     setData({...data});
 
@@ -363,6 +371,9 @@ const SearchBoard: React.FC = () => {
       setPositiveFilters(positiveItems);
       setNegativeFilters(negativeItems);
       handlerFilterSaved(positiveItems, negativeItems);
+    }
+    if (adult) {
+      setAdultToggleOn(adult === '1' ? true : false || false);
     }
   }, []);
 
@@ -472,7 +483,7 @@ const SearchBoard: React.FC = () => {
               search={search}
               setSearchResultList={setSearchResultList}
               adultToggleOn={adultToggleOn}
-              setAdultToggleOn={setAdultToggleOn}
+              setAdultToggleOn={handleAdultToggleOn}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
               filterData={themeGroup?.tags || []}
