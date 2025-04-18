@@ -101,9 +101,15 @@ interface GetAuthProfileInfoRes {
   profileSimpleInfo: ProfileSimpleInfo;
 }
 
-export const getAuth = async () => {
+export const getAuth = async (token : string | null = null) => {
   try {
-    const jwtToken = localStorage.getItem('jwt');
+    let jwtToken : string|null = '';
+    if(token === null)
+    {
+      jwtToken = localStorage.getItem('jwt');  
+    } else {
+      jwtToken = token;
+    }
     const _language = getLangUrlCode(getBrowserLanguage());
 
     const resProfileInfo = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Auth/getProfileInfo`, {
