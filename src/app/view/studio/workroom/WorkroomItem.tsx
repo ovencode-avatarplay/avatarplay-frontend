@@ -1,4 +1,4 @@
-import {BoldMenuDots, LineBookMark} from '@ui/Icons';
+import {BoldBookMark, BoldBookMarkWhite, BoldMenuDots, LineBookMark} from '@ui/Icons';
 import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 
@@ -21,11 +21,11 @@ export interface WorkroomItemInfo {
   favorite?: boolean;
   trash?: boolean;
   trashedTime?: string;
+  generatedInfo?: GeneratedItemInfo | null;
 }
 
-export interface generatedItemInfo {
-  id: number;
-  imgUrl: string;
+export interface GeneratedItemInfo {
+  generatedType: number /* number or Enum */;
   generateModel: string /* number or Enum */;
   positivePrompt: string;
   negativePrompt: string;
@@ -61,7 +61,7 @@ const WorkroomItem: React.FC<Props> = ({
             >
               <img
                 className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
-                src={LineBookMark.src}
+                src={item.favorite ? BoldBookMark.src : LineBookMark.src}
               />
             </button>
           )}
@@ -139,7 +139,7 @@ const WorkroomItem: React.FC<Props> = ({
             >
               <img
                 className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
-                src={LineBookMark.src}
+                src={item.favorite ? BoldBookMark.src : BoldBookMarkWhite.src}
               />
             </button>
           </div>

@@ -21,19 +21,26 @@
     padding-top: 58px;
     /* border-radius: 8px; */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
   }
 
   .viewerContainer
   {
-    width: 100%;
-    height: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   
   .imageContainer {
     width: 100%;
     height: 50%;
+    min-height: 536px;
     flex-shrink: 0;
     object-fit: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     /* border-radius: 4px; */
   }
   
@@ -72,6 +79,8 @@
 
 .buttonItem
 {
+  cursor: pointer;
+  
     display: flex;
     width: 30px;
     height: 30px;
@@ -90,10 +99,15 @@
 
 .infoArea
 {
+  
+  flex-grow: 1;
+
     display: flex;
     flex-direction: column;
     gap: 14px;
     padding: 0 16px;
+    overflow-y: auto;
+    max-height: 100%;
 }
 
 .infoItem

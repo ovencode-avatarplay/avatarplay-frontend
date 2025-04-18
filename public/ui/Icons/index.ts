@@ -64,6 +64,8 @@ import BoldVerifiedLabel from "./Bold/VerifiedLabel.svg";
 import BoldVerticalGrid from "./Bold/Vertical_Grid.svg";
 import BoldVideo from "./Bold/Video.svg";
 import BoldViewGallery from "./Bold/View_Gallery.svg";
+import BoldBookMark from "./Bold/Bookmark.svg";
+import BoldBookMarkWhite from "./Bold/BookmarkWhite.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -240,6 +242,8 @@ export {
   BoldLetter,
   BoldContentLists,
   BoldSearch,
+  BoldBookMark,
+  BoldBookMarkWhite,
   LineAddButton,
   LineAIImage,
   LineArchive,

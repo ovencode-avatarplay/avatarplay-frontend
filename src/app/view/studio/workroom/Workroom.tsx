@@ -16,6 +16,7 @@ import CustomPopup from '@/components/layout/shared/CustomPopup';
 import WorkroomEditDrawer from './WorkroomEditDrawer';
 import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
 import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
+import WorkroomFileMoveModal from './WorkroomFileMoveModal';
 
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
@@ -121,12 +122,90 @@ const Workroom: React.FC<Props> = ({}) => {
   ]);
 
   const [aiHistoryData, setAiHistoryData] = useState<WorkroomItemInfo[]>([
-    {id: 5000, imgUrl: '/images/001.png', name: 'aiGen0', detail: 'detail0'},
-    {id: 5001, imgUrl: '/images/001.png', name: 'aiGen1', detail: 'detail1'},
-    {id: 5002, imgUrl: '/images/001.png', name: 'aiGen2', detail: 'detail2'},
-    {id: 5003, imgUrl: '/images/001.png', name: 'aiGen3', detail: 'detail3'},
-    {id: 5004, imgUrl: '/images/001.png', name: 'aiGen4', detail: 'detail4'},
-    {id: 5005, imgUrl: '/images/001.png', name: 'aiGen5', detail: 'detail5'},
+    {
+      id: 5000,
+      imgUrl: '/images/001.png',
+      name: 'aiGen0',
+      detail: 'detail0',
+      generatedInfo: {
+        generatedType: 2,
+        generateModel: 'model',
+        imageSize: '64x64',
+        positivePrompt: 'positive',
+        negativePrompt: 'negative',
+        seed: 12345,
+      },
+    },
+    {
+      id: 5001,
+      imgUrl: '/images/001.png',
+      name: 'aiGen1',
+      detail: 'detail1',
+      generatedInfo: {
+        generatedType: 2,
+        generateModel: 'model1',
+        imageSize: '128x128',
+        positivePrompt: 'positive, 1',
+        negativePrompt: 'negative, 1',
+        seed: 11111,
+      },
+    },
+    {
+      id: 5002,
+      imgUrl: '/images/001.png',
+      name: 'aiGen2',
+      detail: 'detail2',
+      generatedInfo: {
+        generatedType: 1,
+        generateModel: 'model2',
+        imageSize: '128x128',
+        positivePrompt: 'positive, 2',
+        negativePrompt: 'negative, 2',
+        seed: 22222,
+      },
+    },
+    {
+      id: 5003,
+      imgUrl: '/images/001.png',
+      name: 'aiGen3',
+      detail: 'detail3',
+      generatedInfo: {
+        generatedType: 2,
+        generateModel: 'model3',
+        imageSize: '120x120',
+        positivePrompt: 'positive, 3',
+        negativePrompt: 'negative, 3',
+        seed: 33333,
+      },
+    },
+    {
+      id: 5004,
+      imgUrl: '/images/001.png',
+      name: 'aiGen4',
+      detail: 'detail4',
+      generatedInfo: {
+        generatedType: 1,
+        generateModel: 'model4',
+        imageSize: '128x128',
+        positivePrompt: 'positive, 4',
+        negativePrompt: 'negative, 4',
+        seed: 4444,
+      },
+    },
+    {
+      id: 5005,
+      imgUrl: '/images/001.png',
+      name: 'aiGen5',
+      detail: 'detail5',
+      generatedInfo: {
+        generatedType: 2,
+        generateModel: 'model5',
+        imageSize: '128x128',
+        positivePrompt: 'positive, 5',
+        negativePrompt: 'negative, 5',
+        seed: 55555,
+      },
+    },
   ]);
 
   //#endregion
@@ -145,6 +224,7 @@ const Workroom: React.FC<Props> = ({}) => {
     limit?: number;
     favorite?: boolean;
     trash?: boolean;
+    generatedType?: number;
   };
 
   const [detailView, setDetailView] = useState<boolean>(false);
@@ -159,7 +239,8 @@ const Workroom: React.FC<Props> = ({}) => {
   const [isFolderNamePopupOpen, setIsFolderNamePopupOpen] = useState<boolean>(false);
   const [newFolderName, setNewFolderName] = useState<string>('');
 
-  const [isfileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
+  const [isFileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
+  const [isFileMoveModalOpen, setIsFileMoveModalOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
 
@@ -268,7 +349,11 @@ const Workroom: React.FC<Props> = ({}) => {
   const renderDataItems = (data: WorkroomItemInfo[], detailView: boolean, option: RenderDataItemsOptions) => {
     const trashFilteredData = option.trash ? data.filter(item => item.trash) : data.filter(item => !item.trash);
     const favoriteFilteredData = option.favorite ? trashFilteredData.filter(item => item.favorite) : trashFilteredData;
-    const limitedData = option.limit ? favoriteFilteredData.slice(0, option.limit) : favoriteFilteredData;
+    const generatedTypeFilterData =
+      option.generatedType && option.generatedType > 0
+        ? favoriteFilteredData.filter(item => item.generatedInfo?.generatedType === option.generatedType)
+        : favoriteFilteredData;
+    const limitedData = option.limit ? favoriteFilteredData.slice(0, option.limit) : generatedTypeFilterData;
 
     return (
       <div className={`${styles.itemContainer}`}>
@@ -466,7 +551,38 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const renderAiHistory = () => {
-    return <div className={styles.aiHistoryContainer}></div>;
+    return (
+      <div
+        className={styles.aiHistoryContainer}
+        onMouseDown={handleStart}
+        onMouseUp={handleEnd}
+        onMouseLeave={handleEnd}
+        onTouchStart={handleStart}
+        onTouchCancel={handleEnd}
+        onTouchEnd={e => {
+          handleEnd();
+          handleDeselectIfOutside(e);
+        }}
+        onClick={e => handleDeselectIfOutside(e)}
+      >
+        <>
+          <div className={styles.categoryArea}>
+            <div className={styles.categoryTitleArea}></div>
+            {renderDataItems(aiHistoryData, false, {
+              filterArea: false,
+              generatedType:
+                tagStates.aiHistory === 'All'
+                  ? 0
+                  : tagStates.aiHistory === 'Custom'
+                  ? 1
+                  : tagStates.aiHistory === 'Variation'
+                  ? 2
+                  : 0,
+            })}
+          </div>
+        </>
+      </div>
+    );
   };
 
   const renderTrash = () => {
@@ -484,7 +600,7 @@ const Workroom: React.FC<Props> = ({}) => {
         }}
         onClick={e => handleDeselectIfOutside(e)}
       >
-        {tagStates.work === 'All' && (
+        {tagStates.trash === 'All' && (
           <>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -492,7 +608,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 <button
                   className={styles.categoryShowMore}
                   onClick={() => {
-                    handleTagClick('work', 'Folders');
+                    handleTagClick('trash', 'Folders');
                   }}
                 >
                   {getLocalizedText('TODO : Show more')}
@@ -506,7 +622,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 <button
                   className={styles.categoryShowMore}
                   onClick={() => {
-                    handleTagClick('work', 'Image');
+                    handleTagClick('trash', 'Image');
                   }}
                 >
                   {getLocalizedText('TODO : Show more')}
@@ -520,7 +636,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 <button
                   className={styles.categoryShowMore}
                   onClick={() => {
-                    handleTagClick('work', 'Video');
+                    handleTagClick('trash', 'Video');
                   }}
                 >
                   {getLocalizedText('TODO : Show more')}
@@ -534,7 +650,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 <button
                   className={styles.categoryShowMore}
                   onClick={() => {
-                    handleTagClick('work', 'Audio');
+                    handleTagClick('trash', 'Audio');
                   }}
                 >
                   {getLocalizedText('TODO : Show more')}
@@ -545,15 +661,15 @@ const Workroom: React.FC<Props> = ({}) => {
           </>
         )}
 
-        {tagStates.work === 'Folders' && renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true})}
+        {tagStates.trash === 'Folders' && renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true})}
 
-        {tagStates.work === 'Image' &&
+        {tagStates.trash === 'Image' &&
           renderDataItems(imageData, detailView, {filterArea: true, limit: 4, trash: true})}
 
-        {tagStates.work === 'Video' &&
+        {tagStates.trash === 'Video' &&
           renderDataItems(videoData, detailView, {filterArea: true, limit: 4, trash: true})}
 
-        {tagStates.work === 'Audio' && renderDataItems(audioData, true, {filterArea: true, limit: 4, trash: true})}
+        {tagStates.trash === 'Audio' && renderDataItems(audioData, true, {filterArea: true, limit: 4, trash: true})}
       </div>
     );
   };
@@ -676,65 +792,65 @@ const Workroom: React.FC<Props> = ({}) => {
           />,
           document.body,
         )}
-      {isFolderNamePopupOpen &&
-        ReactDOM.createPortal(
-          <CustomPopup
-            title={getLocalizedText('TODO : Create a folder')}
-            type="input"
-            buttons={[
-              {
-                label: getLocalizedText('TODO : Confirm'),
-                onClick: () => {
-                  if (newFolderName !== '') {
-                    //TODO Handler Add FolderItem
-                    setIsFolderNamePopupOpen(false);
-                    setNewFolderName('');
-                  }
+      {ReactDOM.createPortal(
+        <>
+          {isFolderNamePopupOpen && (
+            <CustomPopup
+              title={getLocalizedText('TODO : Create a folder')}
+              type="input"
+              buttons={[
+                {
+                  label: getLocalizedText('TODO : Confirm'),
+                  onClick: () => {
+                    if (newFolderName !== '') {
+                      //TODO Handler Add FolderItem
+                      setIsFolderNamePopupOpen(false);
+                      setNewFolderName('');
+                    }
+                  },
                 },
-              },
-            ]}
-            inputField={{
-              value: newFolderName,
-              onChange: e => setNewFolderName(e.target.value),
-              placeholder: getLocalizedText('TODO : Please enter the folder name'),
-              textType: 'Label',
-              label: getLocalizedText('TODO : Folder name'),
-            }}
-          />,
-          document.body,
-        )}
-      {isfileEditDrawerOpen &&
-        selectedItem !== null &&
-        ReactDOM.createPortal(
-          <WorkroomEditDrawer
-            open={isfileEditDrawerOpen}
-            onClose={() => setIsFileEditDrawerOpen(false)}
-            name={selectedItem.name}
-            info={selectedItem.detail}
-            onCopy={() => console.log('Copy')}
-            onMove={() => console.log('Move')}
-            onShare={() => console.log('Share')}
-            onDownload={() => console.log('Download')}
-            onDelete={() => console.log('Delete')}
-          />,
-          document.body,
-        )}
-
-      {imageViewOpen && (
-        // <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
-
-        <GeneratedImagePreViewer
-          generatedInfo={{
-            imgUrl: selectedItem?.imgUrl || '',
-            id: 0,
-            generateModel: 'model',
-            imageSize: '64x64',
-            positivePrompt: 'posi',
-            negativePrompt: 'nega',
-            seed: 1111,
-          }}
-          onClose={() => setImageViewOpen(false)}
-        />
+              ]}
+              inputField={{
+                value: newFolderName,
+                onChange: e => setNewFolderName(e.target.value),
+                placeholder: getLocalizedText('TODO : Please enter the folder name'),
+                textType: 'Label',
+                label: getLocalizedText('TODO : Folder name'),
+              }}
+            />
+          )}
+          {isFileEditDrawerOpen && selectedItem !== null && (
+            <WorkroomEditDrawer
+              open={isFileEditDrawerOpen}
+              onClose={() => setIsFileEditDrawerOpen(false)}
+              name={selectedItem.name}
+              info={selectedItem.detail}
+              onCopy={() => console.log('Copy')}
+              onMove={() => {
+                setIsFileMoveModalOpen(true);
+                setIsFileEditDrawerOpen(false);
+              }}
+              onShare={() => console.log('Share')}
+              onDownload={() => console.log('Download')}
+              onDelete={() => console.log('Delete')}
+            />
+          )}
+          {isFileMoveModalOpen && selectedItem !== null && (
+            <WorkroomFileMoveModal
+              open={isFileMoveModalOpen}
+              onClose={() => setIsFileMoveModalOpen(false)}
+              folders={folderData}
+            />
+          )}
+          {imageViewOpen &&
+            selectedItem &&
+            (selectedItem.generatedInfo ? (
+              <GeneratedImagePreViewer workroomItemInfo={selectedItem} onClose={() => setImageViewOpen(false)} />
+            ) : (
+              <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
+            ))}
+        </>,
+        document.body,
       )}
     </div>
   );
