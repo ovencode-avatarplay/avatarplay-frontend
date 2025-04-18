@@ -3,7 +3,6 @@ import {NextResponse} from 'next/server';
 import {NextRequest} from 'next/server';
 
 export function middleware(req: NextRequest) {
-  console.log('ㅎㅇㅎㅇ');
   //const browserLang = req.headers.get('accept-language')?.split(',')[0]?.split('-')[0] || 'en-US';
   const browserLang = req.cookies.get('language')?.value || 'en-US';
   console.log(browserLang);

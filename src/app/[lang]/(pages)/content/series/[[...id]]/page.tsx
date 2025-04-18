@@ -10,7 +10,6 @@ type Props = {
 
 const page = ({params}: Props) => {
   const id = params?.id?.[0] ?? '0';
-  console.log('ㅎㅇㅎㅇ2');
   return (
     <>
       <ContentSeriesDetail id={id} type={ContentType.Series} />
