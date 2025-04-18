@@ -23,7 +23,6 @@ import CharacterCreatePolicy from './CharacterCreatePolicy';
 import {CharacterMediaInfo, CreateCharacter2Req, sendCreateCharacter2} from '@/app/NetWork/CharacterNetwork';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
-import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
@@ -34,6 +33,7 @@ import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPr
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
+import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -904,7 +904,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
         {selectImageTypeOpen && <>{renderSelectImageType()}</>}
       </div>
       {imgUploadSelectModalOpen && <>{renderUploadSelectModal()}</>}
-      {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
+      {imageViewOpen && <ImagePreViewer imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
         <ImageUpload
           isOpen={imgUploadOpen}

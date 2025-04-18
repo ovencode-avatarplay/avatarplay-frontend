@@ -1,6 +1,7 @@
 .selectingMenuContainer {
     display: flex;
     width: 100% - 32px;
+    max-width: 1300px;
     align-items: center;
     justify-content: space-between;  
     padding: 17px 10px 17px 16px;

@@ -13,8 +13,9 @@ import WorkroomItem, {WorkroomItemInfo} from './WorkroomItem';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
-import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import WorkroomEditDrawer from './WorkroomEditDrawer';
+import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
+import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
 
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
@@ -41,7 +42,14 @@ const Workroom: React.FC<Props> = ({}) => {
     {id: 1000, imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
     {id: 1001, imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
     {id: 1002, imgUrl: '/images/001.png', name: 'folder2', detail: 'detail2', favorite: true},
-    {id: 1003, imgUrl: '/images/001.png', name: 'folder3', detail: 'detail3'},
+    {
+      id: 1003,
+      imgUrl: '/images/001.png',
+      name: 'folder3',
+      detail: 'detail3',
+      trash: true,
+      trashedTime: '2025-04-18 09:44:53',
+    },
     {id: 1004, imgUrl: '/images/001.png', name: 'folder4', detail: 'detail4'},
     {id: 1005, imgUrl: '/images/001.png', name: 'folder5', detail: 'detail5'},
     {id: 1006, imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
@@ -53,7 +61,14 @@ const Workroom: React.FC<Props> = ({}) => {
     {id: 2000, imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
     {id: 2001, imgUrl: '/images/001.png', name: 'image1', detail: 'detail1'},
     {id: 2002, imgUrl: '/images/001.png', name: 'image2', detail: 'detail2'},
-    {id: 2003, imgUrl: '/images/001.png', name: 'image3', detail: 'detail3'},
+    {
+      id: 2003,
+      imgUrl: '/images/001.png',
+      name: 'image3',
+      detail: 'detail3',
+      trash: true,
+      trashedTime: '2025-04-18 09:44:53',
+    },
     {id: 2004, imgUrl: '/images/001.png', name: 'image4', detail: 'detail4'},
     {id: 2005, imgUrl: '/images/001.png', name: 'image5', detail: 'detail5'},
     {id: 2006, imgUrl: '/images/001.png', name: 'image6', detail: 'detail6', favorite: true},
@@ -63,11 +78,32 @@ const Workroom: React.FC<Props> = ({}) => {
   // All 에서 보여지는 video 그리드는 4개 입니다. (기획)
   const [videoData, setVideoData] = useState<WorkroomItemInfo[]>([
     {id: 3000, imgUrl: '/images/001.png', name: 'video0', detail: 'detail0'},
-    {id: 3001, imgUrl: '/images/001.png', name: 'video1', detail: 'detail1'},
+    {
+      id: 3001,
+      imgUrl: '/images/001.png',
+      name: 'video1',
+      detail: 'detail1',
+      trash: true,
+      trashedTime: '2025-04-18 09:44:53',
+    },
     {id: 3002, imgUrl: '/images/001.png', name: 'video2', detail: 'detail2'},
     {id: 3003, imgUrl: '/images/001.png', name: 'video3', detail: 'detail3'},
-    {id: 3004, imgUrl: '/images/001.png', name: 'video4', detail: 'detail4'},
-    {id: 3005, imgUrl: '/images/001.png', name: 'video5', detail: 'detail5'},
+    {
+      id: 3004,
+      imgUrl: '/images/001.png',
+      name: 'video4',
+      detail: 'detail4',
+      trash: true,
+      trashedTime: '2025-04-18 09:44:53',
+    },
+    {
+      id: 3005,
+      imgUrl: '/images/001.png',
+      name: 'video5',
+      detail: 'detail5',
+      trash: true,
+      trashedTime: '2025-04-18 09:44:53',
+    },
     {id: 3006, imgUrl: '/images/001.png', name: 'video6', detail: 'detail6'},
     {id: 3007, imgUrl: '/images/001.png', name: 'video7', detail: 'detail7', favorite: true},
   ]);
@@ -104,6 +140,13 @@ const Workroom: React.FC<Props> = ({}) => {
     trash: 'All',
   });
 
+  type RenderDataItemsOptions = {
+    filterArea?: boolean;
+    limit?: number;
+    favorite?: boolean;
+    trash?: boolean;
+  };
+
   const [detailView, setDetailView] = useState<boolean>(false);
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -118,6 +161,7 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const [isfileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
+  const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
 
   //#endregion
 
@@ -155,8 +199,9 @@ const Workroom: React.FC<Props> = ({}) => {
   //#region  Handler
   const handleTagClick = (type: keyof typeof tagStates, tag: string) => {
     setTagStates(prev => ({...prev, [type]: tag}));
-    setIsSelecting(false);
-    setSelectedItems([]);
+    // 태그는
+    // setIsSelecting(false);
+    // setSelectedItems([]);
   };
 
   const toggleSelectItem = (id: number, checked: boolean) => {
@@ -179,6 +224,13 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleMenuClick = (item: WorkroomItemInfo) => {
     setIsFileEditDrawerOpen(true);
     setSelectedItem(item);
+  };
+
+  const handleItemImageClick = (item: WorkroomItemInfo) => {
+    if (!isSelecting) {
+      setSelectedItem(item);
+      setImageViewOpen(true);
+    }
   };
 
   //#endregion
@@ -204,6 +256,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 onSelect={checked => toggleSelectItem(item.id, checked)}
                 onClickFavorite={() => toggleFavorite(item.id)}
                 onClickMenu={() => handleMenuClick(item)}
+                onClickPreview={() => handleItemImageClick(item)}
               />
             </div>
           </SwiperSlide>
@@ -212,11 +265,14 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
-  const renderDataItems = (data: WorkroomItemInfo[], detailView: boolean, filterArea?: boolean, limit?: number) => {
-    const limitedData = limit ? data.slice(0, limit) : data;
+  const renderDataItems = (data: WorkroomItemInfo[], detailView: boolean, option: RenderDataItemsOptions) => {
+    const trashFilteredData = option.trash ? data.filter(item => item.trash) : data.filter(item => !item.trash);
+    const favoriteFilteredData = option.favorite ? trashFilteredData.filter(item => item.favorite) : trashFilteredData;
+    const limitedData = option.limit ? favoriteFilteredData.slice(0, option.limit) : favoriteFilteredData;
+
     return (
       <div className={`${styles.itemContainer}`}>
-        {filterArea && <div className={styles.filterArea}>{getLocalizedText('TODO: FILTER')}</div>}
+        {option.filterArea && <div className={styles.filterArea}>{getLocalizedText('TODO: FILTER')}</div>}
         <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
           {limitedData.map((item, index) => (
             <div className={styles.dataItem} key={index} data-item>
@@ -228,6 +284,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 onSelect={checked => toggleSelectItem(item.id, checked)}
                 onClickFavorite={() => toggleFavorite(item.id)}
                 onClickMenu={() => handleMenuClick(item)}
+                onClickPreview={() => handleItemImageClick(item)}
               />
             </div>
           ))}
@@ -271,7 +328,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(folderData, true, false, 4)}
+              {renderDataItems(folderData, true, {filterArea: false, limit: 4, trash: false})}
             </div>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -285,7 +342,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(imageData, detailView, false, 4)}
+              {renderDataItems(imageData, detailView, {filterArea: false, limit: 4})}
             </div>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -299,7 +356,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(videoData, detailView, false, 4)}
+              {renderDataItems(videoData, detailView, {filterArea: false, limit: 4})}
             </div>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -313,18 +370,18 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(audioData, true, false, 4)}
+              {renderDataItems(audioData, true, {filterArea: false, limit: 4})}
             </div>
           </>
         )}
 
-        {tagStates.work === 'Folders' && renderDataItems(folderData, true, true)}
+        {tagStates.work === 'Folders' && renderDataItems(folderData, true, {filterArea: true})}
 
-        {tagStates.work === 'Image' && renderDataItems(imageData, detailView, true)}
+        {tagStates.work === 'Image' && renderDataItems(imageData, detailView, {filterArea: true})}
 
-        {tagStates.work === 'Video' && renderDataItems(videoData, detailView, true)}
+        {tagStates.work === 'Video' && renderDataItems(videoData, detailView, {filterArea: true})}
 
-        {tagStates.work === 'Audio' && renderDataItems(audioData, true, true)}
+        {tagStates.work === 'Audio' && renderDataItems(audioData, true, {filterArea: true})}
       </div>
     );
   };
@@ -346,12 +403,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(
-                folderData.filter(item => item.favorite),
-                true,
-                false,
-                4,
-              )}
+              {renderDataItems(folderData, true, {filterArea: false, limit: 4, favorite: true})}
             </div>
 
             <div className={styles.categoryArea}>
@@ -366,12 +418,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(
-                imageData.filter(item => item.favorite),
-                detailView,
-                false,
-                4,
-              )}
+              {renderDataItems(imageData, detailView, {filterArea: false, limit: 4, favorite: true})}
             </div>
 
             <div className={styles.categoryArea}>
@@ -386,12 +433,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(
-                videoData.filter(item => item.favorite),
-                detailView,
-                false,
-                4,
-              )}
+              {renderDataItems(videoData, detailView, {filterArea: false, limit: 4, favorite: true})}
             </div>
 
             <div className={styles.categoryArea}>
@@ -406,46 +448,114 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(
-                audioData.filter(item => item.favorite),
-                true,
-                false,
-                4,
-              )}
+              {renderDataItems(audioData, true, {filterArea: false, limit: 4, favorite: true})}
             </div>
           </>
         )}
 
         {tagStates.favorite === 'Folders' &&
-          renderDataItems(
-            folderData.filter(item => item.favorite),
-            true,
-            true,
-          )}
+          renderDataItems(folderData, true, {filterArea: true, limit: 4, favorite: true})}
         {tagStates.favorite === 'Image' &&
-          renderDataItems(
-            imageData.filter(item => item.favorite),
-            detailView,
-            true,
-          )}
+          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, favorite: true})}
         {tagStates.favorite === 'Video' &&
-          renderDataItems(
-            videoData.filter(item => item.favorite),
-            detailView,
-            true,
-          )}
+          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, favorite: true})}
         {tagStates.favorite === 'Audio' &&
-          renderDataItems(
-            audioData.filter(item => item.favorite),
-            true,
-            true,
-          )}
+          renderDataItems(audioData, true, {filterArea: true, limit: 4, favorite: true})}
       </div>
     );
   };
 
   const renderAiHistory = () => {
     return <div className={styles.aiHistoryContainer}></div>;
+  };
+
+  const renderTrash = () => {
+    return (
+      <div
+        className={styles.trashContainer}
+        onMouseDown={handleStart}
+        onMouseUp={handleEnd}
+        onMouseLeave={handleEnd}
+        onTouchStart={handleStart}
+        onTouchCancel={handleEnd}
+        onTouchEnd={e => {
+          handleEnd();
+          handleDeselectIfOutside(e);
+        }}
+        onClick={e => handleDeselectIfOutside(e)}
+      >
+        {tagStates.work === 'All' && (
+          <>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Folder')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    handleTagClick('work', 'Folders');
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
+              </div>
+              {renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true})}
+            </div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Image')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    handleTagClick('work', 'Image');
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
+              </div>
+              {renderDataItems(imageData, detailView, {filterArea: false, limit: 4, trash: true})}
+            </div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Video')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    handleTagClick('work', 'Video');
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
+              </div>
+              {renderDataItems(videoData, detailView, {filterArea: false, limit: 4, trash: true})}
+            </div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : Audio')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    handleTagClick('work', 'Audio');
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
+              </div>
+              {renderDataItems(audioData, true, {filterArea: false, limit: 4, trash: true})}
+            </div>
+          </>
+        )}
+
+        {tagStates.work === 'Folders' && renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true})}
+
+        {tagStates.work === 'Image' &&
+          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, trash: true})}
+
+        {tagStates.work === 'Video' &&
+          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, trash: true})}
+
+        {tagStates.work === 'Audio' && renderDataItems(audioData, true, {filterArea: true, limit: 4, trash: true})}
+      </div>
+    );
   };
 
   //#endregion
@@ -478,7 +588,7 @@ const Workroom: React.FC<Props> = ({}) => {
           onTagChange={tag => handleTagClick('aiHistory', tag)}
         />
       ),
-      content: <>{}</>,
+      content: <>{renderAiHistory()}</>,
     },
     {
       label: getLocalizedText('TODO : Gallery'),
@@ -500,7 +610,7 @@ const Workroom: React.FC<Props> = ({}) => {
           onTagChange={tag => handleTagClick('trash', tag)}
         />
       ),
-      content: <>{}</>,
+      content: <>{renderTrash()}</>,
     },
   ];
 
@@ -609,6 +719,23 @@ const Workroom: React.FC<Props> = ({}) => {
           />,
           document.body,
         )}
+
+      {imageViewOpen && (
+        // <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
+
+        <GeneratedImagePreViewer
+          generatedInfo={{
+            imgUrl: selectedItem?.imgUrl || '',
+            id: 0,
+            generateModel: 'model',
+            imageSize: '64x64',
+            positivePrompt: 'posi',
+            negativePrompt: 'nega',
+            seed: 1111,
+          }}
+          onClose={() => setImageViewOpen(false)}
+        />
+      )}
     </div>
   );
 };

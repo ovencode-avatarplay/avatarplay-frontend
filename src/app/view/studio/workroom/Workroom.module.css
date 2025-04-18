@@ -71,6 +71,17 @@
     width: 100%;
 }
 
+.trashContainer 
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    align-items: flex-start;
+    align-self: stretch;
+
+}
 
 
 .categoryArea

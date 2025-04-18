@@ -10,6 +10,7 @@ interface Props {
   onSelect: (checked: boolean) => void;
   onClickFavorite: (favorite: boolean) => void;
   onClickMenu: () => void;
+  onClickPreview: () => void;
 }
 
 export interface WorkroomItemInfo {
@@ -18,6 +19,18 @@ export interface WorkroomItemInfo {
   name: string;
   detail: string;
   favorite?: boolean;
+  trash?: boolean;
+  trashedTime?: string;
+}
+
+export interface generatedItemInfo {
+  id: number;
+  imgUrl: string;
+  generateModel: string /* number or Enum */;
+  positivePrompt: string;
+  negativePrompt: string;
+  seed: number;
+  imageSize: string;
 }
 
 const WorkroomItem: React.FC<Props> = ({
@@ -28,6 +41,7 @@ const WorkroomItem: React.FC<Props> = ({
   onSelect,
   onClickFavorite,
   onClickMenu,
+  onClickPreview,
 }) => {
   const renderFileInfoArea = () => {
     return (
@@ -64,7 +78,7 @@ const WorkroomItem: React.FC<Props> = ({
       {detailView ? (
         <div className={styles.detailViewContainer}>
           {isSelecting && (
-            <div className={styles.selectButton}>
+            <div className={styles.selectButton} onClick={e => e.stopPropagation()}>
               <CustomCheckbox
                 displayType="buttonOnly"
                 shapeType="square"
@@ -82,6 +96,10 @@ const WorkroomItem: React.FC<Props> = ({
               })`,
               backgroundSize: 'cover',
             }}
+            onClick={e => {
+              e.stopPropagation();
+              onClickPreview();
+            }}
           ></div>
           {renderFileInfoArea()}
         </div>
@@ -94,6 +112,10 @@ const WorkroomItem: React.FC<Props> = ({
                 item.imgUrl ? item.imgUrl : '/images/001.png'
               })`,
               backgroundSize: 'cover',
+            }}
+            onClick={e => {
+              e.stopPropagation();
+              onClickPreview();
             }}
           >
             {isSelecting && (
