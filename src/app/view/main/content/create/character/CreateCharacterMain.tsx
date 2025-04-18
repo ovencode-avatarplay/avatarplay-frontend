@@ -45,12 +45,13 @@ import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import VideoUpload from '@/components/create/VideoUpload';
+import { profile } from 'console';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
 
 interface CreateCharacterProps {
-  id?: number;
+  id: number;
   isUpdate?: boolean;
   characterInfo?: CharacterInfo;
   onClose?: () => void;
@@ -399,7 +400,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       const req: CreateCharacter2Req = {
         languageType: getCurrentLanguage(),
         payload: {
-          id: character.id,
+          id: id,
           referenceLanguage: languageType,
           name: characterName,
           introduction: replaceChipsWithKeywords(introduction, KEYWORDS),
