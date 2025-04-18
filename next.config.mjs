@@ -4,13 +4,13 @@ import process from "process"; // ✅ process 명시적 import
 const nextConfig = {
   reactStrictMode: false,
   basePath: process.env.BASEPATH || "", // ✅ 환경 변수 적용
-  ...(!process?.env?.NEXT_PUBLIC_NODE_ENV && {
-    compiler: {
-      removeConsole: {
-        exclude: [],
-      },
-    },
-  }),
+  // ...(!process?.env?.NEXT_PUBLIC_NODE_ENV && {
+  //   compiler: {
+  //     removeConsole: {
+  //       exclude: [],
+  //     },
+  //   },
+  // }),
   // redirects: async () => [
   //   {
   //     source: "/", // 루트 경로

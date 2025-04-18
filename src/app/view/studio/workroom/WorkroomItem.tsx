@@ -5,12 +5,19 @@ import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 interface Props {
   detailView: boolean;
   item: WorkroomItemInfo;
+  isSelecting: boolean;
+  isSelected: boolean;
+  onSelect: (checked: boolean) => void;
+  onClickFavorite: () => void;
+  onClickMenu: () => void;
 }
 
 export interface WorkroomItemInfo {
+  id: number;
   imgUrl: string;
   name: string;
   detail: string;
+  favorite?: boolean;
 }
 
 const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
