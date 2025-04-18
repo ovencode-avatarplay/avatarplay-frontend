@@ -367,7 +367,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           onChange={handleSummaryChange}
           label={
             <span>
-              {getLocalizedText('createcontent012_label_004')}{' '}
+              {getLocalizedText('createcontent003_label_002')}{' '}
               <span style={{color: 'var(--Secondary-Red-1, #F75555)'}}>*</span>
             </span>
           }
