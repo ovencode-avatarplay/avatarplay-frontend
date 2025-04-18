@@ -8,7 +8,7 @@ interface Props {
   isSelecting: boolean;
   isSelected: boolean;
   onSelect: (checked: boolean) => void;
-  onClickFavorite: () => void;
+  onClickFavorite: (favorite: boolean) => void;
   onClickMenu: () => void;
 }
 
@@ -20,7 +20,15 @@ export interface WorkroomItemInfo {
   favorite?: boolean;
 }
 
-const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
+const WorkroomItem: React.FC<Props> = ({
+  detailView,
+  item,
+  isSelecting,
+  isSelected,
+  onSelect,
+  onClickFavorite,
+  onClickMenu,
+}) => {
   const renderFileInfoArea = () => {
     return (
       <div className={styles.fileInfoArea}>
@@ -30,11 +38,20 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
         </div>
         <div className={styles.infoRightArea}>
           {detailView && (
-            <button className={styles.bookMarkButton}>
-              <img className={`${styles.bookMarkIcon} ${styles.selected}`} src={LineBookMark.src} />
+            <button
+              className={styles.bookMarkButton}
+              onClick={e => {
+                e.stopPropagation();
+                onClickFavorite(!item.favorite);
+              }}
+            >
+              <img
+                className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
+                src={LineBookMark.src}
+              />
             </button>
           )}
-          <button className={styles.btnMenu}>
+          <button className={styles.btnMenu} onClick={onClickMenu}>
             <img className={styles.btnIcon} src={BoldMenuDots.src} />
           </button>
         </div>
@@ -46,15 +63,17 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
     <div className={styles.workroomItem}>
       {detailView ? (
         <div className={styles.detailViewContainer}>
-          <div className={styles.selectButton}>
-            <CustomCheckbox
-              displayType="buttonOnly"
-              shapeType="square"
-              checked={true}
-              onToggle={() => {}}
-              containerStyle={{width: '100%', height: '100%'}}
-            />
-          </div>
+          {isSelecting && (
+            <div className={styles.selectButton}>
+              <CustomCheckbox
+                displayType="buttonOnly"
+                shapeType="square"
+                checked={isSelected}
+                onToggle={onSelect}
+                containerStyle={{width: '100%', height: '100%'}}
+              />
+            </div>
+          )}
           <div
             className={styles.fileImage}
             style={{
@@ -77,17 +96,29 @@ const WorkroomItem: React.FC<Props> = ({detailView, item}) => {
               backgroundSize: 'cover',
             }}
           >
-            <div className={styles.selectButton}>
-              <CustomCheckbox
-                displayType="buttonOnly"
-                shapeType="square"
-                checked={true}
-                onToggle={() => {}}
-                containerStyle={{width: '100%', height: '100%'}}
+            {isSelecting && (
+              <div className={styles.selectButton}>
+                <CustomCheckbox
+                  displayType="buttonOnly"
+                  shapeType="square"
+                  checked={isSelected}
+                  onToggle={onSelect}
+                  containerStyle={{width: '100%', height: '100%'}}
+                />
+              </div>
+            )}
+
+            <button
+              className={styles.bookMarkButton}
+              onClick={e => {
+                e.stopPropagation();
+                onClickFavorite(!item.favorite);
+              }}
+            >
+              <img
+                className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
+                src={LineBookMark.src}
               />
-            </div>
-            <button className={styles.bookMarkButton}>
-              <img className={`${styles.bookMarkIcon} ${styles.selected}`} src={LineBookMark.src} />
             </button>
           </div>
           {renderFileInfoArea()}

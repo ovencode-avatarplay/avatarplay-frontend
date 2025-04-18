@@ -16,6 +16,7 @@
 
 .detailViewContainer > .fileImage
 {
+    cursor: pointer;
     width: 50px;
     height: 50px;
     flex-shrink: 0;
@@ -49,6 +50,7 @@
 
 .largeViewContainer > .fileImage
 {
+    cursor: pointer;
     position: relative;
 
     width: 160px;
@@ -61,6 +63,7 @@
 
 .largeViewContainer > .fileImage > .selectButton
 {
+    cursor: pointer;
     position: absolute;
     left: 7px;
     top: 7px;
@@ -72,6 +75,7 @@
 
 .largeViewContainer > .fileImage > .bookMarkButton
 {
+    cursor: pointer;
     position: absolute;
     right: 7px;
     top: 7px;
@@ -85,6 +89,8 @@
 {
     width: 100%;
     height: 100%;    
+   
+    filter: brightness(0) saturate(100%) invert(87%) sepia(6%) saturate(191%) hue-rotate(173deg) brightness(87%) contrast(96%);
 }
  
 .bookMarkIcon.selected
@@ -107,6 +113,7 @@
 
 .onlyImageViewContainer > .fileImage
 {
+    cursor: pointer;
     width: 100%;
     height: 100%;
 }
@@ -150,6 +157,7 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+
 }
 
 .fileName
@@ -177,6 +185,7 @@
 
 .btnMenu
 {
+    cursor: pointer;
     width: 20px;
     height: 20px;
 

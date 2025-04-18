@@ -1,11 +1,15 @@
 .workroomContainer
 {
+    position: relative;
+    
     width: var(--full-width);
     height:  calc(100% - 58px);
     padding-top: 58px;
     /* box-sizing: content-box; */
 
     overflow: hidden;
+
+    margin-bottom: 80px;
 }
 
 .buttonArea
@@ -36,6 +40,7 @@
 
 }
  
+/*탭의 최상위 container*/
 .myWorkContainer
 {
     display: flex;
@@ -47,12 +52,31 @@
     align-self: stretch;
 }
 
-.categoryArea
+.favoriteContainer
 {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.selectingMenuContainer
+{
+    position: fixed;
+    bottom: 10px;
+    margin: auto 0;
     width: 100%;
 }
 
 
+
+.categoryArea
+{
+    width: 100%;
+}
 
 .categoryTitleArea
 {

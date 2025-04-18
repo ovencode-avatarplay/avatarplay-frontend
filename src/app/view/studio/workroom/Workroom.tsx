@@ -10,11 +10,11 @@ import WorkroomTagList from './WorkroomTagList';
 import {LineEdit, LineFolderPlus, LineSearch} from '@ui/Icons';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import WorkroomItem, {WorkroomItemInfo} from './WorkroomItem';
-// import WorkroomSelectingMenu from './WorkroomSelectingMenu';
+import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
-// import WorkroomEditDrawer from './WorkroomEditDrawer';
+import WorkroomEditDrawer from './WorkroomEditDrawer';
 
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
@@ -532,7 +532,7 @@ const Workroom: React.FC<Props> = ({}) => {
       />
       {isSelecting && selectedItems.length > 0 && (
         <div className={styles.selectingMenuContainer}>
-          {/* <WorkroomSelectingMenu
+          <WorkroomSelectingMenu
             selectedCount={selectedItems.length}
             onExitSelecting={() => {
               setIsSelecting(false);
@@ -541,7 +541,7 @@ const Workroom: React.FC<Props> = ({}) => {
             onDownload={() => {}}
             onMoveToFolder={() => {}}
             onMoveToTrash={() => {}}
-          /> */}
+          />
         </div>
       )}
 
@@ -593,7 +593,7 @@ const Workroom: React.FC<Props> = ({}) => {
           />,
           document.body,
         )}
-      {/* {isfileEditDrawerOpen &&
+      {isfileEditDrawerOpen &&
         selectedItem !== null &&
         ReactDOM.createPortal(
           <WorkroomEditDrawer
@@ -608,7 +608,7 @@ const Workroom: React.FC<Props> = ({}) => {
             onDelete={() => console.log('Delete')}
           />,
           document.body,
-        )} */}
+        )}
     </div>
   );
 };

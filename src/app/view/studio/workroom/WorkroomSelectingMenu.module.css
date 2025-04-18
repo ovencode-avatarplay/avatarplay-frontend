@@ -1,0 +1,62 @@
+.selectingMenuContainer {
+    display: flex;
+    width: 100% - 32px;
+    align-items: center;
+    justify-content: space-between;  
+    padding: 17px 10px 17px 16px;
+    margin: 0 16px;
+
+    gap: 44px;
+    
+    border-radius: 10px;
+    background: var(--White, #FFF);
+    
+    /* Dropdown Shadow */
+    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.10);
+  }
+  
+  .leftArea {
+    flex: 1;
+  }
+  
+  .selectionCount {
+    color: var(--Neutral-900, #121414);
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px; /* 112.5% */
+    letter-spacing: -0.4px;
+  }
+  
+  .centerArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .iconButtonWrapper {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .iconButton {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center; 
+  }
+  
+  .iconButton img {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+  }
+  
+  .rightArea {
+    flex-shrink: 0;
+  }
+  
