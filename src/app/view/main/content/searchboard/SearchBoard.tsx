@@ -213,7 +213,7 @@ const SearchBoard: React.FC = () => {
         // characterPage,
         positiveFilterTags: generatePositiveFilterList(),
         nagativeFilterTags: generateNegativeFilterList(),
-        isOnlyAdults: adultToggleOn,
+        isAdults: adultToggleOn,
         storyOffset: storyOffset,
         characterOffset: characterOffset,
         contentOffset: contentOffset,
