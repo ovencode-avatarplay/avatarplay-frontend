@@ -20,39 +20,6 @@ export interface SessionInfo {
   accessToken: string;
   star: number;
 }
-
-export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
-  try {
-    const jwtToken = localStorage.getItem('jwt');
-    const _language = getLangUrlCode(getBrowserLanguage());
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        language: _language,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error('Failed to authenticate:', response.statusText);
-      return false;
-    }
-
-    const data: {data: SignInRes} = await response.json();
-    localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
-    //fetchLanguage(router);
-    return true;
-  } catch (error) {
-    console.error('Error occurred during authentication:', error);
-    return false;
-  }
-};
-//##########    sign-in 끝
-
 export interface GetLanguageReq {}
 
 export interface GetLanguageRes {
