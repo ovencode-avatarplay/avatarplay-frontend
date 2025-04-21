@@ -191,7 +191,7 @@ const UserDropdown = () => {
       console.log('response login : ', data);
       localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
       setTimeout(() => {
-        fetchLanguage(router);
+        fetchLanguage(true, router);
       }, 100);
       //setSignIn();
       console.log('서버에 저장된 언어로 가져오자');
