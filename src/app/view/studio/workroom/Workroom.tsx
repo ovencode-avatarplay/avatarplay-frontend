@@ -5,9 +5,9 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './Workroom.module.css';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {useRef, useState} from 'react';
+import {useLayoutEffect, useRef, useState} from 'react';
 import WorkroomTagList from './WorkroomTagList';
-import {LineEdit, LineFolderPlus, LineSearch} from '@ui/Icons';
+import {BoldAltArrowDown, BoldViewGallery, LineEdit, LineFolderPlus, LineList, LineSearch} from '@ui/Icons';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import WorkroomItem, {WorkroomItemInfo} from './WorkroomItem';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
@@ -17,6 +17,29 @@ import WorkroomEditDrawer from './WorkroomEditDrawer';
 import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
 import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
 import WorkroomFileMoveModal from './WorkroomFileMoveModal';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import {GetCharacterListReq, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
+import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
+import {getCurrentLanguage} from '@/utils/UrlMove';
+
+type BaseNode = {
+  id: number; // 고유 ID
+  name: string; // 파일 또는 폴더 이름
+  path: string; // 전체 경로 (예: Folder/FeedImage/20250421)
+  parentId: number | null; // 상위 폴더 ID (root는 null)
+  isOpen?: boolean; // (트리뷰 확장 대비) 열림/닫힘 여부
+};
+
+export type FolderNode = BaseNode & {
+  type: 'folder';
+  children: (FolderNode | FileNode)[];
+};
+
+export type FileNode = BaseNode & {
+  type: 'file';
+  extension?: string;
+};
 
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
@@ -30,67 +53,143 @@ const Workroom: React.FC<Props> = ({}) => {
   //#region TmpDefine
   // All 에서 보여지는 Recent 리스트는 20개 까지입니다. (기획)
   const recentData: WorkroomItemInfo[] = [
-    {id: 1000, imgUrl: '/images/001.png', name: 'workroom0', detail: 'detail0'},
-    {id: 1001, imgUrl: '/images/001.png', name: 'workroom1', detail: 'detail1'},
-    {id: 2002, imgUrl: '/images/001.png', name: 'workroom2', detail: 'detail2'},
-    {id: 2003, imgUrl: '/images/001.png', name: 'workroom3', detail: 'detail3'},
-    {id: 3004, imgUrl: '/images/001.png', name: 'workroom4', detail: 'detail4'},
-    {id: 3005, imgUrl: '/images/001.png', name: 'workroom5', detail: 'detail5'},
+    {id: 1000, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom0', detail: 'detail0'},
+    {id: 1001, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom1', detail: 'detail1'},
+    {id: 2002, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom2', detail: 'detail2'},
+    {id: 2003, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom3', detail: 'detail3'},
+    {id: 3004, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom4', detail: 'detail4'},
+    {id: 3005, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom5', detail: 'detail5'},
   ];
 
   // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
   const [folderData, setFolderData] = useState<WorkroomItemInfo[]>([
-    {id: 1000, imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
-    {id: 1001, imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
-    {id: 1002, imgUrl: '/images/001.png', name: 'folder2', detail: 'detail2', favorite: true},
+    {id: 1000, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
+    {id: 1001, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
+    {
+      id: 1002,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder2',
+      detail: 'detail2',
+      favorite: true,
+    },
     {
       id: 1003,
+      mediaState: MediaState.None,
       imgUrl: '/images/001.png',
       name: 'folder3',
       detail: 'detail3',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
     },
-    {id: 1004, imgUrl: '/images/001.png', name: 'folder4', detail: 'detail4'},
-    {id: 1005, imgUrl: '/images/001.png', name: 'folder5', detail: 'detail5'},
-    {id: 1006, imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
-    {id: 1007, imgUrl: '/images/001.png', name: 'folder7', detail: 'detail7'},
+    {id: 1004, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder4', detail: 'detail4'},
+    {id: 1005, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder5', detail: 'detail5'},
+    {id: 1006, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
+    {id: 1007, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder7', detail: 'detail7'},
   ]);
+
+  const rootFolder: FolderNode = {
+    id: 100,
+    name: 'Folder',
+    type: 'folder',
+    path: 'Folder',
+    parentId: null,
+    isOpen: true,
+    children: [
+      {
+        id: 200,
+        name: 'FeedImage',
+        type: 'folder',
+        path: 'Folder/FeedImage',
+        parentId: 100,
+        isOpen: false,
+        children: [
+          {
+            id: 300,
+            name: '20250421',
+            type: 'folder',
+            path: 'Folder/FeedImage/20250421',
+            parentId: 200,
+            isOpen: false,
+            children: [],
+          },
+        ],
+      },
+      {
+        id: 201,
+        name: 'ContentImage',
+        type: 'folder',
+        path: 'Folder/ContentImage',
+        parentId: 100,
+        isOpen: false,
+        children: [
+          {
+            id: 310,
+            name: '20250421',
+            type: 'folder',
+            path: 'Folder/ContentImage/20250421',
+            parentId: 201,
+            isOpen: false,
+            children: [],
+          },
+          {
+            id: 311,
+            name: '20250422',
+            type: 'folder',
+            path: 'Folder/ContentImage/20250422',
+            parentId: 201,
+            isOpen: false,
+            children: [],
+          },
+        ],
+      },
+    ],
+  };
 
   // All 에서 보여지는 image 그리드는 4개 입니다. (기획)
   const [imageData, setImageData] = useState<WorkroomItemInfo[]>([
-    {id: 2000, imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
-    {id: 2001, imgUrl: '/images/001.png', name: 'image1', detail: 'detail1'},
-    {id: 2002, imgUrl: '/images/001.png', name: 'image2', detail: 'detail2'},
+    {id: 2000, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
+    {id: 2001, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image1', detail: 'detail1'},
+    {id: 2002, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image2', detail: 'detail2'},
     {
       id: 2003,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'image3',
       detail: 'detail3',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
     },
-    {id: 2004, imgUrl: '/images/001.png', name: 'image4', detail: 'detail4'},
-    {id: 2005, imgUrl: '/images/001.png', name: 'image5', detail: 'detail5'},
-    {id: 2006, imgUrl: '/images/001.png', name: 'image6', detail: 'detail6', favorite: true},
-    {id: 2007, imgUrl: '/images/001.png', name: 'image7', detail: 'detail7'},
+    {id: 2004, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image4', detail: 'detail4'},
+    {id: 2005, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image5', detail: 'detail5'},
+    {
+      id: 2006,
+      mediaState: MediaState.Image,
+      imgUrl: '/images/001.png',
+      name: 'image6',
+      detail: 'detail6',
+      favorite: true,
+    },
+    {id: 2007, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image7', detail: 'detail7'},
   ]);
 
   // All 에서 보여지는 video 그리드는 4개 입니다. (기획)
   const [videoData, setVideoData] = useState<WorkroomItemInfo[]>([
-    {id: 3000, imgUrl: '/images/001.png', name: 'video0', detail: 'detail0'},
+    {id: 3000, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video0', detail: 'detail0'},
     {
       id: 3001,
+      mediaState: MediaState.Video,
       imgUrl: '/images/001.png',
       name: 'video1',
       detail: 'detail1',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
     },
-    {id: 3002, imgUrl: '/images/001.png', name: 'video2', detail: 'detail2'},
-    {id: 3003, imgUrl: '/images/001.png', name: 'video3', detail: 'detail3'},
+    {id: 3002, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video2', detail: 'detail2'},
+    {id: 3003, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video3', detail: 'detail3'},
     {
       id: 3004,
+      mediaState: MediaState.Video,
       imgUrl: '/images/001.png',
       name: 'video4',
       detail: 'detail4',
@@ -99,31 +198,61 @@ const Workroom: React.FC<Props> = ({}) => {
     },
     {
       id: 3005,
+      mediaState: MediaState.Video,
       imgUrl: '/images/001.png',
       name: 'video5',
       detail: 'detail5',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
     },
-    {id: 3006, imgUrl: '/images/001.png', name: 'video6', detail: 'detail6'},
-    {id: 3007, imgUrl: '/images/001.png', name: 'video7', detail: 'detail7', favorite: true},
+    {id: 3006, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video6', detail: 'detail6'},
+    {
+      id: 3007,
+      mediaState: MediaState.Video,
+      imgUrl: '/images/001.png',
+      name: 'video7',
+      detail: 'detail7',
+      favorite: true,
+    },
   ]);
 
   // All 에서 보여지는 audio 그리드는 4개 입니다. (기획)
   const [audioData, setAudioData] = useState<WorkroomItemInfo[]>([
-    {id: 4000, imgUrl: '/images/001.png', name: 'audio0', detail: 'detail0'},
-    {id: 4001, imgUrl: '/images/001.png', name: 'audio1', detail: 'detail1'},
-    {id: 4002, imgUrl: '/images/001.png', name: 'audio2', detail: 'detail2', favorite: true},
-    {id: 4003, imgUrl: '/images/001.png', name: 'audio3', detail: 'detail3'},
-    {id: 4004, imgUrl: '/images/001.png', name: 'audio4', detail: 'detail4', favorite: true},
-    {id: 4005, imgUrl: '/images/001.png', name: 'audio5', detail: 'detail5'},
-    {id: 4006, imgUrl: '/images/001.png', name: 'audio6', detail: 'detail6', favorite: true},
-    {id: 4007, imgUrl: '/images/001.png', name: 'audio7', detail: 'detail7'},
+    {id: 4000, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio0', detail: 'detail0'},
+    {id: 4001, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio1', detail: 'detail1'},
+    {
+      id: 4002,
+      mediaState: MediaState.Audio,
+      imgUrl: '/images/001.png',
+      name: 'audio2',
+      detail: 'detail2',
+      favorite: true,
+    },
+    {id: 4003, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio3', detail: 'detail3'},
+    {
+      id: 4004,
+      mediaState: MediaState.Audio,
+      imgUrl: '/images/001.png',
+      name: 'audio4',
+      detail: 'detail4',
+      favorite: true,
+    },
+    {id: 4005, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio5', detail: 'detail5'},
+    {
+      id: 4006,
+      mediaState: MediaState.Audio,
+      imgUrl: '/images/001.png',
+      name: 'audio6',
+      detail: 'detail6',
+      favorite: true,
+    },
+    {id: 4007, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio7', detail: 'detail7'},
   ]);
 
   const [aiHistoryData, setAiHistoryData] = useState<WorkroomItemInfo[]>([
     {
       id: 5000,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'aiGen0',
       detail: 'detail0',
@@ -138,6 +267,7 @@ const Workroom: React.FC<Props> = ({}) => {
     },
     {
       id: 5001,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'aiGen1',
       detail: 'detail1',
@@ -152,6 +282,7 @@ const Workroom: React.FC<Props> = ({}) => {
     },
     {
       id: 5002,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'aiGen2',
       detail: 'detail2',
@@ -166,6 +297,7 @@ const Workroom: React.FC<Props> = ({}) => {
     },
     {
       id: 5003,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'aiGen3',
       detail: 'detail3',
@@ -180,6 +312,7 @@ const Workroom: React.FC<Props> = ({}) => {
     },
     {
       id: 5004,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'aiGen4',
       detail: 'detail4',
@@ -194,6 +327,7 @@ const Workroom: React.FC<Props> = ({}) => {
     },
     {
       id: 5005,
+      mediaState: MediaState.Image,
       imgUrl: '/images/001.png',
       name: 'aiGen5',
       detail: 'detail5',
@@ -207,6 +341,8 @@ const Workroom: React.FC<Props> = ({}) => {
       },
     },
   ]);
+
+  const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
 
   //#endregion
 
@@ -244,6 +380,8 @@ const Workroom: React.FC<Props> = ({}) => {
   const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
 
+  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
+  const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
   //#endregion
 
   //#region Container에서 길게 입력으로 선택활성화 시키기
@@ -316,6 +454,72 @@ const Workroom: React.FC<Props> = ({}) => {
 
   //#endregion
 
+  //#region function
+
+  // 현재 유저가 가진 캐릭터를 모두 가져옴
+  const getCharacterList = async () => {
+    try {
+      const characterListreq: GetCharacterListReq = {
+        languageType: getCurrentLanguage(),
+      };
+      const response = await sendGetCharacterList(characterListreq);
+
+      if (response.data) {
+        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
+        setCharacters(characterInfoList);
+        setGalleryData([]);
+        characterInfoList.map(character => {
+          setGalleryData(prev => [
+            ...prev,
+            {
+              id: character.id,
+              mediaState: MediaState.Image,
+              imgUrl: character.mainImageUrl,
+              name: character.name,
+              detail: character.createAt,
+              favorite: false,
+              trash: false,
+            },
+          ]);
+        });
+      } else {
+        throw new Error(`No contentInfo in response for ID: `);
+      }
+    } catch (error) {
+      console.error('Error fetching content by user ID:', error);
+    } finally {
+    }
+  };
+
+  // Id로 캐릭터 정보를 가져옴
+  const getCharacterInfo = async (id: number) => {
+    try {
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
+      const response = await sendGetCharacterProfileInfo(req);
+
+      if (response.data) {
+        const characterInfo: CharacterInfo = response.data?.characterInfo;
+        setCurrentSelectedCharacter(characterInfo);
+      } else {
+        throw new Error(`No characterInfo in response : ${id}`);
+      }
+    } catch (error) {
+      console.error('Error get Character Info by Id :', error);
+    } finally {
+    }
+  };
+
+  //#endregion
+
+  // 렌더링 전에 Init 실행
+  useLayoutEffect(() => {
+    Init();
+  }, []);
+
+  function Init() {
+    getCharacterList();
+  }
+
   //#region Renderer
   const renderSwiper = (data: WorkroomItemInfo[]) => {
     return (
@@ -346,7 +550,12 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
-  const renderDataItems = (data: WorkroomItemInfo[], detailView: boolean, option: RenderDataItemsOptions) => {
+  const renderDataItems = (
+    data: WorkroomItemInfo[],
+    detailView: boolean,
+    option: RenderDataItemsOptions,
+    detailViewButton?: boolean,
+  ) => {
     const trashFilteredData = option.trash ? data.filter(item => item.trash) : data.filter(item => !item.trash);
     const favoriteFilteredData = option.favorite ? trashFilteredData.filter(item => item.favorite) : trashFilteredData;
     const generatedTypeFilterData =
@@ -357,7 +566,9 @@ const Workroom: React.FC<Props> = ({}) => {
 
     return (
       <div className={`${styles.itemContainer}`}>
-        {option.filterArea && <div className={styles.filterArea}>{getLocalizedText('TODO: FILTER')}</div>}
+        {option.filterArea && (
+          <div className={styles.filterArea}>{renderFilter(detailViewButton || false, detailView)}</div>
+        )}
         <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
           {limitedData.map((item, index) => (
             <div className={styles.dataItem} key={index} data-item>
@@ -375,6 +586,29 @@ const Workroom: React.FC<Props> = ({}) => {
           ))}
         </ul>
       </div>
+    );
+  };
+
+  const renderFilter = (detailViewButton: boolean, detailView: boolean) => {
+    return (
+      <>
+        <div className={styles.filterLeft}>
+          {detailViewButton && (
+            <button
+              className={styles.detailViewButton}
+              onClick={() => {
+                setDetailView(prev => !prev);
+              }}
+            >
+              <img src={!detailView ? BoldViewGallery.src : LineList.src} alt="detailView" />
+            </button>
+          )}
+        </div>
+        <div className={styles.filterRight}>
+          <div className={styles.filterText}>{getLocalizedText('TODO : Filter')}</div>
+          <img src={BoldAltArrowDown.src} alt="filter" />
+        </div>
+      </>
     );
   };
 
@@ -462,9 +696,9 @@ const Workroom: React.FC<Props> = ({}) => {
 
         {tagStates.work === 'Folders' && renderDataItems(folderData, true, {filterArea: true})}
 
-        {tagStates.work === 'Image' && renderDataItems(imageData, detailView, {filterArea: true})}
+        {tagStates.work === 'Image' && renderDataItems(imageData, detailView, {filterArea: true}, true)}
 
-        {tagStates.work === 'Video' && renderDataItems(videoData, detailView, {filterArea: true})}
+        {tagStates.work === 'Video' && renderDataItems(videoData, detailView, {filterArea: true}, true)}
 
         {tagStates.work === 'Audio' && renderDataItems(audioData, true, {filterArea: true})}
       </div>
@@ -541,9 +775,9 @@ const Workroom: React.FC<Props> = ({}) => {
         {tagStates.favorite === 'Folders' &&
           renderDataItems(folderData, true, {filterArea: true, limit: 4, favorite: true})}
         {tagStates.favorite === 'Image' &&
-          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, favorite: true})}
+          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, favorite: true}, true)}
         {tagStates.favorite === 'Video' &&
-          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, favorite: true})}
+          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, favorite: true}, true)}
         {tagStates.favorite === 'Audio' &&
           renderDataItems(audioData, true, {filterArea: true, limit: 4, favorite: true})}
       </div>
@@ -585,6 +819,52 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
+  const renderGallery = () => {
+    return (
+      <div className={styles.galleryContainer}>
+        {tagStates.gallery === 'All' && (
+          <>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : MyCharacter')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    handleTagClick('gallery', 'MyCharacter');
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
+              </div>
+              {renderDataItems(galleryData, detailView, {filterArea: true, limit: 4}, true)}
+            </div>
+            <div className={styles.categoryArea}>
+              <div className={styles.categoryTitleArea}>
+                <div className={styles.categoryTitle}>{getLocalizedText('TODO : SharedCharacter')}</div>
+                <button
+                  className={styles.categoryShowMore}
+                  onClick={() => {
+                    handleTagClick('gallery', 'SharedCharacter');
+                  }}
+                >
+                  {getLocalizedText('TODO : Show more')}
+                </button>
+              </div>
+              {/* {renderDataItems(galleryData, detailView, {filterArea: true, limit : 4}, true)} */}
+            </div>
+          </>
+        )}
+        {tagStates.gallery === 'MyCharacter' && (
+          <>{renderDataItems(galleryData, detailView, {filterArea: true}, true)}</>
+        )}
+
+        {tagStates.gallery === 'SharedCharacter' && (
+          <>{/* {renderDataItems(galleryData, true, {filterArea: true})} */}</>
+        )}
+      </div>
+    );
+  };
+
   const renderTrash = () => {
     return (
       <div
@@ -614,7 +894,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true})}
+              {renderDataItems(folderData, true, {filterArea: false, limit: 4, trash: true})}
             </div>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -664,10 +944,10 @@ const Workroom: React.FC<Props> = ({}) => {
         {tagStates.trash === 'Folders' && renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true})}
 
         {tagStates.trash === 'Image' &&
-          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, trash: true})}
+          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, trash: true}, true)}
 
         {tagStates.trash === 'Video' &&
-          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, trash: true})}
+          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, trash: true}, true)}
 
         {tagStates.trash === 'Audio' && renderDataItems(audioData, true, {filterArea: true, limit: 4, trash: true})}
       </div>
@@ -715,7 +995,7 @@ const Workroom: React.FC<Props> = ({}) => {
           onTagChange={tag => handleTagClick('gallery', tag)}
         />
       ),
-      content: <>{}</>,
+      content: <>{renderGallery()}</>,
     },
     {
       label: getLocalizedText('TODO : Trash'),

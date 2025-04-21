@@ -1,11 +1,10 @@
 import React from 'react';
 import styles from './WorkroomFileMoveModal.module.css';
-import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import getLocalizedText from '@/utils/getLocalizedText';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import {WorkroomItemInfo} from './WorkroomItem';
 import {BoldFolderPlus, LineArrowRight, LineFolderPlus} from '@ui/Icons';
-import {Dialog, DialogTitle} from '@mui/material';
+import {Dialog} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 
 interface Props {
@@ -60,6 +59,7 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders}) => {
 
           maxWidth: '1300px',
           margin: '0 auto',
+          borderRadius: '0px',
         },
       }}
     >
@@ -77,11 +77,11 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders}) => {
         <div className={styles.searchArea}></div>
         <Splitters
           splitters={[
-            {label: 'Folder', content: <>{renderFolder()}</>},
-            {label: 'Gallery', content: <>{renderGallery()}</>},
+            {label: getLocalizedText('TODO : Folder'), content: <>{renderFolder()}</>},
+            {label: getLocalizedText('TODO : Gallery'), content: <>{renderGallery()}</>},
           ]}
-          splitterStyle={{margin: 'auto'}}
-          headerStyle={{margin: 'auto', gap: '30px'}}
+          splitterStyle={{margin: '0'}}
+          headerStyle={{margin: 'auto', gap: '30px', flex: '1 0 0', width: '100%', justifyContent: 'space-around'}}
         />
       </ul>
     </Dialog>

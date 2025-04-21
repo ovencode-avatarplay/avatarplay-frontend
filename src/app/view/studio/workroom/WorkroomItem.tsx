@@ -1,6 +1,8 @@
 import {BoldBookMark, BoldBookMarkWhite, BoldMenuDots, LineBookMark} from '@ui/Icons';
 import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
 interface Props {
   detailView: boolean;
@@ -15,13 +17,16 @@ interface Props {
 
 export interface WorkroomItemInfo {
   id: number;
-  imgUrl: string;
   name: string;
   detail: string;
+  mediaState: MediaState;
+  imgUrl?: string;
+  folderLocation?: string;
   favorite?: boolean;
   trash?: boolean;
   trashedTime?: string;
   generatedInfo?: GeneratedItemInfo | null;
+  characterInfo?: CharacterInfo | null;
 }
 
 export interface GeneratedItemInfo {
@@ -51,7 +56,7 @@ const WorkroomItem: React.FC<Props> = ({
           <div className={styles.fileDetail}>{item.detail}</div>
         </div>
         <div className={styles.infoRightArea}>
-          {detailView && (
+          {detailView && !item.trash && (
             <button
               className={styles.bookMarkButton}
               onClick={e => {
@@ -130,18 +135,20 @@ const WorkroomItem: React.FC<Props> = ({
               </div>
             )}
 
-            <button
-              className={styles.bookMarkButton}
-              onClick={e => {
-                e.stopPropagation();
-                onClickFavorite(!item.favorite);
-              }}
-            >
-              <img
-                className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
-                src={item.favorite ? BoldBookMark.src : BoldBookMarkWhite.src}
-              />
-            </button>
+            {!item.trash && (
+              <button
+                className={styles.bookMarkButton}
+                onClick={e => {
+                  e.stopPropagation();
+                  onClickFavorite(!item.favorite);
+                }}
+              >
+                <img
+                  className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
+                  src={item.favorite ? BoldBookMark.src : BoldBookMarkWhite.src}
+                />
+              </button>
+            )}
           </div>
           {renderFileInfoArea()}
         </div>

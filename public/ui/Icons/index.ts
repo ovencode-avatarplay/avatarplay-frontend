@@ -126,6 +126,7 @@ import LineHome from "./Line/Home.svg";
 import LineCam from "./Line/Cam.svg";
 import LinePhone from "./Line/Phone.svg";
 import LineBookMark from "./Line/Bookmark.svg";
+import LineList from "./Line/List.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -302,4 +303,5 @@ export {
   LineCam,
   LinePhone,
   LineBookMark,
+  LineList,
 };

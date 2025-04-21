@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './WorkroomTagList.module.css';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   tags: string[]; // 외부에서 전달
@@ -22,6 +23,10 @@ const WorkroomTagList: React.FC<Props> = ({tags, onTagChange, currentTag}) => {
     }
   }, [currentTag]);
 
+  const getLocalizedTag = (tag: string) => {
+    return getLocalizedText(`TODO :  ${tag}`);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.tags}>
@@ -37,7 +42,7 @@ const WorkroomTagList: React.FC<Props> = ({tags, onTagChange, currentTag}) => {
               <CustomHashtag
                 isSelected={activeTag === tag}
                 onClickAction={() => handleTagClick(tag)}
-                text={tag}
+                text={getLocalizedTag(tag)}
                 unselectedClassName={styles.unselectedClassName}
               />
             </SwiperSlide>

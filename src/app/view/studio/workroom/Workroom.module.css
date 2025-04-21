@@ -71,6 +71,15 @@
     width: 100%;
 }
 
+.galleryContainer
+{
+    width: 100%;
+
+    align-items: flex-start;
+    align-self: stretch;
+
+}
+
 .trashContainer 
 {
     display: flex;
@@ -82,7 +91,14 @@
     align-self: stretch;
 
 }
+ 
 
+.displayButton
+{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 
 .categoryArea
 {
@@ -155,12 +171,72 @@
 
 .filterArea
 {
+    width: 100%;
     display: flex;
     padding: 10px 16px;
     justify-content: space-between;
     align-items: center;
     align-self: stretch;  
 }  
+
+.filterLeft
+{
+    display: flex;
+    align-items: center;
+}   
+
+.detailViewButton
+{
+    cursor: pointer;
+    
+    display: flex;
+    width: 38px;
+    height: 32px;
+    padding: 0px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    
+    border-radius: 6px;
+    background: var(--Primary-1, #FD55D3);
+}
+
+.detailViewButton img
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.filterRight
+{
+    display: flex;
+    width: 69px;
+    height: 32px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+}
+
+.filterRight > .filterText
+{
+    color: var(--Color-Tokens-Text, #0C0C0C);
+    text-align: right;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+}
+
+.filterRight > img
+{
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);    
+}
 
 .gridArea {
     display: grid;
