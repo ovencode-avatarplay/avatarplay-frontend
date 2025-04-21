@@ -32,8 +32,7 @@ import {
 } from '@/app/NetWork/CharacterNetwork';
 import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
-import CharacterCreateViewImage from './CharacterCreateViewImage';
-import {ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
+import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -44,6 +43,8 @@ import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
 import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import VideoUpload from '@/components/create/VideoUpload';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
