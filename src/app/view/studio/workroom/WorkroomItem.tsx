@@ -13,6 +13,7 @@ interface Props {
   onClickFavorite: (favorite: boolean) => void;
   onClickMenu: () => void;
   onClickPreview: () => void;
+  onClickItem: () => void;
 }
 
 export interface WorkroomItemInfo {
@@ -47,6 +48,7 @@ const WorkroomItem: React.FC<Props> = ({
   onClickFavorite,
   onClickMenu,
   onClickPreview,
+  onClickItem,
 }) => {
   const renderFileInfoArea = () => {
     return (
@@ -79,7 +81,13 @@ const WorkroomItem: React.FC<Props> = ({
   };
 
   return (
-    <div className={styles.workroomItem}>
+    <div
+      className={styles.workroomItem}
+      onClick={e => {
+        e.stopPropagation();
+        onClickItem();
+      }}
+    >
       {detailView ? (
         <div className={styles.detailViewContainer}>
           {isSelecting && (

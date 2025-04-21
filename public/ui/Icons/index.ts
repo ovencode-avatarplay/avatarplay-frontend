@@ -252,6 +252,8 @@ export {
   BoldContentLists,
   BoldSearch,
   BoldMessenger,
+  BoldBookMark,
+  BoldBookMarkWhite,
   LineAddButton,
   LineAIImage,
   LineArchive,

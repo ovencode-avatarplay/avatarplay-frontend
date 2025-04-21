@@ -452,6 +452,15 @@ const Workroom: React.FC<Props> = ({}) => {
     }
   };
 
+  const handleItemClick = (item: WorkroomItemInfo) => {
+    if (item.mediaState === MediaState.None) {
+      setSelectedItem(item);
+    }
+    if (item.mediaState === MediaState.Image) {
+      handleItemImageClick(item);
+    }
+  };
+
   //#endregion
 
   //#region function
@@ -542,6 +551,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 onClickFavorite={() => toggleFavorite(item.id)}
                 onClickMenu={() => handleMenuClick(item)}
                 onClickPreview={() => handleItemImageClick(item)}
+                onClickItem={() => handleItemClick(item)}
               />
             </div>
           </SwiperSlide>
@@ -581,6 +591,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 onClickFavorite={() => toggleFavorite(item.id)}
                 onClickMenu={() => handleMenuClick(item)}
                 onClickPreview={() => handleItemImageClick(item)}
+                onClickItem={() => handleItemClick(item)}
               />
             </div>
           ))}
@@ -952,6 +963,10 @@ const Workroom: React.FC<Props> = ({}) => {
         {tagStates.trash === 'Audio' && renderDataItems(audioData, true, {filterArea: true, limit: 4, trash: true})}
       </div>
     );
+  };
+
+  const renderFolderData = (folder: FolderNode) => {
+    return <>folder</>;
   };
 
   //#endregion
