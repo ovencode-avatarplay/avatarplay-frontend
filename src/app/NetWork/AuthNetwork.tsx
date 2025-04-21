@@ -127,6 +127,9 @@ export const getAuth = async (token : string | null = null) => {
       return;
     }
 
+    if(jwtToken)
+      localStorage.setItem('jwt', jwtToken)
+
     const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
     return data;
   } catch (e) {
