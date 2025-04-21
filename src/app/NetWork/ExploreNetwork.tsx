@@ -130,7 +130,7 @@ interface SearchReq {
   // filterList: filterList[];
   positiveFilterTags: string[];
   nagativeFilterTags: string[];
-  isOnlyAdults: boolean;
+  isAdults: boolean;
   storyOffset: number;
   characterOffset: number;
   contentOffset: number;

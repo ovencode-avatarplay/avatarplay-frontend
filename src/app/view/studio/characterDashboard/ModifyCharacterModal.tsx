@@ -56,7 +56,7 @@ const ModifyCharacterModal: React.FC<ModifyCharacterProps> = ({
       <div className={styles.drawerContent}>
         <CreateDrawerHeader title="Modify Character" onClose={onClose} />
 
-        <CreateCharacterMain characterInfo={characterInfo} onClose={handleCloseClick} />
+        <CreateCharacterMain id={characterInfo?.id || 0} characterInfo={characterInfo} onClose={handleCloseClick} />
       </div>
     </Drawer>
   );
