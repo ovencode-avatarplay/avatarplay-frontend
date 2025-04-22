@@ -223,6 +223,7 @@ const UserDropdown = () => {
         //refreshLanaguage(language, router);
 
         const isLogin = await isLogined();
+        if (!isLogin) return;
         const navType = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
         if (navType.type === 'navigate') {
           // 주소창 입력으로 들어옴 -> 주소창 언어코드로 동기화
