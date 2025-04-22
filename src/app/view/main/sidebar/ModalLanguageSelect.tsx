@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {useRouter} from 'next/navigation';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
-import {changeLanguageAndRoute} from '@/utils/UrlMove';
+import {changeLanguageAndRoute, getCurrentLanguage, serverChangeLanguage} from '@/utils/UrlMove';
 import {fetchLanguage} from '@/components/layout/shared/LanguageSetting';
 import {i18n} from 'next-i18next';
 import {Dialog, SelectChangeEvent} from '@mui/material';
@@ -32,7 +32,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
-    fetchLanguage(router);
+    //fetchLanguage(router);
   }, []);
 
   if (!isOpen) return null; // 모달이 닫혀있으면 렌더링 안 함
@@ -48,27 +48,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
   };
 
   const handleConformSend = async (lang: LanguageType) => {
-    try {
-      const value = lang;
-
-      if (value === undefined || value === null) {
-        throw new Error('Invalid language value');
-      }
-
-      const newLanguage = parseInt(String(value), 10) as LanguageType;
-
-      const response = await changeLanguage({languageType: newLanguage});
-      const language = response.data?.languageType;
-
-      if (language !== undefined) {
-        dispatch(setLanguage(language));
-        changeLanguageAndRoute(language, router, i18n);
-      } else {
-        throw new Error('Failed to retrieve updated language from server');
-      }
-    } catch (error) {
-      console.error('Failed to change language:', error);
-    }
+    serverChangeLanguage(lang, dispatch, router);
     onClose();
   };
   return (

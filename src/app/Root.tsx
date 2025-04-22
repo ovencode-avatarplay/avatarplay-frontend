@@ -110,7 +110,7 @@ const Root = ({children}: {children: ReactNode}) => {
       const isLogin = await isLogined();
       // 로그인되지 않은 유저면 Language 쿠키값을 현지언어로
       if (isLogin === false) {
-        refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
+        refreshLanaguage(false, undefined, router); // 언어 설정 후 라우팅
       } else {
         // 서버에 로그인 상태 갱신을 요청한다.
         // const router = useRouter(); // useRouter는 클라이언트에서만 사용
@@ -119,7 +119,7 @@ const Root = ({children}: {children: ReactNode}) => {
         //   language: _language,
         // };
         // sendSignIn(reqData);
-        refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
+        refreshLanaguage(true, undefined, router); // 언어 설정 후 라우팅
       }
 
       setHasRun(true); // 상태를 업데이트하여 이후에는 실행되지 않도록 함

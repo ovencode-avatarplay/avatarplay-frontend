@@ -18,10 +18,10 @@ import {useRouter} from 'next/navigation';
   refreshLanaguage(undefined, router); // 언어 설정 후 라우팅
 };*/
 
-export const fetchLanguage = async (router: ReturnType<typeof useRouter>) => {
+export const fetchLanguage = async (isLogined: boolean, router: ReturnType<typeof useRouter>) => {
   const response = await sendGetLanguage({});
   if (response) {
     const language = response.data?.languageType;
-    refreshLanaguage(language, router);
+    refreshLanaguage(isLogined, language, router);
   }
 };
