@@ -1,4 +1,4 @@
-import {BoldBookMark, BoldBookMarkWhite, BoldMenuDots, LineBookMark} from '@ui/Icons';
+import {BoldAudio, BoldBookMark, BoldBookMarkWhite, BoldFolder, BoldMenuDots, LineBookMark} from '@ui/Icons';
 import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
@@ -22,7 +22,7 @@ export interface WorkroomItemInfo {
   detail: string;
   mediaState: MediaState;
   imgUrl?: string;
-  folderLocation?: string;
+  folderLocation?: number[];
   favorite?: boolean;
   trash?: boolean;
   trashedTime?: string;
@@ -72,7 +72,13 @@ const WorkroomItem: React.FC<Props> = ({
               />
             </button>
           )}
-          <button className={styles.btnMenu} onClick={onClickMenu}>
+          <button
+            className={styles.btnMenu}
+            onClick={e => {
+              e.stopPropagation();
+              onClickMenu();
+            }}
+          >
             <img className={styles.btnIcon} src={BoldMenuDots.src} />
           </button>
         </div>
@@ -101,19 +107,33 @@ const WorkroomItem: React.FC<Props> = ({
               />
             </div>
           )}
-          <div
-            className={styles.fileImage}
-            style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                item.imgUrl ? item.imgUrl : '/images/001.png'
-              })`,
-              backgroundSize: 'cover',
-            }}
-            onClick={e => {
-              e.stopPropagation();
-              onClickPreview();
-            }}
-          ></div>
+          {item.mediaState === MediaState.None || item.mediaState === MediaState.Audio ? (
+            <div className={styles.itemIcon}>
+              <img
+                src={
+                  item.mediaState === MediaState.None
+                    ? BoldFolder.src
+                    : item.mediaState === MediaState.Audio
+                    ? BoldAudio.src
+                    : ''
+                }
+              />
+            </div>
+          ) : (
+            <div
+              className={styles.fileImage}
+              style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                  item.imgUrl ? item.imgUrl : '/images/001.png'
+                })`,
+                backgroundSize: 'cover',
+              }}
+              onClick={e => {
+                e.stopPropagation();
+                onClickPreview();
+              }}
+            ></div>
+          )}
           {renderFileInfoArea()}
         </div>
       ) : (

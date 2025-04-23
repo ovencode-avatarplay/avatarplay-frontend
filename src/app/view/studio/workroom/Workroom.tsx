@@ -22,6 +22,8 @@ import {GetCharacterListReq, sendGetCharacterList} from '@/app/NetWork/Character
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
+import {ToastMessageAtom} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 type BaseNode = {
   id: number; // 고유 ID
@@ -60,33 +62,6 @@ const Workroom: React.FC<Props> = ({}) => {
     {id: 3004, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom4', detail: 'detail4'},
     {id: 3005, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'workroom5', detail: 'detail5'},
   ];
-
-  // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
-  const [folderData, setFolderData] = useState<WorkroomItemInfo[]>([
-    {id: 1000, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
-    {id: 1001, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
-    {
-      id: 1002,
-      mediaState: MediaState.None,
-      imgUrl: '/images/001.png',
-      name: 'folder2',
-      detail: 'detail2',
-      favorite: true,
-    },
-    {
-      id: 1003,
-      mediaState: MediaState.None,
-      imgUrl: '/images/001.png',
-      name: 'folder3',
-      detail: 'detail3',
-      trash: true,
-      trashedTime: '2025-04-18 09:44:53',
-    },
-    {id: 1004, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder4', detail: 'detail4'},
-    {id: 1005, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder5', detail: 'detail5'},
-    {id: 1006, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
-    {id: 1007, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder7', detail: 'detail7'},
-  ]);
 
   const rootFolder: FolderNode = {
     id: 100,
@@ -146,8 +121,46 @@ const Workroom: React.FC<Props> = ({}) => {
     ],
   };
 
-  // All 에서 보여지는 image 그리드는 4개 입니다. (기획)
-  const [imageData, setImageData] = useState<WorkroomItemInfo[]>([
+  // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
+  const [workroomData, setWorkroomData] = useState<WorkroomItemInfo[]>([
+    {id: 1000, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
+    {id: 1001, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
+    {
+      id: 1002,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder2',
+      detail: 'detail2',
+      favorite: true,
+    },
+    {
+      id: 1003,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder3',
+      detail: 'detail3',
+      trash: true,
+      trashedTime: '2025-04-18 09:44:53',
+    },
+    {
+      id: 1004,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder4',
+      detail: 'detail4',
+      folderLocation: [1001],
+    },
+    {
+      id: 1005,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder5',
+      detail: 'detail5',
+      folderLocation: [1001, 1004],
+    },
+    {id: 1006, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
+    {id: 1007, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder7', detail: 'detail7'},
+
     {id: 2000, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
     {id: 2001, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image1', detail: 'detail1'},
     {id: 2002, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image2', detail: 'detail2'},
@@ -171,10 +184,6 @@ const Workroom: React.FC<Props> = ({}) => {
       favorite: true,
     },
     {id: 2007, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image7', detail: 'detail7'},
-  ]);
-
-  // All 에서 보여지는 video 그리드는 4개 입니다. (기획)
-  const [videoData, setVideoData] = useState<WorkroomItemInfo[]>([
     {id: 3000, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video0', detail: 'detail0'},
     {
       id: 3001,
@@ -214,10 +223,6 @@ const Workroom: React.FC<Props> = ({}) => {
       detail: 'detail7',
       favorite: true,
     },
-  ]);
-
-  // All 에서 보여지는 audio 그리드는 4개 입니다. (기획)
-  const [audioData, setAudioData] = useState<WorkroomItemInfo[]>([
     {id: 4000, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio0', detail: 'detail0'},
     {id: 4001, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio1', detail: 'detail1'},
     {
@@ -247,9 +252,6 @@ const Workroom: React.FC<Props> = ({}) => {
       favorite: true,
     },
     {id: 4007, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio7', detail: 'detail7'},
-  ]);
-
-  const [aiHistoryData, setAiHistoryData] = useState<WorkroomItemInfo[]>([
     {
       id: 5000,
       mediaState: MediaState.Image,
@@ -342,6 +344,12 @@ const Workroom: React.FC<Props> = ({}) => {
     },
   ]);
 
+  const folderData = workroomData.filter(item => item.mediaState === MediaState.None);
+  const imageData = workroomData.filter(item => item.mediaState === MediaState.Image && !item.generatedInfo);
+  const videoData = workroomData.filter(item => item.mediaState === MediaState.Video);
+  const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
+  const aiHistoryData = workroomData.filter(item => !!item.generatedInfo);
+
   const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
 
   //#endregion
@@ -382,6 +390,9 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const [characters, setCharacters] = useState<CharacterInfo[]>([]);
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
+
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState<boolean>(false);
   //#endregion
 
   //#region Container에서 길게 입력으로 선택활성화 시키기
@@ -434,10 +445,7 @@ const Workroom: React.FC<Props> = ({}) => {
       data.map(item => (item.id === id ? {...item, favorite: !item.favorite} : item));
 
     // 모든 데이터 세트에 대해 업데이트 (임시 구조이므로 모두 수정)
-    setFolderData(prev => updateDataFavorite(prev));
-    setImageData(prev => updateDataFavorite(prev));
-    setVideoData(prev => updateDataFavorite(prev));
-    setAudioData(prev => updateDataFavorite(prev));
+    setWorkroomData(prev => updateDataFavorite(prev));
   };
 
   const handleMenuClick = (item: WorkroomItemInfo) => {
@@ -458,6 +466,143 @@ const Workroom: React.FC<Props> = ({}) => {
     }
     if (item.mediaState === MediaState.Image) {
       handleItemImageClick(item);
+    }
+  };
+
+  const handleRename = (newName: string) => {
+    if (!selectedItem) return;
+
+    setWorkroomData(prev => prev.map(item => (item.id === selectedItem.id ? {...item, name: newName} : item)));
+    setSelectedItem(prev => prev && {...prev, name: newName});
+  };
+
+  const handleCopy = () => {
+    if (!selectedItem) return;
+
+    const newItem = {
+      ...selectedItem,
+      id: getMinId(workroomData),
+      name: `Copy of ${selectedItem.name}`,
+    };
+
+    setWorkroomData(prev => [...prev, newItem]);
+    setIsFileEditDrawerOpen(false);
+    dataToast.open(getLocalizedText('common_alert_091'));
+  };
+
+  const handleMove = () => {
+    setIsFileMoveModalOpen(true);
+    setIsFileEditDrawerOpen(false);
+  };
+
+  const handleDownload = () => {
+    if (!selectedItem?.imgUrl) return;
+
+    const link = document.createElement('a');
+    link.href = selectedItem.imgUrl;
+    link.download = selectedItem.name || 'download';
+    link.click();
+
+    setIsFileEditDrawerOpen(false);
+    dataToast.open(getLocalizedText('TODO : Download successfull!'));
+  };
+
+  const handleDownloadSelectedItems = () => {
+    if (selectedItems.length === 0) return;
+
+    // 선택된 항목을 workroomData에서 찾음
+    const itemsToDownload = workroomData.filter(item => selectedItems.includes(item.id) && item.imgUrl);
+
+    itemsToDownload.forEach(item => {
+      const link = document.createElement('a');
+      link.href = item.imgUrl || '';
+      link.download = item.name || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    setIsSelecting(false);
+    setSelectedItems([]);
+
+    dataToast.open(
+      getLocalizedText(
+        `TODO : Download ${itemsToDownload.length} item${itemsToDownload.length > 1 ? 's' : ''} successful!`,
+      ),
+    );
+  };
+
+  const handleRestore = () => {
+    if (selectedItem) {
+      setWorkroomData(prev => prev.map(item => (item.id === selectedItem.id ? {...item, trash: false} : item)));
+      setSelectedItem(null);
+      setIsFileEditDrawerOpen(false);
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (selectedItem && !isSelecting) {
+      if (selectedItem.trash) {
+        setWorkroomData(prev => prev.filter(item => item.id !== selectedItem.id));
+      } else {
+        setWorkroomData(prev =>
+          prev.map(item =>
+            item.id === selectedItem.id ? {...item, trash: true, trashedTime: new Date().toISOString()} : item,
+          ),
+        );
+      }
+
+      setSelectedItem(null);
+      setIsDeletePopupOpen(false);
+    } else if (isSelecting && selectedItems.length > 0) {
+      const isPermanentDelete = workroomData.filter(item => selectedItems.includes(item.id)).every(item => item.trash);
+
+      if (isPermanentDelete) {
+        setWorkroomData(prev => prev.filter(item => !selectedItems.includes(item.id)));
+      } else {
+        setWorkroomData(prev =>
+          prev.map(item =>
+            selectedItems.includes(item.id) ? {...item, trash: true, trashedTime: new Date().toISOString()} : item,
+          ),
+        );
+      }
+
+      setIsSelecting(false);
+      setSelectedItems([]);
+      setIsDeletePopupOpen(false);
+      setIsFileEditDrawerOpen(false);
+    }
+  };
+
+  const handleDeletePopupOpen = () => {
+    if (!selectedItem) return;
+    setIsFileEditDrawerOpen(false);
+    setIsDeletePopupOpen(true);
+  };
+
+  const handleDeletePopupCancel = () => {
+    setSelectedItem(null);
+    setIsDeletePopupOpen(false);
+    setIsSelecting(false);
+    setSelectedItems([]);
+  };
+
+  const handleAddFolder = () => {
+    if (newFolderName.trim() !== '') {
+      const newFolder: WorkroomItemInfo = {
+        id: getMinId(workroomData),
+        mediaState: MediaState.None,
+        imgUrl: '',
+        name: newFolderName,
+        detail: getLocalizedText('TODO : New folder'),
+        favorite: false,
+        trash: false,
+      };
+
+      setWorkroomData(prev => [...prev, newFolder]);
+      setIsFolderNamePopupOpen(false);
+      setNewFolderName('');
+      dataToast.open(getLocalizedText('TODO : Folder created'));
     }
   };
 
@@ -528,6 +673,13 @@ const Workroom: React.FC<Props> = ({}) => {
   function Init() {
     getCharacterList();
   }
+
+  const getMinId = (list: WorkroomItemInfo[]): number => {
+    const listId = list.flatMap(item => item.id);
+    if (listId.length === 0) return 0;
+    const minId = Math.min(...listId);
+    return minId > 0 ? 0 : minId - 1;
+  };
 
   //#region Renderer
   const renderSwiper = (data: WorkroomItemInfo[]) => {
@@ -658,7 +810,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(folderData, true, {filterArea: false, limit: 4, trash: false})}
+              {renderDataItems(workroomData, true, {filterArea: false, limit: 4, trash: false})}
             </div>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -1059,36 +1211,35 @@ const Workroom: React.FC<Props> = ({}) => {
               setIsSelecting(false);
             }}
             onShare={() => {}}
-            onDownload={() => {}}
+            onDownload={handleDownloadSelectedItems}
             onMoveToFolder={() => {}}
-            onMoveToTrash={() => {}}
+            onMoveToTrash={handleDeletePopupOpen}
           />
         </div>
       )}
 
-      {isSelectCreateOpen &&
-        ReactDOM.createPortal(
-          <SelectDrawer
-            isOpen={isSelectCreateOpen}
-            items={[
-              {
-                name: getLocalizedText('TODO: Create folder'),
-                onClick: () => {
-                  setIsFolderNamePopupOpen(true);
-                },
-              },
-              {name: getLocalizedText('TODO: Upload folder'), onClick: () => {}},
-              {name: getLocalizedText('TODO: Upload files'), onClick: () => {}},
-            ]}
-            onClose={() => {
-              setIsSelectCreateOpen(false);
-            }}
-            selectedIndex={-1}
-          />,
-          document.body,
-        )}
       {ReactDOM.createPortal(
         <>
+          {isSelectCreateOpen && (
+            <SelectDrawer
+              isOpen={isSelectCreateOpen}
+              items={[
+                {
+                  name: getLocalizedText('TODO: Create folder'),
+                  onClick: () => {
+                    setIsFolderNamePopupOpen(true);
+                    console.log('create folder');
+                  },
+                },
+                {name: getLocalizedText('TODO: Upload folder'), onClick: () => {}},
+                {name: getLocalizedText('TODO: Upload files'), onClick: () => {}},
+              ]}
+              onClose={() => {
+                setIsSelectCreateOpen(false);
+              }}
+              selectedIndex={0}
+            />
+          )}
           {isFolderNamePopupOpen && (
             <CustomPopup
               title={getLocalizedText('TODO : Create a folder')}
@@ -1096,13 +1247,7 @@ const Workroom: React.FC<Props> = ({}) => {
               buttons={[
                 {
                   label: getLocalizedText('TODO : Confirm'),
-                  onClick: () => {
-                    if (newFolderName !== '') {
-                      //TODO Handler Add FolderItem
-                      setIsFolderNamePopupOpen(false);
-                      setNewFolderName('');
-                    }
-                  },
+                  onClick: handleAddFolder,
                 },
               ]}
               inputField={{
@@ -1114,27 +1259,39 @@ const Workroom: React.FC<Props> = ({}) => {
               }}
             />
           )}
-          {isFileEditDrawerOpen && selectedItem !== null && (
-            <WorkroomEditDrawer
-              open={isFileEditDrawerOpen}
-              onClose={() => setIsFileEditDrawerOpen(false)}
-              name={selectedItem.name}
-              info={selectedItem.detail}
-              onCopy={() => console.log('Copy')}
-              onMove={() => {
-                setIsFileMoveModalOpen(true);
-                setIsFileEditDrawerOpen(false);
-              }}
-              onShare={() => console.log('Share')}
-              onDownload={() => console.log('Download')}
-              onDelete={() => console.log('Delete')}
-            />
-          )}
+          {isFileEditDrawerOpen &&
+            selectedItem !== null &&
+            (selectedItem.trash ? (
+              <WorkroomEditDrawer
+                open={isFileEditDrawerOpen}
+                onClose={() => setIsFileEditDrawerOpen(false)}
+                name={selectedItem.name}
+                info={selectedItem.detail}
+                onRestore={handleRestore}
+                onDelete={handleDeletePopupOpen}
+              />
+            ) : (
+              <WorkroomEditDrawer
+                open={isFileEditDrawerOpen}
+                onClose={() => setIsFileEditDrawerOpen(false)}
+                name={selectedItem.name}
+                info={selectedItem.detail}
+                onRename={handleRename}
+                onCopy={handleCopy}
+                onMove={handleMove}
+                onShare={() => console.log('Share')}
+                onDownload={handleDownload}
+                onDelete={handleDeletePopupOpen}
+              />
+            ))}
           {isFileMoveModalOpen && selectedItem !== null && (
             <WorkroomFileMoveModal
               open={isFileMoveModalOpen}
               onClose={() => setIsFileMoveModalOpen(false)}
               folders={folderData}
+              addFolder={() => {
+                setIsSelectCreateOpen(true);
+              }}
             />
           )}
           {imageViewOpen &&
@@ -1144,6 +1301,31 @@ const Workroom: React.FC<Props> = ({}) => {
             ) : (
               <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
             ))}
+          {isDeletePopupOpen && (
+            <CustomPopup
+              title={getLocalizedText(selectedItem?.trash ? 'TODO : Delete from Trash?' : 'TODO : Are you sure?')}
+              type="alert"
+              description={getLocalizedText(
+                selectedItem?.trash
+                  ? `TODO : You’re about to delete "{name}" from the your Trash?
+This cannot be undone.
+Deleted items cannot be recovered.`
+                  : `2 folders will be deleted, containing a total of 2 items.  
+They’ll be moved to the trash and will be permanently deleted after 30days.`,
+              )}
+              buttons={[
+                {
+                  label: getLocalizedText('TODO : Cancel'),
+                  onClick: handleDeletePopupCancel,
+                },
+                {
+                  label: getLocalizedText('TODO : Delete'),
+                  isPrimary: true,
+                  onClick: handleDeleteConfirm,
+                },
+              ]}
+            />
+          )}
         </>,
         document.body,
       )}

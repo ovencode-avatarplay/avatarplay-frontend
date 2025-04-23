@@ -19,8 +19,15 @@
     align-self: stretch;
 }
 
+.editMode
+{
+    cursor: text; 
+}
+
 .nameArea
 {
+    cursor: pointer;
+
     display: flex;
     align-items: center;
     gap: 3px;
@@ -98,4 +105,18 @@
     aspect-ratio: 1/1;
 
     filter: var(--black-icon-filter);
+}
+
+.trashedfileName
+{
+    width: 100%; 
+    
+    text-align: center; 
+    color: var(--Neutral-900, #101010);
+    font-family: Lato;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
 }

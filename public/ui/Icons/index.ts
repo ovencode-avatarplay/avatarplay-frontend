@@ -67,6 +67,8 @@ import BoldViewGallery from "./Bold/View_Gallery.svg";
 import BoldMessenger from "./Bold/Messenger.svg";
 import BoldBookMark from "./Bold/Bookmark.svg";
 import BoldBookMarkWhite from "./Bold/BookmarkWhite.svg";
+import BoldAudio from "./Bold/Audio.svg";
+import BoldFolder from "./Bold/Folder.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -254,6 +256,8 @@ export {
   BoldMessenger,
   BoldBookMark,
   BoldBookMarkWhite,
+  BoldAudio,
+  BoldFolder,
   LineAddButton,
   LineAIImage,
   LineArchive,

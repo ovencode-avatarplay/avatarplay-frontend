@@ -47,12 +47,14 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
             padding: '8px 20px',
             borderTopLeftRadius: '24px',
             borderTopRightRadius: '24px',
+            // zIndex: '1999',
           },
         }}
         slotProps={{
           backdrop: {
             sx: {
               backgroundColor: 'inherit', // 원하는 배경색 적용
+              // zIndex: '3200',
             },
           },
         }}

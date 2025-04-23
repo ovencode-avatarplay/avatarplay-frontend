@@ -11,17 +11,23 @@ interface Props {
   open: boolean;
   onClose: () => void;
   folders: WorkroomItemInfo[];
+  addFolder: () => void;
 }
 
-const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders}) => {
+const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders, addFolder}) => {
   const renderFolder = () => {
     return (
       <ul className={styles.folderArea}>
-        {folders.map((item, index) => (
-          <li className={styles.folderItem} key={index}>
-            {renderFolderItem(item)}
-          </li>
-        ))}
+        {folders
+          .filter(
+            item =>
+              item.folderLocation === null || item.folderLocation === undefined || item.folderLocation?.length === 0,
+          )
+          .map((item, index) => (
+            <li className={styles.folderItem} key={index}>
+              {renderFolderItem(item)}
+            </li>
+          ))}
       </ul>
     );
   };
@@ -51,6 +57,8 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders}) => {
     <Dialog
       open={open}
       onClose={onClose}
+      disableEnforceFocus
+      disableAutoFocus
       PaperProps={{
         sx: {
           width: 'calc(100% - 32px)',
@@ -69,7 +77,13 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders}) => {
           onClose();
         }}
       >
-        <button className={styles.createButton} onClick={() => {}}>
+        <button
+          className={styles.createButton}
+          onClick={() => {
+            console.log('addFolder');
+            addFolder();
+          }}
+        >
           <img src={LineFolderPlus.src} />
         </button>
       </CreateDrawerHeader>
