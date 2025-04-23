@@ -93,6 +93,17 @@
     align-self: stretch;
 
 }
+
+.folderContainer
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    align-items: flex-start;
+    align-self: stretch;
+}
  
 
 .displayButton

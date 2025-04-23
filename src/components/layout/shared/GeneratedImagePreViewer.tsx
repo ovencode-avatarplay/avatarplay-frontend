@@ -8,9 +8,18 @@ import {GeneratedItemInfo, WorkroomItemInfo} from '@/app/view/studio/workroom/Wo
 interface Props {
   workroomItemInfo: WorkroomItemInfo;
   onClose: () => void;
+  onToggleFavorite: () => void;
+  onDelete: () => void;
+  onDownload: () => void;
 }
 
-const GeneratedImagePreViewer: React.FC<Props> = ({workroomItemInfo, onClose}) => {
+const GeneratedImagePreViewer: React.FC<Props> = ({
+  workroomItemInfo,
+  onClose,
+  onToggleFavorite,
+  onDelete,
+  onDownload,
+}) => {
   return (
     <div className={styles.backdrop} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -29,16 +38,16 @@ const GeneratedImagePreViewer: React.FC<Props> = ({workroomItemInfo, onClose}) =
               }}
             />
             <div className={styles.buttonArea}>
-              <button className={styles.buttonItem} onClick={() => {}}>
+              <button className={styles.buttonItem} onClick={onToggleFavorite}>
                 <img src={LineBookMark.src} />
               </button>
               <button className={styles.buttonItem} onClick={() => {}}>
                 <img src={LineShare.src} />
               </button>
-              <button className={styles.buttonItem} onClick={() => {}}>
+              <button className={styles.buttonItem} onClick={onDownload}>
                 <img src={LineDownload.src} />
               </button>
-              <button className={styles.buttonItem} onClick={() => {}}>
+              <button className={styles.buttonItem} onClick={onDelete}>
                 <img src={LineDelete.src} />
               </button>
             </div>

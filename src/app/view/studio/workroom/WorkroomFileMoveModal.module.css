@@ -6,6 +6,7 @@
 
 .fileMoveDrawerContainer
 {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -137,4 +138,27 @@
     aspect-ratio: 1/1;
 
     filter: var(--black-icon-filter);
+}
+
+.buttonArea
+{
+    position: fixed;
+    bottom: 8px; 
+
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    
+    display: flex;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.button
+{
+    flex: 1 0 0;
+
 }

@@ -5,7 +5,7 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './Workroom.module.css';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {useLayoutEffect, useRef, useState} from 'react';
+import {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import WorkroomTagList from './WorkroomTagList';
 import {BoldAltArrowDown, BoldViewGallery, LineEdit, LineFolderPlus, LineList, LineSearch} from '@ui/Icons';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -24,6 +24,7 @@ import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/Ch
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {ToastMessageAtom} from '@/app/Root';
 import {useAtom} from 'jotai';
+import EmptyState from '@/components/search/EmptyState';
 
 type BaseNode = {
   id: number; // 고유 ID
@@ -158,12 +159,41 @@ const Workroom: React.FC<Props> = ({}) => {
       detail: 'detail5',
       folderLocation: [1001, 1004],
     },
-    {id: 1006, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder6', detail: 'detail6'},
-    {id: 1007, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder7', detail: 'detail7'},
+    {
+      id: 1006,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder6',
+      detail: 'detail6',
+
+      folderLocation: [1001, 1004],
+    },
+    {
+      id: 1007,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder7',
+      detail: 'detail7',
+      folderLocation: [1002],
+    },
 
     {id: 2000, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
-    {id: 2001, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image1', detail: 'detail1'},
-    {id: 2002, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image2', detail: 'detail2'},
+    {
+      id: 2001,
+      mediaState: MediaState.Image,
+      imgUrl: '/images/001.png',
+      name: 'image1',
+      detail: 'detail1',
+      folderLocation: [1001],
+    },
+    {
+      id: 2002,
+      mediaState: MediaState.Image,
+      imgUrl: '/images/001.png',
+      name: 'image2',
+      detail: 'detail2',
+      folderLocation: [1001],
+    },
     {
       id: 2003,
       mediaState: MediaState.Image,
@@ -344,14 +374,6 @@ const Workroom: React.FC<Props> = ({}) => {
     },
   ]);
 
-  const folderData = workroomData.filter(item => item.mediaState === MediaState.None);
-  const imageData = workroomData.filter(item => item.mediaState === MediaState.Image && !item.generatedInfo);
-  const videoData = workroomData.filter(item => item.mediaState === MediaState.Video);
-  const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
-  const aiHistoryData = workroomData.filter(item => !!item.generatedInfo);
-
-  const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
-
   //#endregion
 
   //#region State
@@ -361,7 +383,10 @@ const Workroom: React.FC<Props> = ({}) => {
     aiHistory: 'All',
     gallery: 'All',
     trash: 'All',
+    folder: 'All',
   });
+
+  const [isTrash, setIsTrash] = useState<boolean>(false);
 
   type RenderDataItemsOptions = {
     filterArea?: boolean;
@@ -369,7 +394,18 @@ const Workroom: React.FC<Props> = ({}) => {
     favorite?: boolean;
     trash?: boolean;
     generatedType?: number;
+    parentFolderId?: number | null;
   };
+
+  const folderData = workroomData.filter(item => item.mediaState === MediaState.None);
+  const imageData = workroomData.filter(item => item.mediaState === MediaState.Image && !item.generatedInfo);
+  const videoData = workroomData.filter(item => item.mediaState === MediaState.Video);
+  const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
+  const aiHistoryData = workroomData.filter(item => !!item.generatedInfo);
+
+  const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
+  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
+  const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
 
   const [detailView, setDetailView] = useState<boolean>(false);
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
@@ -383,16 +419,19 @@ const Workroom: React.FC<Props> = ({}) => {
   const [isFolderNamePopupOpen, setIsFolderNamePopupOpen] = useState<boolean>(false);
   const [newFolderName, setNewFolderName] = useState<string>('');
 
-  const [isFileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
-  const [isFileMoveModalOpen, setIsFileMoveModalOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
 
-  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
-  const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
+  const [isFileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
+  const [isFileMoveModalOpen, setIsFileMoveModalOpen] = useState<boolean>(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState<boolean>(false);
+
+  const [selectedCurrentFolder, setSelectedCurrentFolder] = useState<WorkroomItemInfo | null>(null);
+  const [folderHistory, setFolderHistory] = useState<WorkroomItemInfo[]>([]);
+
+  const [selectedTargetFolder, setSelectedTargetFolder] = useState<WorkroomItemInfo | null>(null);
 
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
-  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState<boolean>(false);
   //#endregion
 
   //#region Container에서 길게 입력으로 선택활성화 시키기
@@ -463,6 +502,11 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleItemClick = (item: WorkroomItemInfo) => {
     if (item.mediaState === MediaState.None) {
       setSelectedItem(item);
+
+      if (selectedCurrentFolder) {
+        setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
+      }
+      setSelectedCurrentFolder(item);
     }
     if (item.mediaState === MediaState.Image) {
       handleItemImageClick(item);
@@ -491,6 +535,7 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const handleMove = () => {
+    console.log('handleMove');
     setIsFileMoveModalOpen(true);
     setIsFileEditDrawerOpen(false);
   };
@@ -575,9 +620,10 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const handleDeletePopupOpen = () => {
-    if (!selectedItem) return;
-    setIsFileEditDrawerOpen(false);
-    setIsDeletePopupOpen(true);
+    if (selectedItem || (isSelecting && selectedItems.length > 0)) {
+      setIsFileEditDrawerOpen(false);
+      setIsDeletePopupOpen(true);
+    }
   };
 
   const handleDeletePopupCancel = () => {
@@ -606,6 +652,52 @@ const Workroom: React.FC<Props> = ({}) => {
     }
   };
 
+  const handleSelectTargetFolder = (folder: WorkroomItemInfo | null) => {
+    setSelectedTargetFolder(folder);
+  };
+
+  const handleMoveToFolder = (targetFolderId: number | null) => {
+    setWorkroomData(prev =>
+      prev.map(item => {
+        if (selectedItem && !isSelecting && item.id === selectedItem.id) {
+          return {
+            ...item,
+            folderLocation: targetFolderId ? [targetFolderId] : [],
+          };
+        }
+
+        if (isSelecting && selectedItems.includes(item.id)) {
+          return {
+            ...item,
+            folderLocation: targetFolderId ? [targetFolderId] : [],
+          };
+        }
+
+        return item;
+      }),
+    );
+
+    if (!isSelecting) {
+      setSelectedItem(null);
+    } else {
+      setSelectedItems([]);
+      setIsSelecting(false);
+    }
+
+    setIsFileMoveModalOpen(false);
+    setIsFileEditDrawerOpen(false);
+
+    dataToast.open(getLocalizedText('TODO : Folder moved successfully!'));
+  };
+
+  const handleGoBackFolder = () => {
+    setFolderHistory(prev => {
+      const history = [...prev];
+      const last = history.pop();
+      setSelectedCurrentFolder(last ?? null);
+      return history;
+    });
+  };
   //#endregion
 
   //#region function
@@ -724,30 +816,42 @@ const Workroom: React.FC<Props> = ({}) => {
       option.generatedType && option.generatedType > 0
         ? favoriteFilteredData.filter(item => item.generatedInfo?.generatedType === option.generatedType)
         : favoriteFilteredData;
-    const limitedData = option.limit ? favoriteFilteredData.slice(0, option.limit) : generatedTypeFilterData;
+    const parentFolderIdFilteredData =
+      typeof option.parentFolderId === 'number'
+        ? generatedTypeFilterData.filter(
+            item => item.folderLocation?.[item.folderLocation.length - 1] === option.parentFolderId,
+          )
+        : generatedTypeFilterData;
+    const limitedData = option.limit ? parentFolderIdFilteredData.slice(0, option.limit) : parentFolderIdFilteredData;
+
+    const filteredData = limitedData;
 
     return (
       <div className={`${styles.itemContainer}`}>
         {option.filterArea && (
           <div className={styles.filterArea}>{renderFilter(detailViewButton || false, detailView)}</div>
         )}
-        <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
-          {limitedData.map((item, index) => (
-            <div className={styles.dataItem} key={index} data-item>
-              <WorkroomItem
-                detailView={detailView}
-                item={item}
-                isSelecting={isSelecting}
-                isSelected={selectedItems.includes(item.id)}
-                onSelect={checked => toggleSelectItem(item.id, checked)}
-                onClickFavorite={() => toggleFavorite(item.id)}
-                onClickMenu={() => handleMenuClick(item)}
-                onClickPreview={() => handleItemImageClick(item)}
-                onClickItem={() => handleItemClick(item)}
-              />
-            </div>
-          ))}
-        </ul>
+        {filteredData.length > 0 ? (
+          <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
+            {filteredData.map((item, index) => (
+              <div className={styles.dataItem} key={index} data-item>
+                <WorkroomItem
+                  detailView={detailView}
+                  item={item}
+                  isSelecting={isSelecting}
+                  isSelected={selectedItems.includes(item.id)}
+                  onSelect={checked => toggleSelectItem(item.id, checked)}
+                  onClickFavorite={() => toggleFavorite(item.id)}
+                  onClickMenu={() => handleMenuClick(item)}
+                  onClickPreview={() => handleItemImageClick(item)}
+                  onClickItem={() => handleItemClick(item)}
+                />
+              </div>
+            ))}
+          </ul>
+        ) : (
+          <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+        )}
       </div>
     );
   };
@@ -810,7 +914,7 @@ const Workroom: React.FC<Props> = ({}) => {
                   {getLocalizedText('TODO : Show more')}
                 </button>
               </div>
-              {renderDataItems(workroomData, true, {filterArea: false, limit: 4, trash: false})}
+              {renderDataItems(folderData, true, {filterArea: false, limit: 4, trash: false})}
             </div>
             <div className={styles.categoryArea}>
               <div className={styles.categoryTitleArea}>
@@ -857,7 +961,15 @@ const Workroom: React.FC<Props> = ({}) => {
           </>
         )}
 
-        {tagStates.work === 'Folders' && renderDataItems(folderData, true, {filterArea: true})}
+        {tagStates.work === 'Folders' &&
+          renderDataItems(
+            folderData.filter(
+              item =>
+                item.folderLocation === null || item.folderLocation === undefined || item.folderLocation.length === 0,
+            ),
+            true,
+            {filterArea: true},
+          )}
 
         {tagStates.work === 'Image' && renderDataItems(imageData, detailView, {filterArea: true}, true)}
 
@@ -1117,8 +1229,107 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
-  const renderFolderData = (folder: FolderNode) => {
-    return <>folder</>;
+  const renderFolderData = (folderId: number) => {
+    return (
+      <>
+        <WorkroomTagList
+          tags={workTags}
+          currentTag={tagStates.folder}
+          onTagChange={tag => handleTagClick('folder', tag)}
+        />
+        <div
+          className={styles.folderContainer}
+          onMouseDown={handleStart}
+          onMouseUp={handleEnd}
+          onMouseLeave={handleEnd}
+          onTouchStart={handleStart}
+          onTouchCancel={handleEnd}
+          onTouchEnd={e => {
+            handleEnd();
+            handleDeselectIfOutside(e);
+          }}
+          onClick={e => handleDeselectIfOutside(e)}
+        >
+          {tagStates.folder === 'All' && (
+            <>
+              <div className={styles.categoryArea}>
+                <div className={styles.categoryTitleArea}>
+                  <div className={styles.categoryTitle}>{getLocalizedText('TODO : Folder')}</div>
+                  <button
+                    className={styles.categoryShowMore}
+                    onClick={() => {
+                      handleTagClick('folder', 'Folders');
+                    }}
+                  >
+                    {getLocalizedText('TODO : Show more')}
+                  </button>
+                </div>
+                {renderDataItems(folderData, true, {
+                  filterArea: false,
+                  limit: 4,
+                  trash: false,
+                  parentFolderId: folderId,
+                })}
+              </div>
+              <div className={styles.categoryArea}>
+                <div className={styles.categoryTitleArea}>
+                  <div className={styles.categoryTitle}>{getLocalizedText('TODO : Image')}</div>
+                  <button
+                    className={styles.categoryShowMore}
+                    onClick={() => {
+                      handleTagClick('folder', 'Image');
+                    }}
+                  >
+                    {getLocalizedText('TODO : Show more')}
+                  </button>
+                </div>
+                {renderDataItems(imageData, detailView, {filterArea: false, limit: 4, parentFolderId: folderId})}
+              </div>
+              <div className={styles.categoryArea}>
+                <div className={styles.categoryTitleArea}>
+                  <div className={styles.categoryTitle}>{getLocalizedText('TODO : Video')}</div>
+                  <button
+                    className={styles.categoryShowMore}
+                    onClick={() => {
+                      handleTagClick('folder', 'Video');
+                    }}
+                  >
+                    {getLocalizedText('TODO : Show more')}
+                  </button>
+                </div>
+                {renderDataItems(videoData, detailView, {filterArea: false, limit: 4, parentFolderId: folderId})}
+              </div>
+              <div className={styles.categoryArea}>
+                <div className={styles.categoryTitleArea}>
+                  <div className={styles.categoryTitle}>{getLocalizedText('TODO : Audio')}</div>
+                  <button
+                    className={styles.categoryShowMore}
+                    onClick={() => {
+                      handleTagClick('folder', 'Audio');
+                    }}
+                  >
+                    {getLocalizedText('TODO : Show more')}
+                  </button>
+                </div>
+                {renderDataItems(audioData, true, {filterArea: false, limit: 4, parentFolderId: folderId})}
+              </div>
+            </>
+          )}
+
+          {tagStates.folder === 'Folders' &&
+            renderDataItems(folderData, true, {filterArea: true, parentFolderId: folderId})}
+
+          {tagStates.folder === 'Image' &&
+            renderDataItems(imageData, detailView, {filterArea: true, parentFolderId: folderId}, true)}
+
+          {tagStates.folder === 'Video' &&
+            renderDataItems(videoData, detailView, {filterArea: true, parentFolderId: folderId}, true)}
+
+          {tagStates.folder === 'Audio' &&
+            renderDataItems(audioData, true, {filterArea: true, parentFolderId: folderId})}
+        </div>
+      </>
+    );
   };
 
   //#endregion
@@ -1179,11 +1390,18 @@ const Workroom: React.FC<Props> = ({}) => {
 
   return (
     <div className={styles.workroomContainer}>
-      <CreateDrawerHeader title={getLocalizedText('TODO : Workroom')} onClose={() => {}}>
+      <CreateDrawerHeader
+        title={selectedCurrentFolder ? selectedCurrentFolder.name : getLocalizedText('TODO : Workroom')}
+        onClose={() => {
+          if (selectedCurrentFolder) {
+            handleGoBackFolder();
+          }
+        }}
+      >
         {
           <div className={styles.buttonArea}>
             <button className={styles.topButton}>
-              <img className={styles.buttonIcon} src={LineSearch.src} />
+              <img className={styles.buttonIcon} src={LineSearch.src} onClick={() => {}} />
             </button>
             <button
               className={styles.topButton}
@@ -1196,13 +1414,24 @@ const Workroom: React.FC<Props> = ({}) => {
           </div>
         }
       </CreateDrawerHeader>
-      <Splitters
-        splitters={splitData}
-        headerStyle={{padding: '0 16px'}}
-        onSelectSplitButton={() => {
-          setIsSelecting(false);
-        }}
-      />
+
+      {selectedCurrentFolder ? (
+        renderFolderData(selectedCurrentFolder.id)
+      ) : (
+        <Splitters
+          splitters={splitData}
+          headerStyle={{padding: '0 16px'}}
+          onSelectSplitButton={(index: number) => {
+            setIsSelecting(false);
+            if (index === 4) {
+              setIsTrash(true);
+            } else {
+              setIsTrash(false);
+            }
+          }}
+        />
+      )}
+
       {isSelecting && selectedItems.length > 0 && (
         <div className={styles.selectingMenuContainer}>
           <WorkroomSelectingMenu
@@ -1212,8 +1441,9 @@ const Workroom: React.FC<Props> = ({}) => {
             }}
             onShare={() => {}}
             onDownload={handleDownloadSelectedItems}
-            onMoveToFolder={() => {}}
+            onMoveToFolder={handleMove}
             onMoveToTrash={handleDeletePopupOpen}
+            isTrash={isTrash}
           />
         </div>
       )}
@@ -1284,20 +1514,31 @@ const Workroom: React.FC<Props> = ({}) => {
                 onDelete={handleDeletePopupOpen}
               />
             ))}
-          {isFileMoveModalOpen && selectedItem !== null && (
+          {isFileMoveModalOpen && (selectedItem !== null || (isSelecting && selectedItems.length > 0)) && (
             <WorkroomFileMoveModal
               open={isFileMoveModalOpen}
               onClose={() => setIsFileMoveModalOpen(false)}
-              folders={folderData}
+              folders={folderData.filter(
+                item => !item.trash && item.mediaState === MediaState.None && item.id !== selectedItem?.id,
+              )}
               addFolder={() => {
                 setIsSelectCreateOpen(true);
               }}
+              onSelectTargetFolder={handleSelectTargetFolder}
+              selectedTargetFolder={selectedTargetFolder}
+              onMoveToFolder={handleMoveToFolder}
             />
           )}
           {imageViewOpen &&
             selectedItem &&
             (selectedItem.generatedInfo ? (
-              <GeneratedImagePreViewer workroomItemInfo={selectedItem} onClose={() => setImageViewOpen(false)} />
+              <GeneratedImagePreViewer
+                workroomItemInfo={selectedItem}
+                onClose={() => setImageViewOpen(false)}
+                onToggleFavorite={() => toggleFavorite(selectedItem.id)}
+                onDelete={handleDeletePopupOpen}
+                onDownload={handleDownload}
+              />
             ) : (
               <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
             ))}

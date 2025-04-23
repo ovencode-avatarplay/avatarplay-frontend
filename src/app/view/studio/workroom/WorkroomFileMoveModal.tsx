@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './WorkroomFileMoveModal.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
 import Splitters from '@/components/layout/shared/CustomSplitter';
@@ -6,23 +6,44 @@ import {WorkroomItemInfo} from './WorkroomItem';
 import {BoldFolderPlus, LineArrowRight, LineFolderPlus} from '@ui/Icons';
 import {Dialog} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   folders: WorkroomItemInfo[];
   addFolder: () => void;
+  selectedTargetFolder: WorkroomItemInfo | null;
+  onSelectTargetFolder: (folder: WorkroomItemInfo | null) => void;
+  onMoveToFolder: (folderId: number | null) => void;
 }
 
-const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders, addFolder}) => {
+const WorkroomFileMoveModal: React.FC<Props> = ({
+  open,
+  onClose,
+  folders,
+  addFolder,
+  onSelectTargetFolder: onSelectFolder,
+  selectedTargetFolder: selectedFolder,
+  onMoveToFolder,
+}) => {
+  const handleSelectFolder = (folder: WorkroomItemInfo) => {
+    onSelectFolder(folder);
+  };
+
   const renderFolder = () => {
     return (
       <ul className={styles.folderArea}>
         {folders
-          .filter(
-            item =>
-              item.folderLocation === null || item.folderLocation === undefined || item.folderLocation?.length === 0,
-          )
+          .filter(item => {
+            if (!selectedFolder) {
+              // 루트 폴더만 표시 (folderLocation이 비어있거나 undefined)
+              return !item.folderLocation || item.folderLocation.length === 0;
+            } else {
+              // 현재 선택된 폴더의 id를 포함하는 하위 폴더만 표시
+              return item.folderLocation && item.folderLocation[item.folderLocation.length - 1] === selectedFolder.id;
+            }
+          })
           .map((item, index) => (
             <li className={styles.folderItem} key={index}>
               {renderFolderItem(item)}
@@ -46,7 +67,7 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders, addFold
           <div className={styles.folderName}>{data.name}</div>
           <div className={styles.folderDetail}>{data.detail}</div>
         </div>
-        <button className={styles.folderButton}>
+        <button className={styles.folderButton} onClick={() => handleSelectFolder(data)}>
           <img src={LineArrowRight.src} />
         </button>
       </div>
@@ -55,17 +76,19 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders, addFold
 
   return (
     <Dialog
+      // className={styles.dialogueContainer}
       open={open}
       onClose={onClose}
       disableEnforceFocus
       disableAutoFocus
       PaperProps={{
         sx: {
-          width: 'calc(100% - 32px)',
+          width: 'calc(100%)',
+          maxWidth: '1300px',
+
           height: '100%',
           maxHeight: '100%',
 
-          maxWidth: '1300px',
           margin: '0 auto',
           borderRadius: '0px',
         },
@@ -87,7 +110,7 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders, addFold
           <img src={LineFolderPlus.src} />
         </button>
       </CreateDrawerHeader>
-      <ul className={styles.fileMoveDrawerContainer}>
+      <div className={styles.fileMoveDrawerContainer}>
         <div className={styles.searchArea}></div>
         <Splitters
           splitters={[
@@ -97,7 +120,33 @@ const WorkroomFileMoveModal: React.FC<Props> = ({open, onClose, folders, addFold
           splitterStyle={{margin: '0'}}
           headerStyle={{margin: 'auto', gap: '30px', flex: '1 0 0', width: '100%', justifyContent: 'space-around'}}
         />
-      </ul>
+        {selectedFolder !== undefined && selectedFolder !== null && (
+          <div className={styles.buttonArea}>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Tertiary"
+              onClick={() => onSelectFolder(null)}
+              customClassName={[styles.button]}
+            >
+              {getLocalizedText('TODO : Cancel')}
+            </CustomButton>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Primary"
+              onClick={() => {
+                const targetFolderId = selectedFolder?.id ?? null;
+                onMoveToFolder(targetFolderId);
+                onSelectFolder(null);
+              }}
+              customClassName={[styles.button]}
+            >
+              {getLocalizedText('TODO : Move here')}
+            </CustomButton>
+          </div>
+        )}
+      </div>
     </Dialog>
   );
 };

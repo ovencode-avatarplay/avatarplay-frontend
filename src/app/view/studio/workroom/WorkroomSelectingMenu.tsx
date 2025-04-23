@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './WorkroomSelectingMenu.module.css';
-import {LineFolderPlus, LineDelete, LineClose, LineShare, LineDownload} from '@ui/Icons'; // 아이콘은 임의로 예시 import
+import {LineFolderPlus, LineDelete, LineClose, LineShare, LineDownload, BoldFolder} from '@ui/Icons'; // 아이콘은 임의로 예시 import
 
 interface Props {
   selectedCount: number;
@@ -9,6 +9,7 @@ interface Props {
   onMoveToFolder: () => void;
   onMoveToTrash: () => void;
   onExitSelecting: () => void;
+  isTrash?: boolean;
 }
 
 const WorkroomSelectingMenu: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
   onMoveToFolder,
   onMoveToTrash,
   onExitSelecting,
+  isTrash,
 }) => {
   return (
     <div className={styles.selectingMenuContainer}>
@@ -25,18 +27,31 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
         <p className={styles.selectionCount}>{`${selectedCount}개 선택함`}</p>
       </div>
       <div className={styles.centerArea}>
-        <button className={styles.iconButton} aria-label="Share" onClick={onShare}>
-          <img src={LineShare.src} alt="Share" />
-        </button>
-        <button className={styles.iconButton} aria-label="Download" onClick={onDownload}>
-          <img src={LineDownload.src} alt="Download" />
-        </button>
-        <button className={styles.iconButton} aria-label="MoveFolder" onClick={onMoveToFolder}>
-          <img src={LineFolderPlus.src} alt="Move to folder" />
-        </button>
-        <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
-          <img src={LineDelete.src} alt="Move to trash" />
-        </button>
+        {!isTrash ? (
+          <>
+            <button className={styles.iconButton} aria-label="Share" onClick={onShare}>
+              <img src={LineShare.src} alt="Share" />
+            </button>
+            <button className={styles.iconButton} aria-label="Download" onClick={onDownload}>
+              <img src={LineDownload.src} alt="Download" />
+            </button>
+            <button className={styles.iconButton} aria-label="MoveFolder" onClick={onMoveToFolder}>
+              <img src={BoldFolder.src} alt="Move to folder" />
+            </button>
+            <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
+              <img src={LineDelete.src} alt="Move to trash" />
+            </button>
+          </>
+        ) : (
+          <>
+            <button className={styles.iconButton} aria-label="MoveFolder" onClick={onMoveToFolder}>
+              <img src={BoldFolder.src} alt="Restore to folder" />
+            </button>
+            <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
+              <img src={LineDelete.src} alt="Delete" />
+            </button>
+          </>
+        )}
       </div>
       <div className={styles.rightArea}>
         <button className={styles.iconButton} aria-label="Close" onClick={onExitSelecting}>
