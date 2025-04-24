@@ -27,7 +27,7 @@ export interface WorkroomItemInfo {
   trash?: boolean;
   trashedTime?: string;
   generatedInfo?: GeneratedItemInfo | null;
-  characterInfo?: CharacterInfo | null;
+  profileId?: number | null;
 }
 
 export interface GeneratedItemInfo {

@@ -217,7 +217,6 @@ export const sendDeleteCharacter = async (payload: DeleteCharacterReq): Promise<
 export interface GetCharacterInfoReq {
   languageType: string;
   profileId?: number;
-  characterId?: number;
 }
 
 export interface GetCharacterInfoRes {

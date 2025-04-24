@@ -18,7 +18,6 @@ import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
 import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
 import WorkroomFileMoveModal from './WorkroomFileMoveModal';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
-import {GetCharacterListReq, sendGetCharacterList} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {getCurrentLanguage} from '@/utils/UrlMove';
@@ -26,24 +25,7 @@ import {ToastMessageAtom} from '@/app/Root';
 import {useAtom} from 'jotai';
 import EmptyState from '@/components/search/EmptyState';
 import WorkroomGalleryModal from './WorkroomGalleryModal';
-
-type BaseNode = {
-  id: number; // 고유 ID
-  name: string; // 파일 또는 폴더 이름
-  path: string; // 전체 경로 (예: Folder/FeedImage/20250421)
-  parentId: number | null; // 상위 폴더 ID (root는 null)
-  isOpen?: boolean; // (트리뷰 확장 대비) 열림/닫힘 여부
-};
-
-export type FolderNode = BaseNode & {
-  type: 'folder';
-  children: (FolderNode | FileNode)[];
-};
-
-export type FileNode = BaseNode & {
-  type: 'file';
-  extension?: string;
-};
+import WorkroomSearchModal from './WorkroomSearchModal';
 
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
@@ -52,6 +34,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const aiHistoryTags = ['All', 'Custom', 'Variation'];
   const galleryTags = ['All', 'MyCharacter', 'SharedCharacter'];
   const trashTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
+  const variationTags = ['Portrait', 'Pose', 'Expressions', 'Video'];
 
   type RenderDataItemsOptions = {
     filterArea?: boolean;
@@ -69,7 +52,14 @@ const Workroom: React.FC<Props> = ({}) => {
   // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
   const [workroomData, setWorkroomData] = useState<WorkroomItemInfo[]>([
     {id: 1000, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder0', detail: 'detail0'},
-    {id: 1001, mediaState: MediaState.None, imgUrl: '/images/001.png', name: 'folder1', detail: 'detail1'},
+    {
+      id: 1001,
+      mediaState: MediaState.None,
+      imgUrl: '/images/001.png',
+      name: 'folder1',
+      detail: 'detail1',
+      profileId: 520,
+    },
     {
       id: 1002,
       mediaState: MediaState.None,
@@ -119,7 +109,14 @@ const Workroom: React.FC<Props> = ({}) => {
       detail: 'detail7',
       folderLocation: [1002],
     },
-    {id: 2000, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image0', detail: 'detail0'},
+    {
+      id: 2000,
+      mediaState: MediaState.Image,
+      imgUrl: '/images/001.png',
+      name: 'image0',
+      detail: 'detail0',
+      profileId: 520,
+    },
     {
       id: 2001,
       mediaState: MediaState.Image,
@@ -231,13 +228,14 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen0',
       detail: 'detail0',
       generatedInfo: {
-        generatedType: 2,
+        generatedType: 1,
         generateModel: 'model',
         imageSize: '64x64',
         positivePrompt: 'positive',
         negativePrompt: 'negative',
         seed: 12345,
       },
+      profileId: 520,
     },
     {
       id: 5001,
@@ -253,6 +251,7 @@ const Workroom: React.FC<Props> = ({}) => {
         negativePrompt: 'negative, 1',
         seed: 11111,
       },
+      profileId: 520,
     },
     {
       id: 5002,
@@ -326,6 +325,7 @@ const Workroom: React.FC<Props> = ({}) => {
     gallery: 'All',
     trash: 'All',
     folder: 'All',
+    variation: 'Portrait',
   });
 
   const [isTrash, setIsTrash] = useState<boolean>(false);
@@ -336,8 +336,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
   const aiHistoryData = workroomData.filter(item => !!item.generatedInfo);
 
-  const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
-  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
+  const galleryData = workroomData.filter(item => item.mediaState === MediaState.None && item.profileId);
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
 
   const [detailView, setDetailView] = useState<boolean>(false);
@@ -359,6 +358,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const [isFileMoveModalOpen, setIsFileMoveModalOpen] = useState<boolean>(false);
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState<boolean>(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState<boolean>(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false);
 
   const [selectedCurrentFolder, setSelectedCurrentFolder] = useState<WorkroomItemInfo | null>(null);
   const [folderHistory, setFolderHistory] = useState<WorkroomItemInfo[]>([]);
@@ -436,22 +436,23 @@ const Workroom: React.FC<Props> = ({}) => {
     }
   };
 
-  const handleItemClick = (item: WorkroomItemInfo) => {
+  const handleItemClick = async (item: WorkroomItemInfo) => {
     if (item.mediaState === MediaState.None) {
-      setSelectedItem(item);
-
-      if (selectedCurrentFolder) {
-        setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
-      }
-      setSelectedCurrentFolder(item);
-    }
-    if (item.mediaState === MediaState.Image) {
-      if (item.characterInfo) {
+      if (item.profileId) {
         setSelectedItem(item);
+        await getCharacterInfo(item.profileId);
         setIsGalleryModalOpen(true);
       } else {
-        handleItemImageClick(item);
+        setSelectedItem(item);
+
+        if (selectedCurrentFolder) {
+          setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
+        }
+        setSelectedCurrentFolder(item);
       }
+    }
+    if (item.mediaState === MediaState.Image) {
+      handleItemImageClick(item);
     }
   };
 
@@ -716,45 +717,10 @@ const Workroom: React.FC<Props> = ({}) => {
   //#region function
 
   // 현재 유저가 가진 캐릭터를 모두 가져옴
-  const getCharacterList = async () => {
-    try {
-      const characterListreq: GetCharacterListReq = {
-        languageType: getCurrentLanguage(),
-      };
-      const response = await sendGetCharacterList(characterListreq);
-
-      if (response.data) {
-        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
-        setCharacters(characterInfoList);
-        setGalleryData([]);
-        characterInfoList.map(character => {
-          setGalleryData(prev => [
-            ...prev,
-            {
-              id: character.id,
-              mediaState: MediaState.Image,
-              imgUrl: character.mainImageUrl,
-              name: character.name,
-              detail: character.createAt,
-              favorite: false,
-              trash: false,
-              characterInfo: character,
-            },
-          ]);
-        });
-      } else {
-        throw new Error(`No contentInfo in response for ID: `);
-      }
-    } catch (error) {
-      console.error('Error fetching content by user ID:', error);
-    } finally {
-    }
-  };
-
   // Id로 캐릭터 정보를 가져옴
   const getCharacterInfo = async (id: number) => {
     try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
       const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {
@@ -812,15 +778,6 @@ const Workroom: React.FC<Props> = ({}) => {
   //#endregion
 
   const recentData = filterWorkroomData(workroomData, {limit: 20, renderEmpty: false, trash: false});
-
-  // 렌더링 전에 Init 실행
-  useLayoutEffect(() => {
-    Init();
-  }, []);
-
-  function Init() {
-    getCharacterList();
-  }
 
   const getMinId = (list: WorkroomItemInfo[]): number => {
     const listId = list.flatMap(item => item.id);
@@ -1500,7 +1457,7 @@ const Workroom: React.FC<Props> = ({}) => {
         {
           <div className={styles.buttonArea}>
             <button className={styles.topButton}>
-              <img className={styles.buttonIcon} src={LineSearch.src} onClick={() => {}} />
+              <img className={styles.buttonIcon} src={LineSearch.src} onClick={() => setIsSearchModalOpen(true)} />
             </button>
             <button
               className={styles.topButton}
@@ -1676,12 +1633,42 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
               ]}
             />
           )}
-          {isGalleryModalOpen && selectedItem?.characterInfo && (
+          {isGalleryModalOpen && selectedItem?.profileId && (
             <WorkroomGalleryModal
               open={isGalleryModalOpen}
               onClose={() => setIsGalleryModalOpen(false)}
-              characterInfo={selectedItem?.characterInfo || null}
-            />
+              characterInfo={currentSelectedCharacter || null}
+            >
+              <>
+                <WorkroomTagList
+                  tags={variationTags}
+                  currentTag={tagStates.variation}
+                  onTagChange={tag => handleTagClick('variation', tag)}
+                />
+                {renderDataItems(
+                  workroomData.filter(
+                    item =>
+                      item.mediaState === MediaState.Image &&
+                      item.profileId &&
+                      (tagStates.variation === 'Portrait'
+                        ? item.generatedInfo?.generatedType === 0
+                        : tagStates.variation === 'Pose'
+                        ? item.generatedInfo?.generatedType === 1
+                        : tagStates.variation === 'Expressions'
+                        ? item.generatedInfo?.generatedType === 2
+                        : tagStates.variation === 'Video'
+                        ? item.generatedInfo?.generatedType === 3
+                        : false),
+                  ),
+                  detailView,
+                  {filterArea: true, renderEmpty: true},
+                  true,
+                )}
+              </>
+            </WorkroomGalleryModal>
+          )}
+          {isSearchModalOpen && (
+            <WorkroomSearchModal open={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
           )}
         </>,
         document.body,

@@ -4,25 +4,15 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import {LineFolderPlus, LineSearch} from '@ui/Icons';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import WorkroomTagList from './WorkroomTagList';
-import {useState} from 'react';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   characterInfo: CharacterInfo | null;
+  children: React.ReactNode;
 }
 
-const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo}) => {
-  const galleryTags = ['Portrait', 'Pose', 'Expressions', 'Video'];
-  const [tagStates, setTagStates] = useState({
-    galleryTags: 'Portrait',
-  });
-
-  const handleTagClick = (type: keyof typeof tagStates, tag: string) => {
-    setTagStates(prev => ({...prev, [type]: tag}));
-  };
-
+const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo, children}) => {
   return (
     <Dialog
       open={open}
@@ -63,11 +53,7 @@ const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo}) =
         </div>
       </CreateDrawerHeader>
 
-      <WorkroomTagList
-        tags={galleryTags}
-        currentTag={tagStates.galleryTags}
-        onTagChange={tag => handleTagClick('galleryTags', tag)}
-      />
+      {children}
     </Dialog>
   );
 };
