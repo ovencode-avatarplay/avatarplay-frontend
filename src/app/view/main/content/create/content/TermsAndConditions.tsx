@@ -29,7 +29,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({isSingle}) => {
       <CustomArrowHeader
         title={getLocalizedText('createcontent002_title_001')}
         onClose={() => {
-          pushLocalizedRoute(`/create/content`, router);
+          pushLocalizedRoute(`/main/homefeed`, router);
         }}
         children={
           <div className={styles.rightArea}>

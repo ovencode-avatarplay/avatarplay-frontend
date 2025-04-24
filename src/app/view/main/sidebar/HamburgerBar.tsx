@@ -34,6 +34,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   const [supportOpen, setSupportOpen] = useState<boolean>(false);
   const [accountOpen, setAccountOpen] = useState<boolean>(false);
   const [userMetaData, setUserMetaData] = useState<UserMetadata | null>();
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const [isAlertOn, setIsAlertOn] = useState<boolean>(false);
 
@@ -101,6 +102,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       localStorage.removeItem('jwt');
       dispatch(updateProfile(null));
       setUserMetaData(null);
+      setIsLogin(false);
     } catch (error) {
       console.error(error);
     }
@@ -111,14 +113,22 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   };
 
   const getSessionData = async () => {
-    const session = await supabase.auth.getSession();
-    setUserMetaData(session.data.session?.user.user_metadata || null);
+    // const session = await supabase.auth.getSession();
+    // setUserMetaData(session.data.session?.user.user_metadata || null);
+
+    const isLogin = await isLogined();
+    setIsLogin(isLogin);
   };
 
   useEffect(() => {
-    getSessionData();
-  }, [auth]);
+    if (dataProfile.currentProfile?.profileId) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [dataProfile]);
 
+  console.log('profile info : ', dataProfile.currentProfile);
   return (
     <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
       <div className={styles.drawerContent}>
@@ -137,17 +147,13 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
                 <div className={styles.profileNameArea}>
                   <p className={styles.profileName}>
                     {/* {auth?.user.user_metadata.name} */}
-                    {userMetaData ? userMetaData.name : getLocalizedText('common_label_guestmode')}
+                    {isLogin ? dataProfile.currentProfile?.name : getLocalizedText('common_label_guestmode')}
                   </p>
-                  {userMetaData ? (
-                    <img className={styles.profileVerified} src={userMetaData ? BoldVerifiedLabel.src : ''} />
-                  ) : (
-                    ''
-                  )}
+                  {isLogin ? <img className={styles.profileVerified} src={isLogin ? BoldVerifiedLabel.src : ''} /> : ''}
                 </div>
                 <p className={styles.profileEmail}>
                   {/* {auth?.user.user_metadata.email} */}
-                  {userMetaData ? userMetaData.email : ''}
+                  {isLogin ? userMetaData?.email : ''}
                 </p>
               </div>
               <img className={styles.arrowIcon} src={LineArrowRight.src} />
@@ -160,7 +166,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             state="Normal"
             type="Primary"
             onClick={() => {
-              if (userMetaData) {
+              if (isLogin) {
                 setIsAlertOn(true);
               } else {
                 routeProfile();
@@ -168,7 +174,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             }}
             customClassName={[styles.planButton]}
           >
-            {userMetaData
+            {isLogin
               ? getLocalizedText('common_button_upgradeyourplan')
               : getLocalizedText('common_button_loginsignup')}
           </CustomButton>
@@ -182,7 +188,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           <li
             className={`${styles.menuItem} ${styles.divideItem} ${styles.lastItem}`}
             onClick={() => {
-              if (userMetaData) {
+              if (isLogin) {
                 pushLocalizedRoute('/main/game/shop', router);
               } else {
                 routeProfile();
@@ -231,7 +237,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             </>
           )}
             */}
-          {userMetaData ? renderMenuItem('', getLocalizedText('common_button_logout'), handleUserLogout) : ''}
+          {isLogin ? renderMenuItem('', getLocalizedText('common_button_logout'), handleUserLogout) : ''}
         </ul>
       </div>
       {languageOpen && <ModalLanguageSelect isOpen={languageOpen} onClose={handleCloseLanguage} />}

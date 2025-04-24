@@ -25,11 +25,18 @@ import {supabase} from 'utils/supabaseClient';
 import UserInfoModal from '@/app/view/main/header/header-nav-bar/UserInfoModal';
 import {Drawer, SelectChangeEvent} from '@mui/material';
 import Link from 'next/link';
-import {getCurrentLanguage, getLocalizedLink, isLogined, pushLocalizedRoute, refreshLanaguage} from '@/utils/UrlMove';
+import {
+  getCurrentLanguage,
+  getLocalizedLink,
+  isLogined,
+  pushLocalizedRoute,
+  refreshLanaguage,
+  serverChangeLanguage,
+} from '@/utils/UrlMove';
 import {fetchLanguage} from './LanguageSetting';
 import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
-import {getCookiesLanguageType, getLanguageTypeFromText} from '@/utils/browserInfo';
+import {getCookiesLanguageType, getLanguageFromURL, getLanguageTypeFromText} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
 import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
 import {useDispatch, useSelector} from 'react-redux';
@@ -41,6 +48,8 @@ import {BoldMore, LinePlus} from '@ui/Icons';
 import cx from 'classnames';
 import SelectProfile from '@/app/view/profile/SelectProfile';
 import {setStar} from '@/redux-store/slices/Currency';
+import {Language} from '@mui/icons-material';
+import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 //import {middleware} from '../../../../middleware.js';
 
 type UserDropDownType = {
@@ -182,7 +191,7 @@ const UserDropdown = () => {
       console.log('response login : ', data);
       localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
       setTimeout(() => {
-        fetchLanguage(router);
+        fetchLanguage(true, router);
       }, 100);
       //setSignIn();
       console.log('서버에 저장된 언어로 가져오자');
@@ -207,11 +216,36 @@ const UserDropdown = () => {
           updateAuth(session);
         }
       } else if (event === 'INITIAL_SESSION') {
+        if (!session) return;
         setAuth(session);
 
-        const language = getLanguageTypeFromText(getCurrentLanguage());
-        refreshLanaguage(language, router);
+        //const language = getLanguageTypeFromText(getCurrentLanguage());
+        //refreshLanaguage(language, router);
+
         const isLogin = await isLogined();
+
+        if (isLogin) {
+          const navType = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+          if (navType.type === 'navigate') {
+            // 주소창 입력으로 들어옴 -> 주소창 언어코드로 동기화
+            const resultUrlLang = getLanguageFromURL();
+            if (resultUrlLang === null) {
+              // 주소창 입력으로 들어왓는데 언어코드가 없을때
+              const _language = getLanguageTypeFromText(getCurrentLanguage());
+              serverChangeLanguage(_language ?? LanguageType.English, dispatch, router);
+            } else {
+              // 주소창에 언어코드가 있을때
+              const _language = getLanguageTypeFromText(resultUrlLang);
+              _language ? _language : LanguageType.English;
+              serverChangeLanguage(_language ?? LanguageType.English, dispatch, router);
+            }
+            return;
+          } else {
+            // 페이지 이동으로 들어옴 -> 서버에서 언어 가져오기
+            await fetchLanguage(isLogin, router);
+          }
+        }
+
         if (!isLogin) {
           updateAuth(session);
         }

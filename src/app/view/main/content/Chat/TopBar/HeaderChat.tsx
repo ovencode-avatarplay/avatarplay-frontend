@@ -74,12 +74,12 @@ const TopBar: React.FC<ChatTopBarProps> = ({
               </div>
             </div>
             <div className={styles.topButtonBox}>
-              <IconButton className={styles.button} onClick={onLiveChatClick}>
+              <button className={styles.button} onClick={onLiveChatClick}>
                 <img className={styles.buttonImage} src={LineCam.src} />
-              </IconButton>
-              <IconButton className={styles.button} onClick={onMoreClick}>
+              </button>
+              <button className={styles.button} onClick={onMoreClick}>
                 <img className={styles.buttonImage} src={MenuDots.src} />
-              </IconButton>
+              </button>
             </div>
           </Box>
         </>

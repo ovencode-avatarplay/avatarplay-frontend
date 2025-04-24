@@ -248,6 +248,13 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
     setPromptName('');
     setGptPrompt('');
     setClaudePrompt('');
+
+    if (promptRefs.gpt.current) {
+      promptRefs.gpt.current.innerHTML = '';
+    }
+    if (promptRefs.claude.current) {
+      promptRefs.claude.current.innerHTML = '';
+    }
   };
   //#endregion
 
@@ -397,7 +404,7 @@ const CreateCustomPrompt: React.FC<Props> = ({prompt, onSave, setIsEditing}) => 
           state="Normal"
           type="Primary"
           onClick={() => {
-            setIsSavePopupOpen(true);
+            if (promptName !== '') setIsSavePopupOpen(true);
           }}
           customClassName={[styles.bottomButton]}
         >

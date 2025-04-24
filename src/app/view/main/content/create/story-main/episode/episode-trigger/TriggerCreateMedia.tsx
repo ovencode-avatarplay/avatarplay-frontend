@@ -89,7 +89,7 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
 
         console.log('Updated Trigger Info with Media URLs:', validImageUrls);
       } else {
-        console.error('Failed to upload files:', files.map(file => file.name).join(', '));
+        console.error('Failed to upload files:', files.map(file => file.name).join(','));
       }
     } catch (error) {
       console.error('Error during file upload:', error);

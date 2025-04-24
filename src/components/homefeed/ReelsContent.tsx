@@ -353,7 +353,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <img
                 src={item?.mediaUrlList[0]}
                 loading="lazy"
-                style={{width: '100%'}}
+                style={{width: '100%', height: '100%'}}
                 onClick={() => setIsImageModal(true)}
               />
             )}
@@ -462,7 +462,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                  if (item.profileVisibilityType === VisibilityType.Public) {
+                    pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
+                  } else {
+                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                  }
                 }}
               >
                 <span className={styles.username}>{item.profileName}</span>

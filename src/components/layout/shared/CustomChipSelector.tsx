@@ -43,6 +43,7 @@ const CustomChipSelector = ({
         <div className={styles.blackTagContainer}>
           {tags.map((tag, index) => (
             <div key={index} className={styles.blackTag}>
+
               {getLocalizedText(`${tag}`)}
               <img
                 src={LineClose.src}
