@@ -2,19 +2,22 @@
 
 import BottomNav from '@/app/view/main/bottom-nav/BottomNav';
 import ProfileBase from '@/app/view/profile/ProfileBase';
-import {isLogined} from '@/utils/UrlMove';
+import useAuthFromUrl from '@/utils/useAuth';
 import {notFound} from 'next/navigation';
 
 type Props = {
-  params: {
-    id?: string[];
-  };
+  params: { id?: string[] };
+  searchParams: {token?: string};
 };
 
-export default function PostPage({params}: Props) {
+export default function PostPage({params, searchParams}: Props) {
+  const urlLinkKey = params.id?.[0] ?? '0';
+  const loading = useAuthFromUrl();
+  
+  if(loading) return null;
   return (
     <>
-      <ProfileBase urlLinkKey={params?.id?.[0] || '0'} isPath />
+      <ProfileBase urlLinkKey={urlLinkKey} isPath/>
       <BottomNav />
     </>
   );

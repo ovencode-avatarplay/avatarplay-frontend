@@ -1,14 +1,16 @@
+'use client';
 import {i18n} from 'next-i18next'; // i18n 객체 가져오기
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
-import {getAuth} from '@/app/NetWork/AuthNetwork';
+import {changeLanguage, getAuth} from '@/app/NetWork/AuthNetwork';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import {getLangUrlCode} from '@/configs/i18n';
 import {setLanguage} from '@/redux-store/slices/UserInfo';
-import {store} from '@/redux-store/ReduxStore';
+import {AppDispatch, store} from '@/redux-store/ReduxStore';
 import {getBrowserLanguage, getLanguageFromURL, getLanguageTypeFromText, getWebBrowserUrl} from './browserInfo';
 import {updateProfile} from '@/redux-store/slices/Profile';
 import {supabase} from './supabaseClient';
+import {useDispatch} from 'react-redux';
 
 // 로그인상태인가
 export const isLogined = async () => {
@@ -42,31 +44,31 @@ export const initLocalLanguage = () => {
   Cookies.set('language', String(newLocale), {expires: 365});
 };
 
-export const refreshLanaguage = (language: LanguageType | undefined, router: ReturnType<typeof useRouter>) => {
+export const refreshLanaguage = (
+  isLogined: boolean,
+  language: LanguageType | undefined,
+  router: ReturnType<typeof useRouter>,
+) => {
   const dispatch = store.dispatch;
   try {
-    // 서버에서 언어를 가져오지 못한 경우 브라우저 언어 사용
+    // language 값이 있는 경우
     if (language !== undefined) {
       // 이미 같은 언어이면 패스
       if (language === getLanguageTypeFromText(getLanguageFromURL())) return;
 
-      //dispatch(setLanguage(language));
+      dispatch(setLanguage(language));
 
-      //const newLocale = getLangUrlCode(language) || 'en-US';
-      //Cookies.set('language', String(newLocale), {expires: 365});
-      //changeLanguageAndRoute(language, router, i18n);
-      //alert('언어를 바꿔요:' + newLocale);
+      Cookies.set('language', String(language), {expires: 365});
+      changeLanguageAndRoute(language, router, undefined);
     } else {
       const browserLang = getBrowserLanguage();
       if (language === browserLang) return; // 이미 같은 언어이면 패스
-      //dispatch(setLanguage(browserLang));
+      dispatch(setLanguage(browserLang));
 
-      //const newLocale = getLangUrlCode(browserLang) || 'en-US';
-      //Cookies.set('language', String(newLocale), {expires: 365});
+      const newLocale = getLangUrlCode(browserLang) || 'en-US';
+      Cookies.set('language', String(newLocale), {expires: 365});
 
-      //changeLanguageAndRoute(browserLang, router, i18n);
-
-      //alert('언어를 바꿔요:' + newLocale);
+      changeLanguageAndRoute(browserLang, router, undefined);
     }
   } catch (error) {
     console.error('Failed to fetch language:', error);
@@ -146,14 +148,42 @@ export const changeLanguageAndRoute = (
   const newPath = pathSegments.join('/');
   const newUrl = `${currentUrl.origin}${newPath}${currentUrl.search}${currentUrl.hash}`;
 
-  if (i18nInstance) {
-    i18nInstance.changeLanguage(newLocale).catch(err => console.error('Failed to change language:', err));
-  } else {
-    console.warn('i18nInstance is not initialized.');
-  }
+  // if (i18nInstance) {
+  //   i18nInstance.changeLanguage(newLocale).catch(err => console.error('Failed to change language:', err));
+  // } else {
+  //   console.warn('i18nInstance is not initialized.');
+  // }
 
   // 같은 URL을 또 push하지 말자.
   if (currentUrl.href !== newUrl) {
     router.push(newUrl);
+  }
+};
+
+export const serverChangeLanguage = async (
+  lang: LanguageType,
+  dispatch: AppDispatch,
+  router: ReturnType<typeof useRouter>,
+) => {
+  try {
+    const value = lang;
+
+    if (value === undefined || value === null) {
+      throw new Error('Invalid language value');
+    }
+
+    const newLanguage = parseInt(String(value), 10) as LanguageType;
+
+    const response = await changeLanguage({languageType: newLanguage});
+    const language = response.data?.languageType;
+
+    if (language !== undefined) {
+      dispatch(setLanguage(language));
+      changeLanguageAndRoute(language, router);
+    } else {
+      throw new Error('Failed to retrieve updated language from server');
+    }
+  } catch (error) {
+    console.error('Failed to change language:', error);
   }
 };

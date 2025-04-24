@@ -253,12 +253,10 @@ const CustomModuleDashboard: React.FC = () => {
   };
 
   const renderPromptItem = (item: CustomModulesPromptInfo) => {
-    const formatDateTime = (isoString: string) => {
-      const date = new Date(isoString);
-
-      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-
-      return localDateTime.toISOString().slice(0, 16).replace('T', ' ');
+    const formatDateTime = (isoString: Date) => {
+      const utcDate = new Date(isoString + 'Z'); // UTC 기준
+      const localString = utcDate.toLocaleString(); // 시스템의 로컬 시간대로 변환
+      return localString.replace(',', '');
     };
 
     return (
@@ -270,14 +268,11 @@ const CustomModuleDashboard: React.FC = () => {
   };
 
   const renderLorebookItem = (item: CustomModulesLorebookInfo) => {
-    const formatDateTime = (isoString: string) => {
-      const date = new Date(isoString);
-
-      const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-
-      return localDateTime.toISOString().slice(0, 16).replace('T', ' ');
+    const formatDateTime = (isoString: Date) => {
+      const utcDate = new Date(isoString + 'Z'); // UTC 기준
+      const localString = utcDate.toLocaleString(); // 시스템의 로컬 시간대로 변환
+      return localString.replace(',', '');
     };
-
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handleLorebookItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>

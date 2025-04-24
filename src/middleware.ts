@@ -5,7 +5,7 @@ import {NextRequest} from 'next/server';
 export function middleware(req: NextRequest) {
   //const browserLang = req.headers.get('accept-language')?.split(',')[0]?.split('-')[0] || 'en-US';
   const browserLang = req.cookies.get('language')?.value || 'en-US';
-  console.log(browserLang);
+  console.log('browserLang : ', browserLang);
   // 리다이렉트 경로를 생성하여 리다이렉트 처리
   const url = new URL(`/${browserLang}/main/homefeed`, req.url);
   //console.log("다음 주소로 리디렉션 됩니다. : " + url);
