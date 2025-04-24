@@ -208,6 +208,7 @@
           display: flex;
           align-items: center;
           gap: 14px;
+          width: 100%;
 
           .imgWrap {
             width: 100px;
@@ -236,12 +237,16 @@
           }
 
           .name {
+            width: 100%;
             color: var(--White, #FFF);
             font-family: Lato;
             font-size: 16px;
             font-style: normal;
             font-weight: 500;
             line-height: 24px;
+            white-space: nowrap;         /* 줄바꿈 방지 */
+            overflow: hidden;            /* 넘치는 텍스트 숨김 */
+            text-overflow: ellipsis;     /* 생략 부호 (...) 표시 */
             /* 150% */
           }
         }

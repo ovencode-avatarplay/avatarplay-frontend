@@ -242,7 +242,7 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
 
   const [nameValue, setNameValue] = useState<string>('');
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length <= 20) {
+    if (e.target.value.length <= 100) {
       setNameValue(e.target.value);
     }
   };
