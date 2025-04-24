@@ -3,6 +3,7 @@ import api, {ResponseAPI} from './ApiInstance';
 export interface CustomModulesPromptInfo {
   promptId: number;
   title: string;
+  updatedAt: Date;
   createdAt: Date;
 }
 
@@ -17,6 +18,7 @@ export interface CustomModulesLorebookInfo {
   lorebookId: number;
   title: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CustomModuleLorebook {
