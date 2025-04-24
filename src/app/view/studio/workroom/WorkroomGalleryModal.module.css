@@ -1,0 +1,27 @@
+
+.buttonArea
+{
+    display: flex;
+    align-items: center;
+    padding-right: 6px;
+}
+
+.topButton
+{
+    cursor: pointer;
+    
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+.topButton > img
+{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+
+    filter: var(--black-icon-filter);
+}
