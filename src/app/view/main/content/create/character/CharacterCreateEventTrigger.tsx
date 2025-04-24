@@ -261,7 +261,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   setSelectedTriggerType(CharacterEventTriggerType.ChangeBackgroundByEmotion);
                 }}
                 onDeleteTriggerType={type => {
-                  setBackgroundTriggers(prev => prev.filter(item => item.triggerType !== type));
+                  eventTriggerItems
+                    .filter(item => item.triggerType === type)
+                    .forEach(item => {
+                      onDeleteEventTrigger(item.id);
+                    });
                 }}
               />
             )}
@@ -283,7 +287,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   setSelectedTriggerType(CharacterEventTriggerType.SendMediaByEmotion);
                 }}
                 onDeleteTriggerType={type => {
-                  setMediaByEmotionTriggers(prev => prev.filter(item => item.triggerType !== type));
+                  eventTriggerItems
+                    .filter(item => item.triggerType === type)
+                    .forEach(item => {
+                      onDeleteEventTrigger(item.id);
+                    });
                 }}
               />
             )}
@@ -305,7 +313,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   setSelectedTriggerType(CharacterEventTriggerType.SendMediaByElapsedTime);
                 }}
                 onDeleteTriggerType={type => {
-                  setMediaByTimeTriggers(prev => prev.filter(item => item.triggerType !== type));
+                  eventTriggerItems
+                    .filter(item => item.triggerType === type)
+                    .forEach(item => {
+                      onDeleteEventTrigger(item.id);
+                    });
                 }}
               />
             )}
@@ -327,7 +339,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   setSelectedTriggerType(CharacterEventTriggerType.SendMessageByElapsedTime);
                 }}
                 onDeleteTriggerType={type => {
-                  setMessageByTimeTriggers(prev => prev.filter(item => item.triggerType !== type));
+                  eventTriggerItems
+                    .filter(item => item.triggerType === type)
+                    .forEach(item => {
+                      onDeleteEventTrigger(item.id);
+                    });
                 }}
               />
             )}
@@ -349,7 +365,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                   setSelectedTriggerType(CharacterEventTriggerType.SendMediaByGotStars);
                 }}
                 onDeleteTriggerType={type => {
-                  setMediaByStarsTriggers(prev => prev.filter(item => item.triggerType !== type));
+                  eventTriggerItems
+                    .filter(item => item.triggerType === type)
+                    .forEach(item => {
+                      onDeleteEventTrigger(item.id);
+                    });
                 }}
               />
             )}
