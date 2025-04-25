@@ -842,6 +842,11 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       </>
     );
   };
+  console.log(
+    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+      item => item.webtoonLanguageType === ContentLanguageType.Source,
+    ),
+  );
   return (
     <Modal
       open={open}
@@ -887,7 +892,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
               {info?.categoryType === ContentCategoryType.Webtoon && (
-                <div className={styles.webtoonContainer}>
+                <div
+                  className={`${styles.webtoonContainer} ${
+                    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+                      item => item.webtoonLanguageType === ContentLanguageType.Source,
+                    )[0].webtoonSourceUrls.length === 1
+                      ? styles.centerAlign
+                      : ''
+                  }`}
+                >
                   {(() => {
                     const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
                       item => item.webtoonLanguageType === ContentLanguageType.Source,
@@ -1001,12 +1014,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
               {/* Video Info */}
               <div className={styles.videoInfo}>
-                {info?.categoryType == ContentCategoryType.Webtoon && <>{getLocalizedText('common_filter_photo')}</>}
                 {info?.categoryType == ContentCategoryType.Video && (
                   <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                     <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                    {getLocalizedText('common_filter_video')}· {currentProgress ? currentProgress : '0:00'}/
-                    {formatDuration(videoDuration)}
+                    {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
                   </div>
                 )}
               </div>
