@@ -31,7 +31,7 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {useAtom} from 'jotai';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {setVisibility} from '@/redux-store/slices/PublishInfo';
+import {setMonetization, setVisibility} from '@/redux-store/slices/PublishInfo';
 import TagsData from 'data/create/tags.json';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -227,7 +227,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
                   .map(country => LanguageType[country])
               : [],
           );
-
+          setMonetization(content.monetization);
           setSelectedVisibility(content.visibility);
           setIsNsfw(content.nsfw);
           setDefaultImage(content.thumbnailUrl);
