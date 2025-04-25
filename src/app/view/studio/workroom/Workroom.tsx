@@ -35,6 +35,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const galleryTags = ['All', 'MyCharacter', 'SharedCharacter'];
   const trashTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
   const variationTags = ['Portrait', 'Pose', 'Expressions', 'Video'];
+  const searchTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
 
   type RenderDataItemsOptions = {
     filterArea?: boolean;
@@ -326,6 +327,7 @@ const Workroom: React.FC<Props> = ({}) => {
     trash: 'All',
     folder: 'All',
     variation: 'Portrait',
+    search: 'All',
   });
 
   const [isTrash, setIsTrash] = useState<boolean>(false);
@@ -335,6 +337,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const videoData = workroomData.filter(item => item.mediaState === MediaState.Video);
   const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
   const aiHistoryData = workroomData.filter(item => !!item.generatedInfo);
+  const [searchResultData, setSearchResultData] = useState<WorkroomItemInfo[]>([]);
 
   const galleryData = workroomData.filter(item => item.mediaState === MediaState.None && item.profileId);
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
@@ -442,6 +445,7 @@ const Workroom: React.FC<Props> = ({}) => {
         setSelectedItem(item);
         await getCharacterInfo(item.profileId);
         setIsGalleryModalOpen(true);
+        setIsSearchModalOpen(false);
       } else {
         setSelectedItem(item);
 
@@ -449,6 +453,7 @@ const Workroom: React.FC<Props> = ({}) => {
           setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
         }
         setSelectedCurrentFolder(item);
+        setIsSearchModalOpen(false);
       }
     }
     if (item.mediaState === MediaState.Image) {
@@ -521,9 +526,14 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const handleRestore = () => {
-    if (selectedItem) {
+    if (selectedItem && !isSelecting) {
       setWorkroomData(prev => prev.map(item => (item.id === selectedItem.id ? {...item, trash: false} : item)));
       setSelectedItem(null);
+      setIsFileEditDrawerOpen(false);
+    } else if (isSelecting && selectedItems.length > 0) {
+      setWorkroomData(prev => prev.map(item => (selectedItems.includes(item.id) ? {...item, trash: false} : item)));
+      setIsSelecting(false);
+      setSelectedItems([]);
       setIsFileEditDrawerOpen(false);
     }
   };
@@ -539,7 +549,6 @@ const Workroom: React.FC<Props> = ({}) => {
           ),
         );
       }
-
       setSelectedItem(null);
       setIsDeletePopupOpen(false);
     } else if (isSelecting && selectedItems.length > 0) {
@@ -1499,6 +1508,7 @@ const Workroom: React.FC<Props> = ({}) => {
             onDownload={handleDownloadSelectedItems}
             onMoveToFolder={handleMove}
             onMoveToTrash={handleDeletePopupOpen}
+            onRestore={handleRestore}
             isTrash={isTrash}
           />
         </div>
@@ -1668,7 +1678,106 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
             </WorkroomGalleryModal>
           )}
           {isSearchModalOpen && (
-            <WorkroomSearchModal open={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
+            <WorkroomSearchModal
+              open={isSearchModalOpen}
+              onClose={() => setIsSearchModalOpen(false)}
+              workroomData={workroomData}
+              setSearchResultData={setSearchResultData}
+            >
+              <WorkroomTagList
+                tags={searchTags}
+                currentTag={tagStates.search}
+                onTagChange={tag => handleTagClick('search', tag)}
+              />
+              {tagStates.search === 'All' &&
+                (filterWorkroomData(
+                  searchResultData.filter(item => item.mediaState === MediaState.Image),
+                  {trash: false},
+                ).length > 0 ||
+                filterWorkroomData(
+                  searchResultData.filter(item => item.mediaState === MediaState.Video),
+                  {trash: false},
+                ).length > 0 ||
+                filterWorkroomData(
+                  searchResultData.filter(item => item.mediaState === MediaState.Audio),
+                  {trash: false},
+                ).length > 0 ||
+                filterWorkroomData(
+                  searchResultData.filter(item => item.mediaState === MediaState.None),
+                  {trash: false},
+                ).length > 0 ? (
+                  <>
+                    {renderCategorySection(
+                      'TODO : Folder',
+                      'search',
+                      'Folders',
+                      searchResultData.filter(item => item.mediaState === MediaState.None),
+                      true,
+                      {filterArea: false, limit: 4, trash: false},
+                      true,
+                    )}
+                    {renderCategorySection(
+                      'TODO : Image',
+                      'search',
+                      'Image',
+                      searchResultData.filter(item => item.mediaState === MediaState.Image),
+                      detailView,
+                      {filterArea: false, limit: 4},
+                      true,
+                    )}
+                    {renderCategorySection(
+                      'TODO : Video',
+                      'search',
+                      'Video',
+                      searchResultData.filter(item => item.mediaState === MediaState.Video),
+                      detailView,
+                      {filterArea: false, limit: 4},
+                      true,
+                    )}
+                    {renderCategorySection(
+                      'TODO : Audio',
+                      'search',
+                      'Audio',
+                      searchResultData.filter(item => item.mediaState === MediaState.Audio),
+                      true,
+                      {filterArea: false, limit: 4},
+                      true,
+                    )}
+                  </>
+                ) : (
+                  <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+                ))}
+
+              {tagStates.search === 'Folders' &&
+                renderDataItems(
+                  searchResultData.filter(item => item.mediaState === MediaState.None),
+                  true,
+                  {filterArea: true, renderEmpty: true},
+                )}
+
+              {tagStates.search === 'Image' &&
+                renderDataItems(
+                  searchResultData.filter(item => item.mediaState === MediaState.Image),
+                  detailView,
+                  {filterArea: true, renderEmpty: true},
+                  true,
+                )}
+
+              {tagStates.search === 'Video' &&
+                renderDataItems(
+                  searchResultData.filter(item => item.mediaState === MediaState.Video),
+                  detailView,
+                  {filterArea: true, renderEmpty: true},
+                  true,
+                )}
+
+              {tagStates.search === 'Audio' &&
+                renderDataItems(
+                  searchResultData.filter(item => item.mediaState === MediaState.Audio),
+                  true,
+                  {filterArea: true, renderEmpty: true},
+                )}
+            </WorkroomSearchModal>
           )}
         </>,
         document.body,

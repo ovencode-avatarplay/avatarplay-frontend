@@ -7,6 +7,7 @@ interface Props {
   onShare: () => void;
   onDownload: () => void;
   onMoveToFolder: () => void;
+  onRestore: () => void;
   onMoveToTrash: () => void;
   onExitSelecting: () => void;
   isTrash?: boolean;
@@ -17,6 +18,7 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
   onShare,
   onDownload,
   onMoveToFolder,
+  onRestore,
   onMoveToTrash,
   onExitSelecting,
   isTrash,
@@ -44,7 +46,7 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
           </>
         ) : (
           <>
-            <button className={styles.iconButton} aria-label="MoveFolder" onClick={onMoveToFolder}>
+            <button className={styles.iconButton} aria-label="onRestore" onClick={onRestore}>
               <img src={BoldFolder.src} alt="Restore to folder" />
             </button>
             <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>

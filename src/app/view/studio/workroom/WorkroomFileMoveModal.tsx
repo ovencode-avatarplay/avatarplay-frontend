@@ -3,10 +3,11 @@ import styles from './WorkroomFileMoveModal.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import {WorkroomItemInfo} from './WorkroomItem';
-import {BoldFolderPlus, LineArrowRight, LineFolderPlus} from '@ui/Icons';
+import {BoldFolderPlus, LineArrowRight, LineFolderPlus, LineSearch} from '@ui/Icons';
 import {Dialog} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import EmptyState from '@/components/search/EmptyState';
 
 interface Props {
   open: boolean;
@@ -27,28 +28,37 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
   selectedTargetFolder: selectedFolder,
   onMoveToFolder,
 }) => {
+  const [keyword, setKeyword] = useState('');
+
   const handleSelectFolder = (folder: WorkroomItemInfo) => {
     onSelectFolder(folder);
   };
+  const getFilteredFolders = () => {
+    return folders.filter(folder => {
+      const matchKeyword = keyword.trim().length > 0 ? folder.name.toLowerCase().includes(keyword.toLowerCase()) : true;
+
+      const inHierarchy = !selectedFolder
+        ? !folder.folderLocation || folder.folderLocation.length === 0
+        : folder.folderLocation?.[folder.folderLocation.length - 1] === selectedFolder.id;
+
+      return keyword.trim().length > 0 ? matchKeyword : inHierarchy;
+    });
+  };
+
+  //#region Render
 
   const renderFolder = () => {
     return (
       <ul className={styles.folderArea}>
-        {folders
-          .filter(item => {
-            if (!selectedFolder) {
-              // 루트 폴더만 표시 (folderLocation이 비어있거나 undefined)
-              return !item.folderLocation || item.folderLocation.length === 0;
-            } else {
-              // 현재 선택된 폴더의 id를 포함하는 하위 폴더만 표시
-              return item.folderLocation && item.folderLocation[item.folderLocation.length - 1] === selectedFolder.id;
-            }
-          })
-          .map((item, index) => (
+        {getFilteredFolders().length > 0 ? (
+          getFilteredFolders().map((item, index) => (
             <li className={styles.folderItem} key={index}>
               {renderFolderItem(item)}
             </li>
-          ))}
+          ))
+        ) : (
+          <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+        )}
       </ul>
     );
   };
@@ -73,6 +83,21 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
       </div>
     );
   };
+
+  const renderSearchBar = () => {
+    return (
+      <div className={styles.searchBar}>
+        <img className={styles.searchIcon} src={LineSearch.src} />
+        <input
+          type="text"
+          placeholder={getLocalizedText('TODO : Search Folders')}
+          value={keyword}
+          onChange={e => setKeyword(e.target.value)}
+        />
+      </div>
+    );
+  };
+  //#endregion
 
   return (
     <Dialog
@@ -111,7 +136,7 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
         </button>
       </CreateDrawerHeader>
       <div className={styles.fileMoveDrawerContainer}>
-        <div className={styles.searchArea}></div>
+        <div className={styles.searchArea}>{renderSearchBar()}</div>
         <Splitters
           splitters={[
             {label: getLocalizedText('TODO : Folder'), content: <>{renderFolder()}</>},

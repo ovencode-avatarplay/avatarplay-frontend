@@ -6,9 +6,10 @@ interface Props {
   title: string;
   onClose: () => void;
   children?: React.ReactNode /*컴포지션*/;
+  childrenAreaStyle?: React.CSSProperties;
 }
 
-const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children}) => {
+const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children, childrenAreaStyle}) => {
   return (
     <header className={styles.header}>
       <div className={styles.baseArea}>
@@ -17,7 +18,11 @@ const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children}) => {
         </button>
         <h1 className={styles.navTitle}>{title}</h1>
       </div>
-      {children && <div className={styles.childrenArea}>{children}</div>}
+      {children && (
+        <div className={styles.childrenArea} style={childrenAreaStyle}>
+          {children}
+        </div>
+      )}
     </header>
   );
 };
