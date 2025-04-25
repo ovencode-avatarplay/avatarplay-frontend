@@ -313,6 +313,7 @@ export interface GetSeasonEpisodesRes {
   profileName: string;
   thumbnailMediaState: MediaState;
   isProfileSubscribe: boolean;
+  contentCategoryType: number;
 }
 
 export const sendGetSeasonEpisodes = async (

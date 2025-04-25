@@ -45,7 +45,7 @@ import {
 import SharePopup from '@/components/layout/shared/SharePopup';
 import Link from 'next/link';
 import {Dialog} from '@mui/material';
-import {TurnedIn} from '@mui/icons-material';
+import {Category, TurnedIn} from '@mui/icons-material';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
 import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
@@ -88,6 +88,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     season: number;
     isShareOpened: boolean;
     isSingle: boolean;
+    categoryType: number;
 
     dataPurchase: {
       isOpenPopupPurchase: boolean;
@@ -102,6 +103,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     };
   }>({
     indexTab: eTabType.Episodes,
+    categoryType: 0,
     // dataContent: null,
     dataEpisodes: null,
     season: 1,
@@ -146,6 +148,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
         data.dataMix.isMyContent = resGetContent?.data.isMyContent;
+        data.categoryType = resGetContent.data.contentInfo.categoryType;
         // data.dataMix.profileId = resGetContent?.data.contentInfo.profileId;
         // data.dataMix.thumbnailMediaState =
       }
@@ -164,6 +167,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
       console.log('resGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
       if (resGetSeasonEpisodes.data) {
+        data.categoryType = resGetSeasonEpisodes.data.contentCategoryType;
         data.dataEpisodes = resGetSeasonEpisodes.data;
         data.dataMix = resGetSeasonEpisodes.data;
       }
@@ -268,7 +272,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   };
 
   const onEdit = () => {};
-
+  console.log('asdadsa', data.dataMix?.categoryType);
   const urlEdit = data.isSingle ? '/update/content/single' : '/create/content/series';
   console.log('contentID : ', playContentId);
   console.log('onPlay : ', onPlay);
@@ -309,23 +313,21 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             />
           )}
         </section>
-        {data.dataMix?.categoryType == 1 &&
-          (data.isSingle ||
-            (!data.isSingle && data.dataEpisodes?.episodeList && data.dataEpisodes?.episodeList.length > 0)) && (
-            <button
-              className={styles.btnPlayWrap}
-              onClick={() => {
-                setOnPlay(true);
-                setIsPlayButton(true);
-                console.log('data', data);
-                setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
-                setEpisodeId(0);
-              }}
-            >
-              <img src={BoldAudioPlay.src} alt="" />
-              <div className={styles.label}>{getLocalizedText('common_button_play')}</div>
-            </button>
-          )}
+        {data.categoryType == 1 && (
+          <button
+            className={styles.btnPlayWrap}
+            onClick={() => {
+              setOnPlay(true);
+              setIsPlayButton(true);
+              console.log('data', data);
+              setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
+              setEpisodeId(0);
+            }}
+          >
+            <img src={BoldAudioPlay.src} alt="" />
+            <div className={styles.label}>{getLocalizedText('common_button_play')}</div>
+          </button>
+        )}
 
         <section className={styles.infoHeaderSection}>
           <ul className={styles.iconsWrap}>
@@ -688,6 +690,11 @@ const EpisodeComponent = ({
         <div className={styles.name}>{name}</div>
       </div>
       <div className={styles.right}>
+        {isFree && (
+          <div className={styles.starWrap}>
+            <div className={styles.count}>무료</div>
+          </div>
+        )}
         {!isFree && (
           <div className={styles.starWrap}>
             {isProfileSubscribe ? (
