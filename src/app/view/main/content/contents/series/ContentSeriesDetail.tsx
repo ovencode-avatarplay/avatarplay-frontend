@@ -53,9 +53,11 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import DrawerDonation from '../../create/common/DrawerDonation';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
+import formatText from '@/utils/formatText';
+import {setStar} from '@/redux-store/slices/Currency';
 
 type Props = {
   type: ContentType;
@@ -479,7 +481,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             data.dataPurchase.contentType = ContentType.Single;
 
                             setData({...data});
-                            refreshInfo();
                           }}
                         />
                       );
@@ -519,7 +520,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             data.dataPurchase.contentType = ContentType.Series;
 
                             setData({...data});
-                            refreshInfo();
                           }}
                         />
                       );
@@ -570,6 +570,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               setPlayContentId(contentId || 0);
               setEpisodeId(0);
             }
+
+            refreshInfo();
           }}
         />
       )}
@@ -731,6 +733,8 @@ export const PopupPurchase = ({
     setData({...data});
   };
 
+  const starAmount = dataStarInfo.star;
+  const dispatch = useDispatch();
   const onPurchase = async () => {
     const dataBuyReq: BuyContentEpisodeReq = {
       contentId: contentId,
@@ -738,8 +742,11 @@ export const PopupPurchase = ({
     };
     const resBuy = await buyContentEpisode(dataBuyReq);
     if (resBuy.resultCode != 0) {
+      alert('asdas');
       openPopupNotEnoughStars();
       return;
+    } else {
+      if (resBuy.data) dispatch(setStar(resBuy.data?.currentMyStar));
     }
     console.log('resBuy : ', resBuy);
 
@@ -784,9 +791,7 @@ export const PopupPurchase = ({
             </div>
           </div>
         </div>
-        <div className={styles.title}>
-          {price} {getLocalizedText('common_alert_001')}
-        </div>
+        <div className={styles.title}>{formatText(getLocalizedText('common_alert_001'), [price.toString()])} </div>
         <div className={styles.description}>{getLocalizedText('common_alert_022')}</div>
 
         <div className={styles.dontshowWrap}>
@@ -834,6 +839,7 @@ const PopupNotEnoughStars = ({onClose, onCharge}: PopupNotEnoughStarsType) => {
     <Dialog
       open={true}
       onClose={onClose}
+      sx={{zIndex: 3001}} // Modal 자체에 z-index 설정
       PaperProps={{
         sx: {
           borderRadius: '24px',
