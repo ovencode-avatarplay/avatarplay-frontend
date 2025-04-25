@@ -307,22 +307,23 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             />
           )}
         </section>
-        {(data.isSingle ||
-          (!data.isSingle && data.dataEpisodes?.episodeList && data.dataEpisodes?.episodeList.length > 0)) && (
-          <button
-            className={styles.btnPlayWrap}
-            onClick={() => {
-              setOnPlay(true);
-              setIsPlayButton(true);
-              console.log('data', data);
-              setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
-              setEpisodeId(0);
-            }}
-          >
-            <img src={BoldAudioPlay.src} alt="" />
-            <div className={styles.label}>{getLocalizedText('common_button_play')}</div>
-          </button>
-        )}
+        {data.dataMix?.categoryType == 1 &&
+          (data.isSingle ||
+            (!data.isSingle && data.dataEpisodes?.episodeList && data.dataEpisodes?.episodeList.length > 0)) && (
+            <button
+              className={styles.btnPlayWrap}
+              onClick={() => {
+                setOnPlay(true);
+                setIsPlayButton(true);
+                console.log('data', data);
+                setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
+                setEpisodeId(0);
+              }}
+            >
+              <img src={BoldAudioPlay.src} alt="" />
+              <div className={styles.label}>{getLocalizedText('common_button_play')}</div>
+            </button>
+          )}
 
         <section className={styles.infoHeaderSection}>
           <ul className={styles.iconsWrap}>

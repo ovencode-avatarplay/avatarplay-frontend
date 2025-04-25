@@ -460,6 +460,7 @@ export interface PlayReq {
 }
 export interface PlayButtonRes {
   recentlyPlayInfo: ContentPlayInfo;
+  contentType: ContentType;
 }
 
 export interface ContentPlayInfo {
