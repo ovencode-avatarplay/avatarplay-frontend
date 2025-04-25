@@ -302,7 +302,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         postCountry: positionCountryList.map(country => LanguageType[country]), // 국가 정보
         visibility: selectedVisibility,
         nsfw: isNsfw, // 기본값
-        monetization: false,
+        monetization: isMonetization,
         salesStarEa: priceValue, //추후 구현 필요
         maxSeasonNo: 1, // 기본 시즌 1개부터 시작
         contentWebtoonInfo: selectedCategory == CategoryTypes.Webtoon ? episodeWebtoonInfo : undefined,
