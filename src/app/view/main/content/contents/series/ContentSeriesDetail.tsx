@@ -461,9 +461,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           thumbnailUrl={data.dataMix?.thumbnailUrl || ''}
                           isLock={data.dataMix?.isSingleContentLock || false}
                           thumbnailMediaState={data.dataMix?.thumbnailMediaState || MediaState.Image}
+                          isProfileSubscribe={data.dataMix?.isProfileSubscribe}
                           isUploading={data.dataMix?.state === ContentState.Upload}
                           onClick={() => {
-                            if (isFree || !isLock) {
+                            if (isFree || !isLock || data.dataMix?.isProfileSubscribe) {
                               //TODO : play처리
                               console.log('data', data, one);
                               setOnPlay(true);
@@ -501,8 +502,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           isLock={one.isLock}
                           thumbnailMediaState={one?.thumbnailMediaState || MediaState.Image}
                           isUploading={one.episodeState === ContentEpisodeState.Upload}
+                          isProfileSubscribe={data.dataMix?.isProfileSubscribe}
                           onClick={() => {
-                            if (isFree || !isLock) {
+                            if (isFree || !isLock || data.dataMix?.isProfileSubscribe) {
                               //TODO : play처리
                               console.log('data', data, one);
                               setOnPlay(true);
@@ -638,6 +640,7 @@ type EpisodeComponentType = {
   price: number;
   isLock: boolean;
   isUploading?: boolean;
+  isProfileSubscribe?: boolean;
   onClick: () => void;
 };
 const EpisodeComponent = ({
@@ -648,6 +651,7 @@ const EpisodeComponent = ({
   isLock,
   thumbnailMediaState,
   isUploading = false,
+  isProfileSubscribe = false,
   onClick,
 }: EpisodeComponentType) => {
   const isFree = price == 0;
@@ -672,7 +676,7 @@ const EpisodeComponent = ({
               src={thumbnailUrl}
             />
           )}
-          {isLock && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
+          {isLock && !isProfileSubscribe && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
           {isUploading && (
             <div className={styles.loadingOverlay}>
               <div className={styles.spinner}></div>
@@ -686,8 +690,16 @@ const EpisodeComponent = ({
       <div className={styles.right}>
         {!isFree && (
           <div className={styles.starWrap}>
-            <img src={BoldStar.src} alt="" className={styles.iconStar} />
-            <div className={styles.count}>{price}</div>
+            {isProfileSubscribe ? (
+              <div className={styles.count}>구독중</div>
+            ) : isLock ? (
+              <>
+                <img src={BoldStar.src} alt="" className={styles.iconStar} />
+                <div className={styles.count}>{price}</div>
+              </>
+            ) : (
+              <div className={styles.count}>대여중</div>
+            )}
           </div>
         )}
       </div>
