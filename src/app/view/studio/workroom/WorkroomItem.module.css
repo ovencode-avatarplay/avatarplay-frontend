@@ -133,6 +133,7 @@
 .infoLeftArea
 {
     display: flex;
+    min-width: 0;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
@@ -169,6 +170,11 @@
     font-weight: 600;
     line-height: 150%; /* 21px */
     letter-spacing: 0.14px;
+    
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }
 
 .fileDetail

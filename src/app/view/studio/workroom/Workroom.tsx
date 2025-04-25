@@ -235,6 +235,7 @@ const Workroom: React.FC<Props> = ({}) => {
         positivePrompt: 'positive',
         negativePrompt: 'negative',
         seed: 12345,
+        isUploaded: false,
       },
       profileId: 520,
     },
@@ -251,6 +252,7 @@ const Workroom: React.FC<Props> = ({}) => {
         positivePrompt: 'positive, 1',
         negativePrompt: 'negative, 1',
         seed: 11111,
+        isUploaded: false,
       },
       profileId: 520,
     },
@@ -267,6 +269,7 @@ const Workroom: React.FC<Props> = ({}) => {
         positivePrompt: 'positive, 2',
         negativePrompt: 'negative, 2',
         seed: 22222,
+        isUploaded: false,
       },
     },
     {
@@ -282,6 +285,7 @@ const Workroom: React.FC<Props> = ({}) => {
         positivePrompt: 'positive, 3',
         negativePrompt: 'negative, 3',
         seed: 33333,
+        isUploaded: false,
       },
     },
     {
@@ -297,6 +301,7 @@ const Workroom: React.FC<Props> = ({}) => {
         positivePrompt: 'positive, 4',
         negativePrompt: 'negative, 4',
         seed: 4444,
+        isUploaded: false,
       },
     },
     {
@@ -312,6 +317,7 @@ const Workroom: React.FC<Props> = ({}) => {
         positivePrompt: 'positive, 5',
         negativePrompt: 'negative, 5',
         seed: 55555,
+        isUploaded: false,
       },
     },
   ]);
@@ -333,10 +339,16 @@ const Workroom: React.FC<Props> = ({}) => {
   const [isTrash, setIsTrash] = useState<boolean>(false);
 
   const folderData = workroomData.filter(item => item.mediaState === MediaState.None);
-  const imageData = workroomData.filter(item => item.mediaState === MediaState.Image && !item.generatedInfo);
+  const imageData = workroomData.filter(
+    item =>
+      item.mediaState === MediaState.Image &&
+      (!item.generatedInfo || (item.generatedInfo && item.generatedInfo.isUploaded === true)),
+  );
   const videoData = workroomData.filter(item => item.mediaState === MediaState.Video);
   const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
-  const aiHistoryData = workroomData.filter(item => !!item.generatedInfo);
+  const aiHistoryData = workroomData.filter(
+    item => item.mediaState === MediaState.Image && item.generatedInfo && item.generatedInfo.isUploaded !== true,
+  );
   const [searchResultData, setSearchResultData] = useState<WorkroomItemInfo[]>([]);
 
   const galleryData = workroomData.filter(item => item.mediaState === MediaState.None && item.profileId);
@@ -444,6 +456,7 @@ const Workroom: React.FC<Props> = ({}) => {
       if (item.profileId) {
         setSelectedItem(item);
         await getCharacterInfo(item.profileId);
+        setSelectedCurrentFolder(item);
         setIsGalleryModalOpen(true);
         setIsSearchModalOpen(false);
       } else {
@@ -659,7 +672,29 @@ const Workroom: React.FC<Props> = ({}) => {
       detail: 'Uploaded file',
       mediaState: getMediaStateByExtension(file.name),
       imgUrl: URL.createObjectURL(file), // 임시 URL
-      folderLocation: [],
+      folderLocation: selectedCurrentFolder?.id ? [selectedCurrentFolder.id] : [],
+      /* 캐릭터 갤러리에서 업로드 하는 경우 */
+      generatedInfo: selectedItem?.profileId
+        ? {
+            generatedType:
+              tagStates.variation == 'Portrait'
+                ? 0
+                : tagStates.variation == 'Pose'
+                ? 1
+                : tagStates.variation == 'Expression'
+                ? 2
+                : tagStates.variation == 'Video'
+                ? 3
+                : 4,
+            generateModel: 'Uploaded file',
+            positivePrompt: '',
+            negativePrompt: '',
+            seed: -1,
+            imageSize: '',
+            isUploaded: true,
+          }
+        : undefined,
+      profileId: selectedItem?.profileId || undefined,
     }));
 
     setWorkroomData(prev => [...prev, ...uploadedItems]);
@@ -784,16 +819,28 @@ const Workroom: React.FC<Props> = ({}) => {
     return MediaState.None;
   };
 
-  //#endregion
-
-  const recentData = filterWorkroomData(workroomData, {limit: 20, renderEmpty: false, trash: false});
-
   const getMinId = (list: WorkroomItemInfo[]): number => {
     const listId = list.flatMap(item => item.id);
     if (listId.length === 0) return 0;
     const minId = Math.min(...listId);
     return minId > 0 ? 0 : minId - 1;
   };
+
+  const getFilteredVariationItems = (mediaState: MediaState): WorkroomItemInfo[] => {
+    return workroomData.filter(
+      item =>
+        item.mediaState === mediaState &&
+        item.profileId &&
+        ((tagStates.variation === 'Portrait' && item.generatedInfo?.generatedType === 0) ||
+          (tagStates.variation === 'Pose' && item.generatedInfo?.generatedType === 1) ||
+          (tagStates.variation === 'Expressions' && item.generatedInfo?.generatedType === 2) ||
+          (tagStates.variation === 'Video' && item.generatedInfo?.generatedType === 3)),
+    );
+  };
+
+  //#endregion
+
+  const recentData = filterWorkroomData(workroomData, {limit: 20, renderEmpty: false, trash: false});
 
   //#region Renderer
   const renderSwiper = (data: WorkroomItemInfo[]) => {
@@ -1456,7 +1503,11 @@ const Workroom: React.FC<Props> = ({}) => {
   return (
     <div className={styles.workroomContainer}>
       <CreateDrawerHeader
-        title={selectedCurrentFolder ? selectedCurrentFolder.name : getLocalizedText('TODO : Workroom')}
+        title={
+          selectedCurrentFolder && selectedCurrentFolder?.generatedInfo !== undefined
+            ? selectedCurrentFolder.name
+            : getLocalizedText('TODO : Workroom')
+        }
         onClose={() => {
           if (selectedCurrentFolder) {
             handleGoBackFolder();
@@ -1480,7 +1531,7 @@ const Workroom: React.FC<Props> = ({}) => {
         }
       </CreateDrawerHeader>
 
-      {selectedCurrentFolder ? (
+      {selectedCurrentFolder && selectedCurrentFolder?.generatedInfo !== undefined ? (
         renderFolderData(selectedCurrentFolder.id)
       ) : (
         <Splitters
@@ -1607,7 +1658,7 @@ const Workroom: React.FC<Props> = ({}) => {
           )}
           {imageViewOpen &&
             selectedItem &&
-            (selectedItem.generatedInfo ? (
+            (selectedItem.generatedInfo && selectedItem.generatedInfo.isUploaded === false ? (
               <GeneratedImagePreViewer
                 workroomItemInfo={selectedItem}
                 onClose={() => setImageViewOpen(false)}
@@ -1646,8 +1697,15 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
           {isGalleryModalOpen && selectedItem?.profileId && (
             <WorkroomGalleryModal
               open={isGalleryModalOpen}
-              onClose={() => setIsGalleryModalOpen(false)}
+              onClose={() => {
+                setIsGalleryModalOpen(false);
+                setCurrentSelectedCharacter(null);
+                setSelectedItem(null);
+              }}
               characterInfo={currentSelectedCharacter || null}
+              onClickUpload={() => {
+                setIsSelectCreateOpen(true);
+              }}
             >
               <>
                 <WorkroomTagList
@@ -1655,23 +1713,18 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
                   currentTag={tagStates.variation}
                   onTagChange={tag => handleTagClick('variation', tag)}
                 />
+
+                {getFilteredVariationItems(MediaState.None).length > 0 &&
+                  renderDataItems(
+                    getFilteredVariationItems(MediaState.None),
+                    true,
+                    {filterArea: true, renderEmpty: true},
+                    true,
+                  )}
                 {renderDataItems(
-                  workroomData.filter(
-                    item =>
-                      item.mediaState === MediaState.Image &&
-                      item.profileId &&
-                      (tagStates.variation === 'Portrait'
-                        ? item.generatedInfo?.generatedType === 0
-                        : tagStates.variation === 'Pose'
-                        ? item.generatedInfo?.generatedType === 1
-                        : tagStates.variation === 'Expressions'
-                        ? item.generatedInfo?.generatedType === 2
-                        : tagStates.variation === 'Video'
-                        ? item.generatedInfo?.generatedType === 3
-                        : false),
-                  ),
+                  getFilteredVariationItems(MediaState.Image),
                   detailView,
-                  {filterArea: true, renderEmpty: true},
+                  {filterArea: false, renderEmpty: true},
                   true,
                 )}
               </>

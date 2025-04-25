@@ -4,15 +4,17 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import {LineFolderPlus, LineSearch} from '@ui/Icons';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
+import CustomButton from '@/components/layout/shared/CustomButton';
 
 interface Props {
   open: boolean;
   onClose: () => void;
   characterInfo: CharacterInfo | null;
   children: React.ReactNode;
+  onClickUpload: () => void;
 }
 
-const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo, children}) => {
+const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo, children, onClickUpload}) => {
   return (
     <Dialog
       open={open}
@@ -42,18 +44,26 @@ const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo, ch
           <button className={styles.topButton}>
             <img className={styles.buttonIcon} src={LineSearch.src} onClick={() => {}} />
           </button>
-          <button
-            className={styles.topButton}
-            onClick={() => {
-              //   addFolder();
-            }}
-          >
+          <button className={styles.topButton} onClick={() => {}}>
             <img src={LineFolderPlus.src} />
           </button>
         </div>
       </CreateDrawerHeader>
+      <div className={styles.contentArea}>
+        {children}
 
-      {children}
+        <CustomButton
+          size="Medium"
+          state="Normal"
+          type="Primary"
+          onClick={() => {
+            onClickUpload();
+          }}
+          customClassName={[styles.uploadButton]}
+        >
+          {getLocalizedText('TODO : Upload ')}
+        </CustomButton>
+      </div>
     </Dialog>
   );
 };

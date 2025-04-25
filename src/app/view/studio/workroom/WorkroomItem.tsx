@@ -37,6 +37,7 @@ export interface GeneratedItemInfo {
   negativePrompt: string;
   seed: number;
   imageSize: string;
+  isUploaded: boolean;
 }
 
 const WorkroomItem: React.FC<Props> = ({

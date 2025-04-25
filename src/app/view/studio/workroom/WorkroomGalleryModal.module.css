@@ -1,4 +1,5 @@
 
+
 .buttonArea
 {
     display: flex;
@@ -22,6 +23,26 @@
     width: 24px;
     height: 24px;
     flex-shrink: 0;
-
+    
     filter: var(--black-icon-filter);
 }
+
+.contentArea
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 70px;
+}
+
+.uploadButton
+{
+    position: fixed;
+    bottom: 0px;
+
+    width: calc(100% - 32px);
+    max-width: calc(1300px - 32px);
+    margin: 8px 16px;
+    
+}
+
