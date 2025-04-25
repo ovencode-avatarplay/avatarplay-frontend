@@ -289,7 +289,7 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
               <button
                 className={styles.iconButton}
                 onClick={() => {
-                  back('/profile/' + contentInfo?.profileUrlLinkKey + '?indexTab=1');
+                  pushLocalizedRoute('/profile/' + contentInfo?.profileUrlLinkKey + '?indexTab=1', router);
                 }}
               >
                 <img src={LineArrowLeft.src} alt="Back" />
@@ -413,21 +413,21 @@ const SeriesDetail: React.FC<SeriesDetailProps> = ({urlLinkKey}) => {
                         Uploading...
                       </div>
                     )}
-                    {isVideo(ep.thumbnailUrl) ? (
-                      <video
-                        className={styles.episodeThumbnail}
-                        src={ep.thumbnailUrl}
-                        poster={ep.thumbnailUrl} // 첫 프레임을 표시
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                      />
-                    ) : (
-                      <div className={styles.episodeThumbnail} style={{backgroundImage: `url(${ep.thumbnailUrl})`}} />
-                    )}
 
                     <div className={styles.episodeInfo}>
+                      {isVideo(ep.thumbnailUrl) ? (
+                        <video
+                          className={styles.episodeThumbnail}
+                          src={ep.thumbnailUrl}
+                          poster={ep.thumbnailUrl} // 첫 프레임을 표시
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                        />
+                      ) : (
+                        <div className={styles.episodeThumbnail} style={{backgroundImage: `url(${ep.thumbnailUrl})`}} />
+                      )}
                       <div className={styles.epTitleText}>
                         {index + 1}. {ep.episodeName}
                       </div>

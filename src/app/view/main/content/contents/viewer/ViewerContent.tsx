@@ -63,6 +63,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import shaka from 'shaka-player/dist/shaka-player.compiled';
 import SelectDrawerArrow, {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {ConstructionOutlined} from '@mui/icons-material';
 
 interface Props {
   open: boolean;
@@ -128,6 +129,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   useEffect(() => {
     if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
+    console.log('ass');
   }, [info]);
 
   const hasRun = useRef(false);
@@ -148,7 +150,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       handlePlayNew();
       console.log('playnew');
     }
-  }, []);
+  }, [curEpisodeId]);
 
   const [isVisible, setIsVisible] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -271,55 +273,76 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
+    requestAnimationFrame(async () => {
+      const video = videoRef.current;
+      if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
 
-    const player = new shaka.Player(video);
-    player.configure({
-      textDisplayFactory: () => new shaka.text.UITextDisplayer(video, video.parentElement),
-    });
-    playerRef.current = player;
+      // 🔥 1. 이전 player 완전 제거
+      if (playerRef.current) {
+        await playerRef.current.destroy();
+        playerRef.current = null;
+      }
 
-    const handleTimeUpdate = () => {
-      const currentTime = video.currentTime;
-      handleVideoProgress(currentTime);
-      setCurrentProgress(formatDuration(currentTime));
-    };
+      // 🔥 2. 새로운 player 생성
+      const player = new shaka.Player(video);
+      player.configure({
+        textDisplayFactory: () => new shaka.text.UITextDisplayer(video, video.parentElement),
+      });
+      playerRef.current = player;
 
-    const handleEnded = () => {
-      setIsPlaying(false);
-    };
-    player.load(`${process.env.NEXT_PUBLIC_CHAT_API_URL}${info.episodeVideoInfo.mpdTempUrl}`).then(async () => {
-      console.log('✅ Shaka Player video loaded');
+      // 🔎 내부 에러 로그도 잡자
+      player.addEventListener('error', (e: any) => {
+        console.error('🚨 Shaka 내부 오류 발생:', e);
+      });
 
-      setVideoDuration(video.duration);
-      video.addEventListener('timeupdate', handleTimeUpdate);
-      video.addEventListener('ended', handleEnded);
+      // 🔗 load 시도
+      const url = `${process.env.NEXT_PUBLIC_CHAT_API_URL}${info.episodeVideoInfo.mpdTempUrl}`;
+      console.log('🔗 Try loading:', url);
 
-      if (info?.episodeVideoInfo?.subTitleFileInfos) {
-        console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
-        await Promise.all(
-          info?.episodeVideoInfo?.subTitleFileInfos.map(async fileInfo => {
-            const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase(); // ex) 'kor' -> 'kor'
-            const url = fileInfo.videoSourceUrl;
-            await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
-          }) || [],
-        );
+      try {
+        await player.load(url);
+        console.log('✅ Shaka Player video loaded');
 
-        player.setTextTrackVisibility(true);
+        setVideoDuration(video.duration);
 
-        console.log('✅ 자막 추가 완료!');
-      } else {
-        console.warn('🚨 자막 URL이 없습니다.');
+        // ⏱ 이벤트 등록
+        const handleTimeUpdate = () => {
+          const currentTime = video.currentTime;
+          handleVideoProgress(currentTime);
+          setCurrentProgress(formatDuration(currentTime));
+        };
+        const handleEnded = () => setIsPlaying(false);
+
+        video.addEventListener('timeupdate', handleTimeUpdate);
+        video.addEventListener('ended', handleEnded);
+
+        // 📺 자막 처리
+        if (info?.episodeVideoInfo?.subTitleFileInfos) {
+          console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
+          await Promise.all(
+            info.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
+              const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase();
+              const url = fileInfo.videoSourceUrl;
+              await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
+            }),
+          );
+          player.setTextTrackVisibility(true);
+          console.log('✅ 자막 추가 완료!');
+        } else {
+          console.warn('🚨 자막 URL이 없습니다.');
+        }
+
+        // 💡 클린업도 같이 리턴 안에서 정의
+        return () => {
+          video.removeEventListener('timeupdate', handleTimeUpdate);
+          video.removeEventListener('ended', handleEnded);
+          player.destroy();
+        };
+      } catch (err: any) {
+        console.error('🚨 Shaka load 실패:', err);
       }
     });
-
-    return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('ended', handleEnded);
-      player.destroy();
-    };
-  }, [info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl]);
+  }, [info]);
 
   useEffect(() => {
     const checkShakaSubtitle = setInterval(() => {
@@ -1240,7 +1263,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                           setOnPurchasePopup(true);
                         } else {
                           console.log('episode.episodeId', episode.episodeId);
+
+                          hasRun.current = false;
                           setCurEpisodeId(episode.episodeId);
+                          setOnEpisodeListDrawer(false);
                         }
                       }}
                     >
