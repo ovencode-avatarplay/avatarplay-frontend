@@ -227,7 +227,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
                   .map(country => LanguageType[country])
               : [],
           );
-          setMonetization(content.monetization);
+          setIsMonetization(content.monetization);
           setSelectedVisibility(content.visibility);
           setIsNsfw(content.nsfw);
           setDefaultImage(content.thumbnailUrl);
