@@ -26,6 +26,8 @@ import {useAtom} from 'jotai';
 import EmptyState from '@/components/search/EmptyState';
 import WorkroomGalleryModal from './WorkroomGalleryModal';
 import WorkroomSearchModal from './WorkroomSearchModal';
+import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
+import AudioPreViewer from '@/components/layout/shared/audioPreViewer';
 
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
@@ -154,22 +156,40 @@ const Workroom: React.FC<Props> = ({}) => {
       favorite: true,
     },
     {id: 2007, mediaState: MediaState.Image, imgUrl: '/images/001.png', name: 'image7', detail: 'detail7'},
-    {id: 3000, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video0', detail: 'detail0'},
+    {
+      id: 3000,
+      mediaState: MediaState.Video,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
+      name: 'video0',
+      detail: 'detail0',
+    },
     {
       id: 3001,
       mediaState: MediaState.Video,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
       name: 'video1',
       detail: 'detail1',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
     },
-    {id: 3002, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video2', detail: 'detail2'},
-    {id: 3003, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video3', detail: 'detail3'},
+    {
+      id: 3002,
+      mediaState: MediaState.Video,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
+      name: 'video2',
+      detail: 'detail2',
+    },
+    {
+      id: 3003,
+      mediaState: MediaState.Video,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
+      name: 'video3',
+      detail: 'detail3',
+    },
     {
       id: 3004,
       mediaState: MediaState.Video,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
       name: 'video4',
       detail: 'detail4',
       trash: true,
@@ -178,50 +198,86 @@ const Workroom: React.FC<Props> = ({}) => {
     {
       id: 3005,
       mediaState: MediaState.Video,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
       name: 'video5',
       detail: 'detail5',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
     },
-    {id: 3006, mediaState: MediaState.Video, imgUrl: '/images/001.png', name: 'video6', detail: 'detail6'},
+    {
+      id: 3006,
+      mediaState: MediaState.Video,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
+      name: 'video6',
+      detail: 'detail6',
+    },
     {
       id: 3007,
       mediaState: MediaState.Video,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
       name: 'video7',
       detail: 'detail7',
       favorite: true,
     },
-    {id: 4000, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio0', detail: 'detail0'},
-    {id: 4001, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio1', detail: 'detail1'},
+    {
+      id: 4000,
+      mediaState: MediaState.Audio,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
+      name: 'audio0',
+      detail: 'detail0',
+    },
+    {
+      id: 4001,
+      mediaState: MediaState.Audio,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
+      name: 'audio1',
+      detail: 'detail1',
+    },
     {
       id: 4002,
       mediaState: MediaState.Audio,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
       name: 'audio2',
       detail: 'detail2',
       favorite: true,
     },
-    {id: 4003, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio3', detail: 'detail3'},
+    {
+      id: 4003,
+      mediaState: MediaState.Audio,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
+      name: 'audio3',
+      detail: 'detail3',
+    },
     {
       id: 4004,
       mediaState: MediaState.Audio,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
       name: 'audio4',
       detail: 'detail4',
       favorite: true,
     },
-    {id: 4005, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio5', detail: 'detail5'},
+    {
+      id: 4005,
+      mediaState: MediaState.Audio,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
+      name: 'audio5',
+      detail: 'detail5',
+    },
     {
       id: 4006,
       mediaState: MediaState.Audio,
-      imgUrl: '/images/001.png',
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
       name: 'audio6',
       detail: 'detail6',
       favorite: true,
     },
-    {id: 4007, mediaState: MediaState.Audio, imgUrl: '/images/001.png', name: 'audio7', detail: 'detail7'},
+    {
+      id: 4007,
+      mediaState: MediaState.Audio,
+      imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/audio/5b6414dd-982e-43ba-aa6a-30301bbb7b4c.mp3',
+      name: 'audio7',
+      detail: 'detail7',
+    },
     {
       id: 5000,
       mediaState: MediaState.Image,
@@ -368,6 +424,8 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
+  const [videoViewerOpen, setVideoViewerOpen] = useState<boolean>(false);
+  const [audioViewerOpen, setAudioViewerOpen] = useState<boolean>(false);
 
   const [isFileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
   const [isFileMoveModalOpen, setIsFileMoveModalOpen] = useState<boolean>(false);
@@ -447,7 +505,13 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleItemImageClick = (item: WorkroomItemInfo) => {
     if (!isSelecting) {
       setSelectedItem(item);
-      setImageViewOpen(true);
+      if (item.mediaState === MediaState.Video) {
+        setVideoViewerOpen(true);
+      } else if (item.mediaState === MediaState.Image) {
+        setImageViewOpen(true);
+      } else if (item.mediaState === MediaState.Audio) {
+        setAudioViewerOpen(true);
+      }
     }
   };
 
@@ -468,8 +532,9 @@ const Workroom: React.FC<Props> = ({}) => {
         setSelectedCurrentFolder(item);
         setIsSearchModalOpen(false);
       }
-    }
-    if (item.mediaState === MediaState.Image) {
+    } else if (item.mediaState === MediaState.Audio) {
+      setAudioViewerOpen(true);
+    } else if (item.mediaState === MediaState.Image) {
       handleItemImageClick(item);
     }
   };
@@ -1516,7 +1581,8 @@ const Workroom: React.FC<Props> = ({}) => {
     <div className={styles.workroomContainer}>
       <CreateDrawerHeader
         title={
-          selectedCurrentFolder && selectedCurrentFolder?.generatedInfo !== undefined
+          selectedCurrentFolder &&
+          (selectedCurrentFolder?.profileId === undefined || selectedCurrentFolder?.profileId === null)
             ? selectedCurrentFolder.name
             : getLocalizedText('TODO : Workroom')
         }
@@ -1543,7 +1609,8 @@ const Workroom: React.FC<Props> = ({}) => {
         }
       </CreateDrawerHeader>
 
-      {selectedCurrentFolder && selectedCurrentFolder?.generatedInfo !== undefined ? (
+      {selectedCurrentFolder &&
+      (selectedCurrentFolder?.profileId === undefined || selectedCurrentFolder?.profileId === null) ? (
         renderFolderData(selectedCurrentFolder.id)
       ) : (
         <Splitters
@@ -1684,6 +1751,12 @@ const Workroom: React.FC<Props> = ({}) => {
             ) : (
               <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
             ))}
+          {videoViewerOpen && selectedItem && selectedItem.mediaState === MediaState.Video && (
+            <VideoPreViewer videoUrl={selectedItem?.imgUrl || ''} onClose={() => setVideoViewerOpen(false)} />
+          )}
+          {audioViewerOpen && selectedItem && selectedItem.mediaState === MediaState.Audio && (
+            <AudioPreViewer audioUrl={selectedItem?.imgUrl || ''} onClose={() => setAudioViewerOpen(false)} />
+          )}
           {isDeletePopupOpen && (
             <CustomPopup
               title={getLocalizedText(selectedItem?.trash ? 'TODO : Delete from Trash?' : 'TODO : Are you sure?')}

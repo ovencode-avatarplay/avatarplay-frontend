@@ -109,7 +109,13 @@ const WorkroomItem: React.FC<Props> = ({
             </div>
           )}
           {item.mediaState === MediaState.None || item.mediaState === MediaState.Audio ? (
-            <div className={styles.itemIcon}>
+            <div
+              className={styles.itemIcon}
+              onClick={e => {
+                e.stopPropagation();
+                onClickPreview();
+              }}
+            >
               <img
                 src={
                   item.mediaState === MediaState.None
@@ -120,6 +126,18 @@ const WorkroomItem: React.FC<Props> = ({
                 }
               />
             </div>
+          ) : item.mediaState === MediaState.Video ? (
+            <video
+              className={styles.fileImage}
+              src={item.imgUrl}
+              muted
+              preload="metadata"
+              onClick={e => {
+                e.stopPropagation();
+                onClickPreview();
+              }}
+              style={{objectFit: 'cover'}}
+            />
           ) : (
             <div
               className={styles.fileImage}
@@ -138,20 +156,44 @@ const WorkroomItem: React.FC<Props> = ({
           {renderFileInfoArea()}
         </div>
       ) : (
-        <div className={styles.largeViewContainer}>
+        <div
+          className={styles.largeViewContainer}
+          onClick={e => {
+            e.stopPropagation();
+            onClickPreview();
+          }}
+        >
           <div
             className={styles.fileImage}
             style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                item.imgUrl ? item.imgUrl : '/images/001.png'
-              })`,
+              backgroundImage:
+                item.mediaState === MediaState.Video
+                  ? undefined
+                  : `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                      item.imgUrl ? item.imgUrl : '/images/001.png'
+                    })`,
               backgroundSize: 'cover',
+              position: 'relative',
             }}
             onClick={e => {
               e.stopPropagation();
               onClickPreview();
             }}
           >
+            {item.mediaState === MediaState.Video && (
+              <video
+                src={item.imgUrl}
+                muted
+                preload="metadata"
+                className={styles.videoPreview}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: 'inherit',
+                }}
+              />
+            )}
             {isSelecting && (
               <div className={styles.selectButton}>
                 <CustomCheckbox
@@ -163,7 +205,6 @@ const WorkroomItem: React.FC<Props> = ({
                 />
               </div>
             )}
-
             {!item.trash && (
               <button
                 className={styles.bookMarkButton}
