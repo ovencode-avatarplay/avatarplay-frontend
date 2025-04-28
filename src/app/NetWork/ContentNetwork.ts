@@ -90,6 +90,7 @@ export interface GetContentRes {
   profileUrlLinkKey: string;
   contentInfo: ContentInfo;
   isSingleContentLock: boolean;
+  isProfileSubscribe: boolean;
   isMyContent: boolean;
   profileName: string;
 }

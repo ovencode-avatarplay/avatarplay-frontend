@@ -149,6 +149,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
         data.dataMix.isMyContent = resGetContent?.data.isMyContent;
         data.categoryType = resGetContent.data.contentInfo.categoryType;
+        data.dataMix.isProfileSubscribe = resGetContent.data.isProfileSubscribe;
         // data.dataMix.profileId = resGetContent?.data.contentInfo.profileId;
         // data.dataMix.thumbnailMediaState =
       }
@@ -180,7 +181,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const [startCheck, setStartCheck] = useState(false);
   useEffect(() => {
     // 🔍 Single인 경우
-    console.log('asd', startCheck, data);
     if (data.isSingle && data.dataMix && data.dataMix.state === ContentState.Upload) {
       const interval = setInterval(async () => {
         try {
@@ -633,7 +633,6 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
     </div>
   </>
 );
-
 type EpisodeComponentType = {
   key: string;
   thumbnailUrl: string;
@@ -657,6 +656,8 @@ const EpisodeComponent = ({
   onClick,
 }: EpisodeComponentType) => {
   const isFree = price == 0;
+
+  console.log('isProfileSubscribe', isProfileSubscribe);
   return (
     <li
       className={styles.item}
