@@ -1,7 +1,7 @@
 // components/ChatBlur.tsx
 import React from 'react';
 import {useAtom} from 'jotai';
-import {isBlurModeAtom} from './ChatBlurAtom';
+import {isBlurModeAtom} from './ChatAtom';
 import styles from './ChatBlur.module.css';
 
 const ChatBlur: React.FC = () => {

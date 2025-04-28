@@ -60,3 +60,17 @@
     filter: blur(10px);
   }
   
+  .translatorButton{
+    position: absolute;
+    
+    margin-top: -40px;
+    z-index:  1000;    
+    display: flex;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    background: var(--Neutral-400, #BDC1C6);
+  }

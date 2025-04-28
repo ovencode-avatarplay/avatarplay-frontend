@@ -4,6 +4,9 @@ import ChatHeader from './ChatHeader';
 import ChatArea from './ChatArea';
 import ChatBottom from './ChatBottom';
 import {Modal, Box} from '@mui/material';
+import {useAtom} from 'jotai';
+import {isOpenEditAtom} from './ChatAtom';
+import ChatEditDrawer from './ChatEditDrawer';
 
 interface Message {
   id: number;
@@ -47,6 +50,8 @@ const Chat: React.FC<Props> = ({open, onClose}) => {
     setMessages(prev => [...prev, newMessage]);
   };
 
+  const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
+  console.log(isOpenEdit);
   return (
     <Modal
       open={open}
@@ -64,6 +69,7 @@ const Chat: React.FC<Props> = ({open, onClose}) => {
           />
           <ChatArea messages={messages} />
           <ChatBottom onSend={handleSend} />
+          <ChatEditDrawer open={isOpenEdit} onClose={() => setOpenEdit(false)}></ChatEditDrawer>
         </div>
       </Box>
     </Modal>

@@ -2,27 +2,26 @@ import React, {useEffect, useState} from 'react';
 import styles from './ChatBubble.module.css';
 import Avatar from '@mui/material/Avatar';
 import {useAtom} from 'jotai';
-import {isBlurModeAtom, selectedBubbleIdAtom} from './ChatBlurAtom';
+import {isBlurModeAtom, selectedBubbleIdAtom} from './ChatAtom';
 import zIndex from '@mui/material/styles/zIndex';
 import CustomContextDropDown, {DropdownItem} from '@/components/layout/shared/CustomContextDropDown';
-import {LineArrowSwap, LineEdit, LinePreview} from '@ui/Icons';
+import {BoldTranslator, LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
 
 const items: DropdownItem[] = [
   {
-    label: 'Rename',
+    label: 'Copy',
     onClick: () => {}, // TODO
-    icon: LineEdit.src,
+    icon: LineCopy.src,
   },
   {
-    label: 'Change Order',
+    label: 'Delete',
     onClick: () => {}, // TODO
-    icon: LineArrowSwap.src,
-    iconStyle: {transform: 'rotate(90deg)'},
-  },
-  {
-    label: 'Preview this Episode',
-    onClick: () => {}, // TODO
-    icon: LinePreview.src,
+    icon: LineDelete.src,
+    iconStyle: {
+      filter:
+        'brightness(0) saturate(100%) invert(53%) sepia(93%) saturate(1308%) hue-rotate(321deg) brightness(92%) contrast(110%)',
+    },
+    labelStyle: {color: '#F75555'},
   },
 ];
 
@@ -78,6 +77,11 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
         </div>
         {!isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
       </div>
+      {isMenuOpen && (
+        <div className={styles.translatorButton} style={!isMe ? {left: '40px'} : undefined}>
+          <img src={BoldTranslator.src}></img>
+        </div>
+      )}
       <CustomContextDropDown
         open={isMenuOpen}
         onClose={close}
@@ -87,6 +91,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
           top: '100%',
           marginTop: '15px',
           zIndex: 1000,
+          maxWidth: '160px',
+          ...(!isMe && {left: '40px'}), // ✅ 추가
         }}
       />
     </div>

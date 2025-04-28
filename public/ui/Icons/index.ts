@@ -65,6 +65,10 @@ import BoldVerticalGrid from "./Bold/Vertical_Grid.svg";
 import BoldVideo from "./Bold/Video.svg";
 import BoldViewGallery from "./Bold/View_Gallery.svg";
 import BoldMessenger from "./Bold/Messenger.svg";
+import BoldTranslator from "./Bold/Translator.svg";
+import BoldLeave from "./Bold/Leave.svg";
+import BoldReport from "./Bold/Report.svg";
+import BoldUserCircle from "./Bold/UserCircle.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -252,6 +256,10 @@ export {
   BoldContentLists,
   BoldSearch,
   BoldMessenger,
+  BoldTranslator,
+  BoldLeave,
+  BoldReport,
+  BoldUserCircle,
   LineAddButton,
   LineAIImage,
   LineArchive,
