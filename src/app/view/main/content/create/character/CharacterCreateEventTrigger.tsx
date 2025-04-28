@@ -62,12 +62,13 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
 }) => {
   //#region
   const EmotionArray = [
+    {label: getLocalizedText('common_tagemotion_normal'), value: EmotionState.Normal, icon: EmojiHappy.src},
     {label: getLocalizedText('common_tagemotion_happy'), value: EmotionState.Happy, icon: EmojiHappy.src},
     {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Angry, icon: EmojiAngry.src},
     {label: getLocalizedText('common_tagemotion_sad'), value: EmotionState.Sad, icon: EmojiSad.src},
-    {label: getLocalizedText('common_tagemotion_excited'), value: EmotionState.Excited, icon: EmojiExcited.src},
+    /*{label: getLocalizedText('common_tagemotion_excited'), value: EmotionState.Excited, icon: EmojiExcited.src},
     {label: getLocalizedText('common_tagemotion_scared'), value: EmotionState.Scared, icon: EmojiScared.src},
-    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Bored, icon: EmojiBoring.src},
+    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Bored, icon: EmojiBoring.src},*/
   ];
 
   const [currentState, setCurrentState] = useState<number>(0);
@@ -128,12 +129,6 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         return EmojiAngry.src;
       case EmotionState.Sad:
         return EmojiSad.src;
-      case EmotionState.Excited:
-        return EmojiExcited.src;
-      case EmotionState.Scared:
-        return EmojiScared.src;
-      case EmotionState.Bored:
-        return EmojiBoring.src;
     }
   };
 
@@ -638,13 +633,13 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             <div className={styles.promptItem}>
               <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_002`)}</div>
               <CustomDropDown
-                initialValue={item.emotionState}
+                initialValue={item.emotionType}
                 displayType="Icon"
                 items={EmotionArray}
                 onSelect={value =>
                   onEditEventTrigger({
                     ...item,
-                    emotionState: value as EmotionState,
+                    emotionType: value as EmotionState,
                   })
                 }
               />
