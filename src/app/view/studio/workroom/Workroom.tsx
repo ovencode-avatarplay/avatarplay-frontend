@@ -905,7 +905,9 @@ const Workroom: React.FC<Props> = ({}) => {
             ))}
           </ul>
         ) : option.renderEmpty ? (
-          <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+          <div className={styles.emptyStateContainer}>
+            <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+          </div>
         ) : (
           <></>
         )}
@@ -940,9 +942,9 @@ const Workroom: React.FC<Props> = ({}) => {
     ) : hideEmpty ? (
       <></>
     ) : (
-      <>
+      <div className={styles.emptyStateContainer}>
         <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-      </>
+      </div>
     );
   };
 
@@ -1040,7 +1042,9 @@ const Workroom: React.FC<Props> = ({}) => {
                 )}
               </>
             ) : (
-              <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              <div className={styles.emptyStateContainer}>
+                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              </div>
             )}
           </>
         )}
@@ -1137,7 +1141,9 @@ const Workroom: React.FC<Props> = ({}) => {
                 )}
               </>
             ) : (
-              <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              <div className={styles.emptyStateContainer}>
+                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              </div>
             )}
           </>
         )}
@@ -1230,7 +1236,9 @@ const Workroom: React.FC<Props> = ({}) => {
                 )}
               </>
             ) : (
-              <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              <div className={styles.emptyStateContainer}>
+                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              </div>
             )}
           </>
         )}
@@ -1324,7 +1332,9 @@ const Workroom: React.FC<Props> = ({}) => {
                 )}
               </>
             ) : (
-              <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              <div className={styles.emptyStateContainer}>
+                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+              </div>
             )}
           </>
         )}
@@ -1413,7 +1423,9 @@ const Workroom: React.FC<Props> = ({}) => {
                   )}
                 </>
               ) : (
-                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+                <div className={styles.emptyStateContainer}>
+                  <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
+                </div>
               )}
             </>
           )}
@@ -1614,6 +1626,9 @@ const Workroom: React.FC<Props> = ({}) => {
                 textType: 'Label',
                 label: getLocalizedText('TODO : Folder name'),
               }}
+              onClose={() => {
+                setIsFolderNamePopupOpen(false);
+              }}
             />
           )}
           {isFileEditDrawerOpen &&
@@ -1692,6 +1707,9 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
                   onClick: handleDeleteConfirm,
                 },
               ]}
+              onClose={() => {
+                setIsDeletePopupOpen(false);
+              }}
             />
           )}
           {isGalleryModalOpen && selectedItem?.profileId && (
@@ -1798,7 +1816,9 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
                     )}
                   </>
                 ) : (
-                  <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+                  <div className={styles.emptyStateContainer}>
+                    <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+                  </div>
                 ))}
 
               {tagStates.search === 'Folders' &&
