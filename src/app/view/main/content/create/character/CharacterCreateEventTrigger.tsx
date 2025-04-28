@@ -103,9 +103,9 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
     setMediaByStarsTriggers(
       eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByGotStars),
     );
-    setCharacterLevelUpTriggers(
-      eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.CharacterLevelUp),
-    );
+    // setCharacterLevelUpTriggers(
+    //   eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.CharacterLevelUp),
+    // );
   }, [eventTriggerItems]);
 
   //#endregion
@@ -144,6 +144,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
     mediaByTimeTriggers?.length === 0 ||
     messageByTimeTriggers?.length === 0 ||
     mediaByStarsTriggers?.length === 0;
+  // ||    characterLevelUpTriggers?.length === 0;
 
   const getDesc = (triggerType: CharacterEventTriggerType) => {
     switch (triggerType) {
@@ -453,7 +454,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 {messageByTimeTriggers?.length === 0 &&
                   renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
                 {mediaByStarsTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
-                {characterLevelUpTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.CharacterLevelUp)}
+                {/* {characterLevelUpTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.CharacterLevelUp)} */}
               </div>
             </div>
           </div>
@@ -616,7 +617,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           <div className={styles.rightInputPanel}>{renderInputPrompt(item)}</div>
         </div>
         <div className={styles.buttonArea}>
-          <button
+          {/* <button
             className={styles.bottomButton}
             onClick={() =>
               onEditEventTrigger({
@@ -639,7 +640,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           >
             <img className={`${styles.buttonIcon} ${styles.iconChar}`} src={BoldCharacter.src} />
             <div className={styles.buttonText}>{getLocalizedText(`common_button_charcommand`)}</div>
-          </button>
+          </button> */}
           <button
             className={styles.bottomButton}
             onClick={() => {
@@ -701,12 +702,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('TODO : Memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -750,12 +751,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('TODO : Memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -785,12 +786,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('TODO : Memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -890,12 +891,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               </div>
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('TODO : Memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -909,12 +910,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         ) : item.triggerType === CharacterEventTriggerType.CharacterLevelUp ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('TODO : Memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
