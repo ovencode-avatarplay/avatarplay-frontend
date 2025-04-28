@@ -98,9 +98,9 @@ const EventTriggerContainer: React.FC<Props> = ({
                     <img className={styles.messageIcon} src={BoldMessenger.src} />
                   )}
 
-                  {item.emotionState !== undefined ? (
+                  {item.emotionType !== undefined ? (
                     <div className={styles.emotionBack}>
-                      <img className={styles.emotionIcon} src={getEmojiIcon(item.emotionState)} alt="emotion" />
+                      <img className={styles.emotionIcon} src={getEmojiIcon(item.emotionType)} alt="emotion" />
                     </div>
                   ) : item.elapsedTime !== undefined ? (
                     <div className={styles.triggerSummaryBox}>

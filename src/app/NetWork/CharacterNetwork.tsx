@@ -56,6 +56,8 @@ export interface CharacterEventTriggerInfo {
   // 스타 획득 기반 트리거에만 사용
   getType?: GetStarType;
   getStar?: number;
+
+  score?: number;
 }
 
 export enum CharacterEventTriggerType {
@@ -65,6 +67,7 @@ export enum CharacterEventTriggerType {
   SendMediaByElapsedTime = 3,
   SendMessageByElapsedTime = 4,
   SendMediaByGotStars = 5,
+  CharacterLevelUp = 6,
 }
 
 export enum EmotionState {
