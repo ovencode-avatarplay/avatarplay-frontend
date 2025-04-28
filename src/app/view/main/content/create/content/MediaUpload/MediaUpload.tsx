@@ -56,6 +56,8 @@ const MediaUpload: React.FC<Props> = ({
   const isVideo = (url?: string) => videoExtensions.includes(getFileExtension(url));
   const isImage = (url?: string) => imageExtensions.includes(getFileExtension(url));
 
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (defaultImage == undefined) return;
     if (isVideo(defaultImage)) setMediaType('video');
@@ -80,6 +82,7 @@ const MediaUpload: React.FC<Props> = ({
   // 파일 선택 시 처리
   const handleOnFileSelect = async (files: File[]) => {
     try {
+      setIsLoading(true);
       // MediaState 설정
       let state = UploadMediaState.None;
       if (mediaType == 'image') state = UploadMediaState.ContentImage;
@@ -120,6 +123,8 @@ const MediaUpload: React.FC<Props> = ({
       }
     } catch (error) {
       console.error('Error during file upload:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -332,6 +337,7 @@ const MediaUpload: React.FC<Props> = ({
           ]}
         />
       )}
+      <LoadingOverlay loading={isLoading} />
     </div>
   );
 };
