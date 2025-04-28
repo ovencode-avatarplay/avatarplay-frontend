@@ -45,7 +45,7 @@ import {
 import SharePopup from '@/components/layout/shared/SharePopup';
 import Link from 'next/link';
 import {Dialog} from '@mui/material';
-import {TurnedIn} from '@mui/icons-material';
+import {Category, TurnedIn} from '@mui/icons-material';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
 import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
@@ -53,9 +53,11 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import DrawerDonation from '../../create/common/DrawerDonation';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
+import formatText from '@/utils/formatText';
+import {setStar} from '@/redux-store/slices/Currency';
 
 type Props = {
   type: ContentType;
@@ -86,6 +88,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     season: number;
     isShareOpened: boolean;
     isSingle: boolean;
+    categoryType: number;
 
     dataPurchase: {
       isOpenPopupPurchase: boolean;
@@ -100,6 +103,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
     };
   }>({
     indexTab: eTabType.Episodes,
+    categoryType: 0,
     // dataContent: null,
     dataEpisodes: null,
     season: 1,
@@ -144,6 +148,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         data.dataMix.profileUrlLinkKey = resGetContent?.data.profileUrlLinkKey;
         data.dataMix.isSingleContentLock = resGetContent?.data.isSingleContentLock;
         data.dataMix.isMyContent = resGetContent?.data.isMyContent;
+        data.categoryType = resGetContent.data.contentInfo.categoryType;
+        data.dataMix.isProfileSubscribe = resGetContent.data.isProfileSubscribe;
         // data.dataMix.profileId = resGetContent?.data.contentInfo.profileId;
         // data.dataMix.thumbnailMediaState =
       }
@@ -162,6 +168,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
       console.log('resGetSeasonEpisodes : ', resGetSeasonEpisodes.data);
       if (resGetSeasonEpisodes.data) {
+        data.categoryType = resGetSeasonEpisodes.data.contentCategoryType;
         data.dataEpisodes = resGetSeasonEpisodes.data;
         data.dataMix = resGetSeasonEpisodes.data;
       }
@@ -174,7 +181,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const [startCheck, setStartCheck] = useState(false);
   useEffect(() => {
     // 🔍 Single인 경우
-    console.log('asd', startCheck, data);
     if (data.isSingle && data.dataMix && data.dataMix.state === ContentState.Upload) {
       const interval = setInterval(async () => {
         try {
@@ -266,7 +272,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   };
 
   const onEdit = () => {};
-
+  console.log('asdadsa', data.dataMix?.categoryType);
   const urlEdit = data.isSingle ? '/update/content/single' : '/create/content/series';
   console.log('contentID : ', playContentId);
   console.log('onPlay : ', onPlay);
@@ -307,8 +313,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
             />
           )}
         </section>
-        {(data.isSingle ||
-          (!data.isSingle && data.dataEpisodes?.episodeList && data.dataEpisodes?.episodeList.length > 0)) && (
+        {data.categoryType == 1 && (
           <button
             className={styles.btnPlayWrap}
             onClick={() => {
@@ -458,9 +463,10 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           thumbnailUrl={data.dataMix?.thumbnailUrl || ''}
                           isLock={data.dataMix?.isSingleContentLock || false}
                           thumbnailMediaState={data.dataMix?.thumbnailMediaState || MediaState.Image}
+                          isProfileSubscribe={data.dataMix?.isProfileSubscribe}
                           isUploading={data.dataMix?.state === ContentState.Upload}
                           onClick={() => {
-                            if (isFree || !isLock) {
+                            if (isFree || !isLock || data.dataMix?.isProfileSubscribe) {
                               //TODO : play처리
                               console.log('data', data, one);
                               setOnPlay(true);
@@ -478,7 +484,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             data.dataPurchase.contentType = ContentType.Single;
 
                             setData({...data});
-                            refreshInfo();
                           }}
                         />
                       );
@@ -499,8 +504,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                           isLock={one.isLock}
                           thumbnailMediaState={one?.thumbnailMediaState || MediaState.Image}
                           isUploading={one.episodeState === ContentEpisodeState.Upload}
+                          isProfileSubscribe={data.dataMix?.isProfileSubscribe}
                           onClick={() => {
-                            if (isFree || !isLock) {
+                            if (isFree || !isLock || data.dataMix?.isProfileSubscribe) {
                               //TODO : play처리
                               console.log('data', data, one);
                               setOnPlay(true);
@@ -518,7 +524,6 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             data.dataPurchase.contentType = ContentType.Series;
 
                             setData({...data});
-                            refreshInfo();
                           }}
                         />
                       );
@@ -569,6 +574,8 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               setPlayContentId(contentId || 0);
               setEpisodeId(0);
             }
+
+            refreshInfo();
           }}
         />
       )}
@@ -626,7 +633,6 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => (
     </div>
   </>
 );
-
 type EpisodeComponentType = {
   key: string;
   thumbnailUrl: string;
@@ -635,6 +641,7 @@ type EpisodeComponentType = {
   price: number;
   isLock: boolean;
   isUploading?: boolean;
+  isProfileSubscribe?: boolean;
   onClick: () => void;
 };
 const EpisodeComponent = ({
@@ -645,9 +652,12 @@ const EpisodeComponent = ({
   isLock,
   thumbnailMediaState,
   isUploading = false,
+  isProfileSubscribe = false,
   onClick,
 }: EpisodeComponentType) => {
   const isFree = price == 0;
+
+  console.log('isProfileSubscribe', isProfileSubscribe);
   return (
     <li
       className={styles.item}
@@ -669,7 +679,7 @@ const EpisodeComponent = ({
               src={thumbnailUrl}
             />
           )}
-          {isLock && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
+          {isLock && !isProfileSubscribe && <img src={BoldLock.src} alt="" className={styles.iconLock} />}
           {isUploading && (
             <div className={styles.loadingOverlay}>
               <div className={styles.spinner}></div>
@@ -681,10 +691,23 @@ const EpisodeComponent = ({
         <div className={styles.name}>{name}</div>
       </div>
       <div className={styles.right}>
+        {isFree && (
+          <div className={styles.starWrap}>
+            <div className={styles.count}>무료</div>
+          </div>
+        )}
         {!isFree && (
           <div className={styles.starWrap}>
-            <img src={BoldStar.src} alt="" className={styles.iconStar} />
-            <div className={styles.count}>{price}</div>
+            {isProfileSubscribe ? (
+              <div className={styles.count}>구독중</div>
+            ) : isLock ? (
+              <>
+                <img src={BoldStar.src} alt="" className={styles.iconStar} />
+                <div className={styles.count}>{price}</div>
+              </>
+            ) : (
+              <div className={styles.count}>대여중</div>
+            )}
           </div>
         )}
       </div>
@@ -730,6 +753,8 @@ export const PopupPurchase = ({
     setData({...data});
   };
 
+  const starAmount = dataStarInfo.star;
+  const dispatch = useDispatch();
   const onPurchase = async () => {
     const dataBuyReq: BuyContentEpisodeReq = {
       contentId: contentId,
@@ -737,8 +762,11 @@ export const PopupPurchase = ({
     };
     const resBuy = await buyContentEpisode(dataBuyReq);
     if (resBuy.resultCode != 0) {
+      alert('asdas');
       openPopupNotEnoughStars();
       return;
+    } else {
+      if (resBuy.data) dispatch(setStar(resBuy.data?.currentMyStar));
     }
     console.log('resBuy : ', resBuy);
 
@@ -783,9 +811,7 @@ export const PopupPurchase = ({
             </div>
           </div>
         </div>
-        <div className={styles.title}>
-          {price} {getLocalizedText('common_alert_001')}
-        </div>
+        <div className={styles.title}>{formatText(getLocalizedText('common_alert_001'), [price.toString()])} </div>
         <div className={styles.description}>{getLocalizedText('common_alert_022')}</div>
 
         <div className={styles.dontshowWrap}>
@@ -833,6 +859,7 @@ const PopupNotEnoughStars = ({onClose, onCharge}: PopupNotEnoughStarsType) => {
     <Dialog
       open={true}
       onClose={onClose}
+      sx={{zIndex: 3001}} // Modal 자체에 z-index 설정
       PaperProps={{
         sx: {
           borderRadius: '24px',
