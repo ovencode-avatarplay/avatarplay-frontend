@@ -76,6 +76,7 @@ interface Props {
 
 const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
+  const [contentType, setContentType] = useState<ContentType>(0);
   const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
 
   const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
@@ -103,6 +104,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       const playResponse = await sendPlayButton(playRequest);
 
       setIsLoading(false);
+      setContentType(playResponse.data?.contentType || 0);
       console.log('✅ PlayButton API 응답:', playResponse.data);
       setInfo(playResponse.data?.recentlyPlayInfo);
       setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
@@ -120,6 +122,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setIsLoading(true);
       const playData = await sendPlay(playRequest);
       setIsLoading(false);
+      setContentType(playData.data?.contentType || 0);
       console.log('✅ Play API 응답:', playData.data);
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
@@ -839,6 +842,11 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       </>
     );
   };
+  console.log(
+    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+      item => item.webtoonLanguageType === ContentLanguageType.Source,
+    ),
+  );
   return (
     <Modal
       open={open}
@@ -884,7 +892,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
               {info?.categoryType === ContentCategoryType.Webtoon && (
-                <div className={styles.webtoonContainer}>
+                <div
+                  className={`${styles.webtoonContainer} ${
+                    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+                      item => item.webtoonLanguageType === ContentLanguageType.Source,
+                    )[0].webtoonSourceUrls.length === 1
+                      ? styles.centerAlign
+                      : ''
+                  }`}
+                >
                   {(() => {
                     const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
                       item => item.webtoonLanguageType === ContentLanguageType.Source,
@@ -998,12 +1014,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
               {/* Video Info */}
               <div className={styles.videoInfo}>
-                {info?.categoryType == ContentCategoryType.Webtoon && <>{getLocalizedText('common_filter_photo')}</>}
                 {info?.categoryType == ContentCategoryType.Video && (
                   <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                     <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                    {getLocalizedText('common_filter_video')}· {currentProgress ? currentProgress : '0:00'}/
-                    {formatDuration(videoDuration)}
+                    {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
                   </div>
                 )}
               </div>
@@ -1064,7 +1078,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   <img src={BoldReward.src} className={styles.button}></img>
                 </div>
               )}
-
               <div
                 className={styles.textButtons}
                 onClick={event => {
@@ -1085,7 +1098,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 />
                 <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
               </div>
-
               {/* Dislike Button */}
               <div
                 className={styles.textButtons}
@@ -1125,7 +1137,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               >
                 <img src={BoldShare.src} className={styles.button}></img>
               </div>
-
               <div
                 className={styles.noneTextButton}
                 onClick={event => {
@@ -1137,16 +1148,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
               </div>
 
-              <div
-                className={styles.noneTextButton}
-                onClick={event => {
-                  event.stopPropagation();
-                  fetchSeasonEpisodesPopup();
-                }}
-              >
-                <img src={BoldContents.src} className={styles.button}></img>
-              </div>
-
+              {contentType != ContentType.Single && (
+                <div
+                  className={styles.noneTextButton}
+                  onClick={event => {
+                    event.stopPropagation();
+                    fetchSeasonEpisodesPopup();
+                  }}
+                >
+                  <img src={BoldContents.src} className={styles.button}></img>
+                </div>
+              )}
               <div
                 className={styles.noneTextButton}
                 onClick={event => {
@@ -1229,7 +1241,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       {/* 에피소드 정보 + 완결 배지 */}
                       <div className={styles.episodeRow}>
                         <span className={styles.episodeInfo}>
-                          {formatText(getLocalizedText('contenthome003_label_001'), [
+                          {formatText(getLocalizedText('common_alert_97'), [
                             '1',
                             episodeListData.episodeList.length.toString(),
                           ])}

@@ -21,6 +21,7 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 export interface VideoUploadField {
   id: number;
@@ -47,6 +48,8 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
   const [videoFile, setVideoFile] = useState<string | null>(null); // 비디오 업로드 상태
   const [videoName, setVideoName] = useState<string | null>(null); // 비디오 업로드 상태
   const [onPreview, setOnPreview] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
@@ -240,6 +243,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
 
   const handleFileUpload = async (type: 'video' | 'subtitle' | 'dubbing', files: File[], index?: number) => {
     try {
+      setIsLoading(true);
       if (type === 'subtitle') {
         const req: MediaUploadReq = {
           mediaState: UploadMediaState.ContentEpisodeSubtitle,
@@ -307,6 +311,8 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
       }
     } catch (error) {
       console.error('파일 업로드 중 오류 발생:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -467,6 +473,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
         mediaUrls={videoFile ? [videoFile] : []}
         type={ContentCategoryType.Video}
       ></PreviewViewer>
+      <LoadingOverlay loading={isLoading} />
     </>
   );
 };

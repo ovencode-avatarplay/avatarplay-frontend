@@ -394,7 +394,7 @@ img.button{
   flex-shrink: 0;
   justify-content: space-between;
 
-  background: var(--Black #000000);
+  background: black;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   opacity: 1;
   z-index: 12;
@@ -665,6 +665,9 @@ img.button{
   width: 100%;
   overflow-y: auto;
   height: 100%;
+}
+.centerAlign {
+  justify-content: center;
 }
 
 .webtoonImageWrapper {

@@ -25,6 +25,7 @@ import {
 } from '@/app/NetWork/ContentNetwork';
 import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 export interface WebtoonUploadField {
   id: number;
@@ -51,6 +52,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
   const [imageFiles, setImageFiles] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
     console.log('asdasd');
@@ -136,6 +138,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
 
   const handleFileUpload = async (files: FileList) => {
     try {
+      setIsLoading(true);
       const req: MediaUploadReq = {
         mediaState: UploadMediaState.ContentEpisodeWebtoonImage,
         imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
@@ -151,6 +154,8 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
       setImageNames(prev => [...prev, ...validImageNames]);
     } catch (error) {
       console.error('파일 업로드 중 오류 발생:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -220,6 +225,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   // 필드별 파일 업로드 처리
   const handleFileUploadForField = async (files: FileList, fieldIndex: number) => {
     try {
+      setIsLoading(true);
       const req: MediaUploadReq = {
         mediaState: UploadMediaState.ContentEpisodeWebtoonSubtitle,
         imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
@@ -244,6 +250,8 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
       );
     } catch (error) {
       console.error('파일 업로드 중 오류 발생:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -491,6 +499,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         mediaUrls={imageFiles ? imageFiles : []}
         type={ContentCategoryType.Webtoon}
       ></PreviewViewer>
+      <LoadingOverlay loading={isLoading} />
     </>
   );
 };

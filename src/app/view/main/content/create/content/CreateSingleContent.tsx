@@ -31,7 +31,7 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {useAtom} from 'jotai';
 import CustomButton from '@/components/layout/shared/CustomButton';
-import {setVisibility} from '@/redux-store/slices/PublishInfo';
+import {setMonetization, setVisibility} from '@/redux-store/slices/PublishInfo';
 import TagsData from 'data/create/tags.json';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
@@ -227,7 +227,7 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
                   .map(country => LanguageType[country])
               : [],
           );
-
+          setIsMonetization(content.monetization);
           setSelectedVisibility(content.visibility);
           setIsNsfw(content.nsfw);
           setDefaultImage(content.thumbnailUrl);
@@ -302,8 +302,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         postCountry: positionCountryList.map(country => LanguageType[country]), // 국가 정보
         visibility: selectedVisibility,
         nsfw: isNsfw, // 기본값
-        monetization: false,
-        salesStarEa: 0, //추후 구현 필요
+        monetization: isMonetization,
+        salesStarEa: priceValue, //추후 구현 필요
         maxSeasonNo: 1, // 기본 시즌 1개부터 시작
         contentWebtoonInfo: selectedCategory == CategoryTypes.Webtoon ? episodeWebtoonInfo : undefined,
         contentVideoInfo: selectedCategory == CategoryTypes.Drama ? episodeVideoInfo : undefined,
