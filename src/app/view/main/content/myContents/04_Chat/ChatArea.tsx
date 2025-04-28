@@ -2,6 +2,8 @@ import React, {useEffect, useRef} from 'react';
 import styles from './ChatArea.module.css';
 import ChatBubble from './ChatBubble';
 import ChatBlur from './ChatBlur';
+import {useAtom} from 'jotai';
+import {isOpenAddContentAtom, isOpenEmojiPickerAtom} from './ChatAtom';
 
 interface Message {
   id: number;
@@ -29,8 +31,16 @@ const ChatArea: React.FC<Props> = ({messages}) => {
     messagesEndRef.current?.scrollIntoView({behavior: 'instant'});
   }, [messages]);
 
+  const [isOpenAddContent, setIsOpenAddContent] = useAtom(isOpenAddContentAtom);
+  const [isOpenEmojiPicker, setIsOpenEmojiPicker] = useAtom(isOpenEmojiPickerAtom);
   return (
-    <div className={styles.chatArea}>
+    <div
+      className={styles.chatArea}
+      onClick={() => {
+        setIsOpenAddContent(false);
+        setIsOpenEmojiPicker(false);
+      }}
+    >
       {messages.map((msg, idx) => {
         const prevMsg = messages[idx - 1];
         const nextMsg = messages[idx + 1];

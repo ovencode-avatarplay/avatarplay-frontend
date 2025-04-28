@@ -97,12 +97,12 @@
   
     transform: translateY(100%);
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0s ease;
     pointer-events: none;
   }
   
   .show {
-    height: 300px; /* 여기에 진짜 높이 부여 */
+    height: 100%; /* 여기에 진짜 높이 부여 */
     transform: translateY(0);
     opacity: 1;
     border-top: 1px solid var(--Border-1, #EAECF0);
