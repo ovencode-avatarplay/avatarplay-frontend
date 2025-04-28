@@ -429,7 +429,6 @@ export const followProfile = async (profileId: number, isFollow: boolean) => {
     return res.data?.data;
   } catch (e) {
     console.error('Follow API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -456,7 +455,6 @@ export const sendInviteProfileReq = async (payload: InviteProfileReq) => {
     return res.data;
   } catch (e) {
     console.error('Follow API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -486,7 +484,6 @@ export const sendSearchProfileReq = async (payload: SearchProfileReq) => {
     return res.data;
   } catch (e) {
     console.error('Follow API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -525,7 +522,6 @@ export const updatePdInfo = async (payload: UpdatePdInfoReq) => {
     return res.data;
   } catch (e) {
     console.error('UpdatePDInfo API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -559,7 +555,6 @@ export const getPdInfo = async (payload: GetPdInfoReq) => {
     return res.data;
   } catch (e) {
     console.error('getPdInfo API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -617,7 +612,6 @@ export const getSubscriptionList = async (payload: GetSubscriptionListReq) => {
     return res.data;
   } catch (e) {
     console.error('getSubscriptionList API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -650,7 +644,6 @@ export const getPaymentAmountMenu = async (payload: GetSubscribePaymentReq) => {
     return res.data;
   } catch (e) {
     console.error('getPaymentAmountMenu API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -673,7 +666,6 @@ export const subscribeProfile = async (payload: ProfileSubscribeReq) => {
     return res.data;
   } catch (e) {
     console.error('subscribeProfile API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -698,7 +690,6 @@ export const cancelSubscribe = async (payload: SubscribeCancelReq) => {
     return res.data;
   } catch (e) {
     console.error('cancelSubscribe API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -736,7 +727,6 @@ export const deleteProfile = async (payload: DeleteProfileReq) => {
     return res.data;
   } catch (e) {
     console.error('deleteProfile API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -768,7 +758,6 @@ export const getBookmarkList = async (payload: GetBookMarkListReq) => {
     return res.data;
   } catch (e) {
     console.error('getBookmarkList API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -800,7 +789,6 @@ export const getRecordList = async (payload: GetRecordListReq) => {
     return res.data;
   } catch (e) {
     console.error('getRecordList API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
