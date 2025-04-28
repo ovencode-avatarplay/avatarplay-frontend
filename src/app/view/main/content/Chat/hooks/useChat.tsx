@@ -35,6 +35,14 @@ import {preventZoom, useBackHandler} from '@/utils/util-1';
 import {ChattingState, setStateChatting} from '@/redux-store/slices/Chatting';
 import usePrevChatting from '../MainChat/PrevChatting';
 
+export interface RewardItem {
+  id: number;
+  title: string;
+  description: string;
+  color: string;
+  border: string;
+}
+
 const useChat = () => {
   const TempIdforSendQuestion: number = -222; // sendQuestion 할때 할당되지 않은 기본 값.
   const [parsedMessages, setParsedMessages] = useState<MessageGroup>({
@@ -82,6 +90,9 @@ const useChat = () => {
     isLike: false, // 말풍선 like
     bubbleIndex: 0,
   });
+
+  const [level, setLevel] = useState<number | null>(60);
+  const [exp, setExp] = useState<number | null>(55);
 
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
@@ -393,6 +404,9 @@ const useChat = () => {
     episodeId,
     sendMessageAsync,
     //saveChatStreamInfo,
+
+    level,
+    exp,
   };
 };
 

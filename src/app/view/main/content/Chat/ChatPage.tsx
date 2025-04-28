@@ -54,6 +54,7 @@ import Script from 'next/script';
 import {isAllOf} from '@reduxjs/toolkit';
 import StoryLLMSetup from '../create/story-main/story-LLMsetup/StoryLLMsetup';
 import {LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
+import chatRewardItem from '@/data/dictionary/chatRewardItem.json';
 
 declare global {
   interface Window {
@@ -122,6 +123,8 @@ const ChatPage: React.FC = () => {
     //setRetryStreamKey,
 
     episodeId,
+    level,
+    exp,
   } = useChat();
 
   const dispatch = useDispatch();
@@ -141,6 +144,9 @@ const ChatPage: React.FC = () => {
     isSendingMessage,
     onMessageProps: onMessage,
   });
+
+  const rewardItems = chatRewardItem;
+  const [currentRewardItemId, setCurrentRewardItemId] = useState<number>(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Unity 초기화를 담당하는 함수
@@ -735,6 +741,10 @@ const ChatPage: React.FC = () => {
             iconUrl={characterImageUrl ?? ''}
             isHideChat={isHideChat}
             isBlurOn={isBlurOn}
+            showEventGuage={false}
+            level={level}
+            exp={exp}
+            rewardItems={rewardItems}
           />
           {floatingNextEpisode && !isHideChat && (
             <ChatFloatingArea
@@ -758,6 +768,7 @@ const ChatPage: React.FC = () => {
             send={sendMessage}
             lastMessage={lastMessage}
             retrySend={handleRetryStream}
+            level={level}
           />
         </div>
         <FooterChat

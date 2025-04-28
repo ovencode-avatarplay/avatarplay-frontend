@@ -11,6 +11,7 @@
   position: relative;
   height: calc(100%);
 }
+
 .topBar {
   user-select: none;
   display: flex;
@@ -23,6 +24,13 @@
   padding: 0px;
   gap: 10px; 
   width: 100%;
+}
+
+.eventGuageContainer
+{ 
+  position: absolute;
+  z-index: 10; 
+  width: 100%;  
 }
 
 /* ChatArea.module.css 또는 별도의 CSS 파일에 추가 */
@@ -141,9 +149,9 @@
 }
 
 .messageBubbleArea {
-  overflow-y: auto;
+  overflow-y: scroll;
   position: absolute;
-  top:58px;
+  top: 58px;
   left: 0;
   right: 0; 
   padding-left: 16px;
