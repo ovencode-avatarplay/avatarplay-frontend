@@ -102,7 +102,7 @@
   }
   
   .show {
-    height: 90px; /* 여기에 진짜 높이 부여 */
+    height: 300px; /* 여기에 진짜 높이 부여 */
     transform: translateY(0);
     opacity: 1;
     border-top: 1px solid var(--Border-1, #EAECF0);
@@ -148,18 +148,12 @@ line-height: 140%; /* 19.6px */
     filter: brightness(0) saturate(100%);
   
   }
-  .pickerWrap
-  {
-    width: 100%;
-    height: 100%;  
-  }
+.pickerWrap {
+  width: 100%;
+  height: 100%;
+}
+
 
 .pickerWrap em-emoji-picker {
   width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

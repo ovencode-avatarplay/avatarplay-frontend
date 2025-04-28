@@ -124,10 +124,8 @@ const AddContent: React.FC<AddContentProps> = ({setText}) => {
             onEmojiSelect={(emoji: any) => {
               setText(prev => prev + emoji.native);
             }}
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
+            maxFrequentRows={4}
+            perLine={10}
           />
         </div>
       )}
