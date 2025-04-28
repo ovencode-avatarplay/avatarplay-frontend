@@ -93,8 +93,15 @@
     display: flex; 
     padding: 14px 0px;
     align-items: center;
-    gap: 20px;
+    gap: 5px;
     align-self: stretch;
+    color: var(--Neutral-600, #80868B);
+    font-family: Lato;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 10px; /* 66.667% */
+    letter-spacing: -0.3px;
 }
 
 .editRightArrowButton img
@@ -104,7 +111,7 @@
     flex-shrink: 0;
     aspect-ratio: 1/1;
 
-    filter: var(--black-icon-filter);
+    filter: brightness(0) saturate(100%) invert(60%) sepia(11%) saturate(201%) hue-rotate(165deg) brightness(86%) contrast(84%);
 }
 
 .trashedfileName
@@ -119,4 +126,13 @@
     font-weight: 700;
     line-height: normal;
 
+}
+.itemBox{
+    display: flex;    
+    align-items: center;
+    gap: 14px;
+}
+.icons
+{
+    filter: brightness(0) saturate(100%)  
 }

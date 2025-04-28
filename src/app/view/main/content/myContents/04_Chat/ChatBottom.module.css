@@ -28,6 +28,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: transform 0.3s ease; /* 부드러운 회전 */
     
   }
   
@@ -83,17 +84,33 @@
     cursor: pointer;
   }
 
-  .addContent
-  {
+  .addContent {
     display: flex;
-padding: 12px 25px;
-height: 90px;
-align-items: center;
-gap: 26px;
-border-top: 1px solid var(--Border-1, #EAECF0);
-border-bottom: 1px solid var(--Border-1, #EAECF0);
-background: #FFF;
+    padding: 0 25px; /* padding만 남겨 */
+    height: 0px; /* 기본 높이 0 */
+    overflow: hidden;
+    align-items: center;
+    gap: 26px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    background: #FFF;
+  
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
   }
+  
+  .show {
+    height: 90px; /* 여기에 진짜 높이 부여 */
+    transform: translateY(0);
+    opacity: 1;
+    border-top: 1px solid var(--Border-1, #EAECF0);
+    border-bottom: 1px solid var(--Border-1, #EAECF0);
+    pointer-events: auto;
+  }
+  
+  
   .addItem
   {
     display: flex;
@@ -131,3 +148,18 @@ line-height: 140%; /* 19.6px */
     filter: brightness(0) saturate(100%);
   
   }
+  .pickerWrap
+  {
+    width: 100%;
+    height: 100%;  
+  }
+
+.pickerWrap em-emoji-picker {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import styles from './ChatBottom.module.css';
 import AddIcon from '@mui/icons-material/Add';
-import SendIcon from '@mui/icons-material/Send';
-import IconButton from '@mui/material/IconButton';
 import {BoldSend, Emoticon, LineRecording, LineReward, VideoFrame} from '@ui/Icons';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom} from '@/app/Root';
-
+import {isOpenAddContentAtom} from './ChatAtom';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 interface Props {
   onSend: (text: string) => void;
 }
@@ -14,6 +14,7 @@ interface Props {
 const ChatBottom: React.FC<Props> = ({onSend}) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const [text, setText] = useState('');
+  const [isOpenAddContent, setIsOpenAddContent] = useAtom(isOpenAddContentAtom);
 
   const handleSend = () => {
     if (!text.trim()) return;
@@ -24,9 +25,17 @@ const ChatBottom: React.FC<Props> = ({onSend}) => {
   return (
     <div className={styles.container}>
       <div className={styles.box}>
-        <button className={styles.plusButton}>
+        <button
+          className={styles.plusButton}
+          onClick={() => setIsOpenAddContent(prev => !prev)}
+          style={{
+            transform: isOpenAddContent ? 'rotate(45deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease',
+          }}
+        >
           <AddIcon />
         </button>
+
         <div className={styles.inputWrap}>
           <input
             className={styles.inputField}
@@ -36,45 +45,92 @@ const ChatBottom: React.FC<Props> = ({onSend}) => {
             onKeyDown={e => e.key === 'Enter' && handleSend()}
           />
           <div className={styles.sendWrap} onClick={handleSend}>
-            <img src={BoldSend.src} className={styles.sendIcon}></img>
+            <img src={BoldSend.src} className={styles.sendIcon} />
           </div>
         </div>
+
         <img
           src={LineRecording.src}
           className={styles.micIcon}
           onClick={() => {
             dataToast.open('추후 개발 예정');
           }}
-        ></img>
+        />
       </div>
-      <AddContent></AddContent>
+
+      <div className={`${styles.addContent} ${isOpenAddContent ? styles.show : ''}`}>
+        <AddContent setText={setText} />
+      </div>
     </div>
   );
 };
 
 export default ChatBottom;
 
-const AddContent: React.FC = () => {
+interface AddContentProps {
+  setText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const AddContent: React.FC<AddContentProps> = ({setText}) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+  const [isOpenEmojiPicker, setIsOpenEmojiPicker] = useState(false);
+
   return (
-    <div className={styles.addContent}>
-      <div className={styles.addItem}>
-        <div className={styles.addItemRound}>
-          <img src={LineReward.src} className={styles.addItemIcon}></img>
+    <>
+      {!isOpenEmojiPicker && (
+        <>
+          <div className={styles.addItem}>
+            <div className={styles.addItemRound}>
+              <img src={LineReward.src} className={styles.addItemIcon} />
+            </div>
+            <span className={styles.addItemText}>gift</span>
+          </div>
+
+          <div
+            className={styles.addItem}
+            onClick={() => {
+              dataToast.open('추후 제공 예정');
+            }}
+          >
+            <div className={styles.addItemRound}>
+              <img src={VideoFrame.src} className={styles.addItemIcon} />
+            </div>
+            <span className={styles.addItemText}>Media</span>
+          </div>
+
+          <div
+            className={styles.addItem}
+            onClick={() => {
+              setIsOpenEmojiPicker(prev => !prev);
+            }}
+          >
+            <div className={styles.addItemRound}>
+              <img src={Emoticon.src} className={styles.addItemIcon} />
+            </div>
+            <span className={styles.addItemText}>Emoticon</span>
+          </div>
+        </>
+      )}
+      {/* ✅ Emoticon 누르면 Picker 열기 */}
+      {isOpenEmojiPicker && (
+        <div className={styles.pickerWrap}>
+          <Picker
+            data={data}
+            theme="light"
+            dynamicWidth={true} // ✅ 꼭 켜야 함
+            emojiButtonSize={30} // ✅ 버튼 크기만 조정
+            searchPosition="none"
+            previewPosition="none"
+            onEmojiSelect={(emoji: any) => {
+              setText(prev => prev + emoji.native);
+            }}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          />
         </div>
-        <span className={styles.addItemText}>gift</span>
-      </div>
-      <div className={styles.addItem}>
-        <div className={styles.addItemRound}>
-          <img src={VideoFrame.src} className={styles.addItemIcon}></img>
-        </div>
-        <span className={styles.addItemText}>Media</span>
-      </div>
-      <div className={styles.addItem}>
-        <div className={styles.addItemRound}>
-          <img src={Emoticon.src} className={styles.addItemIcon}></img>
-        </div>
-        <span className={styles.addItemText}>Emoticon</span>
-      </div>
-    </div>
+      )}
+    </>
   );
 };

@@ -8,7 +8,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {LineArrowLeft, LineCam, LinePhone, LineRecording} from '@ui/Icons';
 import {useAtom} from 'jotai';
-import {isOpenEditAtom} from './ChatAtom';
+import {isOpenAddContentAtom, isOpenEditAtom} from './ChatAtom';
 
 interface Props {
   onClose: () => void;
@@ -16,10 +16,19 @@ interface Props {
 
 const ChatHeader: React.FC<Props> = ({onClose}) => {
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
+
+  const [isOpenAddContent, setIsOpenAddContent] = useAtom(isOpenAddContentAtom);
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
-      <IconButton className={styles.backButton} onClick={() => onClose()}>
+      <IconButton
+        className={styles.backButton}
+        onClick={() => {
+          onClose();
+          setIsOpenAddContent(false);
+          setOpenEdit(false);
+        }}
+      >
         <img src={LineArrowLeft.src} className={styles.arrowIcon}></img>
       </IconButton>
 
