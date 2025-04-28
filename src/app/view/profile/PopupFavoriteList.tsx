@@ -49,7 +49,7 @@ import {bookmark, InteractionType, pinFix, PinFixReq, PinTabType, RecordType} fr
 import SharePopup from '@/components/layout/shared/SharePopup';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {ContentType, VisibilityType} from '@/app/NetWork/ContentNetwork';
-import { Visibility } from '@mui/icons-material';
+import {Visibility} from '@mui/icons-material';
 
 type Props = {
   onClose: () => void;
@@ -163,11 +163,11 @@ const PopupFavoriteList = ({profileId, profileType, isMine = true, onClose}: Pro
   const sortData = () => {
     data.profileTabInfo?.[data.indexTab].sort((a, b) => {
       if (a.isPinFix === b.isPinFix) {
-        if (data.indexSort == ExploreSortType.Newest) {
+        if (data.filterCluster.indexSort == ExploreSortType.Newest) {
           return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-        } else if (data.indexSort == ExploreSortType.Name) {
+        } else if (data.filterCluster.indexSort == ExploreSortType.Name) {
           return a.name.localeCompare(b.name);
-        } else if (data.indexSort == ExploreSortType.Popular) {
+        } else if (data.filterCluster.indexSort == ExploreSortType.Popular) {
           return b.likeCount - a.likeCount;
         } else {
           return b.id - a.id;
@@ -437,7 +437,7 @@ const TabContentComponent = ({
                   playTime: '',
                   urlLinkKey: one.urlLinkKey,
                   isMyFeed: false,
-                  profileVisibilityType: VisibilityType.Private
+                  profileVisibilityType: VisibilityType.Private,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}
