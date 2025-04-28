@@ -19,6 +19,7 @@ export interface SessionInfo {
   name: string;
   accessToken: string;
   star: number;
+  ruby: number;
 }
 export interface GetLanguageReq {}
 
@@ -68,12 +69,11 @@ interface GetAuthProfileInfoRes {
   profileSimpleInfo: ProfileSimpleInfo;
 }
 
-export const getAuth = async (token : string | null = null) => {
+export const getAuth = async (token: string | null = null) => {
   try {
-    let jwtToken : string|null = '';
-    if(token === null)
-    {
-      jwtToken = localStorage.getItem('jwt');  
+    let jwtToken: string | null = '';
+    if (token === null) {
+      jwtToken = localStorage.getItem('jwt');
     } else {
       jwtToken = token;
     }
@@ -94,8 +94,7 @@ export const getAuth = async (token : string | null = null) => {
       return;
     }
 
-    if(jwtToken)
-      localStorage.setItem('jwt', jwtToken)
+    if (jwtToken) localStorage.setItem('jwt', jwtToken);
 
     const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
     return data;

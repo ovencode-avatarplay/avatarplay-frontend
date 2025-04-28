@@ -13,6 +13,8 @@ import {useRouter} from 'next/navigation';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {RootState} from '@/redux-store/ReduxStore';
+import {useSelector} from 'react-redux';
 export const mockSingle = {
   title: 'The White King',
   genres: ['Comedy', 'Love', 'Drama'],
@@ -102,7 +104,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
 
   const isVideo = (url?: string) => videoExtensions.includes(getFileExtension(url));
   const isImage = (url?: string) => imageExtensions.includes(getFileExtension(url));
-
+  const dataProfile = useSelector((state: RootState) => state.profile);
   return (
     <div className={styles.container}>
       {/* 상단 배경 및 네비게이션 */}
@@ -119,7 +121,7 @@ const SingleDetail: React.FC<SingleDetailProps> = ({id}) => {
             <button
               className={styles.iconButton}
               onClick={() => {
-                back();
+                pushLocalizedRoute('/profile/' + dataProfile.currentProfile?.urlLinkKey + '?indexTab=1', router);
               }}
             >
               <img src={LineArrowLeft.src} alt="Back" />

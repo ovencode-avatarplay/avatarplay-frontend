@@ -61,6 +61,7 @@ import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import shaka from 'shaka-player/dist/shaka-player.compiled';
 import SelectDrawerArrow, {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import {ConstructionOutlined} from '@mui/icons-material';
 
 interface Props {
   open: boolean;
@@ -73,6 +74,7 @@ interface Props {
 
 const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
+  const [contentType, setContentType] = useState<ContentType>(0);
   const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
 
   const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
@@ -100,6 +102,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       const playResponse = await sendPlayButton(playRequest);
 
       setIsLoading(false);
+      setContentType(playResponse.data?.contentType || 0);
       console.log('✅ PlayButton API 응답:', playResponse.data);
       setInfo(playResponse.data?.recentlyPlayInfo);
       setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
@@ -117,6 +120,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setIsLoading(true);
       const playData = await sendPlay(playRequest);
       setIsLoading(false);
+      setContentType(playData.data?.contentType || 0);
       console.log('✅ Play API 응답:', playData.data);
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
@@ -126,6 +130,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   useEffect(() => {
     if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
+    console.log('ass');
   }, [info]);
 
   const hasRun = useRef(false);
@@ -146,7 +151,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       handlePlayNew();
       console.log('playnew');
     }
-  }, []);
+  }, [curEpisodeId]);
 
   const [isVisible, setIsVisible] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -269,55 +274,76 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
+    requestAnimationFrame(async () => {
+      const video = videoRef.current;
+      if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
 
-    const player = new shaka.Player(video);
-    player.configure({
-      textDisplayFactory: () => new shaka.text.UITextDisplayer(video, video.parentElement),
-    });
-    playerRef.current = player;
+      // 🔥 1. 이전 player 완전 제거
+      if (playerRef.current) {
+        await playerRef.current.destroy();
+        playerRef.current = null;
+      }
 
-    const handleTimeUpdate = () => {
-      const currentTime = video.currentTime;
-      handleVideoProgress(currentTime);
-      setCurrentProgress(formatDuration(currentTime));
-    };
+      // 🔥 2. 새로운 player 생성
+      const player = new shaka.Player(video);
+      player.configure({
+        textDisplayFactory: () => new shaka.text.UITextDisplayer(video, video.parentElement),
+      });
+      playerRef.current = player;
 
-    const handleEnded = () => {
-      setIsPlaying(false);
-    };
-    player.load(`${process.env.NEXT_PUBLIC_CHAT_API_URL}${info.episodeVideoInfo.mpdTempUrl}`).then(async () => {
-      console.log('✅ Shaka Player video loaded');
+      // 🔎 내부 에러 로그도 잡자
+      player.addEventListener('error', (e: any) => {
+        console.error('🚨 Shaka 내부 오류 발생:', e);
+      });
 
-      setVideoDuration(video.duration);
-      video.addEventListener('timeupdate', handleTimeUpdate);
-      video.addEventListener('ended', handleEnded);
+      // 🔗 load 시도
+      const url = `${process.env.NEXT_PUBLIC_CHAT_API_URL}${info.episodeVideoInfo.mpdTempUrl}`;
+      console.log('🔗 Try loading:', url);
 
-      if (info?.episodeVideoInfo?.subTitleFileInfos) {
-        console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
-        await Promise.all(
-          info?.episodeVideoInfo?.subTitleFileInfos.map(async fileInfo => {
-            const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase(); // ex) 'kor' -> 'kor'
-            const url = fileInfo.videoSourceUrl;
-            await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
-          }) || [],
-        );
+      try {
+        await player.load(url);
+        console.log('✅ Shaka Player video loaded');
 
-        player.setTextTrackVisibility(true);
+        setVideoDuration(video.duration);
 
-        console.log('✅ 자막 추가 완료!');
-      } else {
-        console.warn('🚨 자막 URL이 없습니다.');
+        // ⏱ 이벤트 등록
+        const handleTimeUpdate = () => {
+          const currentTime = video.currentTime;
+          handleVideoProgress(currentTime);
+          setCurrentProgress(formatDuration(currentTime));
+        };
+        const handleEnded = () => setIsPlaying(false);
+
+        video.addEventListener('timeupdate', handleTimeUpdate);
+        video.addEventListener('ended', handleEnded);
+
+        // 📺 자막 처리
+        if (info?.episodeVideoInfo?.subTitleFileInfos) {
+          console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
+          await Promise.all(
+            info.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
+              const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase();
+              const url = fileInfo.videoSourceUrl;
+              await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
+            }),
+          );
+          player.setTextTrackVisibility(true);
+          console.log('✅ 자막 추가 완료!');
+        } else {
+          console.warn('🚨 자막 URL이 없습니다.');
+        }
+
+        // 💡 클린업도 같이 리턴 안에서 정의
+        return () => {
+          video.removeEventListener('timeupdate', handleTimeUpdate);
+          video.removeEventListener('ended', handleEnded);
+          player.destroy();
+        };
+      } catch (err: any) {
+        console.error('🚨 Shaka load 실패:', err);
       }
     });
-
-    return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('ended', handleEnded);
-      player.destroy();
-    };
-  }, [info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl]);
+  }, [info]);
 
   useEffect(() => {
     const checkShakaSubtitle = setInterval(() => {
@@ -814,6 +840,11 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       </>
     );
   };
+  console.log(
+    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+      item => item.webtoonLanguageType === ContentLanguageType.Source,
+    ),
+  );
   return (
     <Modal
       open={open}
@@ -859,7 +890,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           <div style={{height: '100%'}} onClick={() => handleTrigger()}>
             <div className={styles.Image}>
               {info?.categoryType === ContentCategoryType.Webtoon && (
-                <div className={styles.webtoonContainer}>
+                <div
+                  className={`${styles.webtoonContainer} ${
+                    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+                      item => item.webtoonLanguageType === ContentLanguageType.Source,
+                    )[0].webtoonSourceUrls.length === 1
+                      ? styles.centerAlign
+                      : ''
+                  }`}
+                >
                   {(() => {
                     const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
                       item => item.webtoonLanguageType === ContentLanguageType.Source,
@@ -973,12 +1012,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
               {/* Video Info */}
               <div className={styles.videoInfo}>
-                {info?.categoryType == ContentCategoryType.Webtoon && <>{getLocalizedText('common_filter_photo')}</>}
                 {info?.categoryType == ContentCategoryType.Video && (
                   <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
                     <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                    {getLocalizedText('common_filter_video')}· {currentProgress ? currentProgress : '0:00'}/
-                    {formatDuration(videoDuration)}
+                    {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
                   </div>
                 )}
               </div>
@@ -1039,7 +1076,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                   <img src={BoldReward.src} className={styles.button}></img>
                 </div>
               )}
-
               <div
                 className={styles.textButtons}
                 onClick={event => {
@@ -1060,7 +1096,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 />
                 <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
               </div>
-
               {/* Dislike Button */}
               <div
                 className={styles.textButtons}
@@ -1100,7 +1135,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               >
                 <img src={BoldShare.src} className={styles.button}></img>
               </div>
-
               <div
                 className={styles.noneTextButton}
                 onClick={event => {
@@ -1112,16 +1146,17 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                 {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
               </div>
 
-              <div
-                className={styles.noneTextButton}
-                onClick={event => {
-                  event.stopPropagation();
-                  fetchSeasonEpisodesPopup();
-                }}
-              >
-                <img src={BoldContents.src} className={styles.button}></img>
-              </div>
-
+              {contentType != ContentType.Single && (
+                <div
+                  className={styles.noneTextButton}
+                  onClick={event => {
+                    event.stopPropagation();
+                    fetchSeasonEpisodesPopup();
+                  }}
+                >
+                  <img src={BoldContents.src} className={styles.button}></img>
+                </div>
+              )}
               <div
                 className={styles.noneTextButton}
                 onClick={event => {
@@ -1204,7 +1239,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                       {/* 에피소드 정보 + 완결 배지 */}
                       <div className={styles.episodeRow}>
                         <span className={styles.episodeInfo}>
-                          {formatText(getLocalizedText('contenthome003_label_001'), [
+                          {formatText(getLocalizedText('common_alert_97'), [
                             '1',
                             episodeListData.episodeList.length.toString(),
                           ])}
@@ -1238,7 +1273,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                           setOnPurchasePopup(true);
                         } else {
                           console.log('episode.episodeId', episode.episodeId);
+
+                          hasRun.current = false;
                           setCurEpisodeId(episode.episodeId);
+                          setOnEpisodeListDrawer(false);
                         }
                       }}
                     >
