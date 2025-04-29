@@ -343,7 +343,6 @@ export const bookmark = async (payload: BookMarkReq) => {
     return res.data;
   } catch (e) {
     console.error('bookmark API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -375,7 +374,6 @@ export const deleteRecord = async (payload: DeleteRecordReq) => {
     return res.data;
   } catch (e) {
     console.error('deleteRecord API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
