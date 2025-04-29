@@ -451,7 +451,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   borderRadius: item.profileType === ProfileType.Channel ? '10px' : '50%',
                 }}
                 onClick={() => {
-                  if (item.profileVisibilityType === VisibilityType.Public) {
+                  if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
                     dataToast.open('프로필 접근불가', ToastType.Normal);
@@ -462,7 +462,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  if (item.profileVisibilityType === VisibilityType.Public) {
+                  if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
                     dataToast.open('프로필 접근불가', ToastType.Normal);
