@@ -25,6 +25,7 @@ api.interceptors.request.use(
     document.body.style.pointerEvents = 'none';
     const requestKey = config.url ?? '';
 
+    // 이미 리퀘스트 했던 api를 아직 답변받기 전에 또 요청했을때 처리
     if (pendingRequests.has(requestKey)) {
       console.warn('Busy processing an existing API request.');
       return Promise.reject({message: 'Busy processing an existing API request.'});
