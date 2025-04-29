@@ -30,7 +30,7 @@ const FilterBar: React.FC<FilterBarProps> = ({filters, sortOptions, onFilterChan
       {/* 아이콘 버튼 (전체 보기) */}
       <div
         className={`${styles.iconButton} ${!activeFilter ? styles.active : ''}`}
-        onClick={() => handleFilterClick('')}
+        onClick={() => handleFilterClick('None')}
       >
         <img src={BoldViewGallery.src} alt="Gallery" className={styles.galleryIcon} />
       </div>

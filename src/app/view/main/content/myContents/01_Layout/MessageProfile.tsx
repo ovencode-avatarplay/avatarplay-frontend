@@ -5,7 +5,7 @@ import {BoldInfo, BoldMore, BoldPin, LineCheck, LineDelete} from '@ui/Icons';
 interface Props {
   profileImage: string;
   profileName: string;
-  level: string;
+  level?: string;
   timestamp?: string;
   badgeType?: BadgeType;
   followState?: FollowState;
