@@ -126,8 +126,8 @@ const PostMain: React.FC<Props> = ({id}) => {
               setTitleValue(existingFeed.title || '');
               setrDescription(existingFeed.description || '');
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
-              setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
               setIsNsfw(existingFeed.isBookmark || false);
+              setSelectedVisibility(existingFeed.visibilityType);
             }
           }
         } catch (error) {

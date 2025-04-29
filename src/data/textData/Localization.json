@@ -1651,7 +1651,7 @@
   },
   "common_aimodel_gpt4o": {
     "en-US": "GPT-4o",
-    "ko": "",
+    "ko": "GPT-4o",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1661,8 +1661,8 @@
     "de": ""
   },
   "common_aimodel_gpt4odescription": {
-    "en-US": "GPT-4o description",
-    "ko": "",
+    "en-US": "The latest flagship model from GPT, offering the most natural and flexible conversational experience.",
+    "ko": "가장 자연스럽고 유연한 대화 경험을 제공하는 GPT의 최신 플래그십 모델.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1673,7 +1673,7 @@
   },
   "common_aimodel_gpt4": {
     "en-US": "GPT-4",
-    "ko": "",
+    "ko": "GPT-4o",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1683,8 +1683,8 @@
     "de": ""
   },
   "common_aimodel_gpt4description": {
-    "en-US": "GPT-4 description",
-    "ko": "",
+    "en-US": "A premium language model that combines deep reasoning with rock-solid reliability.",
+    "ko": "깊이 있는 사고력과 안정성을 겸비한 프리미엄 언어 모델.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1705,8 +1705,8 @@
     "de": ""
   },
   "common_aimodel_gpt35description": {
-    "en-US": "GPT-3.5 description",
-    "ko": "",
+    "en-US": "A lightweight and fast AI assistant that stays true to the essentials.",
+    "ko": "가볍고 빠르면서도 기본에 충실한 실속형 AI 비서.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1727,8 +1727,8 @@
     "de": ""
   },
   "common_aimodel_claude2description": {
-    "en-US": "Claude 2 description",
-    "ko": "",
+    "en-US": "A trusted AI with stable performance and intuitive language understanding for balanced conversations.",
+    "ko": "안정적인 성능과 직관적인 언어 이해로 균형 잡힌 대화를 제공하는 신뢰도 높은 AI.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1749,8 +1749,8 @@
     "de": ""
   },
   "common_aimodel_claude3opusdescription": {
-    "en-US": "Claude 3 Opus description",
-    "ko": "",
+    "en-US": "An ultra-intelligent high-performance model that handles complex problems with ease.",
+    "ko": "복잡한 문제도 유연하게 해결하는 초지능형 고성능 모델",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1771,8 +1771,8 @@
     "de": ""
   },
   "common_aimodel_claude3sonnetdescription": {
-    "en-US": "Claude 3 Sonnet description",
-    "ko": "",
+    "en-US": "A refined language expert with rich expression and well-balanced intelligence.",
+    "ko": "풍부한 표현력과 균형 잡힌 지능을 갖춘 세련된 언어 전문가.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1793,8 +1793,8 @@
     "de": ""
   },
   "common_aimodel_claude35sonnetdescription": {
-    "en-US": "Claude 3.5 Sonnet description",
-    "ko": "",
+    "en-US": "An evolved Claude specialized in immersive character-driven conversations and advanced creative writing.",
+    "ko": "몰입감 넘치는 캐릭터형 대화와 고급 창작에 특화된 진화형 Claude.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1815,8 +1815,8 @@
     "de": ""
   },
   "common_aimodel_claude3haikudescription": {
-    "en-US": "Claude 3 Haiku description",
-    "ko": "",
+    "en-US": "A lightweight creative model with rapid responses and stylish, expressive language.",
+    "ko": "빠른 반응 속도와 감각적인 문장력을 갖춘 경량형 창작 모델.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -1837,8 +1837,8 @@
     "de": ""
   },
   "common_aimodel_customapidescription": {
-    "en-US": "Custom API description",
-    "ko": "",
+    "en-US": "A personalized AI tailored to your purpose, delivering precisely customized conversations.",
+    "ko": "당신만을 위한 AI, 목적에 꼭 맞춘 맞춤형 대화형 모델.",
     "ja": "",
     "fr": "",
     "es": "",
@@ -3015,6 +3015,28 @@
   },
   "common_alert_107": {
     "en-US": "Selection Limit",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_108": {
+    "en-US": "Do you want to leave the Chatroom?",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_109": {
+    "en-US": "Are you sure you want to cancel your friend request?",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -7655,17 +7677,6 @@
     "pt-PT": "Ação",
     "de": "Aktion"
   },
-  "common_tag_alien": {
-    "en-US": "Alien",
-    "ko": "외계인",
-    "ja": "エイリアン",
-    "fr": "Alien",
-    "es": "Alienígena",
-    "zh-CN": "外星人",
-    "zh-TW": "外星人",
-    "pt-PT": "Alienígena",
-    "de": "Außerirdischer"
-  },
   "common_tag_anime": {
     "en-US": "Anime",
     "ko": "애니메이션",
@@ -8106,8 +8117,129 @@
     "pt-PT": "",
     "de": ""
   },
-  "common_tag_aliens": {
-    "en-US": "Aliens",
+  "common_tag_alien": {
+    "en-US": "Alien",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_music": {
+    "en-US": "Music",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_game": {
+    "en-US": "Game",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_novel": {
+    "en-US": "Novel",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_drama": {
+    "en-US": "Drama",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_gravure": {
+    "en-US": "Gravure",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_edu": {
+    "en-US": "Edu",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_star": {
+    "en-US": "Star",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_brand": {
+    "en-US": "Brand",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_chatbot": {
+    "en-US": "Chatbot",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_toon": {
+    "en-US": "Toon",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tag_video": {
+    "en-US": "Video",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -8724,6 +8856,17 @@
   },
   "common_tagcolor_silver": {
     "en-US": "Silver",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagemotion_normal": {
+    "en-US": "Normal",
     "ko": "",
     "ja": "",
     "fr": "",
