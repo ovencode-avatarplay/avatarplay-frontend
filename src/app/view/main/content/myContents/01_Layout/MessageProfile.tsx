@@ -13,6 +13,7 @@ interface Props {
   isOption?: boolean;
   isPin?: boolean;
   isHighlight?: boolean;
+  urlLinkKey: string;
   onClick: () => void;
   onClickOption?: () => void;
 }
@@ -48,6 +49,7 @@ const MessageProfile: React.FC<Props> = ({
   isOption = false,
   isPin = false,
   isHighlight = false,
+  urlLinkKey,
   onClick,
   onClickOption,
 }) => {

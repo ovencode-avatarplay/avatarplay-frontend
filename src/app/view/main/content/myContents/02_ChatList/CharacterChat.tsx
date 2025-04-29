@@ -20,7 +20,7 @@ interface Props {
 }
 
 const CharacterChat: React.FC<Props> = ({name}) => {
-  const [selectedTag, setSelectedTag] = useState(tags[0]);
+  const [selectedTag, setSelectedTag] = useState<string>(tags[0]);
   const [openOption, setOpenOption] = useState(false);
   const [openLeavePopup, setOpenLeavePopup] = useState(false);
 
@@ -58,7 +58,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   const fetchCharacterChatRooms = async () => {
     try {
       const params: GetCharacterChatRoomListReq = {
-        isChatTag: selectedTag == 'Chatroom' ? false : true,
+        isChatTag: selectedTag == 'Chatroom' ? true : false,
         characterIP: getFilter,
         tag: selectedTag,
         sort: 0,
@@ -88,7 +88,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   return (
     <>
-      <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
+      <MessageTagList tags={tags} defaultTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} />
       <FilterBar
         filters={[CharacterIP[1].toString(), CharacterIP[2].toString()]}
         sortOptions={['Newest', 'Popular', 'Name']}
