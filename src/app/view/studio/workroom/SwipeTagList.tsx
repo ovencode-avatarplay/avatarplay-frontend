@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import styles from './WorkroomTagList.module.css';
+import styles from './SwipeTagList.module.css';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -9,7 +9,7 @@ interface Props {
   onTagChange?: (tag: string) => void;
   currentTag?: string;
 }
-const WorkroomTagList: React.FC<Props> = ({tags, onTagChange, currentTag}) => {
+const SwipeTagList: React.FC<Props> = ({tags, onTagChange, currentTag}) => {
   const [activeTag, setActiveTag] = useState<string>(currentTag ?? tags[0]);
   const [isCentered, setIsCentered] = useState<boolean>(false);
   const handleTagClick = (tag: string) => {
@@ -52,4 +52,4 @@ const WorkroomTagList: React.FC<Props> = ({tags, onTagChange, currentTag}) => {
     </div>
   );
 };
-export default WorkroomTagList;
+export default SwipeTagList;

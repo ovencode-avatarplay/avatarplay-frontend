@@ -3,12 +3,12 @@ import styles from './WorkroomEditDrawer.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {LineArrowRight, LineEdit} from '@ui/Icons';
+import {WorkroomItemInfo} from './WorkroomItem';
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  name: string;
-  info: string;
+  selectedItem: WorkroomItemInfo;
   onRename?: (newName: string) => void;
   onCopy?: () => void;
   onMove?: () => void;
@@ -21,8 +21,7 @@ interface Props {
 const WorkroomEditDrawer: React.FC<Props> = ({
   open,
   onClose,
-  name,
-  info,
+  selectedItem,
   onRename,
   onCopy,
   onMove,
@@ -32,15 +31,15 @@ const WorkroomEditDrawer: React.FC<Props> = ({
   onRestore,
 }) => {
   const [editMode, setEditMode] = useState(false);
-  const [fileName, setFileName] = useState(name);
+  const [fileName, setFileName] = useState(selectedItem.name);
 
   useEffect(() => {
-    setFileName(name);
-  }, [name]);
+    setFileName(selectedItem.name);
+  }, [selectedItem]);
 
   const handleRenameConfirm = () => {
     setEditMode(false);
-    if (fileName.trim() && fileName !== name) {
+    if (fileName.trim() && fileName !== selectedItem.name) {
       onRename?.(fileName.trim());
     }
   };
@@ -48,7 +47,7 @@ const WorkroomEditDrawer: React.FC<Props> = ({
   return (
     <CustomDrawer open={open} onClose={onClose}>
       <ul className={styles.fileEditDrawerContainer}>
-        {onRestore ? (
+        {selectedItem.trash ? (
           <>
             <div className={styles.trashedfileName}>{fileName}</div>
             <li className={styles.editDrawerButton} onClick={onRestore}>
@@ -83,7 +82,7 @@ const WorkroomEditDrawer: React.FC<Props> = ({
                   onClick={() => setEditMode(true)}
                 />
               </div>
-              <div className={styles.infoText}>{info}</div>
+              <div className={styles.infoText}>{selectedItem.detail}</div>
             </li>
             <li className={styles.editDrawerButton} onClick={onCopy}>
               {getLocalizedText('TODO : Make a copy')}
@@ -100,9 +99,11 @@ const WorkroomEditDrawer: React.FC<Props> = ({
             <li className={styles.editDrawerButton} onClick={onDownload}>
               {getLocalizedText('TODO : Download')}
             </li>
-            <li className={styles.editDrawerButton} onClick={onDelete}>
-              {getLocalizedText('TODO : Delete')}
-            </li>
+            {!selectedItem.profileId && (
+              <li className={styles.editDrawerButton} onClick={onDelete}>
+                {getLocalizedText('TODO : Delete')}
+              </li>
+            )}
           </>
         )}
       </ul>

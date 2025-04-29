@@ -117,7 +117,7 @@ const WorkroomItem: React.FC<Props> = ({
               />
             </div>
           )}
-          {item.mediaState === MediaState.None || item.mediaState === MediaState.Audio ? (
+          {(item.mediaState === MediaState.None && !item.profileId) || item.mediaState === MediaState.Audio ? (
             <div
               className={styles.itemIcon}
               onClick={e => {
@@ -127,7 +127,7 @@ const WorkroomItem: React.FC<Props> = ({
             >
               <img
                 src={
-                  item.mediaState === MediaState.None
+                  item.mediaState === MediaState.None && !item.profileId
                     ? BoldFolder.src
                     : item.mediaState === MediaState.Audio
                     ? BoldAudio.src
@@ -179,7 +179,15 @@ const WorkroomItem: React.FC<Props> = ({
                 item.mediaState === MediaState.Video
                   ? undefined
                   : `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                      item.imgUrl ? item.imgUrl : '/images/001.png'
+                      item.mediaState === MediaState.Audio
+                        ? BoldAudio.src
+                        : item.mediaState === MediaState.None && !item.profileId
+                        ? BoldFolder.src
+                        : item.mediaState === MediaState.None && item.profileId
+                        ? item.imgUrl
+                        : item.imgUrl
+                        ? item.imgUrl
+                        : '/images/001.png'
                     })`,
               backgroundSize: 'cover',
               position: 'relative',

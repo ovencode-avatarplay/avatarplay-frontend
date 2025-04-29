@@ -40,14 +40,14 @@ const WorkroomGalleryModal: React.FC<Props> = ({open, onClose, characterInfo, ch
           onClose();
         }}
       >
-        <div className={styles.buttonArea}>
+        {/* <div className={styles.buttonArea}>
           <button className={styles.topButton}>
             <img className={styles.buttonIcon} src={LineSearch.src} onClick={() => {}} />
           </button>
           <button className={styles.topButton} onClick={() => {}}>
             <img src={LineFolderPlus.src} />
           </button>
-        </div>
+        </div> */}
       </CreateDrawerHeader>
       <div className={styles.contentArea}>
         {children}

@@ -6,7 +6,7 @@ import styles from './Workroom.module.css';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import WorkroomTagList from './WorkroomTagList';
+import SwipeTagList from './SwipeTagList';
 import {BoldAltArrowDown, BoldViewGallery, LineEdit, LineFolderPlus, LineList, LineSearch} from '@ui/Icons';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import WorkroomItem, {WorkroomItemInfo} from './WorkroomItem';
@@ -513,7 +513,7 @@ const Workroom: React.FC<Props> = ({}) => {
         setImageViewOpen(true);
       } else if (item.mediaState === MediaState.Audio) {
         setAudioViewerOpen(true);
-      } else if (item.mediaState === MediaState.None && item.profileId) {
+      } else if (item.mediaState === MediaState.None) {
         handleItemClick(item);
       }
     }
@@ -1431,7 +1431,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const renderFolderData = (folderId: number) => {
     return (
       <>
-        <WorkroomTagList
+        <SwipeTagList
           tags={workTags}
           currentTag={tagStates.folder}
           onTagChange={tag => handleTagClick('folder', tag)}
@@ -1536,14 +1536,14 @@ const Workroom: React.FC<Props> = ({}) => {
     {
       label: getLocalizedText('TODO : Mywork'),
       preContent: (
-        <WorkroomTagList tags={workTags} currentTag={tagStates.work} onTagChange={tag => handleTagClick('work', tag)} />
+        <SwipeTagList tags={workTags} currentTag={tagStates.work} onTagChange={tag => handleTagClick('work', tag)} />
       ),
       content: <>{renderMyWork()}</>,
     },
     {
       label: getLocalizedText('TODO : Favorite'),
       preContent: (
-        <WorkroomTagList
+        <SwipeTagList
           tags={favoriteTags}
           currentTag={tagStates.favorite}
           onTagChange={tag => handleTagClick('favorite', tag)}
@@ -1554,7 +1554,7 @@ const Workroom: React.FC<Props> = ({}) => {
     {
       label: getLocalizedText('TODO : AI history'),
       preContent: (
-        <WorkroomTagList
+        <SwipeTagList
           tags={aiHistoryTags}
           currentTag={tagStates.aiHistory}
           onTagChange={tag => handleTagClick('aiHistory', tag)}
@@ -1565,7 +1565,7 @@ const Workroom: React.FC<Props> = ({}) => {
     {
       label: getLocalizedText('TODO : Gallery'),
       preContent: (
-        <WorkroomTagList
+        <SwipeTagList
           tags={galleryTags}
           currentTag={tagStates.gallery}
           onTagChange={tag => handleTagClick('gallery', tag)}
@@ -1576,11 +1576,7 @@ const Workroom: React.FC<Props> = ({}) => {
     {
       label: getLocalizedText('TODO : Trash'),
       preContent: (
-        <WorkroomTagList
-          tags={trashTags}
-          currentTag={tagStates.trash}
-          onTagChange={tag => handleTagClick('trash', tag)}
-        />
+        <SwipeTagList tags={trashTags} currentTag={tagStates.trash} onTagChange={tag => handleTagClick('trash', tag)} />
       ),
       content: <>{renderTrash()}</>,
     },
@@ -1713,8 +1709,7 @@ const Workroom: React.FC<Props> = ({}) => {
               <WorkroomEditDrawer
                 open={isFileEditDrawerOpen}
                 onClose={() => setIsFileEditDrawerOpen(false)}
-                name={selectedItem.name}
-                info={selectedItem.detail}
+                selectedItem={selectedItem}
                 onRestore={handleRestore}
                 onDelete={handleDeletePopupOpen}
               />
@@ -1722,8 +1717,7 @@ const Workroom: React.FC<Props> = ({}) => {
               <WorkroomEditDrawer
                 open={isFileEditDrawerOpen}
                 onClose={() => setIsFileEditDrawerOpen(false)}
-                name={selectedItem.name}
-                info={selectedItem.detail}
+                selectedItem={selectedItem}
                 onRename={handleRename}
                 onCopy={handleCopy}
                 onMove={handleMove}
@@ -1808,7 +1802,7 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
               }}
             >
               <>
-                <WorkroomTagList
+                <SwipeTagList
                   tags={variationTags}
                   currentTag={tagStates.variation}
                   onTagChange={tag => handleTagClick('variation', tag)}
@@ -1837,7 +1831,7 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
               workroomData={workroomData}
               setSearchResultData={setSearchResultData}
             >
-              <WorkroomTagList
+              <SwipeTagList
                 tags={searchTags}
                 currentTag={tagStates.search}
                 onTagChange={tag => handleTagClick('search', tag)}
