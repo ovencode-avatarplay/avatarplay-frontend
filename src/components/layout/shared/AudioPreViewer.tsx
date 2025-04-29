@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import styles from './AudioPreViewer.module.css';
-import {LineClose, LineArrowLeft, LineArrowRight, BoldPause, BoldPlay} from '@ui/Icons';
+import {LineClose, LineArrowLeft, LineArrowRight, BoldPause, BoldPlay, BoldAudio} from '@ui/Icons';
 import EmptyState from '@/components/search/EmptyState';
 
 interface Props {
@@ -36,6 +36,9 @@ const AudioPreViewer: React.FC<Props> = ({audioUrl, onClose}) => {
         </button>
         {audioUrl ? (
           <div className={styles.audioContainer}>
+            <div className={styles.audioIcon}>
+              <img src={BoldAudio.src} alt="audio" />
+            </div>
             <audio ref={audioRef} className={styles.audioElement} src={audioUrl} controls={false} />
             <div className={styles.controls}>
               <button onClick={() => handleSkip(-10)} className={styles.controlButton}>

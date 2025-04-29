@@ -3,6 +3,7 @@ import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
+import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
 interface Props {
   detailView: boolean;
@@ -28,6 +29,7 @@ export interface WorkroomItemInfo {
   trashedTime?: string;
   generatedInfo?: GeneratedItemInfo | null;
   profileId?: number | null;
+  profileCharacterIp?: CharacterIP;
 }
 
 export interface GeneratedItemInfo {
@@ -55,7 +57,14 @@ const WorkroomItem: React.FC<Props> = ({
     return (
       <div className={styles.fileInfoArea}>
         <div className={styles.infoLeftArea}>
-          <div className={styles.fileName}>{item.name}</div>
+          <div className={styles.fileNameArea}>
+            <div className={styles.fileName}>{item.name}</div>
+            {item.profileId && (
+              <div className={item.profileCharacterIp === CharacterIP.Original ? styles.original : styles.fan}>
+                {item.profileCharacterIp === CharacterIP.Original ? 'Original' : 'Fan'}
+              </div>
+            )}
+          </div>
           <div className={styles.fileDetail}>{item.detail}</div>
         </div>
         <div className={styles.infoRightArea}>
@@ -177,6 +186,7 @@ const WorkroomItem: React.FC<Props> = ({
             }}
             onClick={e => {
               e.stopPropagation();
+
               onClickPreview();
             }}
           >

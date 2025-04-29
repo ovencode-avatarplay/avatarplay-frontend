@@ -341,7 +341,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion ||
       triggerType === CharacterEventTriggerType.SendMediaByEmotion
     ) {
-      newItem.emotionState = EmotionState.Happy;
+      newItem.emotionType = EmotionState.Happy;
       newItem.probability = 100;
     } else if (
       triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ||

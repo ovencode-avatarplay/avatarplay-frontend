@@ -100,6 +100,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   const canCreateCharacter = [ProfileType.User, ProfileType.PD].includes(profileType);
   const canCreateContent = [ProfileType.Character, ProfileType.Channel].includes(profileType);
   const canCreateChannel = [ProfileType.User, ProfileType.PD].includes(profileType);
+  const canCreateVariation = [ProfileType.Character].includes(profileType);
   /* 프로필 타입별 생성 권한
    PD: Feed, Character, Channel;
   Character: Feed, Contents;
@@ -242,6 +243,26 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                   <div className={styles.buttonText}>
                     {getLocalizedText('common_label_contents') + '-' + getLocalizedText('common_filter_single')}
                   </div>
+                </div>
+              </button>
+            </Link>
+            <Link
+              className={styles.drawerLink}
+              href={canCreateVariation ? getLocalizedLink('/create/variation') : ''}
+              passHref
+            >
+              <button
+                className={`${styles.drawerButton} ${styles.drawerButtonBot} ${
+                  canCreateVariation ? '' : styles.disable
+                }`}
+                onClick={() => {
+                  if (!canCreateVariation) return;
+                  onClose();
+                }}
+              >
+                <div className={styles.buttonItem}>
+                  <img className={styles.buttonIcon} src={LineCharacter.src} />
+                  <div className={styles.buttonText}>{getLocalizedText('common_button_variation')}</div>
                 </div>
               </button>
             </Link>

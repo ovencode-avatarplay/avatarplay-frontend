@@ -57,7 +57,9 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
             </li>
           ))
         ) : (
-          <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+          <div className={styles.emptyStateContainer}>
+            <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+          </div>
         )}
       </ul>
     );
@@ -69,7 +71,7 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
 
   const renderFolderItem = (data: WorkroomItemInfo) => {
     return (
-      <div className={styles.folderItemContainer}>
+      <div className={styles.folderItemContainer} onClick={() => handleSelectFolder(data)}>
         <div className={styles.folderIcon}>
           <img src={BoldFolderPlus.src} />
         </div>
@@ -77,7 +79,7 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
           <div className={styles.folderName}>{data.name}</div>
           <div className={styles.folderDetail}>{data.detail}</div>
         </div>
-        <button className={styles.folderButton} onClick={() => handleSelectFolder(data)}>
+        <button className={styles.folderButton}>
           <img src={LineArrowRight.src} />
         </button>
       </div>

@@ -94,6 +94,7 @@
 
 .folderItemContainer
 {
+    cursor: pointer;
     display: flex;
     flex-direction: row;
     padding: 0px 16px;
@@ -192,4 +193,16 @@
 {
     flex: 1 0 0;
 
+}
+
+.emptyStateContainer
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding-top: 40px;
+    padding-bottom: 40px;
 }

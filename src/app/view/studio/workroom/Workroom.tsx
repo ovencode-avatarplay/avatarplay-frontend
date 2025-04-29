@@ -27,8 +27,8 @@ import EmptyState from '@/components/search/EmptyState';
 import WorkroomGalleryModal from './WorkroomGalleryModal';
 import WorkroomSearchModal from './WorkroomSearchModal';
 import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
-import AudioPreViewer from '@/components/layout/shared/audioPreViewer';
-
+import AudioPreViewer from '@/components/layout/shared/AudioPreViewer';
+import WorkroomItemSkeleton from './WorkroomItemSkeleton';
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
   const workTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
@@ -442,6 +442,8 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   //#endregion
 
   //#region Container에서 길게 입력으로 선택활성화 시키기
@@ -511,30 +513,28 @@ const Workroom: React.FC<Props> = ({}) => {
         setImageViewOpen(true);
       } else if (item.mediaState === MediaState.Audio) {
         setAudioViewerOpen(true);
+      } else if (item.mediaState === MediaState.None && item.profileId) {
+        handleItemClick(item);
       }
     }
   };
 
   const handleItemClick = async (item: WorkroomItemInfo) => {
+    setSelectedItem(item);
     if (item.mediaState === MediaState.None) {
       if (item.profileId) {
-        setSelectedItem(item);
         await getCharacterInfo(item.profileId);
         setSelectedCurrentFolder(item);
         setIsGalleryModalOpen(true);
         setIsSearchModalOpen(false);
       } else {
-        setSelectedItem(item);
-
         if (selectedCurrentFolder) {
           setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
         }
         setSelectedCurrentFolder(item);
         setIsSearchModalOpen(false);
       }
-    } else if (item.mediaState === MediaState.Audio) {
-      setAudioViewerOpen(true);
-    } else if (item.mediaState === MediaState.Image) {
+    } else {
       handleItemImageClick(item);
     }
   };
@@ -951,7 +951,16 @@ const Workroom: React.FC<Props> = ({}) => {
         {option.filterArea && (
           <div className={styles.filterArea}>{renderFilter(detailViewButton || false, detailView)}</div>
         )}
-        {filteredData.length > 0 ? (
+
+        {isLoading ? (
+          <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
+            {Array.from({length: 8}).map((_, index) => (
+              <div className={styles.dataItem} key={index} data-item>
+                <WorkroomItemSkeleton detailView={detailView} />
+              </div>
+            ))}
+          </ul>
+        ) : filteredData.length > 0 ? (
           <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
             {filteredData.map((item, index) => (
               <div className={styles.dataItem} key={index} data-item>
