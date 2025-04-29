@@ -4,7 +4,7 @@ import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from './ChatMessageBubble.module.css';
 // import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
-import {MediaData, Message, SenderType, TriggerMediaState} from './ChatTypes';
+import {ChatGrade, ChatLevelInfo, MediaData, Message, SenderType, TriggerMediaState} from './ChatTypes';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
 import 'swiper/css/navigation';
@@ -36,7 +36,7 @@ interface ChatMessageBubbleProps {
   mediaData: MediaData | null;
   createDate: string;
   prevSenderType: SenderType;
-  level: number | null;
+  levelInfo: ChatLevelInfo | null;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -57,7 +57,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   mediaData,
   createDate,
   prevSenderType,
-  level,
+  levelInfo,
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -145,12 +145,12 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                   className={styles.rewardBorderWrapper}
                   style={{
                     background:
-                      level !== null
-                        ? level >= 60
+                      levelInfo !== null
+                        ? levelInfo.chatBubbleGrade === ChatGrade.Gold
                           ? rewardItems[3].border
-                          : level >= 40
+                          : levelInfo.chatBubbleGrade === ChatGrade.Silver
                           ? rewardItems[2].border
-                          : level >= 20
+                          : levelInfo.chatBubbleGrade === ChatGrade.Bronze
                           ? rewardItems[1].border
                           : rewardItems[0].border
                         : 'transparent',
@@ -204,12 +204,12 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                     onClick={handleMenuOpen}
                     style={{
                       backgroundColor:
-                        sender === 'partner' && level !== null
-                          ? level >= 65
+                        sender === 'partner' && levelInfo !== null
+                          ? levelInfo.chatBubbleGrade === ChatGrade.Gold
                             ? rewardItems[3].color
-                            : level >= 35
+                            : levelInfo.chatBubbleGrade === ChatGrade.Silver
                             ? rewardItems[2].color
-                            : level >= 15
+                            : levelInfo.chatBubbleGrade === ChatGrade.Bronze
                             ? rewardItems[1].color
                             : rewardItems[0].color
                           : undefined,

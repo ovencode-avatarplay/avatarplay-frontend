@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
+import {setStateChatting, ChattingState, setLevelInfo} from '@/redux-store/slices/Chatting';
 import {useDispatch, useSelector} from 'react-redux';
 
 import TopBar from '@chats/TopBar/HeaderChat';
@@ -123,8 +123,7 @@ const ChatPage: React.FC = () => {
     //setRetryStreamKey,
 
     episodeId,
-    level,
-    exp,
+    levelInfo,
   } = useChat();
 
   const dispatch = useDispatch();
@@ -448,6 +447,18 @@ const ChatPage: React.FC = () => {
         setParsedMessages(updateMessage);
         parsedMessagesRef.current = updateMessage;
 
+        // 레벨, 경험치 변동 반영
+        if (response.data.levelInfo) {
+          dispatch(setLevelInfo(response.data.levelInfo));
+        } else if (levelInfo) {
+          dispatch(
+            setLevelInfo({
+              ...levelInfo,
+              exp: response.data.exp, // level 변동이 없으면 exp만 업데이트
+            }),
+          );
+        }
+
         console.log('Updated parsedMessagesRef.current:', parsedMessagesRef.current);
 
         console.log('Result API Response:', response);
@@ -742,8 +753,7 @@ const ChatPage: React.FC = () => {
             isHideChat={isHideChat}
             isBlurOn={isBlurOn}
             showEventGuage={false}
-            level={level}
-            exp={exp}
+            levelInfo={levelInfo}
             rewardItems={rewardItems}
           />
           {floatingNextEpisode && !isHideChat && (
@@ -768,7 +778,7 @@ const ChatPage: React.FC = () => {
             send={sendMessage}
             lastMessage={lastMessage}
             retrySend={handleRetryStream}
-            level={level}
+            levelInfo={levelInfo}
           />
         </div>
         <FooterChat
