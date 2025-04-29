@@ -334,59 +334,61 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         )}
 
         <section className={styles.infoHeaderSection}>
-          <ul className={styles.iconsWrap}>
-            <div
-              className={styles.iconWrap}
-              onClick={async () => {
-                const dataReq: BookMarkReq = {
-                  interactionType: type == ContentType.Series ? InteractionType.Contents : InteractionType.Episode,
-                  isBookMark: !data.dataMix?.isBookMark,
-                  typeValueId: data.dataMix?.contentId || 0,
-                };
-                const response = await bookmark(dataReq);
-                await refreshInfo();
-                console.log('response : ', response);
-                //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
-              }}
-            >
-              <div className={styles.iconArea}>
-                {data.dataMix?.isBookMark && <img src={BoldArchive.src} alt="" />}
-                {!data.dataMix?.isBookMark && <img src={LineArchive.src} alt="" />}
+          {type == ContentType.Series && (
+            <ul className={styles.iconsWrap}>
+              <div
+                className={styles.iconWrap}
+                onClick={async () => {
+                  const dataReq: BookMarkReq = {
+                    interactionType: type == ContentType.Series ? InteractionType.Contents : InteractionType.Episode,
+                    isBookMark: !data.dataMix?.isBookMark,
+                    typeValueId: data.dataMix?.contentId || 0,
+                  };
+                  const response = await bookmark(dataReq);
+                  await refreshInfo();
+                  console.log('response : ', response);
+                  //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
+                }}
+              >
+                <div className={styles.iconArea}>
+                  {data.dataMix?.isBookMark && <img src={BoldArchive.src} alt="" />}
+                  {!data.dataMix?.isBookMark && <img src={LineArchive.src} alt="" />}
+                </div>
+                <div className={styles.label}>{getLocalizedText('common_label_favorite')}</div>
               </div>
-              <div className={styles.label}>{getLocalizedText('common_label_favorite')}</div>
-            </div>
-            <div className={styles.lineVertical}></div>
-            <div
-              className={styles.iconWrap}
-              onClick={() => {
-                handleShare();
-              }}
-            >
-              <img src={BoldShare.src} alt="" />
-              <div className={styles.label}>{getLocalizedText('common_button_share')}</div>
-            </div>
-            <div className={styles.lineVertical}></div>
+              <div className={styles.lineVertical}></div>
+              <div
+                className={styles.iconWrap}
+                onClick={() => {
+                  handleShare();
+                }}
+              >
+                <img src={BoldShare.src} alt="" />
+                <div className={styles.label}>{getLocalizedText('common_button_share')}</div>
+              </div>
+              {/* <div className={styles.lineVertical}></div>
 
             <div className={styles.iconWrap}>
               <img src={LineDownload.src} alt="" />
               <div className={styles.label}>{getLocalizedText('common_button_download')}</div>
-            </div>
-            {!data.dataMix?.isMyContent && (
-              <>
-                <div className={styles.lineVertical}></div>
-                <div
-                  className={styles.iconWrap}
-                  onClick={() => {
-                    data.dataGift.isOpen = true;
-                    setData({...data});
-                  }}
-                >
-                  <img src={BoldReward.src} alt="" />
-                  <div className={styles.label}>{getLocalizedText('common_button_gift')}</div>
-                </div>
-              </>
-            )}
-          </ul>
+            </div> */}
+              {!data.dataMix?.isMyContent && (
+                <>
+                  <div className={styles.lineVertical}></div>
+                  <div
+                    className={styles.iconWrap}
+                    onClick={() => {
+                      data.dataGift.isOpen = true;
+                      setData({...data});
+                    }}
+                  >
+                    <img src={BoldReward.src} alt="" />
+                    <div className={styles.label}>{getLocalizedText('common_button_gift')}</div>
+                  </div>
+                </>
+              )}
+            </ul>
+          )}
           <div className={styles.genreWrap}> {parse(genreStr)}</div>
 
           <ul
