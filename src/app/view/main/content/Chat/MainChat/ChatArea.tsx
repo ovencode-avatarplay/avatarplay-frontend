@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {Message, MessageGroup, SenderType} from './ChatTypes';
+import {ChatLevelInfo, Message, MessageGroup, SenderType} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
 import {useGesture} from '@use-gesture/react';
@@ -30,7 +30,7 @@ interface ChatAreaProps {
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   lastMessage: Message;
   retrySend: () => void;
-  level: number | null;
+  levelInfo: ChatLevelInfo | null;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -48,7 +48,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   lastMessage,
   retrySend,
   characterUrl,
-  level,
+  levelInfo,
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -343,7 +343,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       lastMessage={lastMessage}
                       createDate={msg.createDateString}
                       prevSenderType={index === 0 ? SenderType.IntroPrompt : messages.Messages[index - 1].sender}
-                      level={level}
+                      levelInfo={levelInfo}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}

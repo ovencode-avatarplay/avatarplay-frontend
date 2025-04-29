@@ -91,8 +91,7 @@ const useChat = () => {
     bubbleIndex: 0,
   });
 
-  const [level, setLevel] = useState<number | null>(60);
-  const [exp, setExp] = useState<number | null>(55);
+  const levelInfo = useSelector((state: RootState) => state.chatting.levelInfo);
 
   const handleBackClick = useBackHandler();
   const dispatch = useDispatch();
@@ -178,6 +177,7 @@ const useChat = () => {
       storyId: Number(StoryId),
       episodeId: Number(episodeId),
       StoryUrl: shortsId,
+      levelInfo: levelInfo || null,
     };
     dispatch(setStateChatting(chattingState));
     setIsTransitionEnable(true);
@@ -405,8 +405,7 @@ const useChat = () => {
     sendMessageAsync,
     //saveChatStreamInfo,
 
-    level,
-    exp,
+    levelInfo,
   };
 };
 

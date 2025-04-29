@@ -1,19 +1,17 @@
 'use client';
 import React, {useEffect, useState} from 'react';
 
-import {Avatar, Box, IconButton} from '@mui/material';
+import {Avatar, Box} from '@mui/material';
 import styles from './HeaderChat.module.css';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {ChattingState} from '@/redux-store/slices/Chatting';
-import {Left, Image, MenuDots} from '@ui/chatting';
-import Link from 'next/link';
+import {Left, MenuDots} from '@ui/chatting';
 import {useRouter} from 'next/navigation';
-import {getBackUrl} from '@/utils/util-1';
-import {getLocalizedLink} from '@/utils/UrlMove';
 import useCustomRouter from '@/utils/useCustomRouter';
-import {LineCam, LineRecording} from '@ui/Icons';
+import {LineCam} from '@ui/Icons';
 import ChatLevelModal from '../EventTrigger/ChatLevelModal';
+import {ChatGrade, ChatLevelInfo} from '../MainChat/ChatTypes';
 
 interface ChatTopBarProps {
   onBackClick: () => void;
@@ -23,8 +21,7 @@ interface ChatTopBarProps {
   isHideChat: boolean;
   isBlurOn: boolean;
   showEventGuage: boolean;
-  level: number | null;
-  exp: number | null;
+  levelInfo: ChatLevelInfo | null;
   rewardItems: any[];
 }
 
@@ -36,8 +33,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({
   isHideChat,
   isBlurOn,
   showEventGuage,
-  level,
-  exp,
+  levelInfo,
   rewardItems,
 }) => {
   const {back} = useCustomRouter();
@@ -78,12 +74,12 @@ const TopBar: React.FC<ChatTopBarProps> = ({
                 className={styles.rewardBorderWrapper}
                 style={{
                   background:
-                    level !== null
-                      ? level >= 60
+                    levelInfo !== null
+                      ? levelInfo.profileFrameGrade === ChatGrade.Gold
                         ? rewardItems[3].border
-                        : level >= 40
+                        : levelInfo.profileFrameGrade === ChatGrade.Silver
                         ? rewardItems[2].border
-                        : level >= 20
+                        : levelInfo.profileFrameGrade === ChatGrade.Bronze
                         ? rewardItems[1].border
                         : rewardItems[0].border
                       : 'transparent',
@@ -100,23 +96,23 @@ const TopBar: React.FC<ChatTopBarProps> = ({
               </div>
 
               <div className={`${styles.textArea}  ${isBlurOn ? styles.blurOn : ''}`}>
-                {level !== null && (
+                {levelInfo !== null && (
                   <div
                     className={styles.characterLevel}
                     style={{
                       backgroundColor:
-                        level !== null
-                          ? level >= 60
+                        levelInfo !== null
+                          ? levelInfo.levelPanelGrade === ChatGrade.Gold
                             ? rewardItems[3].color
-                            : level >= 30
+                            : levelInfo.levelPanelGrade === ChatGrade.Silver
                             ? rewardItems[2].color
-                            : level >= 10
+                            : levelInfo.levelPanelGrade === ChatGrade.Bronze
                             ? rewardItems[1].color
                             : rewardItems[0].color
                           : undefined,
                     }}
                   >
-                    LV.{level}
+                    LV.{levelInfo.level}
                   </div>
                 )}
                 <span className={`${styles.contentName} ${isBlurOn ? styles.blurOn : ''}`}>
@@ -153,8 +149,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({
           <ChatLevelModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            level={level ?? 0}
-            exp={exp ?? 0}
+            levelInfo={levelInfo ?? null}
             profileImage={iconUrl}
             bubbleText={chattingState1.storyName}
             rewardItems={rewardItems}

@@ -7,12 +7,11 @@ import {SwiperSlide, Swiper} from 'swiper/react';
 import {Pagination} from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
+import {ChatLevelInfo} from '../MainChat/ChatTypes';
 interface ChatLevelModalProps {
   isOpen: boolean;
   onClose: () => void;
-  level: number;
-  exp: number;
+  levelInfo: ChatLevelInfo | null;
   profileImage: string;
   bubbleText: string;
   rewardItems: any[];
@@ -21,8 +20,7 @@ interface ChatLevelModalProps {
 const ChatLevelModal: React.FC<ChatLevelModalProps> = ({
   isOpen,
   onClose,
-  level,
-  exp,
+  levelInfo,
   profileImage,
   bubbleText,
   rewardItems,
@@ -117,7 +115,7 @@ const ChatLevelModal: React.FC<ChatLevelModalProps> = ({
           </div>
         </div>
         <div className={styles.levelGuageContainer}>
-          <CharacterLevelGuage level={level} exp={exp} canClick={false} />
+          <CharacterLevelGuage levelInfo={levelInfo} canClick={false} rewardItems={rewardItems} />
         </div>
       </div>
     </Dialog>
