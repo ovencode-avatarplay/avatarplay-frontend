@@ -1,0 +1,52 @@
+.levelGuageContainer { 
+    /* position: absolute; */
+    top:68px;
+
+    display: flex;
+    flex-direction: row;
+
+    width: calc(100% - 32px);
+
+    padding: 8px 16px;
+
+    margin: 0 auto;
+    margin-left: 16px;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+    border-radius: 10px;
+
+    background: var(--White, #FFF);
+    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.10);
+} 
+
+.canClick  
+{
+    cursor: pointer;
+}
+
+.levelText
+{
+    color: var(--Primary-1, #FD55D3);
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+}
+
+.levelGauge
+{
+    display: flex;
+    height: 20px;
+    align-items: center; 
+    flex: 1 0 0;
+    
+}
+
+.levelGaugeBarWrapper {
+    height: 100%;
+    background-color: var(--Primary-3, #FFE6F8);
+  }
+ 
