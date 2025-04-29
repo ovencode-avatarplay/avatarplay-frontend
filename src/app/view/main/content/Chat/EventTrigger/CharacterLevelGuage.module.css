@@ -25,7 +25,7 @@
     cursor: pointer;
 }
 
-.levelText
+.expText
 {
     color: var(--Primary-1, #FD55D3);
     font-family: Lato;
@@ -50,3 +50,20 @@
     background-color: var(--Primary-3, #FFE6F8);
   }
  
+.characterLevel {
+    display: flex;
+    padding: 2px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+    border-radius: 999px;
+    background: var(--Primary-4, #FFF5FD);
+    
+    color: var(--Primary-1, #FD55D3);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.24px;
+}
