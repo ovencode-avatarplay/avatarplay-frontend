@@ -30,6 +30,7 @@ import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
 import AudioPreViewer from '@/components/layout/shared/AudioPreViewer';
 import WorkroomItemSkeleton from './WorkroomItemSkeleton';
 import SharePopup from '@/components/layout/shared/SharePopup';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
   const workTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
@@ -447,7 +448,44 @@ const Workroom: React.FC<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isShare, setIsShare] = useState<boolean>(false);
+
+  const [selectedSort, setSelectedSort] = useState<number>(0);
+  const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
+
+  const [searchResultList, setSearchResultList] = useState<WorkroomItemInfo[] | null>(null);
+
+  const [requestFetch, setRequestFetch] = useState<boolean>(false);
   //#endregion
+
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: getLocalizedText('common_sort_newest'),
+      onClick: () => {
+        setSearchResultList(null);
+        setSortDropDownOpen(false);
+        setSelectedSort(0);
+        setRequestFetch(true);
+      },
+    },
+    {
+      name: getLocalizedText('common_sort_popular'),
+      onClick: () => {
+        setSearchResultList(null);
+        setSortDropDownOpen(false);
+        setSelectedSort(1);
+        setRequestFetch(true);
+      },
+    },
+    {
+      name: getLocalizedText('common_sort_Name'),
+      onClick: () => {
+        setSearchResultList(null);
+        setSortDropDownOpen(false);
+        setSelectedSort(2);
+        setRequestFetch(true);
+      },
+    },
+  ];
 
   //#region Container에서 길게 입력으로 선택활성화 시키기
   const handleStart = () => {
@@ -1056,9 +1094,18 @@ const Workroom: React.FC<Props> = ({}) => {
             </button>
           )}
         </div>
-        <div className={styles.filterRight}>
+        <div className={styles.filterRight} onClick={() => setSortDropDownOpen(true)}>
           <div className={styles.filterText}>{getLocalizedText('TODO : Filter')}</div>
           <img src={BoldAltArrowDown.src} alt="filter" />
+          {sortDropDownOpen && (
+            <DropDownMenu
+              items={dropDownMenuItems}
+              onClose={() => setSortDropDownOpen(false)}
+              className={styles.sortDropDown}
+              useSelected={true}
+              selectedIndex={selectedSort}
+            />
+          )}
         </div>
       </>
     );

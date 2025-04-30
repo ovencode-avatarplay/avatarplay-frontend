@@ -201,7 +201,7 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   return (
     <div className={styles.variationMainContainer}>
       <CreateDrawerHeader
-        title="Create Variation"
+        title={getLocalizedText('TODO : Create Variation')}
         onClose={() => {
           if (selectedCharacter) {
             setSelectedCharacter(null);

@@ -223,6 +223,10 @@
 
 .filterRight
 {
+    cursor: pointer;
+
+    position: relative;
+
     display: flex;
     width: 69px;
     height: 32px;
@@ -249,6 +253,14 @@
     flex-shrink: 0;
 
     filter: var(--black-icon-filter);    
+}
+
+
+.sortDropDown
+{
+    position: absolute;
+    top:  40px;
+
 }
 
 .gridArea {
