@@ -9,9 +9,10 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onChoose?: () => void;
+  onGalleryChoose?: () => void;
 }
 
-const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onChoose}) => {
+const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onChoose, onGalleryChoose}) => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -66,6 +67,12 @@ const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onCh
         // TODO : Workroom
         console.log('TODO : Workroom');
         handleChooseFile();
+      },
+    },
+    {
+      name: 'Gallery',
+      onClick: () => {
+        if (onGalleryChoose) onGalleryChoose();
       },
     },
   ];
