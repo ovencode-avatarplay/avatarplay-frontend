@@ -17,13 +17,13 @@ const Login = () => {
   const Header = 'Login';
   const Common = 'Common';
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'facebook' | 'apple') => {
+    const langCode = getLangUrlCode(getBrowserLanguage());
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_FRONT_URL}/login-callback?from=oauth`,
+        redirectTo: `${process.env.NEXT_PUBLIC_FRONT_URL}/${langCode}/auth/login-callback?from=oauth`,
       },
     });
-    const language = getLangUrlCode(getBrowserLanguage());
 
     //이부분에 signalIR 연결
   };
