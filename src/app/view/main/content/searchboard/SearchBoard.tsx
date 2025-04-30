@@ -556,7 +556,7 @@ const SearchBoard: React.FC = () => {
                 {/* <h2 className={styles.emptyResult}> Result : 0</h2> */}
                 <section className={styles.emptyContainer}>
                   <EmptyState stateText={getLocalizedText('explore006_desc_002')} />
-                  {search === 'Character' && (
+                  {/* {search === 'Character' && (
                     <>
                       <div className={styles.emptyCreateAlert}>{getLocalizedText('explore006_desc_003')}</div>
                       <CustomButton
@@ -570,7 +570,7 @@ const SearchBoard: React.FC = () => {
                         {getLocalizedText('common_button_createacharacter')}
                       </CustomButton>
                     </>
-                  )}
+                  )} */}
                 </section>
               </>
             ) : (
