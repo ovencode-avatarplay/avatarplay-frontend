@@ -500,7 +500,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         <CustomPopup
           type="alert"
           title="Sorry"
-          description={getLocalizedText('common_alert_110')}
+          description={getLocalizedText('common_alert_113')}
           buttons={[
             {
               label: 'OK',
