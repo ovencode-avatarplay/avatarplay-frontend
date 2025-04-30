@@ -14,8 +14,11 @@ import {
   BoldVideo,
   EmojiAngry,
   EmojiBoring,
+  EmojiConfused,
+  EmojiCuriosity,
   EmojiExcited,
   EmojiHappy,
+  EmojiNormal,
   EmojiSad,
   EmojiScared,
   LineArrowLeft,
@@ -62,10 +65,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
 }) => {
   //#region
   const EmotionArray = [
-    {label: getLocalizedText('common_tagemotion_normal'), value: EmotionState.Normal, icon: EmojiHappy.src},
+    {label: getLocalizedText('common_tagemotion_normal'), value: EmotionState.Normal, icon: EmojiNormal.src},
     {label: getLocalizedText('common_tagemotion_happy'), value: EmotionState.Happy, icon: EmojiHappy.src},
-    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Angry, icon: EmojiAngry.src},
     {label: getLocalizedText('common_tagemotion_sad'), value: EmotionState.Sad, icon: EmojiSad.src},
+    {label: getLocalizedText('common_tagemotion_confused'), value: EmotionState.Confused, icon: EmojiConfused.src},
+    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Angry, icon: EmojiAngry.src},
+    {label: getLocalizedText('common_tagemotion_curiosity'), value: EmotionState.Curiosity, icon: EmojiCuriosity.src},
     /*{label: getLocalizedText('common_tagemotion_excited'), value: EmotionState.Excited, icon: EmojiExcited.src},
     {label: getLocalizedText('common_tagemotion_scared'), value: EmotionState.Scared, icon: EmojiScared.src},
     {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Bored, icon: EmojiBoring.src},*/
@@ -129,12 +134,20 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
 
   const getEmojiIcon = (emotion: EmotionState) => {
     switch (emotion) {
+      case EmotionState.Normal:
+        return EmojiNormal.src;
       case EmotionState.Happy:
         return EmojiHappy.src;
-      case EmotionState.Angry:
-        return EmojiAngry.src;
       case EmotionState.Sad:
         return EmojiSad.src;
+      case EmotionState.Confused:
+        return EmojiConfused.src;
+      case EmotionState.Angry:
+        return EmojiAngry.src;
+      case EmotionState.Curiosity:
+        return EmojiCuriosity.src;
+      default:
+        return EmojiHappy.src;
     }
   };
 
