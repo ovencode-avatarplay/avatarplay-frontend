@@ -46,6 +46,7 @@ import ImageUpload from '@/components/create/ImageUpload';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import VideoUpload from '@/components/create/VideoUpload';
 import {profile} from 'console';
+import CharacterGalleryModal from '@/app/view/studio/characterDashboard/CharacterGalleryModal';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -79,6 +80,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
   const [mediaUploadOpen, setMediaUploadOpen] = useState(false);
   const [videoUploadOpen, setVideoUploadOpen] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
   const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
@@ -870,6 +872,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               onChoose={() => {
                 setSelectImageTypeOpen(false);
               }}
+              onGalleryChoose={() => {
+                setGalleryOpen(true);
+              }}
             />
           )}
         </div>
@@ -1044,6 +1049,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadOpen(false);
           }}
           setContentImageUrl={handlerSetImage}
+          onGalleryChoose={() => {
+            setGalleryOpen(true);
+          }}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
@@ -1071,11 +1079,28 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                 setVideoUploadOpen(true);
               },
             },
+            {
+              name: 'Gallery',
+              onClick: () => {
+                setGalleryOpen(true);
+              },
+            },
           ]}
           isOpen={mediaUploadOpen}
           onClose={() => {
             setMediaUploadOpen(false);
           }}
+        />
+      )}
+      {galleryOpen && (
+        <CharacterGalleryModal
+          open={galleryOpen}
+          onClose={() => {
+            setGalleryOpen(false);
+          }}
+          characterData={character}
+          refreshCharacter={() => {}}
+          refreshCharacterList={() => {}}
         />
       )}
     </>
