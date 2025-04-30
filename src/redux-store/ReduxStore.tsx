@@ -54,7 +54,7 @@ const reducers = combineReducers({
   emoticon: emoticonSlice,
   modifyQuestion: modifyQuestionSlice,
   //#endregion
-  starInfo: currencySlice,
+  currencyInfo: currencySlice,
 });
 
 // persistReducer로 reducers 감싸기

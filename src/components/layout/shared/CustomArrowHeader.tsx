@@ -1,8 +1,11 @@
+'use client';
 import React from 'react';
 import styles from './CustomArrowHeader.module.css';
 import {LineArrowLeft} from '@ui/Icons';
 import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
+import back from '@/utils/useCustomRouter';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 interface Props {
   title: string;
@@ -12,13 +15,23 @@ interface Props {
 }
 
 const CustomArrowHeader: React.FC<Props> = ({title, onClose, children, backLink}) => {
+  const {back} = useCustomRouter();
+
+  const handleBackClick = () => {
+    if (backLink) {
+      back();
+    } else {
+      onClose?.();
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.baseArea}>
         {backLink ? (
-          <Link href={getLocalizedLink(backLink)} className={styles.backButton}>
+          <button className={styles.backButton} onClick={() => handleBackClick()}>
             <img src={LineArrowLeft.src} className={styles.backIcon} />
-          </Link>
+          </button>
         ) : (
           <button className={styles.backButton} onClick={onClose}>
             <img src={LineArrowLeft.src} className={styles.backIcon} />
