@@ -191,6 +191,7 @@ const UserDropdown = () => {
       dispatch(setRuby(data.data.sessionInfo.ruby));
       console.log('response login : ', data);
       localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
+      Cookies.remove('SESSION');
       setTimeout(() => {
         fetchLanguage(true, router);
       }, 100);

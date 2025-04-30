@@ -17,6 +17,8 @@ import PopupAccountChange from '../content/create/common/PopupAccountChange';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import {formatCurrency} from '@/utils/util-1';
+import Cookies from 'js-cookie';
+import {setRuby, setStar} from '@/redux-store/slices/Currency';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -106,6 +108,10 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       dispatch(updateProfile(null));
       setUserMetaData(null);
       setIsLogin(false);
+      Cookies.remove('SESSION');
+      dispatch(setRuby(0));
+      dispatch(setStar(0));
+      pushLocalizedRoute('/auth', router);
     } catch (error) {
       console.error(error);
     }
