@@ -13,6 +13,7 @@ import {
   sendGetCharacterChatRoomList,
 } from '@/app/NetWork/ChatMessageNetwork';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import {SportsVolleyballRounded} from '@mui/icons-material';
 
 const tags = [
   'Chatroom',
@@ -37,6 +38,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   const [openLeavePopup, setOpenLeavePopup] = useState(false);
 
   const [filterValue, setFilterValue] = useState<string>(CharacterIP[1].toString());
+  const [sortValue, setSortValue] = useState<string>('Newest');
   const [ChatList, setChatList] = useState<ChatRoomInfo[]>();
   const optionItems: SelectDrawerArrowItem[] = [
     {
@@ -67,16 +69,18 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       ? CharacterIP.Fan
       : 0;
 
+  const getSort = sortValue == 'Newest' ? 0 : sortValue == 'Popular' ? 1 : sortValue == 'Name' ? 2 : 0;
+
   const fetchCharacterChatRooms = async () => {
     try {
       const params: GetCharacterChatRoomListReq = {
         isChatRoom: selectedTag == 'Chatroom' ? true : false,
         characterIP: getFilter,
         tag: selectedTag,
-        sort: 0,
+        sort: getSort,
         page: {
           offset: 0,
-          limit: 20,
+          limit: 10,
         },
         alreadyReceivedProfileIds: [], // 초기엔 아무것도 받지 않은 상태
       };
@@ -105,7 +109,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
         filters={[CharacterIP[1].toString(), CharacterIP[2].toString()]}
         sortOptions={['Newest', 'Popular', 'Name']}
         onFilterChange={filter => setFilterValue(filter)}
-        onSortChange={sort => console.log('선택된 정렬:', sort)}
+        onSortChange={sort => setSortValue(sort)}
       />
       <div className={styles.name}>Chat</div>
       <div className={styles.scrollArea}>

@@ -9,8 +9,8 @@ const MessageMain: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <>
-      <HeaderNavBarWhite></HeaderNavBarWhite>
       <div className={styles.Container}>
+        <HeaderNavBarWhite></HeaderNavBarWhite>
         <div className={styles.tabContainer}>
           {tabItems.map((label, index) => (
             <div
