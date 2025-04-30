@@ -11913,7 +11913,7 @@
     "de": ""
   },
   "common_desc_mediatrigger": {
-    "en-US": "Add a media item to define  how {{char}} reacts to {{user}}.",
+    "en-US": "Add a media item to define how {{char}} reacts to {{user}}.",
     "ko": "",
     "ja": "",
     "fr": "",
@@ -11926,6 +11926,17 @@
   "common_desc_meesagetrigger": {
     "en-US": "Define how {{char}} messages {{user}} using an input prompt.",
     "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_label_memo": {
+    "en-US": "Memo",
+    "ko": "메모",
     "ja": "",
     "fr": "",
     "es": "",

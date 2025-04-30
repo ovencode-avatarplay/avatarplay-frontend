@@ -702,12 +702,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : Memo')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -751,12 +751,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : Memo')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -786,12 +786,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : Memo')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -891,12 +891,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               </div>
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : Memo')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -910,12 +910,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         ) : item.triggerType === CharacterEventTriggerType.CharacterLevelUp ? (
           <div className={styles.inputPromptContainer}>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`TODO : Memo`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('TODO : Memo')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
