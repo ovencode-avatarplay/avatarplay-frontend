@@ -149,6 +149,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       name: 'Report',
       onClick: () => {
         handleReport();
+        dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
       },
     },
   ];
@@ -454,7 +455,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
-                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                    dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
                   }
                 }}
               />
@@ -465,7 +466,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
-                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                    dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
                   }
                 }}
               >

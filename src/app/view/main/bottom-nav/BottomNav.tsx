@@ -237,7 +237,7 @@ export default function BottomNav() {
                   className={`${styles.navButton} 
                 ${selectedIndex === index ? styles.selected : ''} 
                 ${selectedIndex === index && colorMode === 0 ? styles['light-mode'] : ''}`}
-                  onClick={() => dataToast.open('6월에 기능 추가 예정', ToastType.Normal)}
+                  onClick={() => dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal)}
                 >
                   {/* 다크모드 화이트 모드로 변경 */}
                   {button.icon}

@@ -14,6 +14,8 @@ import {formatCurrency} from '@/utils/util-1';
 import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -58,6 +60,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
     }
   };
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   // Send 버튼 클릭 시 alert 창에 숫자 출력
   const handleSendClick = async () => {
     const reqData: GiftStarReq = {
@@ -72,7 +75,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
         onClose();
       }
     } else {
-      alert('후원 금액을 입력하세요!'); // 값이 없을 때 경고 메시지
+      dataToast.open(getLocalizedText('common_alert_112'), ToastType.Normal);
     }
   };
 
