@@ -639,7 +639,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const refreshProfileInfo = async (urlLink: string) => {
     let resProfileInfo = await getProfileInfo(urlLink);
     if (resProfileInfo?.resultCode != 0) {
-      dataToast.open('프로필 접근불가', ToastType.Normal);
+      dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
       replace('/main/homefeed');
 
       return;
@@ -682,7 +682,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
       const resProfileInfo = await getProfileInfo(urlLinkKey);
       if (resProfileInfo?.resultCode != 0) {
-        dataToast.open('프로필 접근불가', ToastType.Normal);
+        dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
         replace('/main/homefeed');
         return;
       }
@@ -888,7 +888,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               src="/ui/profile/icon_notification.svg"
               alt=""
               onClick={() => {
-                alert('DM기능 6월 추가 예정');
+                dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
               }}
             />
           )}
@@ -1010,7 +1010,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 state="Normal"
                 type="Tertiary"
                 onClick={() => {
-                  alert('6월에 기능 추가 예정');
+                  dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
                 }}
                 customClassName={[styles.button]}
               >
@@ -1022,7 +1022,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                   state="Normal"
                   type="Primary"
                   onClick={() => {
-                    alert('6월에 기능 추가 예정');
+                    dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
                     // data.isOpenPopupFriendsList = true;
                     // setData({...data});
                   }}
@@ -1040,7 +1040,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 state="Normal"
                 type="Tertiary"
                 onClick={() => {
-                  alert('6월에 기능 추가 예정');
+                  dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
                 }}
                 customClassName={[styles.button]}
               >
@@ -1291,7 +1291,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {
             name: getLocalizedText('common_dropdown_report'),
             onClick: () => {
-              alert('신고하기 추가 예정');
+              dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
             },
           },
         ]}

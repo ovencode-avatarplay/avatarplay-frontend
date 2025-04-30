@@ -68,6 +68,7 @@ export interface FeedInfo {
   isMyFeed: boolean;
   profileType?: ProfileType;
   profileVisibilityType: VisibilityType;
+  visibilityType: VisibilityType;
 }
 
 export interface CreateFeedReq {

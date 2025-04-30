@@ -1,10 +1,10 @@
-import {Box} from '@mui/material';
+import {backdropClasses, Box} from '@mui/material';
 import ChatMessageMenuTop from './ChatContextMenuTop';
 import ChatMessageMenuBottom from './ChatContextMenuBottom';
 import React, {useEffect, useState} from 'react';
 import styles from './ChatMessageBubble.module.css';
 // import ChatRegenerateGroupNav from './ChatRegenerateGroupNav';
-import {MediaData, Message, SenderType, TriggerMediaState} from './ChatTypes';
+import {ChatGrade, ChatLevelInfo, MediaData, Message, SenderType, TriggerMediaState} from './ChatTypes';
 import 'swiper/css';
 import 'swiper/css/effect-cards';
 import 'swiper/css/navigation';
@@ -15,6 +15,9 @@ import Visualizer from './Visualizer';
 import {checkChatSystemError} from '@/app/NetWork/ESystemError';
 import ImageGrid from './ImageGrid';
 import {BoldPlay} from '@ui/Icons';
+import chatRewardItem from '@/data/dictionary/chatRewardItem.json';
+import {RewardItem} from '../hooks/useChat';
+
 interface ChatMessageBubbleProps {
   text: string;
   sender: 'user' | 'partner' | 'partnerNarration' | 'system' | 'introPrompt' | 'userNarration' | 'media' | 'newDate';
@@ -33,6 +36,7 @@ interface ChatMessageBubbleProps {
   mediaData: MediaData | null;
   createDate: string;
   prevSenderType: SenderType;
+  levelInfo: ChatLevelInfo | null;
 }
 
 const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
@@ -53,6 +57,7 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
   mediaData,
   createDate,
   prevSenderType,
+  levelInfo,
 }) => {
   const [answerTextMessage, setAnswerTextMessage] = useState(text);
   const handleMenuOpen = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -111,6 +116,8 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
     setAnswerTextMessage(text);
   }, [text]);
 
+  const rewardItems = chatRewardItem as RewardItem[];
+
   return (
     <>
       {text !== '' && (
@@ -134,10 +141,33 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
               }
             >
               {(sender === 'partner' || sender === 'media') && (
-                <img alt="Partner Avatar" src={iconUrl} className={styles.AvatarIcon} />
+                <div
+                  className={styles.rewardBorderWrapper}
+                  style={{
+                    background:
+                      levelInfo !== null
+                        ? levelInfo.chatBubbleGrade === ChatGrade.Gold
+                          ? rewardItems[3].border
+                          : levelInfo.chatBubbleGrade === ChatGrade.Silver
+                          ? rewardItems[2].border
+                          : levelInfo.chatBubbleGrade === ChatGrade.Bronze
+                          ? rewardItems[1].border
+                          : rewardItems[0].border
+                        : 'transparent',
+                    padding: '4px',
+                    borderRadius: '50%',
+                    width: '32px',
+                    height: '32px',
+                    boxSizing: 'content-box',
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <img alt="Partner Avatar" src={iconUrl} className={styles.AvatarIcon} />
+                </div>
               )}
               <Box className={styles.chatBubbleJustifyPartner}>
-                {selectedIndex === index && checkCanOpenContextTop() && (
+                {selectedIndex === index && index !== 1 && checkCanOpenContextTop() && (
                   <ChatMessageMenuTop
                     id={id}
                     index={bubbleIndex}
@@ -169,8 +199,21 @@ const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({
                     }
                       ${
                         sender === 'system' ? (prevSenderType === 'system' ? styles.systemGap1 : styles.systemGap2) : ''
-                      }`}
+                      }
+                      `}
                     onClick={handleMenuOpen}
+                    style={{
+                      backgroundColor:
+                        sender === 'partner' && levelInfo !== null
+                          ? levelInfo.chatBubbleGrade === ChatGrade.Gold
+                            ? rewardItems[3].color
+                            : levelInfo.chatBubbleGrade === ChatGrade.Silver
+                            ? rewardItems[2].color
+                            : levelInfo.chatBubbleGrade === ChatGrade.Bronze
+                            ? rewardItems[1].color
+                            : rewardItems[0].color
+                          : undefined,
+                    }}
                   >
                     {sender === 'user' && emoticonUrl !== '' && emoticonUrl !== undefined ? (
                       <img src={emoticonUrl} alt="Emoticon" style={{width: '24px', height: '24px', marginTop: '4px'}} />
