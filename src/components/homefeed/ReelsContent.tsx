@@ -49,6 +49,8 @@ import {ConstructionOutlined} from '@mui/icons-material';
 import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -149,6 +151,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       name: 'Report',
       onClick: () => {
         handleReport();
+        dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
       },
     },
   ];
@@ -202,10 +205,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       console.error('An error occurred while liking/unliking the feed:', error);
     }
   };
+  const dataProfile = useSelector((state: RootState) => state.profile);
   const handleFollow = async (profileId: number, value: boolean) => {
     try {
       const response = await followProfile(profileId, value);
-      setSyncFollow(profileId, value);
+      if (dataProfile.currentProfile?.profileId) setSyncFollow(profileId, value);
     } catch (error) {
       console.error('An error occurred while Following:', error);
     }
@@ -451,10 +455,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   borderRadius: item.profileType === ProfileType.Channel ? '10px' : '50%',
                 }}
                 onClick={() => {
-                  if (item.profileVisibilityType === VisibilityType.Public) {
+                  if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
-                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                    dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
                   }
                 }}
               />
@@ -462,10 +466,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  if (item.profileVisibilityType === VisibilityType.Public) {
+                  if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
-                    dataToast.open('프로필 접근불가', ToastType.Normal);
+                    dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
                   }
                 }}
               >

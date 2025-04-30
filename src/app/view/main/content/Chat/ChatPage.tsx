@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {RootState} from '@/redux-store/ReduxStore';
-import {setStateChatting, ChattingState} from '@/redux-store/slices/Chatting';
+import {setStateChatting, ChattingState, setLevelInfo} from '@/redux-store/slices/Chatting';
 import {useDispatch, useSelector} from 'react-redux';
 
 import TopBar from '@chats/TopBar/HeaderChat';
@@ -54,6 +54,7 @@ import Script from 'next/script';
 import {isAllOf} from '@reduxjs/toolkit';
 import StoryLLMSetup from '../create/story-main/story-LLMsetup/StoryLLMsetup';
 import {LLMModel} from '@/app/NetWork/network-interface/CommonEnums';
+import chatRewardItem from '@/data/dictionary/chatRewardItem.json';
 
 declare global {
   interface Window {
@@ -122,6 +123,7 @@ const ChatPage: React.FC = () => {
     //setRetryStreamKey,
 
     episodeId,
+    levelInfo,
   } = useChat();
 
   const dispatch = useDispatch();
@@ -141,6 +143,9 @@ const ChatPage: React.FC = () => {
     isSendingMessage,
     onMessageProps: onMessage,
   });
+
+  const rewardItems = chatRewardItem;
+  const [currentRewardItemId, setCurrentRewardItemId] = useState<number>(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Unity 초기화를 담당하는 함수
@@ -442,6 +447,18 @@ const ChatPage: React.FC = () => {
         setParsedMessages(updateMessage);
         parsedMessagesRef.current = updateMessage;
 
+        // 레벨, 경험치 변동 반영
+        if (response.data.levelInfo) {
+          dispatch(setLevelInfo(response.data.levelInfo));
+        } else if (levelInfo) {
+          dispatch(
+            setLevelInfo({
+              ...levelInfo,
+              exp: response.data.exp, // level 변동이 없으면 exp만 업데이트
+            }),
+          );
+        }
+
         console.log('Updated parsedMessagesRef.current:', parsedMessagesRef.current);
 
         console.log('Result API Response:', response);
@@ -735,6 +752,9 @@ const ChatPage: React.FC = () => {
             iconUrl={characterImageUrl ?? ''}
             isHideChat={isHideChat}
             isBlurOn={isBlurOn}
+            showEventGuage={false}
+            levelInfo={levelInfo}
+            rewardItems={rewardItems}
           />
           {floatingNextEpisode && !isHideChat && (
             <ChatFloatingArea
@@ -758,6 +778,7 @@ const ChatPage: React.FC = () => {
             send={sendMessage}
             lastMessage={lastMessage}
             retrySend={handleRetryStream}
+            levelInfo={levelInfo}
           />
         </div>
         <FooterChat

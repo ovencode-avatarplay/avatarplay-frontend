@@ -155,8 +155,11 @@ color: var(--Primary-1, #FD55D3);
   .episodeItem {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 16px;
     position: relative;
+    width: 100%;
+    
   }
   
   .episodeThumbnail {
@@ -189,15 +192,18 @@ width: 100px;
   
   .episodeInfo {
     flex-grow: 1;
-    padding-left: 16px;
-    gap: 8px;
+    
+    gap: 8px;    
+    display: flex;
+    align-items: center;
+    max-width: 80%;
+    
   }
   
   .episodeActions {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    
+    align-items: center;    
   }
   
   .rating {
@@ -248,10 +254,15 @@ line-height: 12px; /* 92.308% */
 
   .epTitleText
   {
+    
     color: var(--White, #FFF);
 font-size: 16px;
 font-weight: 500;
 line-height: 24px; /* 150% */
+white-space: nowrap;         /* 줄바꿈 방지 */
+overflow: hidden;            /* 넘치는 텍스트 숨김 */
+text-overflow: ellipsis;  
+width: 100%;
   }
 
   .epDuration

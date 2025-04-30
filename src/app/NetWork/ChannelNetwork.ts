@@ -82,7 +82,6 @@ export const sendSearchChannel = async (payload: SearchChannelMemberReq) => {
     return res.data;
   } catch (e) {
     console.error('sendSearchChannel API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -107,7 +106,6 @@ export const getChannelInfo = async (payload: GetChannelReq) => {
     return res.data;
   } catch (e) {
     console.error('getChannelInfo API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };
@@ -130,7 +128,6 @@ export const deleteChannel = async (payload: DeleteChannelReq) => {
     return res.data;
   } catch (e) {
     console.error('deleteChannel API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };

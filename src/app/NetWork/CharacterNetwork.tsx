@@ -47,7 +47,7 @@ export interface CharacterEventTriggerInfo {
   inputPrompt: string;
 
   // 감정 기반 트리거에만 사용
-  emotionState?: EmotionState;
+  emotionType?: EmotionState;
   probability?: number;
 
   // 시간 기반 트리거에만 사용
@@ -56,23 +56,27 @@ export interface CharacterEventTriggerInfo {
   // 스타 획득 기반 트리거에만 사용
   getType?: GetStarType;
   getStar?: number;
+
+  score?: number;
 }
 
 export enum CharacterEventTriggerType {
-  ChangeBackgroundByEmotion = 0,
-  SendMediaByEmotion = 1,
-  SendMediaByElapsedTime = 2,
-  SendMessageByElapsedTime = 3,
-  SendMediaByGotStars = 4,
+  None = 0,
+  ChangeBackgroundByEmotion = 1,
+  SendMediaByEmotion = 2,
+  SendMediaByElapsedTime = 3,
+  SendMessageByElapsedTime = 4,
+  SendMediaByGotStars = 5,
+  CharacterLevelUp = 6,
 }
 
 export enum EmotionState {
-  Happy = 0,
-  Angry = 1,
+  Normal = 0,
+  Happy = 1,
   Sad = 2,
-  Excited = 3,
-  Scared = 4,
-  Bored = 5,
+  Confused = 3,
+  Angry = 4,
+  Curiosity = 5,
 }
 
 export enum GetStarType {

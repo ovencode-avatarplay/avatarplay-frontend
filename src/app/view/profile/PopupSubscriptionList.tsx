@@ -20,6 +20,8 @@ import Link from 'next/link';
 import {getLocalizedLink} from '@/utils/UrlMove';
 import {useInView} from 'react-intersection-observer';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 type Props = {
   onClose: () => void;
@@ -156,6 +158,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
     </>
   );
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   return (
     <>
       <Dialog open={true} onClose={onClose} fullScreen>
@@ -180,7 +183,7 @@ const PopupSubscriptionList = ({onClose}: Props) => {
                   const target = e.target as HTMLElement;
                   const category = target.closest('[data-tab]')?.getAttribute('data-tab');
                   if (category == '1') {
-                    alert('추후 제공');
+                    dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
                     return;
                   }
                   if (category) {
