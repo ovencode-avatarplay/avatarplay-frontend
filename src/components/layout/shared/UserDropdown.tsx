@@ -47,7 +47,7 @@ import {DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensor
 import {BoldMore, LinePlus} from '@ui/Icons';
 import cx from 'classnames';
 import SelectProfile from '@/app/view/profile/SelectProfile';
-import {setStar} from '@/redux-store/slices/Currency';
+import {setRuby, setStar} from '@/redux-store/slices/Currency';
 import {Language} from '@mui/icons-material';
 import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 //import {middleware} from '../../../../middleware.js';
@@ -188,6 +188,7 @@ const UserDropdown = () => {
       const data: {data: SignInRes} = await response.json();
       dispatch(updateProfile(data.data.profileInfo));
       dispatch(setStar(data.data.sessionInfo.star));
+      dispatch(setRuby(data.data.sessionInfo.ruby));
       console.log('response login : ', data);
       localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
       setTimeout(() => {

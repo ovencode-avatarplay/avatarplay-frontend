@@ -21,15 +21,11 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
 
 const HeaderNavBar = () => {
-  const curRuby = '10.5K';
-  const curStar = '100';
-
   const [logo, setLogo] = useState(logoTalkain);
   const dispatch = useDispatch();
   const [isHamOpen, setIsHamOpen] = useState(false);
 
-  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
-  const starAmount = dataStarInfo.star;
+  const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
 
   return (
     <header className={styles.navbar}>
@@ -57,11 +53,11 @@ const HeaderNavBar = () => {
           <div className={styles.currencyArea}>
             <div className={styles.currencyItem}>
               <img className={styles.currencyIcon} src={BoldRuby.src} />
-              <div className={styles.currencyText}>{curRuby}</div>
+              <div className={styles.currencyText}>{formatCurrency(dataCurrencyInfo.ruby)}</div>
             </div>
             <div className={styles.currencyItem}>
               <img className={styles.currencyIcon} src={BoldStar.src} />
-              <div className={styles.currencyText}>{formatCurrency(starAmount)}</div>
+              <div className={styles.currencyText}>{formatCurrency(dataCurrencyInfo.star)}</div>
             </div>
           </div>
 
