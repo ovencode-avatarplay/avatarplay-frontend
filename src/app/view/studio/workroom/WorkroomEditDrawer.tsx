@@ -4,6 +4,7 @@ import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {LineArrowRight, LineEdit} from '@ui/Icons';
 import {WorkroomItemInfo} from './WorkroomItem';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
   open: boolean;
@@ -44,6 +45,8 @@ const WorkroomEditDrawer: React.FC<Props> = ({
     }
   };
 
+  const isGalleryItem = selectedItem.mediaState === MediaState.None && selectedItem.profileId;
+
   return (
     <CustomDrawer open={open} onClose={onClose}>
       <ul className={styles.fileEditDrawerContainer}>
@@ -62,7 +65,11 @@ const WorkroomEditDrawer: React.FC<Props> = ({
             <li className={styles.infoArea}>
               <div
                 className={`${styles.nameArea} ${editMode ? styles.editMode : ''}`}
-                onClick={() => setEditMode(true)}
+                onClick={() => {
+                  if (!isGalleryItem) {
+                    setEditMode(true);
+                  }
+                }}
               >
                 <input
                   className={styles.fileName}
@@ -71,16 +78,20 @@ const WorkroomEditDrawer: React.FC<Props> = ({
                   readOnly={!editMode}
                   onBlur={handleRenameConfirm}
                   onKeyDown={e => {
-                    if (e.key === 'Enter') handleRenameConfirm();
+                    if (!isGalleryItem) {
+                      if (e.key === 'Enter') handleRenameConfirm();
+                    }
                   }}
                 />
-                <img
-                  className={styles.editIcon}
-                  src={LineEdit.src}
-                  style={{cursor: 'pointer'}}
-                  alt="edit"
-                  onClick={() => setEditMode(true)}
-                />
+                {!isGalleryItem && (
+                  <img
+                    className={styles.editIcon}
+                    src={LineEdit.src}
+                    style={{cursor: 'pointer'}}
+                    alt="edit"
+                    onClick={() => setEditMode(true)}
+                  />
+                )}
               </div>
               <div className={styles.infoText}>{selectedItem.detail}</div>
             </li>

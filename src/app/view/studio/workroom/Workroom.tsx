@@ -553,6 +553,7 @@ const Workroom: React.FC<Props> = ({}) => {
       ...selectedItem,
       id: getMinId(workroomData) - 1,
       name: `Copy of ${selectedItem.name}`,
+      generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo, // 생성된 이미지가 복사될때 생성정보제거 (기획)
     };
 
     setWorkroomData(prev => [...prev, newItem]);
@@ -673,6 +674,7 @@ const Workroom: React.FC<Props> = ({}) => {
         detail: getLocalizedText('TODO : New folder'),
         favorite: false,
         trash: false,
+        folderLocation: selectedCurrentFolder?.id ? [selectedCurrentFolder.id] : [],
       };
 
       setWorkroomData(prev => [...prev, newFolder]);
@@ -693,6 +695,7 @@ const Workroom: React.FC<Props> = ({}) => {
           return {
             ...item,
             folderLocation: targetFolderId ? [targetFolderId] : [],
+            generatedInfo: item.generatedInfo ? undefined : item.generatedInfo, // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
           };
         }
 
@@ -700,6 +703,7 @@ const Workroom: React.FC<Props> = ({}) => {
           return {
             ...item,
             folderLocation: targetFolderId ? [targetFolderId] : [],
+            generatedInfo: item.generatedInfo ? undefined : item.generatedInfo,
           };
         }
 
