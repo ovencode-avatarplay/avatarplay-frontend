@@ -48,7 +48,6 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
     [head, key, language] = args;
   }
 
-  console.log(key)
   const effectiveLanguage = language || getLanguageFromURL();
   const lowerKey = key?.toLowerCase();
   const localizedItem = localizationSources[lowerKey];

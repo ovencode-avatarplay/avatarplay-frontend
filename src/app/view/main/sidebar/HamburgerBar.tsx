@@ -121,8 +121,12 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   };
 
   useEffect(() => {
-    getSessionData();
-  }, [auth]);
+    if (dataProfile.currentProfile?.profileId) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [dataProfile]);
 
   console.log('profile info : ', dataProfile.currentProfile);
   return (

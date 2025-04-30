@@ -19,40 +19,8 @@ export interface SessionInfo {
   name: string;
   accessToken: string;
   star: number;
+  ruby: number;
 }
-
-export const sendSignIn = async (payload: SignInReq): Promise<boolean> => {
-  try {
-    const jwtToken = localStorage.getItem('jwt');
-    const _language = getLangUrlCode(getBrowserLanguage());
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/auth/sign-in`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`, // JWT를 Authorization 헤더에 포함
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        language: _language,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error('Failed to authenticate:', response.statusText);
-      return false;
-    }
-
-    const data: {data: SignInRes} = await response.json();
-    localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
-    //fetchLanguage(router);
-    return true;
-  } catch (error) {
-    console.error('Error occurred during authentication:', error);
-    return false;
-  }
-};
-//##########    sign-in 끝
-
 export interface GetLanguageReq {}
 
 export interface GetLanguageRes {
@@ -101,12 +69,11 @@ interface GetAuthProfileInfoRes {
   profileSimpleInfo: ProfileSimpleInfo;
 }
 
-export const getAuth = async (token : string | null = null) => {
+export const getAuth = async (token: string | null = null) => {
   try {
-    let jwtToken : string|null = '';
-    if(token === null)
-    {
-      jwtToken = localStorage.getItem('jwt');  
+    let jwtToken: string | null = '';
+    if (token === null) {
+      jwtToken = localStorage.getItem('jwt');
     } else {
       jwtToken = token;
     }
@@ -126,6 +93,8 @@ export const getAuth = async (token : string | null = null) => {
       console.log('Auth  리스폰스 ok 실패');
       return;
     }
+
+    if (jwtToken) localStorage.setItem('jwt', jwtToken);
 
     const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
     return data;

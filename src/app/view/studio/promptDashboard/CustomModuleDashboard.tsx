@@ -262,7 +262,7 @@ const CustomModuleDashboard: React.FC = () => {
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handlePromptItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.itemUpdateAt}>{formatDateTime(item.createdAt)}</div>
+        <div className={styles.itemUpdateAt}>{formatDateTime(item.updatedAt)}</div>
       </li>
     );
   };
@@ -276,7 +276,7 @@ const CustomModuleDashboard: React.FC = () => {
     return (
       <li key={item.title} className={styles.customModuleItem} onClick={() => handleLorebookItemClick(item)}>
         <div className={styles.itemName}>{item.title}</div>
-        <div className={styles.itemUpdateAt}>{formatDateTime(item.createdAt)}</div>
+        <div className={styles.itemUpdateAt}>{formatDateTime(item.updatedAt)}</div>
       </li>
     );
   };

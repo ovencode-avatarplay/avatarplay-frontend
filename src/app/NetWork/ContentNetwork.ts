@@ -90,6 +90,7 @@ export interface GetContentRes {
   profileUrlLinkKey: string;
   contentInfo: ContentInfo;
   isSingleContentLock: boolean;
+  isProfileSubscribe: boolean;
   isMyContent: boolean;
   profileName: string;
 }
@@ -312,6 +313,8 @@ export interface GetSeasonEpisodesRes {
   profileId: number;
   profileName: string;
   thumbnailMediaState: MediaState;
+  isProfileSubscribe: boolean;
+  contentCategoryType: number;
 }
 
 export const sendGetSeasonEpisodes = async (
@@ -439,13 +442,13 @@ export interface BuyContentEpisodeReq {
 export interface BuyContentEpisodeRes {
   contentId: number;
   episodeId: number;
+  currentMyStar: number;
 }
 
-export const buyContentEpisode = async (payload: BuyContentEpisodeReq): Promise<ResponseAPI<DeleteEpisodeRes>> => {
+export const buyContentEpisode = async (payload: BuyContentEpisodeReq): Promise<ResponseAPI<BuyContentEpisodeRes>> => {
   try {
     const response = await api.post<ResponseAPI<BuyContentEpisodeRes>>('/Content/buyEpisode', payload);
-    if (response.data.resultCode === 0) return response.data;
-    throw new Error(`buyContentEpisode Error: ${response.data.resultCode}`);
+    return response.data;
   } catch (error) {
     console.error('Error buyContentEpisode:', error);
     throw new Error('Failed to buyContentEpisode. Please try again.');
@@ -460,6 +463,7 @@ export interface PlayReq {
 }
 export interface PlayButtonRes {
   recentlyPlayInfo: ContentPlayInfo;
+  contentType: ContentType;
 }
 
 export interface ContentPlayInfo {
