@@ -151,22 +151,35 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
     return (
       <div className={styles.characterListContainer}>
         <div className={styles.filterArea}>{renderFilter(true, detailView)}</div>
-        <div className={styles.characterGrid}>
+        <div className={`${styles.characterGrid} ${detailView ? styles.largeGrid : styles.detailGrid}`}>
           {characterList.map((character, index) => {
-            return renderCharacterItem(character, index);
+            return renderCharacterLargeItem(character, index);
           })}
         </div>
       </div>
     );
   };
 
-  const renderCharacterItem = (character: CharacterInfo, key: number) => {
+  const renderCharacterLargeItem = (character: CharacterInfo, key: number) => {
     return (
-      <div key={key} className={styles.characterItem} onClick={() => setSelectedCharacter(character)}>
+      <div
+        key={key}
+        className={`${styles.characterItem} ${detailView ? styles.characterLargeItem : styles.characterDetailItem}`}
+        onClick={() => setSelectedCharacter(character)}
+      >
         <div className={styles.characterImage}>
           <img src={character.mainImageUrl} alt={character.name} />
         </div>
-        <div>{character.name}</div>
+        <div className={styles.characterInfoArea}>
+          <div className={styles.characterName}>{character.name}</div>
+          <div
+            className={`${styles.characterIp} ${
+              character.characterIP === CharacterIP.Original ? styles.original : styles.fan
+            }`}
+          >
+            {character.characterIP === CharacterIP.Original ? 'Original' : 'Fan'}
+          </div>
+        </div>
       </div>
     );
   };
