@@ -2,7 +2,7 @@ import api, {ResponseAPI} from './ApiInstance';
 import {CharacterIP} from './CharacterNetwork';
 
 export interface GetCharacterChatRoomListReq {
-  isChatTag: boolean;
+  isChatRoom: boolean;
   characterIP: number;
   tag: string;
   sort: number;

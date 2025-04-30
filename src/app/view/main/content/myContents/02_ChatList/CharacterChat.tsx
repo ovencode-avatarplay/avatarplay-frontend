@@ -14,7 +14,19 @@ import {
 } from '@/app/NetWork/ChatMessageNetwork';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
-const tags = ['Chatroom', 'Music', 'BL', 'Gravure', 'Novel', 'Drama', 'Animation', 'Edu', 'Sports', 'Star', 'Brand'];
+const tags = [
+  'Chatroom',
+  'common_tag_music',
+  'common_tag_bl',
+  'common_tag_gravure',
+  'common_tag_novel',
+  'common_tag_drama',
+  'common_tag_anime',
+  'common_tag_edu',
+  'common_tag_sports',
+  'common_tag_star',
+  'common_tag_brand',
+];
 interface Props {
   name?: string;
 }
@@ -58,7 +70,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   const fetchCharacterChatRooms = async () => {
     try {
       const params: GetCharacterChatRoomListReq = {
-        isChatTag: selectedTag == 'Chatroom' ? true : false,
+        isChatRoom: selectedTag == 'Chatroom' ? true : false,
         characterIP: getFilter,
         tag: selectedTag,
         sort: 0,
@@ -84,7 +96,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     };
 
     fetchData();
-  }, [filterValue]);
+  }, [filterValue, selectedTag]);
 
   return (
     <>
@@ -113,6 +125,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             followState={FollowState.None} // 고정값
             isHighlight={false} // 고정값
             isOption={true}
+            urlLinkKey={item.urlLinkKey}
             onClick={() => {}}
             onClickOption={() => {
               setOpenOption(true);

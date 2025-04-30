@@ -11,7 +11,7 @@ export default function LoginCallback() {
 
   // 💎 루비 선물 수신
   const onGift = (payload: any) => {
-    alert(`💎 ${payload.amount} 루비를 선물 받았습니다!`);
+    console.log(`💎 ${payload.amount} 루비를 선물 받았습니다!`);
   };
 
   // ✅ SignalR 연결
@@ -21,9 +21,6 @@ export default function LoginCallback() {
     const init = async () => {
       const session = await supabase.auth.getSession();
       const accessToken = session.data?.session?.access_token;
-      console.log(
-        'asifjo;serosngosndgbjk;dzrnbkndzkj;bnzdkl;jvbnzdrkl;hndzkjnb dfbnldjzfnb;ozdnbljfcnb kljdznbikdobdnzfgbdnzobn',
-      );
       if (!accessToken) return;
 
       setToken(accessToken);

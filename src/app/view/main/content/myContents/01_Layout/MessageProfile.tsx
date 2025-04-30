@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from './MessageProfile.module.css';
 import {BoldInfo, BoldMore, BoldPin, LineCheck, LineDelete} from '@ui/Icons';
+import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
+import Link from 'next/link';
 
 interface Props {
   profileImage: string;
@@ -13,7 +16,7 @@ interface Props {
   isOption?: boolean;
   isPin?: boolean;
   isHighlight?: boolean;
-  urlLinkKey: string;
+  urlLinkKey?: string;
   onClick: () => void;
   onClickOption?: () => void;
 }
@@ -53,6 +56,7 @@ const MessageProfile: React.FC<Props> = ({
   onClick,
   onClickOption,
 }) => {
+  const router = useRouter();
   const renderBadge = () => {
     if (badgeType === BadgeType.Fan) {
       return <span className={styles.fanBadge}>Fan</span>;
@@ -102,24 +106,23 @@ const MessageProfile: React.FC<Props> = ({
       {checkType === CheckType.Left && renderCheck()}
 
       {/* 프로필 이미지 */}
-      <div className={styles.profileContainer}>
+      <div className={styles.profileContainer} onClick={() => pushLocalizedRoute('/profile/' + urlLinkKey, router)}>
         <img src={profileImage} alt="Profile" className={styles.profileImage} />
         {isHighlight && <div className={styles.statusIndicator} />}
       </div>
 
-      {/* 프로필 정보 */}
-      <div
+      <Link
+        href={getLocalizedLink(`/chat/?v=${urlLinkKey}` || `?v=`)}
         className={styles.profileInfo}
-        onClick={() => {
-          onClick();
-        }}
+        onClick={() => {}}
       >
+        {/* 프로필 정보 */}
         <div className={styles.profileTop}>
           <span className={styles.profileName}>{profileName}</span>
           {renderBadge()}
         </div>
         {timestamp && <span className={styles.timestamp}>{timestamp}</span>}
-      </div>
+      </Link>
 
       {/* 오른쪽 영역 */}
       <div className={styles.rightArea}>

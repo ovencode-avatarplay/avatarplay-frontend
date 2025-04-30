@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import styles from './MessageTagList.module.css';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 interface Props {
   tags: string[]; // 외부에서 전달
@@ -30,7 +31,11 @@ const MessageTagList: React.FC<Props> = ({tags, onTagChange, defaultTag}) => {
         >
           {tags.map(tag => (
             <SwiperSlide key={tag} className={styles.swiperSlide} style={{width: 'auto'}}>
-              <CustomHashtag isSelected={activeTag === tag} onClickAction={() => handleTagClick(tag)} text={tag} />
+              <CustomHashtag
+                isSelected={activeTag === tag}
+                onClickAction={() => handleTagClick(tag)}
+                text={getLocalizedText(tag)}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
