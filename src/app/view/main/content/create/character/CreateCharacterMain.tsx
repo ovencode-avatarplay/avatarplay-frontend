@@ -47,6 +47,8 @@ import SelectDrawer from '@/components/create/SelectDrawer';
 import VideoUpload from '@/components/create/VideoUpload';
 import {profile} from 'console';
 import CharacterGalleryModal from '@/app/view/studio/characterDashboard/CharacterGalleryModal';
+import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
+import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -218,6 +220,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
 
   const [isMonetization, setIsMonetization] = useState<boolean>(character.isMonetization);
   const [nsfw, setNsfw] = useState<boolean>(character.nsfw);
+
+  const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number>(0);
 
   //#endregion
 
@@ -1093,14 +1097,23 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
         />
       )}
       {galleryOpen && (
-        <CharacterGalleryModal
-          open={galleryOpen}
-          onClose={() => {
-            setGalleryOpen(false);
+        <CharacterGalleryGrid
+          itemUrl={character.portraitGalleryImageUrl}
+          selectedItemIndex={selectedGalleryIndex}
+          onSelectItem={i => {
+            console.log(i);
+            setSelectedGalleryIndex(i ?? 0);
+            console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
+            handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
           }}
-          characterData={character}
-          refreshCharacter={() => {}}
-          refreshCharacterList={() => {}}
+          onAddImageClick={() => {
+            console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
+            handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
+          }}
+          category={GalleryCategory.Portrait}
+          isTrigger={true}
+          style={{}}
+          hideSelected={false}
         />
       )}
     </>
