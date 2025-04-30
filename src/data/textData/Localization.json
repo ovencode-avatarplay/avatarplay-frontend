@@ -3046,6 +3046,39 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_alert_110": {
+    "en-US": "This feature is under preparation.<br>It will be updated soon!",
+    "ko": "준비 중인 기능입니다. 곧 업데이트될 예정입니다!",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_111": {
+    "en-US": "This user's profile is currently set to private.",
+    "ko": "해당 사용자의 프로필은 현재 비공개 설정되어 있습니다",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_alert_112": {
+    "en-US": "Enter the number of stars to donate",
+    "ko": "후원 스타갯수를 입력하세요",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_button_original": {
     "en-US": "Original",
     "ko": "",
@@ -5325,7 +5358,7 @@
   },
   "common_filterskill_createllm": {
     "en-US": "Create LLM",
-    "ko": "",
+    "ko": " ",
     "ja": "",
     "fr": "",
     "es": "",
@@ -12078,7 +12111,7 @@
     "de": ""
   },
   "common_desc_mediatrigger": {
-    "en-US": "Add a media item to define how {{char}} reacts to {{user}}.",
+    "en-US": "Add a media item to define  how {{char}} reacts to {{user}}.",
     "ko": "",
     "ja": "",
     "fr": "",
