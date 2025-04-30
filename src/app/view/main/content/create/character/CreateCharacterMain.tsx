@@ -753,7 +753,10 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                   console.log(i);
                   setSelectedGalleryIndex(i ?? 0);
                   console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
-                  handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
+                  if(category === GalleryCategory.Portrait)
+                    handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
+                  else if(category === GalleryCategory.Pose)
+                    handlerSetImage(character.poseGalleryImageUrl[selectedGalleryIndex].imageUrl);
                   setGalleryOpen(false);
                 }}
                 onAddImageClick={() => {
