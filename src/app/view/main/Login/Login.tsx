@@ -20,10 +20,12 @@ const Login = () => {
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_FRONT_URL,
+        redirectTo: `${process.env.NEXT_PUBLIC_FRONT_URL}/login-callback?from=oauth`,
       },
     });
     const language = getLangUrlCode(getBrowserLanguage());
+
+    //이부분에 signalIR 연결
   };
   const router = useRouter();
 
