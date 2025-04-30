@@ -6,11 +6,12 @@ interface Props {
   title: string;
   onClose: () => void;
   children?: React.ReactNode /*컴포지션*/;
+  style?: React.CSSProperties;
 }
 
-const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children}) => {
+const CreateDrawerHeader: React.FC<Props> = ({title, onClose, children, style}) => {
   return (
-    <header className={styles.header}>
+    <header className={styles.header} style={style}>
       <div className={styles.baseArea}>
         <button className={styles.backButton} onClick={onClose}>
           <img src={LineArrowLeft.src} className={styles.backIcon} />

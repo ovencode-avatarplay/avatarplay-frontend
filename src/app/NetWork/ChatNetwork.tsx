@@ -1,5 +1,6 @@
 // src/app/Network/ChatNetwork.tsx
 
+import {ChatLevelInfo} from '../view/main/content/Chat/MainChat/ChatTypes';
 import api, {ResponseAPI} from './ApiInstance';
 import {ESystemError} from './ESystemError';
 
@@ -170,6 +171,7 @@ export interface EnterEpisodeChattingRes {
   episodeBgImageUrl: string;
   introPrompt: string;
   prevMessageInfoList: MessageInfo[];
+  levelInfo: ChatLevelInfo;
 }
 
 export const sendChattingEnter = async (
@@ -255,6 +257,8 @@ export interface ChattingResultRes {
 export interface ChatData {
   streamChatId: number;
   answerCreateAt: string;
+  exp: number;
+  levelInfo: ChatLevelInfo;
   chatResultInfoList: ChatResultInfo[];
 }
 

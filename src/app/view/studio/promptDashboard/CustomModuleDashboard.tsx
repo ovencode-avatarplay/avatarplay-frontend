@@ -403,6 +403,9 @@ const CustomModuleDashboard: React.FC = () => {
               isPrimary: true,
             },
           ]}
+          onClose={() => {
+            setNamePopupOpen(false);
+          }}
         />
       )}
       {isCloseConfirmOpen && (
@@ -432,6 +435,9 @@ const CustomModuleDashboard: React.FC = () => {
               isPrimary: true,
             },
           ]}
+          onClose={() => {
+            setIsCloseConfirmOpen(false);
+          }}
         />
       )}
       {isDeleteConfirmOpen && (
@@ -471,6 +477,9 @@ const CustomModuleDashboard: React.FC = () => {
               isPrimary: true,
             },
           ]}
+          onClose={() => {
+            setIsDeleteConfirmOpen(false);
+          }}
         />
       )}
     </div>

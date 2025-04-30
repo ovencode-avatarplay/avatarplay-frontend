@@ -45,7 +45,7 @@ import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import VideoUpload from '@/components/create/VideoUpload';
-import { profile } from 'console';
+import {profile} from 'console';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -342,7 +342,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion ||
       triggerType === CharacterEventTriggerType.SendMediaByEmotion
     ) {
-      newItem.emotionState = EmotionState.Happy;
+      newItem.emotionType = EmotionState.Normal;
       newItem.probability = 100;
     } else if (
       triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ||
@@ -696,24 +696,24 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     //   ),
     // },
     // Media
-    {
-      label: getLocalizedText(Header, 'createcharacter001_label_005'),
-      preContent: '',
-      content: (
-        <CharacterCreateMedia
-          mediaItems={mediaTemplateList}
-          selectedItemIdx={selectedMediaItemIdx}
-          onClickCreateMedia={handleOnClickMediaCreate}
-          handlePromptChange={handleMediaPromptChange}
-          handleSelected={handleMediaSelected}
-          handleSetSpoiler={handleSpoilerSelected}
-          handleAddMediaItem={() => handleAddMediaItem(getMinMediaItemId(mediaTemplateList) - 1, mediaCreateImage)}
-          handleDeleteMediaItem={handleDeleteMediaItem}
-          handleEditMediaItem={handleOnClickMediaEdit}
-          handleMoveMediaItem={handleMoveMediaItem}
-        />
-      ),
-    },
+    // {
+    //   label: getLocalizedText(Header, 'createcharacter001_label_005'),
+    //   preContent: '',
+    //   content: (
+    //     <CharacterCreateMedia
+    //       mediaItems={mediaTemplateList}
+    //       selectedItemIdx={selectedMediaItemIdx}
+    //       onClickCreateMedia={handleOnClickMediaCreate}
+    //       handlePromptChange={handleMediaPromptChange}
+    //       handleSelected={handleMediaSelected}
+    //       handleSetSpoiler={handleSpoilerSelected}
+    //       handleAddMediaItem={() => handleAddMediaItem(getMinMediaItemId(mediaTemplateList) - 1, mediaCreateImage)}
+    //       handleDeleteMediaItem={handleDeleteMediaItem}
+    //       handleEditMediaItem={handleOnClickMediaEdit}
+    //       handleMoveMediaItem={handleMoveMediaItem}
+    //     />
+    //   ),
+    // },
     // EventTrigger
     {
       label: getLocalizedText('eventtrigger001_label_001'),
@@ -1073,7 +1073,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             },
           ]}
           isOpen={mediaUploadOpen}
-          onClose={() => {}}
+          onClose={() => {
+            setMediaUploadOpen(false);
+          }}
         />
       )}
     </>

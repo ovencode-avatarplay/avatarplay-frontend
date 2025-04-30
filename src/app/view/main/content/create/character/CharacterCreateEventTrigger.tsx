@@ -14,8 +14,11 @@ import {
   BoldVideo,
   EmojiAngry,
   EmojiBoring,
+  EmojiConfused,
+  EmojiCuriosity,
   EmojiExcited,
   EmojiHappy,
+  EmojiNormal,
   EmojiSad,
   EmojiScared,
   LineArrowLeft,
@@ -62,12 +65,15 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
 }) => {
   //#region
   const EmotionArray = [
+    {label: getLocalizedText('common_tagemotion_normal'), value: EmotionState.Normal, icon: EmojiNormal.src},
     {label: getLocalizedText('common_tagemotion_happy'), value: EmotionState.Happy, icon: EmojiHappy.src},
-    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Angry, icon: EmojiAngry.src},
     {label: getLocalizedText('common_tagemotion_sad'), value: EmotionState.Sad, icon: EmojiSad.src},
-    {label: getLocalizedText('common_tagemotion_excited'), value: EmotionState.Excited, icon: EmojiExcited.src},
+    {label: getLocalizedText('common_tagemotion_confused'), value: EmotionState.Confused, icon: EmojiConfused.src},
+    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Angry, icon: EmojiAngry.src},
+    {label: getLocalizedText('common_tagemotion_curiosity'), value: EmotionState.Curiosity, icon: EmojiCuriosity.src},
+    /*{label: getLocalizedText('common_tagemotion_excited'), value: EmotionState.Excited, icon: EmojiExcited.src},
     {label: getLocalizedText('common_tagemotion_scared'), value: EmotionState.Scared, icon: EmojiScared.src},
-    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Bored, icon: EmojiBoring.src},
+    {label: getLocalizedText('common_tagemotion_angry'), value: EmotionState.Bored, icon: EmojiBoring.src},*/
   ];
 
   const [currentState, setCurrentState] = useState<number>(0);
@@ -78,6 +84,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
   const [mediaByTimeTriggers, setMediaByTimeTriggers] = useState<CharacterEventTriggerInfo[]>([]);
   const [messageByTimeTriggers, setMessageByTimeTriggers] = useState<CharacterEventTriggerInfo[]>([]);
   const [mediaByStarsTriggers, setMediaByStarsTriggers] = useState<CharacterEventTriggerInfo[]>([]);
+  const [characterLevelUpTriggers, setCharacterLevelUpTriggers] = useState<CharacterEventTriggerInfo[]>([]);
   //#endregion
 
   //#region Handler
@@ -101,6 +108,9 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
     setMediaByStarsTriggers(
       eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.SendMediaByGotStars),
     );
+    // setCharacterLevelUpTriggers(
+    //   eventTriggerItems?.filter(item => item.triggerType === CharacterEventTriggerType.CharacterLevelUp),
+    // );
   }, [eventTriggerItems]);
 
   //#endregion
@@ -117,23 +127,27 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         return BoldMessenger.src;
       case CharacterEventTriggerType.SendMediaByGotStars:
         return BoldReward.src;
+      case CharacterEventTriggerType.CharacterLevelUp:
+        return BoldStar.src;
     }
   };
 
   const getEmojiIcon = (emotion: EmotionState) => {
     switch (emotion) {
+      case EmotionState.Normal:
+        return EmojiNormal.src;
       case EmotionState.Happy:
         return EmojiHappy.src;
-      case EmotionState.Angry:
-        return EmojiAngry.src;
       case EmotionState.Sad:
         return EmojiSad.src;
-      case EmotionState.Excited:
-        return EmojiExcited.src;
-      case EmotionState.Scared:
-        return EmojiScared.src;
-      case EmotionState.Bored:
-        return EmojiBoring.src;
+      case EmotionState.Confused:
+        return EmojiConfused.src;
+      case EmotionState.Angry:
+        return EmojiAngry.src;
+      case EmotionState.Curiosity:
+        return EmojiCuriosity.src;
+      default:
+        return EmojiHappy.src;
     }
   };
 
@@ -143,6 +157,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
     mediaByTimeTriggers?.length === 0 ||
     messageByTimeTriggers?.length === 0 ||
     mediaByStarsTriggers?.length === 0;
+  // ||    characterLevelUpTriggers?.length === 0;
 
   const getDesc = (triggerType: CharacterEventTriggerType) => {
     switch (triggerType) {
@@ -154,6 +169,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         break;
 
       case CharacterEventTriggerType.SendMessageByElapsedTime:
+      case CharacterEventTriggerType.CharacterLevelUp:
         return 'common_desc_meesagetrigger';
         break;
     }
@@ -186,6 +202,11 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
         return formatText(getLocalizedText('common_chatbottrigger_name'), [
           getLocalizedText('common_triggertype_message'),
           getLocalizedText('common_conditiontype_timer'),
+        ]);
+
+      case CharacterEventTriggerType.CharacterLevelUp:
+        return formatText(getLocalizedText('common_chatbottrigger_name'), [
+          getLocalizedText('common_triggertype_levelup'),
         ]);
     }
   };
@@ -373,6 +394,32 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 }}
               />
             )}
+            {characterLevelUpTriggers?.length > 0 && (
+              <EventTriggerContainer
+                getEmojiIcon={getEmojiIcon}
+                getHeaderIcon={getHeaderIcon}
+                getTriggerName={getTriggerName(CharacterEventTriggerType.CharacterLevelUp)}
+                items={characterLevelUpTriggers}
+                onClick={() => {
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.CharacterLevelUp);
+                }}
+                onItemClick={() => {}}
+                triggerType={CharacterEventTriggerType.CharacterLevelUp}
+                onAddItem={() => {
+                  onClickCreateEventTrigger(CharacterEventTriggerType.CharacterLevelUp);
+                  setCurrentState(2);
+                  setSelectedTriggerType(CharacterEventTriggerType.CharacterLevelUp);
+                }}
+                onDeleteTriggerType={type => {
+                  eventTriggerItems
+                    .filter(item => item.triggerType === type)
+                    .forEach(item => {
+                      onDeleteEventTrigger(item.id);
+                    });
+                }}
+              />
+            )}
           </ul>
         </div>
       </div>
@@ -420,6 +467,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
                 {messageByTimeTriggers?.length === 0 &&
                   renderTypeButton(CharacterEventTriggerType.SendMessageByElapsedTime)}
                 {mediaByStarsTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.SendMediaByGotStars)}
+                {/* {characterLevelUpTriggers?.length === 0 && renderTypeButton(CharacterEventTriggerType.CharacterLevelUp)} */}
               </div>
             </div>
           </div>
@@ -504,84 +552,85 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
     return (
       <div className={styles.triggerItemSetContainer}>
         <div className={styles.inputPanel}>
-          {item.triggerType !== CharacterEventTriggerType.SendMessageByElapsedTime && (
-            <div className={styles.informationTracking}>
-              {item.mediaType === MediaState.Video ? (
-                <div className={styles.videoWrapper}>
-                  <video
-                    src={item.mediaUrl}
-                    className={styles.videoPreview}
-                    muted
-                    playsInline
-                    loop
-                    preload="metadata"
-                    style={{width: '100%', height: '100%', objectFit: 'contain'}}
-                    onClick={e => {
-                      const video = e.currentTarget as HTMLVideoElement;
-                      const playIcon = video.nextSibling?.firstChild as HTMLImageElement;
+          {item.triggerType !== CharacterEventTriggerType.SendMessageByElapsedTime &&
+            item.triggerType !== CharacterEventTriggerType.CharacterLevelUp && (
+              <div className={styles.informationTracking}>
+                {item.mediaType === MediaState.Video ? (
+                  <div className={styles.videoWrapper}>
+                    <video
+                      src={item.mediaUrl}
+                      className={styles.videoPreview}
+                      muted
+                      playsInline
+                      loop
+                      preload="metadata"
+                      style={{width: '100%', height: '100%', objectFit: 'contain'}}
+                      onClick={e => {
+                        const video = e.currentTarget as HTMLVideoElement;
+                        const playIcon = video.nextSibling?.firstChild as HTMLImageElement;
 
-                      if (video.paused) {
-                        video.play();
-                        if (playIcon) playIcon.src = BoldPause.src;
-                      } else {
-                        video.pause();
-                        if (playIcon) playIcon.src = BoldPlay.src;
-                      }
+                        if (video.paused) {
+                          video.play();
+                          if (playIcon) playIcon.src = BoldPause.src;
+                        } else {
+                          video.pause();
+                          if (playIcon) playIcon.src = BoldPlay.src;
+                        }
+                      }}
+                    />
+                    <button
+                      className={styles.playButton}
+                      onClick={e => {
+                        e.stopPropagation();
+                        const video = e.currentTarget.previousSibling as HTMLVideoElement;
+                        const playIcon = e.currentTarget.firstChild as HTMLImageElement;
+
+                        if (video.paused) {
+                          video.play();
+                          if (playIcon) playIcon.src = BoldPause.src;
+                        } else {
+                          video.pause();
+                          if (playIcon) playIcon.src = BoldPlay.src;
+                        }
+                      }}
+                    >
+                      <img className={styles.playIcon} src={BoldPlay.src} />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className={`${styles.imagePreview} ${item.mediaUrl === '' ? styles.emptyImage : ''}`}
+                    style={{
+                      backgroundImage: item.mediaUrl !== '' ? `url(${item.mediaUrl})` : '',
+                      backgroundSize: 'contain',
+                      width: '100%',
+                      height: '100%',
                     }}
-                  />
-                  <button
-                    className={styles.playButton}
-                    onClick={e => {
-                      e.stopPropagation();
-                      const video = e.currentTarget.previousSibling as HTMLVideoElement;
-                      const playIcon = e.currentTarget.firstChild as HTMLImageElement;
-
-                      if (video.paused) {
-                        video.play();
-                        if (playIcon) playIcon.src = BoldPause.src;
+                    onClick={() => {
+                      if (onClickPreview && item.mediaUrl !== '') {
+                        onClickPreview(item.mediaUrl);
                       } else {
-                        video.pause();
-                        if (playIcon) playIcon.src = BoldPlay.src;
+                        onClickEditTriggerMedia(item.triggerType, item.id);
                       }
                     }}
                   >
-                    <img className={styles.playIcon} src={BoldPlay.src} />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className={`${styles.imagePreview} ${item.mediaUrl === '' ? styles.emptyImage : ''}`}
-                  style={{
-                    backgroundImage: item.mediaUrl !== '' ? `url(${item.mediaUrl})` : '',
-                    backgroundSize: 'contain',
-                    width: '100%',
-                    height: '100%',
-                  }}
+                    {item.mediaUrl === '' && <img className={styles.uploadIcon} src={LineUpload.src} />}
+                  </div>
+                )}
+                <button
+                  className={styles.editButton}
                   onClick={() => {
-                    if (onClickPreview && item.mediaUrl !== '') {
-                      onClickPreview(item.mediaUrl);
-                    } else {
-                      onClickEditTriggerMedia(item.triggerType, item.id);
-                    }
+                    onClickEditTriggerMedia(item.triggerType, item.id);
                   }}
                 >
-                  {item.mediaUrl === '' && <img className={styles.uploadIcon} src={LineUpload.src} />}
-                </div>
-              )}
-              <button
-                className={styles.editButton}
-                onClick={() => {
-                  onClickEditTriggerMedia(item.triggerType, item.id);
-                }}
-              >
-                <img className={styles.editIcon} src={LineEdit.src} />
-              </button>
-            </div>
-          )}
+                  <img className={styles.editIcon} src={LineEdit.src} />
+                </button>
+              </div>
+            )}
           <div className={styles.rightInputPanel}>{renderInputPrompt(item)}</div>
         </div>
         <div className={styles.buttonArea}>
-          <button
+          {/* <button
             className={styles.bottomButton}
             onClick={() =>
               onEditEventTrigger({
@@ -604,7 +653,7 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
           >
             <img className={`${styles.buttonIcon} ${styles.iconChar}`} src={BoldCharacter.src} />
             <div className={styles.buttonText}>{getLocalizedText(`common_button_charcommand`)}</div>
-          </button>
+          </button> */}
           <button
             className={styles.bottomButton}
             onClick={() => {
@@ -638,13 +687,13 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             <div className={styles.promptItem}>
               <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_002`)}</div>
               <CustomDropDown
-                initialValue={item.emotionState}
+                initialValue={item.emotionType}
                 displayType="Icon"
                 items={EmotionArray}
                 onSelect={value =>
                   onEditEventTrigger({
                     ...item,
-                    emotionState: value as EmotionState,
+                    emotionType: value as EmotionState,
                   })
                 }
               />
@@ -666,12 +715,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -687,13 +736,13 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
             <div className={styles.promptItem}>
               <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_002`)}</div>
               <CustomDropDown
-                initialValue={item.emotionState}
+                initialValue={item.emotionType}
                 displayType="Icon"
                 items={EmotionArray}
                 onSelect={value =>
                   onEditEventTrigger({
                     ...item,
-                    emotionState: value as EmotionState,
+                    emotionType: value as EmotionState,
                   })
                 }
               />
@@ -715,12 +764,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -750,12 +799,12 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               />
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
@@ -855,16 +904,52 @@ const CharacterCreateEventTrigger: React.FC<Props> = ({
               </div>
             </div>
             <div className={styles.promptItem}>
-              <div className={styles.label}>{getLocalizedText(`eventtrigger003_label_004`)}</div>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
               <CustomInput
                 inputType="Basic"
                 textType="InputOnly"
                 value={item.inputPrompt}
-                placeholder={getLocalizedText('eventtrigger003_label_004')}
+                placeholder={getLocalizedText('common_label_memo')}
                 onChange={e =>
                   onEditEventTrigger({
                     ...item,
                     inputPrompt: e.target.value,
+                  })
+                }
+                customClassName={[styles.inputTextArea]}
+              />
+            </div>
+          </div>
+        ) : item.triggerType === CharacterEventTriggerType.CharacterLevelUp ? (
+          <div className={styles.inputPromptContainer}>
+            <div className={styles.promptItem}>
+              <div className={styles.label}>{getLocalizedText(`common_label_memo`)}</div>
+              <CustomInput
+                inputType="Basic"
+                textType="InputOnly"
+                value={item.inputPrompt}
+                placeholder={getLocalizedText('common_label_memo')}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    inputPrompt: e.target.value,
+                  })
+                }
+                customClassName={[styles.inputTextArea]}
+              />
+            </div>
+            <div className={styles.promptItem}>
+              <div className={styles.label}>{getLocalizedText(`TODO : Score`)}</div>
+              <CustomInput
+                inputType="Basic"
+                textType="InputOnly"
+                onlyNumber={true}
+                value={item.score || 0}
+                placeholder={getLocalizedText('TODO : Input Score')}
+                onChange={e =>
+                  onEditEventTrigger({
+                    ...item,
+                    score: parseInt(e.target.value || '0'),
                   })
                 }
                 customClassName={[styles.inputTextArea]}

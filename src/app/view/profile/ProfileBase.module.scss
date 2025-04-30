@@ -114,7 +114,7 @@
         .originalFan {
           // box-sizing: border-box;
           height: 16px;
-          padding: 0 6px ;
+          padding: 0 6px;
           // padding: 4px 6px 5px 6px;
           color: var(--Primary-1, #fd55d3);
           font-family: Lato;
@@ -250,7 +250,7 @@
         border-radius: 50%;
         width: 27px;
         height: 27px;
-        
+
 
         background: var(--Color-Tokens-White, #FEFEFE);
         filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, 0.16));
@@ -259,11 +259,12 @@
         align-items: center;
         justify-content: center;
 
-          img {
-            width: 100%;
-            height: 100%;
-            filter: brightness(0) saturate(100%); // 검정색으로 보이게
-          }
+        img {
+          width: 100%;
+          height: 100%;
+          width: 13px;
+          filter: brightness(0) saturate(100%); // 검정색으로 보이게
+        }
       }
     }
 
@@ -463,7 +464,7 @@
       }
 
       .follow {
-        flex: 244; 
+        flex: 244;
       }
 
       .gift {
@@ -477,7 +478,8 @@
         padding: 8px 20px;
         align-items: center;
         justify-content: center;
-        .icon{
+
+        .icon {
           width: 24px;
           height: 24px;
           filter: brightness(0) saturate(100%) invert(0%) sepia(6%) saturate(579%) hue-rotate(316deg) brightness(80%) contrast(80%);
@@ -500,11 +502,11 @@
       }
 
       .subscribe {
-        flex: 115; 
+        flex: 115;
       }
 
       .follow {
-        flex: 115; 
+        flex: 115;
       }
 
       .giftWrap {
@@ -534,7 +536,7 @@
         padding: 0px 20px;
         justify-content: center;
         align-items: center;
-        
+
         border-radius: 8px;
         border: 1px solid var(--Border-1, #EAECF0);
         background: var(--White, #FFF);
@@ -551,7 +553,7 @@
           justify-content: center;
         }
       }
-    } 
+    }
 
 
   }
@@ -1051,7 +1053,8 @@ li.itemTab {
       }
 
       &.active {
-        background: var(--Neutral-600, #80868b);;
+        background: var(--Neutral-600, #80868b);
+        ;
 
         .text {
           color: var(--White, #FFF);
@@ -1090,12 +1093,12 @@ li.itemTab {
 
       &.active {
         background: var(--Neutral-600, #80868b); // 원하는 배경색
-      
+
         img {
           filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(260deg) brightness(103%) contrast(102%);
         }
       }
-      
+
       img {
         filter: brightness(0) saturate(100%) invert(81%) sepia(8%) saturate(145%) hue-rotate(173deg) brightness(94%) contrast(94%);
       }

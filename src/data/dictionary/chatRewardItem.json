@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Talkain",
+    "description": "Talkain Chatting",
+    "color": "rgba(0, 0, 0, 0.6)",
+    "border": "rgba(0, 0, 0, 0.0)"
+  },
+  {
+    "id": 2,
+    "title": "Bronze",
+    "description": "Moca Brown",
+    "color": "#C69D47",
+    "border": "linear-gradient(135deg, #C49744 0%, #FFE882 51.44%, #C49744 100%)"
+  },
+  {
+    "id": 3,
+    "title": "Silver",
+    "description": "Silver Gray",
+    "color": "#C0C0C0",
+    "border": "linear-gradient(135deg, #A0A0A0 0%, #C0C0C0 50%, #E0E0E0 100%)"
+  },
+  {
+    "id": 4,
+    "title": "Gold",
+    "description": "Gold Yellow",
+    "color": "#FFD700",
+    "border": "linear-gradient(135deg, #E0C200 0%, #FFD700 50%, #FFF1A0 100%)"
+  }
+]

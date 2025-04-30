@@ -166,7 +166,7 @@ export const ToastMessage = ({isOpen, message, onClose, type}: ToastMessageType)
           onClose();
         }}
         sx={{
-          zIndex: 99999,
+          zIndex: 10001,
           backgroundColor: 'rgba(0, 0, 0, 0.7)', // 살짝 어두운 흐림 효과
           // backdropFilter: 'blur(5px)', // 흐림 효과
         }}
@@ -182,7 +182,7 @@ export const ToastMessage = ({isOpen, message, onClose, type}: ToastMessageType)
         sx={{
           bottom: '20px',
           width: 'calc(var(--full-width-percent) - 32px)', // 전체 너비
-          zIndex: 99999,
+          zIndex: 10002,
           '& .MuiPaper-root': {
             minHeight: '47px',
             width: '100%', // 전체 너비

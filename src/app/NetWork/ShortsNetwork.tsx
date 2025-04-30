@@ -1,7 +1,7 @@
 // src/app/Network/ShortsNetwork.ts
 
 import api, {ResponseAPI} from './ApiInstance';
-import { VisibilityType } from './ContentNetwork';
+import {VisibilityType} from './ContentNetwork';
 import {MediaState, ProfileType} from './ProfileNetwork';
 
 // 쇼츠 정보 타입
@@ -68,6 +68,7 @@ export interface FeedInfo {
   isMyFeed: boolean;
   profileType?: ProfileType;
   profileVisibilityType: VisibilityType;
+  visibilityType: VisibilityType;
 }
 
 export interface CreateFeedReq {
@@ -293,7 +294,6 @@ export const deleteFeed = async (payload: DeleteFeedeReq) => {
     return res.data;
   } catch (e) {
     console.error('deleteFeed API 요청 실패:', e);
-    alert('API 요청 중 에러 발생: ' + e);
     return null;
   }
 };

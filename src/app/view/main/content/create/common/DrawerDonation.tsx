@@ -14,6 +14,8 @@ import {formatCurrency} from '@/utils/util-1';
 import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -60,23 +62,12 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(
       }
     };
 
-    // Send 버튼 클릭 시 alert 창에 숫자 출력
-    const handleSendClick = async () => {
-      const reqData: GiftStarReq = {
-        giftProfileId: giveToPDId,
-        giftStar: Number(inputValue),
-      };
-      if (inputValue !== '') {
-        //alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
-        const response = await sendGiftStar(reqData);
-        if (typeof response.data?.myStar === 'number') {
-          dispatch(setStar(response.data?.myStar));
-          if (onSend) onSend(inputValue.toString());
-          onClose();
-        }
-      } else {
-        alert('후원 금액을 입력하세요!'); // 값이 없을 때 경고 메시지
-      }
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+  // Send 버튼 클릭 시 alert 창에 숫자 출력
+  const handleSendClick = async () => {
+    const reqData: GiftStarReq = {
+      giftProfileId: giveToPDId,
+      giftStar: Number(inputValue),
     };
 
     useEffect(() => {
@@ -92,7 +83,10 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(
           }
         })();
       }
-    }, [isOpen]);
+    } else {
+      dataToast.open(getLocalizedText('common_alert_112'), ToastType.Normal);
+    }
+  };
 
     async function checkLogined(): Promise<boolean> {
       return await isLogined();
