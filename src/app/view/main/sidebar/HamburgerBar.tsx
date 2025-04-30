@@ -16,6 +16,9 @@ import ModalLanguageSelect from './ModalLanguageSelect';
 import PopupAccountChange from '../content/create/common/PopupAccountChange';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import {formatCurrency} from '@/utils/util-1';
+import Cookies from 'js-cookie';
+import {setRuby, setStar} from '@/redux-store/slices/Currency';
 
 interface HamburgerBarProps {
   open: boolean;
@@ -37,6 +40,8 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const [isAlertOn, setIsAlertOn] = useState<boolean>(false);
+
+  const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
 
   const renderMenuItem = (icon: string, text: string, onClick: () => void, depth?: number) => {
     return (
@@ -107,6 +112,10 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       dispatch(updateProfile(null));
       setUserMetaData(null);
       setIsLogin(false);
+      Cookies.remove('SESSION');
+      dispatch(setRuby(0));
+      dispatch(setStar(0));
+      pushLocalizedRoute('/auth', router);
     } catch (error) {
       console.error(error);
     }
@@ -212,11 +221,11 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
             <div className={styles.pointsSection}>
               <div className={styles.point}>
                 <img className={styles.pointIcon} src={BoldRuby.src} />
-                <span className={styles.pointText}>10.5K</span>
+                <span className={styles.pointText}>{formatCurrency(dataCurrencyInfo.ruby)}</span>
               </div>
               <div className={styles.point}>
                 <img className={styles.pointIcon} src={BoldStar.src} />
-                <span className={styles.pointText}>100</span>
+                <span className={styles.pointText}>{formatCurrency(dataCurrencyInfo.star)}</span>
               </div>
             </div>
           </li>
@@ -255,7 +264,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       {isAlertOn && (
         <CustomPopup
           type="alert"
-          title="6월에 기능 추가 예정"
+          title={getLocalizedText('common_alert_110')}
           buttons={[
             {
               label: 'OK',

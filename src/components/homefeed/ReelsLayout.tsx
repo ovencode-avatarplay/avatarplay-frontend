@@ -499,7 +499,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
         <CustomPopup
           type="alert"
           title="Sorry"
-          description="팔로우한 프로필이 없거나, 피드가 아직 없습니다."
+          description={getLocalizedText('common_alert_113')}
           buttons={[
             {
               label: 'OK',

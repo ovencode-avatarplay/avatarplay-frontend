@@ -62,6 +62,8 @@ import shaka from 'shaka-player/dist/shaka-player.compiled';
 import SelectDrawerArrow, {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {ConstructionOutlined} from '@mui/icons-material';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 interface Props {
   open: boolean;
@@ -684,6 +686,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
   //#endregion
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   //#region 옵션
   const [isOptionModal, setIsOptionModal] = useState(false);
 
@@ -736,6 +739,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   ];
   const handleReport = async () => {
     try {
+      dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
       if (!info) return;
       const response = await sendReport({
         interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라

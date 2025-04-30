@@ -20,6 +20,8 @@ import UserDropdown from '@/components/layout/shared/UserDropdown';
 import {setSkipStoryInit} from '@/redux-store/slices/StoryInfo';
 import {useAtom} from 'jotai';
 import {useRouter} from 'next/navigation';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {ToastType} from '@/app/Root';
 
 export default function BottomNav() {
   const router = useRouter();
@@ -225,6 +227,18 @@ export default function BottomNav() {
                   <div className={styles.navButtonPlusWrap}>
                     <img className={styles.buttonIconPlus} src={LinePlus.src} />
                   </div>
+                </button>
+              );
+            } else if (isMessage) {
+              return (
+                <button
+                  className={`${styles.navButton} 
+                ${selectedIndex === index ? styles.selected : ''} 
+                ${selectedIndex === index && colorMode === 0 ? styles['light-mode'] : ''}`}
+                  onClick={() => dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal)}
+                >
+                  {/* 다크모드 화이트 모드로 변경 */}
+                  {button.icon}
                 </button>
               );
             }

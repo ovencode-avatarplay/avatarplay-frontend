@@ -731,7 +731,7 @@ export const PopupPurchase = ({
   onClose,
   onPurchaseSuccess,
 }: PopupPurchaseType) => {
-  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
   const refCheckHide = useRef<HTMLInputElement | null>(null);
   const [data, setData] = useState<{isOpenNotEnoughStars: boolean; isOpen: boolean}>({
     isOpenNotEnoughStars: false,
@@ -753,7 +753,7 @@ export const PopupPurchase = ({
     setData({...data});
   };
 
-  const starAmount = dataStarInfo.star;
+  const starAmount = dataCurrencyInfo.star;
   const dispatch = useDispatch();
   const onPurchase = async () => {
     const dataBuyReq: BuyContentEpisodeReq = {
@@ -803,11 +803,11 @@ export const PopupPurchase = ({
           <div className={styles.right}>
             <div className={styles.balanceWrap}>
               <img src={BoldRuby.src} alt="" />
-              <div className={styles.amount}>{formatCurrency(dataStarInfo.star)}</div>
+              <div className={styles.amount}>{formatCurrency(dataCurrencyInfo.ruby)}</div>
             </div>
             <div className={styles.balanceWrap}>
               <img src={BoldStar.src} alt="" />
-              <div className={styles.amount}>{formatCurrency(dataStarInfo.star)}</div>
+              <div className={styles.amount}>{formatCurrency(dataCurrencyInfo.star)}</div>
             </div>
           </div>
         </div>

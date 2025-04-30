@@ -6,7 +6,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import CustomInput from '@/components/layout/shared/CustomInput';
-import {getLocalizedLink, isLogined} from '@/utils/UrlMove';
+import {getLocalizedLink, isLogined, pushLocalizedRoute} from '@/utils/UrlMove';
 import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
 import {setStar} from '@/redux-store/slices/Currency';
@@ -14,6 +14,9 @@ import {formatCurrency} from '@/utils/util-1';
 import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -29,10 +32,13 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
   const dataProfile = useSelector((state: RootState) => state.profile); // 내 피디 이름
   const [inputValue, setInputValue] = useState('');
 
-  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
+  const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
   const [starAmount, setStarAmount] = useState<number>(0);
 
-  const starInfo = dataStarInfo.star;
+  const [isShowStarLowMessage, setIsShowStarLowMessage] = useState(false); // star가 부족하다는 메시지박스 출력
+
+  const starInfo = dataCurrencyInfo.star;
+  const rubyInfo = dataCurrencyInfo.ruby;
 
   useEffect(() => {
     // starInfo가 숫자라면 그대로 사용, 아니라면 0으로 설정
@@ -58,6 +64,7 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
     }
   };
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   // Send 버튼 클릭 시 alert 창에 숫자 출력
   const handleSendClick = async () => {
     const reqData: GiftStarReq = {
@@ -66,13 +73,18 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
     };
     if (inputValue !== '') {
       //alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
-      const response = await sendGiftStar(reqData);
-      if (typeof response.data?.myStar === 'number') {
-        dispatch(setStar(response.data?.myStar));
-        onClose();
+      if (Number(inputValue) > starInfo) {
+        // 애러 메시지
+        setIsShowStarLowMessage(true);
+      } else {
+        const response = await sendGiftStar(reqData);
+        if (typeof response.data?.myStar === 'number') {
+          dispatch(setStar(response.data?.myStar));
+          onClose();
+        }
       }
     } else {
-      alert('후원 금액을 입력하세요!'); // 값이 없을 때 경고 메시지
+      dataToast.open(getLocalizedText('common_alert_112'), ToastType.Normal);
     }
   };
 
@@ -94,6 +106,10 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
   async function checkLogined(): Promise<boolean> {
     return await isLogined();
   }
+
+  const handleRouterCharge = () => {
+    pushLocalizedRoute(`/main/game/shop`, router);
+  };
   return (
     <>
       <CustomDrawer
@@ -111,9 +127,9 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
         <div className={styles.donationHaveStarArea}>
           <img className={styles.star} src={BoldStar.src}></img>
           <span className={styles.donationStarAmount}>{formatCurrency(starAmount)}</span>
-          <div className={styles.donationCharge}>
+          <button className={styles.donationCharge} onClick={() => handleRouterCharge()}>
             <div className={styles.donationChargeText}>{getLocalizedText('common_button_charge')}</div>
-          </div>
+          </button>
         </div>
         <div className={styles.gridContainer}>
           {[33, 100, 200, 500, 1000, 3000].map(value => (
@@ -174,6 +190,29 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
           </CustomButton>
         </div>
       </CustomDrawer>
+      {isShowStarLowMessage && (
+        <CustomPopup
+          type="alert"
+          title={getLocalizedText('Common', 'common_alert_046')}
+          description={getLocalizedText('Common', 'common_alert_073')}
+          buttons={[
+            {
+              label: getLocalizedText('Common', 'common_button_cancel'),
+              onClick: () => {
+                setIsShowStarLowMessage(false);
+              },
+              isPrimary: false,
+            },
+            {
+              label: getLocalizedText('Common', 'common_button_charge'),
+              onClick: () => {
+                handleRouterCharge();
+              },
+              isPrimary: true,
+            },
+          ]}
+        />
+      )}
     </>
   );
 });
