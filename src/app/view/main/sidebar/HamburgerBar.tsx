@@ -250,7 +250,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       {isAlertOn && (
         <CustomPopup
           type="alert"
-          title="6월에 기능 추가 예정"
+          title={getLocalizedText('common_alert_110')}
           buttons={[
             {
               label: 'OK',

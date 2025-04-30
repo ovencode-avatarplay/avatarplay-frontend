@@ -12,6 +12,8 @@ import {
   SubscriptionType,
 } from '@/app/NetWork/ProfileNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 type Props = {
   id: number;
@@ -74,6 +76,7 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
     ? getLocalizedText('common_label_free')
     : `${unit}${amount} ` + getLocalizedText('shared013_label_003');
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   return (
     <Dialog open={true} onClose={onClose} fullScreen>
       <div ref={popupRef} className={styles.popup}>
@@ -95,7 +98,7 @@ const PopupSubscription = ({id, onClose, onComplete}: Props) => {
               const target = e.target as HTMLElement;
               const category = target.closest('[data-tab]')?.getAttribute('data-tab');
               if (category == '1') {
-                alert('추후 제공');
+                dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
                 return;
               }
               if (category) {
