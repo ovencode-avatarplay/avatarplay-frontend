@@ -49,6 +49,7 @@ import {profile} from 'console';
 import CharacterGalleryModal from '@/app/view/studio/characterDashboard/CharacterGalleryModal';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
+import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -82,7 +83,15 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   const [imgUploadOpen, setImgUploadOpen] = useState(false);
   const [mediaUploadOpen, setMediaUploadOpen] = useState(false);
   const [videoUploadOpen, setVideoUploadOpen] = useState(false);
+
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [category, setCategory] = useState<GalleryCategory>(GalleryCategory.Portrait);
+
+  const handleCategoryChange = (newCategory: GalleryCategory) => {
+    if (newCategory !== category) {
+      setCategory(newCategory);
+    }
+  };
 
   const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
   const [imageViewUrl, setImageViewUrl] = useState(mainimageUrl);
@@ -725,15 +734,52 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       label: getLocalizedText('eventtrigger001_label_001'),
       preContent: '',
       content: (
-        <CharacterCreateEventTrigger
-          eventTriggerItems={characterTrigger}
-          onClickCreateEventTrigger={handleOnAddTrigger}
-          onEditEventTrigger={handleOnEditTrigger}
-          onDuplicateEventTrigger={handleDuplicateTrigger}
-          onDeleteEventTrigger={handleDeleteTrigger}
-          onClickEditTriggerMedia={handleOnClickTriggerMediaEdit}
-          onClickPreview={handlePreviewSelected}
-        />
+        <>
+          {galleryOpen && (
+            <>
+              <CharacterGalleryToggle category={category} onCategoryChange={handleCategoryChange} />
+              <CharacterGalleryGrid
+                itemUrl={
+                  category === GalleryCategory.Portrait
+                    ? character.portraitGalleryImageUrl
+                    : category === GalleryCategory.Pose
+                    ? character.poseGalleryImageUrl
+                    : category === GalleryCategory.Expression
+                    ? character.expressionGalleryImageUrl
+                    : []
+                }
+                selectedItemIndex={selectedGalleryIndex}
+                onSelectItem={i => {
+                  console.log(i);
+                  setSelectedGalleryIndex(i ?? 0);
+                  console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
+                  handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
+                  setGalleryOpen(false);
+                }}
+                onAddImageClick={() => {
+                  console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
+                  handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
+                  setGalleryOpen(false);
+                }}
+                category={category}
+                isTrigger={true}
+                style={{}}
+                hideSelected={false}
+              />
+            </>
+          )}
+          <div style={{display: galleryOpen ? 'none' : 'block'}}>
+            <CharacterCreateEventTrigger
+              eventTriggerItems={characterTrigger}
+              onClickCreateEventTrigger={handleOnAddTrigger}
+              onEditEventTrigger={handleOnEditTrigger}
+              onDuplicateEventTrigger={handleDuplicateTrigger}
+              onDeleteEventTrigger={handleDeleteTrigger}
+              onClickEditTriggerMedia={handleOnClickTriggerMediaEdit}
+              onClickPreview={handlePreviewSelected}
+            />
+          </div>
+        </>
       ),
     },
     {
@@ -1094,26 +1140,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           onClose={() => {
             setMediaUploadOpen(false);
           }}
-        />
-      )}
-      {galleryOpen && (
-        <CharacterGalleryGrid
-          itemUrl={character.portraitGalleryImageUrl}
-          selectedItemIndex={selectedGalleryIndex}
-          onSelectItem={i => {
-            console.log(i);
-            setSelectedGalleryIndex(i ?? 0);
-            console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
-            handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
-          }}
-          onAddImageClick={() => {
-            console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
-            handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
-          }}
-          category={GalleryCategory.Portrait}
-          isTrigger={true}
-          style={{}}
-          hideSelected={false}
         />
       )}
     </>
