@@ -46,6 +46,7 @@ const WorkroomEditDrawer: React.FC<Props> = ({
   };
 
   const isGalleryItem = selectedItem.mediaState === MediaState.None && selectedItem.profileId;
+  const isFavoriteItem = selectedItem.favorite;
 
   return (
     <CustomDrawer open={open} onClose={onClose}>
@@ -98,19 +99,21 @@ const WorkroomEditDrawer: React.FC<Props> = ({
             <li className={styles.editDrawerButton} onClick={onCopy}>
               {getLocalizedText('TODO : Make a copy')}
             </li>
-            <li className={styles.editDrawerButton} onClick={onMove}>
-              {getLocalizedText('TODO : Move to a folder')}
-              <button className={styles.editRightArrowButton}>
-                <img src={LineArrowRight.src} />
-              </button>
-            </li>
+            {!isGalleryItem && (
+              <li className={styles.editDrawerButton} onClick={onMove}>
+                {getLocalizedText('TODO : Move to a folder')}
+                <button className={styles.editRightArrowButton}>
+                  <img src={LineArrowRight.src} />
+                </button>
+              </li>
+            )}
             <li className={styles.editDrawerButton} onClick={onShare}>
               {getLocalizedText('TODO : Share')}
             </li>
             <li className={styles.editDrawerButton} onClick={onDownload}>
               {getLocalizedText('TODO : Download')}
             </li>
-            {!selectedItem.profileId && (
+            {!isGalleryItem && !isFavoriteItem && (
               <li className={styles.editDrawerButton} onClick={onDelete}>
                 {getLocalizedText('TODO : Delete')}
               </li>

@@ -15,10 +15,16 @@ import {
 import {GetCharacterInfoReq} from '@/app/NetWork/CharacterNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAltArrowDown, BoldViewGallery, LineList} from '@ui/Icons';
+import CharacterGalleryCreate from '@/app/view/studio/characterDashboard/CharacterGalleryCreate';
+import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 const CreateVariationMain: React.FC<Props> = ({}) => {
+  const {back} = useCustomRouter();
+
   //#region Pre Define
   const variationTags = ['Portrait', 'Pose', 'Expressions', 'Video'];
+
   //#endregion
 
   //#region State
@@ -28,6 +34,7 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   const [selectedIpFilter, setSelectedIpFilter] = useState<CharacterIP>(CharacterIP.Original);
 
+  const [isSelecting, setIsSelecting] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterInfo | null>(null);
   const [tagStates, setTagStates] = useState({
     variation: 'Portrait',
@@ -92,7 +99,12 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   const handleTagClick = (type: keyof typeof tagStates, tag: string) => {
     setTagStates(prev => ({...prev, [type]: tag}));
   };
+
   //#endregion
+
+  const routerBack = () => {
+    back('/main/homefeed');
+  };
 
   //#region Render
   const renderFilter = (detailViewButton: boolean, detailView: boolean) => {
@@ -137,7 +149,7 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   const renderCharacterList = () => {
     return (
-      <div>
+      <div className={styles.characterListContainer}>
         <div className={styles.filterArea}>{renderFilter(true, detailView)}</div>
         <div className={styles.characterGrid}>
           {characterList.map((character, index) => {
@@ -150,7 +162,7 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   const renderCharacterItem = (character: CharacterInfo, key: number) => {
     return (
-      <div key={key} className={styles.characterItem}>
+      <div key={key} className={styles.characterItem} onClick={() => setSelectedCharacter(character)}>
         <div className={styles.characterImage}>
           <img src={character.mainImageUrl} alt={character.name} />
         </div>
@@ -161,13 +173,12 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   const renderVariationList = () => {
     return (
-      <div>
+      <div className={styles.variationListContainer}>
         <SwipeTagList
           tags={variationTags}
           currentTag={tagStates.variation}
           onTagChange={tag => handleTagClick('variation', tag)}
         />
-        {tagStates.variation}
       </div>
     );
   };
@@ -176,9 +187,39 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   return (
     <div className={styles.variationMainContainer}>
-      <CreateDrawerHeader title="Create Variation" onClose={() => {}}></CreateDrawerHeader>
+      <CreateDrawerHeader
+        title="Create Variation"
+        onClose={() => {
+          if (selectedCharacter) {
+            setSelectedCharacter(null);
+          } else {
+            routerBack();
+          }
+        }}
+      ></CreateDrawerHeader>
 
-      {selectedCharacter ? renderVariationList() : renderCharacterList()}
+      {selectedCharacter ? (
+        <>
+          {renderVariationList()}
+          <CharacterGalleryCreate
+            open={true}
+            onClose={() => {}}
+            category={
+              tagStates.variation === 'Portrait'
+                ? GalleryCategory.Portrait
+                : tagStates.variation === 'Pose'
+                ? GalleryCategory.Pose
+                : tagStates.variation === 'Expressions'
+                ? GalleryCategory.Expression
+                : GalleryCategory.Portrait
+            }
+            selectedPortraitUrl={selectedCharacter?.mainImageUrl || ''}
+            onUploadGalleryImages={() => {}}
+          />
+        </>
+      ) : (
+        renderCharacterList()
+      )}
     </div>
   );
 };

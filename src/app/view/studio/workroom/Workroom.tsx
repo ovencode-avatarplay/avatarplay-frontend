@@ -29,6 +29,7 @@ import WorkroomSearchModal from './WorkroomSearchModal';
 import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
 import AudioPreViewer from '@/components/layout/shared/AudioPreViewer';
 import WorkroomItemSkeleton from './WorkroomItemSkeleton';
+import SharePopup from '@/components/layout/shared/SharePopup';
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
   const workTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
@@ -444,6 +445,8 @@ const Workroom: React.FC<Props> = ({}) => {
   const folderInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [isShare, setIsShare] = useState<boolean>(false);
   //#endregion
 
   //#region Container에서 길게 입력으로 선택활성화 시키기
@@ -480,9 +483,9 @@ const Workroom: React.FC<Props> = ({}) => {
   //#region  Handler
   const handleTagClick = (type: keyof typeof tagStates, tag: string) => {
     setTagStates(prev => ({...prev, [type]: tag}));
-    // 태그는
-    // setIsSelecting(false);
-    // setSelectedItems([]);
+
+    setIsSelecting(false);
+    setSelectedItems([]);
   };
 
   const toggleSelectItem = (id: number, checked: boolean) => {
@@ -553,7 +556,9 @@ const Workroom: React.FC<Props> = ({}) => {
       ...selectedItem,
       id: getMinId(workroomData) - 1,
       name: `Copy of ${selectedItem.name}`,
-      generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo, // 생성된 이미지가 복사될때 생성정보제거 (기획)
+      // 생성된 이미지가 복사될때 생성정보제거 (기획)
+      generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo,
+      profileId: null,
     };
 
     setWorkroomData(prev => [...prev, newItem]);
@@ -564,6 +569,12 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleMove = () => {
     console.log('handleMove');
     setIsFileMoveModalOpen(true);
+    setIsFileEditDrawerOpen(false);
+  };
+
+  const handleShare = () => {
+    console.log('handleShare');
+    setIsShare(true);
     setIsFileEditDrawerOpen(false);
   };
 
@@ -695,7 +706,9 @@ const Workroom: React.FC<Props> = ({}) => {
           return {
             ...item,
             folderLocation: targetFolderId ? [targetFolderId] : [],
-            generatedInfo: item.generatedInfo ? undefined : item.generatedInfo, // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
+            // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
+            generatedInfo: item.generatedInfo ? undefined : item.generatedInfo,
+            profileId: null,
           };
         }
 
@@ -703,7 +716,9 @@ const Workroom: React.FC<Props> = ({}) => {
           return {
             ...item,
             folderLocation: targetFolderId ? [targetFolderId] : [],
+            // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
             generatedInfo: item.generatedInfo ? undefined : item.generatedInfo,
+            profileId: null,
           };
         }
 
@@ -1534,6 +1549,33 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
+  const renderSharePopup = () => {
+    if (selectedItems.length > 0) {
+      const imgUrls = workroomData
+        .filter(item => selectedItems.includes(item.id) && item.imgUrl)
+        .map(item => item.imgUrl!);
+
+      const urlString = imgUrls.join(',');
+      return (
+        <SharePopup
+          open={isShare}
+          title={getLocalizedText('TODO : Share Items')}
+          url={urlString || ''}
+          onClose={() => setIsShare(false)}
+        />
+      );
+    } else {
+      return (
+        <SharePopup
+          open={isShare}
+          title={selectedItem?.name || ''}
+          url={selectedItem?.imgUrl || ''}
+          onClose={() => setIsShare(false)}
+        />
+      );
+    }
+  };
+
   //#endregion
 
   const splitData = [
@@ -1641,9 +1683,10 @@ const Workroom: React.FC<Props> = ({}) => {
           <WorkroomSelectingMenu
             selectedCount={selectedItems.length}
             onExitSelecting={() => {
+              setSelectedItems([]);
               setIsSelecting(false);
             }}
-            onShare={() => {}}
+            onShare={handleShare}
             onDownload={handleDownloadSelectedItems}
             onMoveToFolder={handleMove}
             onMoveToTrash={handleDeletePopupOpen}
@@ -1725,7 +1768,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 onRename={handleRename}
                 onCopy={handleCopy}
                 onMove={handleMove}
-                onShare={() => console.log('Share')}
+                onShare={handleShare}
                 onDownload={handleDownload}
                 onDelete={handleDeletePopupOpen}
               />
@@ -1932,6 +1975,7 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
                 )}
             </WorkroomSearchModal>
           )}
+          {renderSharePopup()}
         </>,
         document.body,
       )}

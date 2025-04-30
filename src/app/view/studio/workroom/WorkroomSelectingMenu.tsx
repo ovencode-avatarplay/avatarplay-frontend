@@ -4,12 +4,12 @@ import {LineFolderPlus, LineDelete, LineClose, LineShare, LineDownload, BoldFold
 
 interface Props {
   selectedCount: number;
-  onShare: () => void;
-  onDownload: () => void;
-  onMoveToFolder: () => void;
-  onRestore: () => void;
-  onMoveToTrash: () => void;
-  onExitSelecting: () => void;
+  onShare?: () => void;
+  onDownload?: () => void;
+  onMoveToFolder?: () => void;
+  onRestore?: () => void;
+  onMoveToTrash?: () => void;
+  onExitSelecting?: () => void;
   isTrash?: boolean;
 }
 
@@ -31,27 +31,39 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
       <div className={styles.centerArea}>
         {!isTrash ? (
           <>
-            <button className={styles.iconButton} aria-label="Share" onClick={onShare}>
-              <img src={LineShare.src} alt="Share" />
-            </button>
-            <button className={styles.iconButton} aria-label="Download" onClick={onDownload}>
-              <img src={LineDownload.src} alt="Download" />
-            </button>
-            <button className={styles.iconButton} aria-label="MoveFolder" onClick={onMoveToFolder}>
-              <img src={BoldFolder.src} alt="Move to folder" />
-            </button>
-            <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
-              <img src={LineDelete.src} alt="Move to trash" />
-            </button>
+            {onShare && (
+              <button className={styles.iconButton} aria-label="Share" onClick={onShare}>
+                <img src={LineShare.src} alt="Share" />
+              </button>
+            )}
+            {onDownload && (
+              <button className={styles.iconButton} aria-label="Download" onClick={onDownload}>
+                <img src={LineDownload.src} alt="Download" />
+              </button>
+            )}
+            {onMoveToFolder && (
+              <button className={styles.iconButton} aria-label="MoveFolder" onClick={onMoveToFolder}>
+                <img src={BoldFolder.src} alt="Move to folder" />
+              </button>
+            )}
+            {onMoveToTrash && (
+              <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
+                <img src={LineDelete.src} alt="Move to trash" />
+              </button>
+            )}
           </>
         ) : (
           <>
-            <button className={styles.iconButton} aria-label="onRestore" onClick={onRestore}>
-              <img src={BoldFolder.src} alt="Restore to folder" />
-            </button>
-            <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
-              <img src={LineDelete.src} alt="Delete" />
-            </button>
+            {onRestore && (
+              <button className={styles.iconButton} aria-label="onRestore" onClick={onRestore}>
+                <img src={BoldFolder.src} alt="Restore to folder" />
+              </button>
+            )}
+            {onMoveToTrash && (
+              <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
+                <img src={LineDelete.src} alt="Delete" />
+              </button>
+            )}
           </>
         )}
       </div>

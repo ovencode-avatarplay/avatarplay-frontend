@@ -13,6 +13,11 @@ import {
 } from '@/app/NetWork/ImageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterCreateImageButton from '../../main/content/create/character/CreateCharacterImageButton';
+import MaxTextInput from '@/components/create/MaxTextInput';
+import getLocalizedText from '@/utils/getLocalizedText';
+import WorkroomSelectingMenu from '../workroom/WorkroomSelectingMenu';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom} from '@/app/Root';
 
 interface CategoryCreateProps {
   open: boolean;
@@ -31,9 +36,17 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
   selectedPortraitUrl,
   onUploadGalleryImages,
 }) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+
   const [loading, setLoading] = useState(false);
 
-  const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
+  const [portraitPrompt, setPortraitPrompt] = useState('');
+  const [posePrompt, setPosePrompt] = useState('');
+  const [expressionPrompt, setExpressionPrompt] = useState('');
+
+  const [selectedPortraitIndex, setSelectedPortraitIndex] = useState<number>(0);
+  const [selectedPoseIndex, setSelectedPoseIndex] = useState<number>(0);
+  const [selectedExpressionIndex, setSelectedExpressionIndex] = useState<number>(0);
 
   const [selectedGeneratedItems, setSelectedGeneratedItems] = useState<number[]>([]); // 선택된 아이템의 인덱스를 배열로 저장
 
@@ -48,6 +61,22 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
       }
     });
   };
+
+  const portraitData = [
+    // {image: '/create_character/portrait/portrait_01_normal.png', id: 1, prompt: 'normal'},
+    // {image: '/create_character/portrait/portrait_02_lookingforward.png', id: 2, prompt: 'looking forward'},
+    // {image: '/create_character/portrait/portrait_03_lookingdown.png', id: 3, prompt: 'looking down'},
+    // {image: '/create_character/portrait/portrait_04_lookingup.png', id: 4, prompt: 'looking up'},
+    // {image: '/create_character/portrait/portrait_05_lookingleft.png', id: 5, prompt: 'looking left'},
+    // {image: '/create_character/portrait/portrait_06_lookingright.png', id: 6, prompt: 'looking right'},
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 1, prompt: 'normal'},
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 2, prompt: 'looking forward'},
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 3, prompt: 'looking down'},
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 4, prompt: 'looking up'},
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 5, prompt: 'looking left'},
+    {image: '/create_character/pose/pose_01_sitaside.png', id: 6, prompt: 'looking right'},
+  ];
+
   const poseData = [
     {image: '/create_character/pose/pose_01_sitaside.png', id: 1, prompt: 'sit, a side'},
     {image: '/create_character/pose/pose_02_standheadtilited.png', id: 2, prompt: 'stand, head tilted'},
@@ -69,14 +98,20 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
   const [generatedImages, setGeneratedImages] = useState<string[]>(['', '', '', '']); // 생성된 이미지 URL 저장
   const [createStep, setCreateStep] = useState<number>(0);
 
+  //#region Handle
+
   const handleClose = () => {
     onClose();
   };
 
-  // const handleGenerateClick = () => {
-  //   switch (category) {
-  //   }
-  // };
+  const handleGenerateClick = () => {
+    if (category === GalleryCategory.Pose) handlePoseCreate();
+    else if (category === GalleryCategory.Expression) handleExpressionCreate();
+    else if (category === GalleryCategory.Portrait) handlePortraitCreate();
+    else {
+      console.log('Err');
+    }
+  };
 
   const handlePoseCreate = async () => {
     setLoading(true);
@@ -86,7 +121,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
         // mainImageUrl: characterInfo.mainImageUrl,
         mainImageUrl: selectedPortraitUrl,
         category: category,
-        selectedImage: selectedItemIndex,
+        selectedImage: selectedPoseIndex,
       };
 
       console.log('Generation Data:', generationData);
@@ -94,7 +129,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
       const payload: GeneratePoseReq = {
         // url: characterInfo.mainImageUrl,
         url: selectedPortraitUrl,
-        pose: selectionImages[selectedItemIndex].prompt,
+        pose: selectionImages[selectedPoseIndex].prompt + ', ' + posePrompt,
         // ID : selectionImages[selectedItemIndex].id
         // Prompt : selectionImages[selectedItemIndex].prompt,
       };
@@ -127,7 +162,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
         // mainImageUrl: characterInfo.mainImageUrl,
         mainImageUrl: selectedPortraitUrl,
         category: category,
-        selectedImage: selectedItemIndex,
+        selectedImage: selectedExpressionIndex,
       };
 
       console.log('Generation Data:', generationData);
@@ -135,7 +170,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
       const payload: GenerateExpressionReq = {
         // url: characterInfo.mainImageUrl,
         url: selectedPortraitUrl,
-        expression: selectionImages[selectedItemIndex].prompt,
+        expression: selectionImages[selectedExpressionIndex].prompt + ', ' + expressionPrompt,
         // ID : selectionImages[selectedItemIndex].id
         // Prompt : selectionImages[selectedItemIndex].prompt,
       };
@@ -160,20 +195,64 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
     }
   };
 
+  const handlePortraitCreate = () => {
+    console.log('Portrait Create');
+  };
+
   const handleSelected = () => {
     let selectedItemList: string[] = selectedGeneratedItems.map(index => generatedImages[index]);
 
     onUploadGalleryImages(
       category,
       selectedItemList,
-      category === GalleryCategory.Pose ? poseData[selectedItemIndex].prompt : ExpressionData[selectedItemIndex].prompt,
+      category === GalleryCategory.Pose
+        ? poseData[selectedPoseIndex].prompt
+        : category === GalleryCategory.Expression
+        ? ExpressionData[selectedExpressionIndex].prompt
+        : portraitData[selectedPortraitIndex].prompt,
     );
     //TODO 선택된 아이템 업로드 해서 Character Gallery 갱신
   };
 
+  const handleDownloadSelectedItems = () => {
+    if (generatedImages.length === 0) return;
+
+    const itemsToDownload = selectedGeneratedItems.map(index => generatedImages[index]);
+
+    itemsToDownload.forEach(item => {
+      const link = document.createElement('a');
+      link.href = item || '';
+      link.download = item || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    setSelectedGeneratedItems([]);
+
+    dataToast.open(
+      getLocalizedText(
+        `TODO : Download ${itemsToDownload.length} item${itemsToDownload.length > 1 ? 's' : ''} successful!`,
+      ),
+    );
+  };
+
+  const handleMoveToFolder = () => {
+    // Workroom 폴더 이동
+    console.log('Move to Folder');
+  };
+
+  const handleMoveToTrash = () => {
+    // Workroom 휴지통 이동
+    console.log('Move to Trash');
+  };
+
+  //#endregion
+
   useEffect(() => {
     if (category === GalleryCategory.Pose) setSelectionImages(poseData);
     else if (category === GalleryCategory.Expression) setSelectionImages(ExpressionData);
+    else if (category === GalleryCategory.Portrait) setSelectionImages(portraitData);
     else {
       console.log('Err');
     }
@@ -192,95 +271,110 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
     };
   }, [open]);
 
+  const isSelected = (index: number) =>
+    (category === GalleryCategory.Pose && selectedPoseIndex === index) ||
+    (category === GalleryCategory.Expression && selectedExpressionIndex === index) ||
+    (category === GalleryCategory.Portrait && selectedPortraitIndex === index);
+
   return (
     <div className={styles.container}>
-      {createStep === 0 ? (
-        <div className={styles.editArea}>
-          <div className={styles.basePortraitArea}>
-            <h2 className={styles.title}>Base Portrait</h2>
-            <div className={styles.basePortraitItem}>
-              <div
-                className={styles.portraitImage}
-                style={{
-                  // backgroundImage: `url(${characterInfo.mainImageUrl})`,
-                  backgroundImage: `url(${selectedPortraitUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
-
-              {/* 기능 기획이 없는 버튼 */
-              /* <CustomButton size="Small" type="Tertiary" state="Normal">
-                Change
-              </CustomButton> */}
-            </div>
+      <div className={styles.editArea}>
+        <div className={styles.basePortraitArea}>
+          <h2 className={styles.title}>Base Portrait</h2>
+          <div className={styles.basePortraitItem}>
+            <div
+              className={styles.portraitImage}
+              style={{
+                // backgroundImage: `url(${characterInfo.mainImageUrl})`,
+                backgroundImage: `url(${selectedPortraitUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
           </div>
+        </div>
 
-          {/* Swiper Section */}
-          <div className={styles.swiperSection}>
-            <h2 className={styles.title}>Select {galleryCategoryText[category]}</h2>
-            <Swiper
-              spaceBetween={6}
-              slidesPerView="auto"
-              centeredSlides={true}
-              onSlideChange={swiper => setSelectedItemIndex(swiper.activeIndex)} // 슬라이드 변경 시 활성화된 인덱스 업데이트
-              onSwiper={swiper => setSelectedItemIndex(swiper.activeIndex)} // Swiper 초기화 시 활성화된 인덱스 설정
-              className={styles.swiper}
-            >
-              {selectionImages.map((data, index) => (
-                <SwiperSlide
-                  key={index}
+        <div className={styles.promptArea}>
+          <div className={styles.promptDesc}>
+            {getLocalizedText(`You can select a pose, describe it yourself, or combine both! Either way, you'll get the
+            Portaits you want.`)}
+          </div>
+          <MaxTextInput
+            promptValue={
+              category === GalleryCategory.Pose
+                ? posePrompt
+                : category === GalleryCategory.Expression
+                ? expressionPrompt
+                : portraitPrompt
+            }
+            handlePromptChange={e => {
+              if (category === GalleryCategory.Pose) setPosePrompt(e.target.value);
+              else if (category === GalleryCategory.Expression) setExpressionPrompt(e.target.value);
+              else if (category === GalleryCategory.Portrait) setPortraitPrompt(e.target.value);
+            }}
+          />
+        </div>
+
+        {/* Swiper Section */}
+        <div className={styles.swiperSection}>
+          <h2 className={styles.title}>Select {galleryCategoryText[category]}</h2>
+          <Swiper
+            spaceBetween={6}
+            slidesPerView="auto"
+            centeredSlides={true}
+            onSlideChange={swiper => {
+              if (category === GalleryCategory.Pose) setSelectedPoseIndex(swiper.activeIndex);
+              else if (category === GalleryCategory.Expression) setSelectedExpressionIndex(swiper.activeIndex);
+              else if (category === GalleryCategory.Portrait) setSelectedPortraitIndex(swiper.activeIndex);
+            }} // 슬라이드 변경 시 활성화된 인덱스 업데이트
+            onSwiper={swiper => {
+              if (category === GalleryCategory.Pose) setSelectedPoseIndex(swiper.activeIndex);
+              else if (category === GalleryCategory.Expression) setSelectedExpressionIndex(swiper.activeIndex);
+              else if (category === GalleryCategory.Portrait) setSelectedPortraitIndex(swiper.activeIndex);
+            }} // Swiper 초기화 시 활성화된 인덱스 설정
+            className={styles.swiper}
+          >
+            {selectionImages.map((data, index) => (
+              <SwiperSlide
+                key={index}
+                style={{
+                  width: '138px',
+                }}
+              >
+                <div
+                  className={`${styles.swiperItem}  ${
+                    category === GalleryCategory.Pose
+                      ? selectedPoseIndex === index
+                      : category === GalleryCategory.Expression
+                      ? selectedExpressionIndex === index
+                      : selectedPortraitIndex === index
+                      ? styles.selected
+                      : ''
+                  }`}
                   style={{
-                    width: '138px',
+                    backgroundImage: isSelected(index)
+                      ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.image})`
+                      : `url(${data.image})`,
                   }}
                 >
-                  <div
-                    className={`${styles.swiperItem}  ${selectedItemIndex === index ? styles.selected : ''}`}
-                    style={{
-                      backgroundImage:
-                        selectedItemIndex === index
-                          ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.image})`
-                          : `url(${data.image})`,
-                    }}
-                  >
-                    {selectedItemIndex === index && <img className={styles.checkIcon} src={LineCheck.src} />}
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+                  {category === GalleryCategory.Pose
+                    ? selectedPoseIndex === index
+                    : category === GalleryCategory.Expression
+                    ? selectedExpressionIndex === index
+                    : selectedPortraitIndex === index && <img className={styles.checkIcon} src={LineCheck.src} />}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
-      ) : (
-        <div className={styles.selectArea}>
-          <div className={styles.selectDesc}>Choose photo(s) to add. Multiple choose available</div>
-          {
-            <ul className={styles.selectGrid}>
-              {generatedImages.map((image, index) => (
-                <CharacterCreateImageButton
-                  key={index}
-                  sizeType="large"
-                  selectType="multiple"
-                  image={image}
-                  label={null}
-                  selected={selectedGeneratedItems.includes(index)}
-                  onSelectClick={() => {
-                    handleSelectGeneratedItem(index);
-                  }}
-                  isImageLoading={loading}
-                />
-              ))}
-            </ul>
-          }
-        </div>
-      )}
-
+      </div>
       <div className={styles.generateSection}>
         {createStep === 0 ? (
           <CustomButton
             size="Large"
             state="Normal"
             type="Primary"
-            onClick={category === GalleryCategory.Pose ? handlePoseCreate : handleExpressionCreate}
+            onClick={handleGenerateClick}
             customClassName={[styles.generateButton]}
           >
             Generate
@@ -334,6 +428,44 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
           </>
         )}
       </div>
+      {createStep === 1 /* API 연동 되기 전에 임시로 0 으로 처리 */ && (
+        <div className={styles.selectArea}>
+          <div className={styles.selectDesc}>Choose photo(s) to add. Multiple choose available</div>
+          {
+            <ul className={styles.selectGrid}>
+              {generatedImages.map((image, index) => (
+                <CharacterCreateImageButton
+                  key={index}
+                  sizeType="large"
+                  selectType="multiple"
+                  image={image}
+                  label={null}
+                  selected={selectedGeneratedItems.includes(index)}
+                  onSelectClick={() => {
+                    handleSelectGeneratedItem(index);
+                  }}
+                  isImageLoading={loading}
+                />
+              ))}
+            </ul>
+          }
+
+          {selectedGeneratedItems.length > 0 && (
+            <div className={styles.selectingMenuContainer}>
+              <WorkroomSelectingMenu
+                selectedCount={selectedGeneratedItems.length}
+                onDownload={handleDownloadSelectedItems}
+                onMoveToFolder={handleMoveToFolder}
+                onMoveToTrash={handleMoveToTrash}
+                onExitSelecting={() => {
+                  setSelectedGeneratedItems([]);
+                }}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       <LoadingOverlay loading={loading} />
     </div>
   );
