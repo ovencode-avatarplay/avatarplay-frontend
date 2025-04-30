@@ -42,7 +42,7 @@ const HomeFeedWithUrlKey: React.FC = () => {
   if (!feedData) return <p>Loading...</p>;
 
   return (
-    <main style={{position: 'relative', height: '100%'}}>
+    <main style={{position: 'relative', height: '100%', backgroundColor: 'black'}}>
       <ReelsLayout initialFeed={feedData} recommendState={recommendState}></ReelsLayout>
     </main>
   );
