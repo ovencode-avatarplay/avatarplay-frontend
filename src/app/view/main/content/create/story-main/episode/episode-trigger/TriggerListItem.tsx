@@ -259,6 +259,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
     [EmotionState.Excited]: {src: EmotionExcited.src, alt: 'Excited'},
     [EmotionState.Scared]: {src: EmotionScared.src, alt: 'Scared'},
     [EmotionState.Bored]: {src: EmotionBored.src, alt: 'Bored'},
+    [EmotionState.Arousal]: {src: EmotionHappy.src, alt: 'Arousal'},
   };
 
   // TriggerSubDataType에 따라 이미지와 아이콘 내용 동적으로 변경
