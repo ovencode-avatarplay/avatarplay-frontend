@@ -117,7 +117,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       const {scrollTop, clientHeight, scrollHeight} = scrollRef.current;
       const isAtBottom = scrollHeight - scrollTop === clientHeight;
 
-      console.log(scrollRef.current);
       // 스크롤 위치를 유지하기 위해 이전 스크롤 높이 계산
       const previousScrollHeight = scrollHeight;
 
@@ -209,7 +208,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
       retrySend();
     }
   };
-  console.log('aiChatHeight', aiChatHeight);
   const isBlur = selectedBubbleIndex !== null;
 
   const handleSendStoryLike = (id: number, bubbleIndex: number, like: boolean) => {
@@ -242,10 +240,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     }
   };
 
-  {
-    console.log(messages);
-    console.log('Messages :', messages.Messages);
-  }
   return (
     <>
       <LoadingOverlay loading={loading} />
