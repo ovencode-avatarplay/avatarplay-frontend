@@ -32,7 +32,7 @@ export const useStreamMessage = ({handleSendMessage, isSendingMessage, onMessage
 
     eventSource.current.onmessage = onMessage;
     eventSource.current.onerror = async error => {
-      console.error('Stream encountered an error or connection was lost');
+      console.error('Stream encountered an error or connection was lost:' +  JSON.stringify(error));
       //await handleSendMessage(`${ESystemError.syserr_chat_stream_error}`, false, false, false);
       console.error(`${ESystemError.syserr_chat_stream_error}`, false, false, false); // 위처럼 하면 채팅창에 자꾸 애러메시지가 깜빡거려서 일단 막음
       isSendingMessage.current = false;
