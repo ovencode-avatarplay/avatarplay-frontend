@@ -191,10 +191,7 @@ const ChatPage: React.FC = () => {
 
   async function onMessage(event: any, eventSource: any) {
     try {
-      console.log('onMessage isLoading: ' + isLoading);
-
       setIsLoading(false);
-      console.log('onMessage isLoading2: ' + isLoading);
       if (!event.data) {
         throw new Error('Received null or empty data');
       }
@@ -223,6 +220,8 @@ const ChatPage: React.FC = () => {
       }
 
       await handleSendMessage(newMessage, false, true, false);
+
+      
 
       if (newMessage.includes('$') === true) {
         isSendingMessage.current = false;
@@ -514,7 +513,6 @@ const ChatPage: React.FC = () => {
         // 같은타입의 말풍선이 새로 만들어져야 하는 경우가 있어서 아래 조건 추가함.
         //if (isNarrationActive.active === true) currentSender = SenderType.PartnerNarration;
         const tempChatId: number = chatId;
-        console.log('newMessage.text :==' + newMessage.text + '==');
         // 2. 메시지를 한 바이트씩 조사해서 새로운 Sender로 만들지 말지 처리한다.
         for (let i = 0; i < newMessage.text.length; i++) {
           let {isAnotherSender, newSender} = isAnotherSenderType(isMyMessage, newMessage.text[i], currentSender);

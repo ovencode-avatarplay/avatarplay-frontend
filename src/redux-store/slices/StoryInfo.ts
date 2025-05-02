@@ -198,7 +198,9 @@ export enum EmotionState {
   Excited = 3,
   Scared = 4,
   Bored = 5,
+  Arousal = 6,
 }
+
 export enum TriggerMainDataType {
   triggerValueIntimacy = 0,
   triggerValueKeyword = 1,
