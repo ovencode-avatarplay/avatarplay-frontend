@@ -1,36 +1,59 @@
 interface Props {}
 
+//#region Import
+// 1. React 및 주요 라이브러리
+import React, {useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
-import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
-import styles from './Workroom.module.css';
-import Splitters from '@/components/layout/shared/CustomSplitter';
-import getLocalizedText from '@/utils/getLocalizedText';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import SwipeTagList from './SwipeTagList';
-import {BoldAltArrowDown, BoldViewGallery, LineEdit, LineFolderPlus, LineList, LineSearch} from '@ui/Icons';
+
+// 2. 타사 라이브러리
 import {Swiper, SwiperSlide} from 'swiper/react';
-import WorkroomItem, {WorkroomItemInfo} from './WorkroomItem';
-import WorkroomSelectingMenu from './WorkroomSelectingMenu';
-import SelectDrawer from '@/components/create/SelectDrawer';
-import CustomPopup from '@/components/layout/shared/CustomPopup';
-import WorkroomEditDrawer from './WorkroomEditDrawer';
-import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
-import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
-import WorkroomFileMoveModal from './WorkroomFileMoveModal';
-import {MediaState} from '@/app/NetWork/ProfileNetwork';
-import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
+import {useAtom} from 'jotai';
+
+// 3. 디자인 관련 아이콘, 스타일
+import {LineFolderPlus, LineSearch} from '@ui/Icons';
+import styles from './Workroom.module.css';
+
+// 4. 앱 내 유틸, 상태, 네트워크
+import getLocalizedText from '@/utils/getLocalizedText';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {ToastMessageAtom} from '@/app/Root';
-import {useAtom} from 'jotai';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
+import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
+
+// 5. 앱 내 컴포넌트 - 공통 UI
+import Splitters from '@/components/layout/shared/CustomSplitter';
+import CustomPopup from '@/components/layout/shared/CustomPopup';
 import EmptyState from '@/components/search/EmptyState';
-import WorkroomGalleryModal from './WorkroomGalleryModal';
-import WorkroomSearchModal from './WorkroomSearchModal';
+import {DropDownMenuItem} from '@/components/create/DropDownMenu';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
+import SharePopup from '@/components/layout/shared/SharePopup';
+import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
+import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
 import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
 import AudioPreViewer from '@/components/layout/shared/AudioPreViewer';
+
+// 6. 앱 내 컴포넌트 - 워크룸 관련
+import WorkroomMyWork from './WorkroomMyWork';
+import WorkroomFavorite from './WorkroomFavorite';
+import WorkroomAiHistory from './WorkroomAiHistory';
+import WorkroomGallery from './WorkroomGallery';
+import WorkroomTrash from './WorkroomTrash';
+import WorkroomFolderData from './WorkroomFolderData';
+import WorkroomDataItems from './WorkroomDataItems';
+import WorkroomCategorySection from './WorkroomCategorySection';
+import WorkroomFilter from './WorkroomFilter';
+import WorkroomItem, {WorkroomItemInfo} from './WorkroomItem';
 import WorkroomItemSkeleton from './WorkroomItemSkeleton';
-import SharePopup from '@/components/layout/shared/SharePopup';
-import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
+import WorkroomEditDrawer from './WorkroomEditDrawer';
+import WorkroomFileMoveModal from './WorkroomFileMoveModal';
+import WorkroomGalleryModal from './WorkroomGalleryModal';
+import WorkroomSearchModal from './WorkroomSearchModal';
+import WorkroomSelectingMenu from './WorkroomSelectingMenu';
+import SwipeTagList from './SwipeTagList';
+//#endregion
+
 const Workroom: React.FC<Props> = ({}) => {
   //#region PreDefine
   const workTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
@@ -1025,8 +1048,6 @@ const Workroom: React.FC<Props> = ({}) => {
   }, [tagStates]);
   //#endregion
 
-  const recentData = filterWorkroomData(workroomData, {limit: 20, renderEmpty: false, trash: false});
-
   //#region Renderer
   const renderSwiper = (data: WorkroomItemInfo[]) => {
     return (
@@ -1067,37 +1088,21 @@ const Workroom: React.FC<Props> = ({}) => {
     const filteredData = filterWorkroomData(data, option);
 
     return (
-      <div className={`${styles.itemContainer}`}>
-        {option.filterArea && (
-          <div className={styles.filterArea}>{renderFilter(detailViewButton || false, detailView)}</div>
-        )}
-
-        {filteredData.length > 0 ? (
-          <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
-            {filteredData.map((item, index) => (
-              <div className={styles.dataItem} key={index} data-item>
-                <WorkroomItem
-                  detailView={detailView}
-                  item={item}
-                  isSelecting={isSelecting}
-                  isSelected={selectedItems.includes(item.id)}
-                  onSelect={checked => toggleSelectItem(item.id, checked)}
-                  onClickFavorite={() => toggleFavorite(item.id)}
-                  onClickMenu={() => handleMenuClick(item)}
-                  onClickPreview={() => handleItemImageClick(item)}
-                  onClickItem={() => handleItemClick(item)}
-                />
-              </div>
-            ))}
-          </ul>
-        ) : option.renderEmpty ? (
-          <div className={styles.emptyStateContainer}>
-            <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
+      <WorkroomDataItems
+        data={filteredData}
+        detailView={detailView}
+        option={option}
+        detailViewButton={detailViewButton || false}
+        isSelecting={isSelecting}
+        selectedItems={selectedItems}
+        renderFilter={renderFilter}
+        toggleSelectItem={toggleSelectItem}
+        toggleFavorite={toggleFavorite}
+        handleMenuClick={handleMenuClick}
+        handleItemImageClick={handleItemImageClick}
+        handleItemClick={handleItemClick}
+        filterWorkroomData={filterWorkroomData}
+      />
     );
   };
 
@@ -1110,544 +1115,133 @@ const Workroom: React.FC<Props> = ({}) => {
     options: RenderDataItemsOptions,
     hideEmpty?: boolean,
   ) => {
-    return filterWorkroomData(data, options).length > 0 ? (
-      <div className={styles.categoryArea}>
-        <div className={styles.categoryTitleArea}>
-          <div className={styles.categoryTitle}>{getLocalizedText(titleKey)}</div>
-          <button
-            className={styles.categoryShowMore}
-            onClick={() => {
-              handleTagClick(tagKey, tagValue);
-            }}
-          >
-            {getLocalizedText('TODO : Show more')}
-          </button>
-        </div>
-        {renderDataItems(data, detailView, options)}
-      </div>
-    ) : hideEmpty ? (
-      <></>
-    ) : (
-      <div className={styles.emptyStateContainer}>
-        <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-      </div>
+    return (
+      <WorkroomCategorySection
+        titleKey={titleKey}
+        tagKey={tagKey}
+        tagValue={tagValue}
+        dataLength={data.length}
+        renderDataItems={() => renderDataItems(data, detailView, options)}
+        onClickTag={tag => handleTagClick(tagKey, tag)}
+        hideEmpty={hideEmpty}
+      />
     );
   };
 
   const renderFilter = (detailViewButton: boolean, detailView: boolean) => {
     return (
-      <>
-        <div className={styles.filterLeft}>
-          {detailViewButton && (
-            <button
-              className={styles.detailViewButton}
-              onClick={() => {
-                setDetailView(prev => !prev);
-              }}
-            >
-              <img src={!detailView ? BoldViewGallery.src : LineList.src} alt="detailView" />
-            </button>
-          )}
-        </div>
-        <div className={styles.filterRight} onClick={() => setSortDropDownOpen(true)}>
-          <div className={styles.filterText}>{getLocalizedText('TODO : Filter')}</div>
-          <img src={BoldAltArrowDown.src} alt="filter" />
-          {sortDropDownOpen && (
-            <DropDownMenu
-              items={dropDownMenuItems}
-              onClose={() => setSortDropDownOpen(false)}
-              className={styles.sortDropDown}
-              useSelected={true}
-              selectedIndex={selectedSort}
-            />
-          )}
-        </div>
-      </>
+      <WorkroomFilter
+        detailViewButton={detailViewButton}
+        detailView={detailView}
+        setDetailView={setDetailView}
+        sortDropDownOpen={sortDropDownOpen}
+        setSortDropDownOpen={setSortDropDownOpen}
+        selectedSort={selectedSort}
+        dropDownMenuItems={dropDownMenuItems}
+      />
     );
   };
 
   const renderMyWork = () => {
     return (
-      <div
-        className={styles.myWorkContainer}
-        onMouseDown={handleStart}
-        onMouseUp={handleEnd}
-        onMouseLeave={handleEnd}
-        onTouchStart={handleStart}
-        onTouchCancel={handleEnd}
-        onTouchEnd={e => {
-          handleEnd();
-          handleDeselectIfOutside(e);
-        }}
-        onClick={e => handleDeselectIfOutside(e)}
-      >
-        {tagStates.work === 'All' && (
-          <>
-            {filterWorkroomData(folderData, {trash: false}).length > 0 ||
-            filterWorkroomData(imageData, {trash: false}).length > 0 ||
-            filterWorkroomData(videoData, {trash: false}).length > 0 ||
-            filterWorkroomData(audioData, {trash: false}).length > 0 ? (
-              <>
-                <div className={styles.categoryArea}>
-                  <div className={styles.categoryTitleArea}>
-                    <div className={styles.categoryTitle}>{getLocalizedText('TODO : Recent')}</div>
-                  </div>
-                  {/* All 에서 보여지는 Recent 리스트는 20개 까지입니다. (기획)  */}
-                  {renderSwiper(recentData)}
-                </div>
-
-                {renderCategorySection(
-                  'TODO : Folder',
-                  'work',
-                  'Folders',
-                  folderData,
-                  true,
-                  {filterArea: false, limit: 4, trash: false},
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Image',
-                  'work',
-                  'Image',
-                  imageData,
-                  detailView,
-                  {filterArea: false, limit: 4},
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Video',
-                  'work',
-                  'Video',
-                  videoData,
-                  detailView,
-                  {filterArea: false, limit: 4},
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Audio',
-                  'work',
-                  'Audio',
-                  audioData,
-                  true,
-                  {filterArea: false, limit: 4},
-                  true,
-                )}
-              </>
-            ) : (
-              <div className={styles.emptyStateContainer}>
-                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-              </div>
-            )}
-          </>
-        )}
-
-        {tagStates.work === 'Folders' &&
-          renderDataItems(
-            folderData.filter(
-              item =>
-                item.folderLocation === null || item.folderLocation === undefined || item.folderLocation.length === 0,
-            ),
-            true,
-            {filterArea: true, renderEmpty: true},
-          )}
-
-        {tagStates.work === 'Image' &&
-          renderDataItems(imageData, detailView, {filterArea: true, renderEmpty: true}, true)}
-
-        {tagStates.work === 'Video' &&
-          renderDataItems(videoData, detailView, {filterArea: true, renderEmpty: true}, true)}
-
-        {tagStates.work === 'Audio' && renderDataItems(audioData, true, {filterArea: true, renderEmpty: true})}
-      </div>
+      <WorkroomMyWork
+        tagStates={tagStates.work}
+        folderData={folderData}
+        imageData={imageData}
+        videoData={videoData}
+        audioData={audioData}
+        detailView={detailView}
+        filterWorkroomData={filterWorkroomData}
+        renderSwiper={renderSwiper}
+        renderCategorySection={renderCategorySection}
+        renderDataItems={renderDataItems}
+        handleStart={handleStart}
+        handleEnd={handleEnd}
+        handleDeselectIfOutside={handleDeselectIfOutside}
+      />
     );
   };
 
   const renderFavorite = () => {
     return (
-      <div className={styles.favoriteContainer}>
-        {tagStates.favorite === 'All' && (
-          <>
-            {filterWorkroomData(folderData, {trash: false, favorite: true}).length > 0 ||
-            filterWorkroomData(imageData, {trash: false, favorite: true}).length > 0 ||
-            filterWorkroomData(videoData, {trash: false, favorite: true}).length > 0 ||
-            filterWorkroomData(audioData, {trash: false, favorite: true}).length > 0 ? (
-              <>
-                {renderCategorySection(
-                  'TODO : Folder',
-                  'favorite',
-                  'Folders',
-                  folderData,
-                  true,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    favorite: true,
-                    trash: false,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Image',
-                  'favorite',
-                  'Image',
-                  imageData,
-                  detailView,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    favorite: true,
-                    trash: false,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Video',
-                  'favorite',
-                  'Video',
-                  videoData,
-                  detailView,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    favorite: true,
-                    trash: false,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Audio',
-                  'favorite',
-                  'Audio',
-                  audioData,
-                  true,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    favorite: true,
-                    trash: false,
-                  },
-                  true,
-                )}
-              </>
-            ) : (
-              <div className={styles.emptyStateContainer}>
-                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-              </div>
-            )}
-          </>
-        )}
-
-        {tagStates.favorite === 'Folders' &&
-          renderDataItems(folderData, true, {filterArea: true, limit: 4, favorite: true, renderEmpty: true})}
-        {tagStates.favorite === 'Image' &&
-          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, favorite: true, renderEmpty: true}, true)}
-        {tagStates.favorite === 'Video' &&
-          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, favorite: true, renderEmpty: true}, true)}
-        {tagStates.favorite === 'Audio' &&
-          renderDataItems(audioData, true, {filterArea: true, limit: 4, favorite: true, renderEmpty: true})}
-      </div>
+      <WorkroomFavorite
+        tagState={tagStates.favorite}
+        folderData={folderData}
+        imageData={imageData}
+        videoData={videoData}
+        audioData={audioData}
+        detailView={detailView}
+        renderCategorySection={renderCategorySection}
+        renderDataItems={renderDataItems}
+        filterWorkroomData={filterWorkroomData}
+      />
     );
   };
 
   const renderAiHistory = () => {
     return (
-      <div
-        className={styles.aiHistoryContainer}
-        onMouseDown={handleStart}
-        onMouseUp={handleEnd}
-        onMouseLeave={handleEnd}
-        onTouchStart={handleStart}
-        onTouchCancel={handleEnd}
-        onTouchEnd={e => {
-          handleEnd();
-          handleDeselectIfOutside(e);
-        }}
-        onClick={e => handleDeselectIfOutside(e)}
-      >
-        <>
-          <div className={styles.categoryArea}>
-            <div className={styles.categoryTitleArea}></div>
-            {renderDataItems(
-              aiHistoryData,
-              false,
-              {
-                filterArea: false,
-                generatedType:
-                  tagStates.aiHistory === 'All'
-                    ? 0
-                    : tagStates.aiHistory === 'Custom'
-                    ? 1
-                    : tagStates.aiHistory === 'Variation'
-                    ? 2
-                    : 0,
-                renderEmpty: true,
-              },
-              true,
-            )}
-          </div>
-        </>
-      </div>
+      <WorkroomAiHistory
+        tagState={tagStates.aiHistory}
+        aiHistoryData={aiHistoryData}
+        renderDataItems={renderDataItems}
+        handleStart={handleStart}
+        handleEnd={handleEnd}
+        handleDeselectIfOutside={handleDeselectIfOutside}
+      />
     );
   };
 
   const renderGallery = () => {
     return (
-      <div className={styles.galleryContainer}>
-        {tagStates.gallery === 'All' && (
-          <>
-            {filterWorkroomData(galleryData, {trash: false}).length > 0 ||
-            filterWorkroomData(galleryData, {trash: false}).length > 0 ? (
-              <>
-                {renderCategorySection(
-                  'TODO : MyCharacter',
-                  'gallery',
-                  'MyCharacter',
-                  galleryData,
-                  detailView,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : SharedCharacter',
-                  'gallery',
-                  'SharedCharacter',
-                  galleryData,
-                  detailView,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                  },
-                  true,
-                )}
-              </>
-            ) : (
-              <div className={styles.emptyStateContainer}>
-                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-              </div>
-            )}
-          </>
-        )}
-        {tagStates.gallery === 'MyCharacter' && (
-          <>{renderDataItems(galleryData, detailView, {filterArea: true, renderEmpty: true}, true)}</>
-        )}
-
-        {tagStates.gallery === 'SharedCharacter' && (
-          <>{/* {renderDataItems(galleryData, true, {filterArea: true, renderEmpty: true}, true)} */}</>
-        )}
-      </div>
+      <WorkroomGallery
+        tagState={tagStates.gallery}
+        galleryData={galleryData}
+        detailView={detailView}
+        renderCategorySection={renderCategorySection}
+        renderDataItems={renderDataItems}
+        filterWorkroomData={filterWorkroomData}
+      />
     );
   };
 
   const renderTrash = () => {
     return (
-      <div
-        className={styles.trashContainer}
-        onMouseDown={handleStart}
-        onMouseUp={handleEnd}
-        onMouseLeave={handleEnd}
-        onTouchStart={handleStart}
-        onTouchCancel={handleEnd}
-        onTouchEnd={e => {
-          handleEnd();
-          handleDeselectIfOutside(e);
-        }}
-        onClick={e => handleDeselectIfOutside(e)}
-      >
-        {tagStates.trash === 'All' && (
-          <>
-            {filterWorkroomData(folderData, {trash: true}).length > 0 ||
-            filterWorkroomData(imageData, {trash: true}).length > 0 ||
-            filterWorkroomData(videoData, {trash: true}).length > 0 ||
-            filterWorkroomData(audioData, {trash: true}).length > 0 ? (
-              <>
-                {renderCategorySection(
-                  'TODO : Folder',
-                  'trash',
-                  'Folders',
-                  folderData,
-                  true,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    trash: true,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Image',
-                  'trash',
-                  'Image',
-                  imageData,
-                  detailView,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    trash: true,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Video',
-                  'trash',
-                  'Video',
-                  videoData,
-                  detailView,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    trash: true,
-                  },
-                  true,
-                )}
-
-                {renderCategorySection(
-                  'TODO : Audio',
-                  'trash',
-                  'Audio',
-                  audioData,
-                  true,
-                  {
-                    filterArea: false,
-                    limit: 4,
-                    trash: true,
-                  },
-                  true,
-                )}
-              </>
-            ) : (
-              <div className={styles.emptyStateContainer}>
-                <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-              </div>
-            )}
-          </>
-        )}
-
-        {tagStates.trash === 'Folders' &&
-          renderDataItems(folderData, true, {filterArea: true, limit: 4, trash: true, renderEmpty: true})}
-
-        {tagStates.trash === 'Image' &&
-          renderDataItems(imageData, detailView, {filterArea: true, limit: 4, trash: true, renderEmpty: true}, true)}
-
-        {tagStates.trash === 'Video' &&
-          renderDataItems(videoData, detailView, {filterArea: true, limit: 4, trash: true, renderEmpty: true}, true)}
-
-        {tagStates.trash === 'Audio' &&
-          renderDataItems(audioData, true, {filterArea: true, limit: 4, trash: true, renderEmpty: true})}
-      </div>
+      <WorkroomTrash
+        tagState={tagStates.trash}
+        folderData={folderData}
+        imageData={imageData}
+        videoData={videoData}
+        audioData={audioData}
+        detailView={detailView}
+        renderCategorySection={renderCategorySection}
+        renderDataItems={renderDataItems}
+        filterWorkroomData={filterWorkroomData}
+        handleStart={handleStart}
+        handleEnd={handleEnd}
+        handleDeselectIfOutside={handleDeselectIfOutside}
+      />
     );
   };
 
   const renderFolderData = (folderId: number) => {
     return (
-      <>
-        <SwipeTagList
-          tags={workTags}
-          currentTag={tagStates.folder}
-          onTagChange={tag => handleTagClick('folder', tag)}
-        />
-        <div
-          className={styles.folderContainer}
-          onMouseDown={handleStart}
-          onMouseUp={handleEnd}
-          onMouseLeave={handleEnd}
-          onTouchStart={handleStart}
-          onTouchCancel={handleEnd}
-          onTouchEnd={e => {
-            handleEnd();
-            handleDeselectIfOutside(e);
-          }}
-          onClick={e => handleDeselectIfOutside(e)}
-        >
-          {tagStates.folder === 'All' && (
-            <>
-              {filterWorkroomData(folderData, {trash: false, parentFolderId: folderId}).length > 0 ||
-              filterWorkroomData(imageData, {trash: false, parentFolderId: folderId}).length > 0 ||
-              filterWorkroomData(videoData, {trash: false, parentFolderId: folderId}).length > 0 ||
-              filterWorkroomData(audioData, {trash: false, parentFolderId: folderId}).length > 0 ? (
-                <>
-                  {renderCategorySection(
-                    'TODO : Folder',
-                    'folder',
-                    'Folders',
-                    folderData,
-                    true,
-                    {filterArea: false, limit: 4, trash: false, parentFolderId: folderId},
-                    true,
-                  )}
-
-                  {renderCategorySection(
-                    'TODO : Image',
-                    'folder',
-                    'Image',
-                    imageData,
-                    detailView,
-                    {filterArea: false, limit: 4, parentFolderId: folderId},
-                    true,
-                  )}
-
-                  {renderCategorySection(
-                    'TODO : Video',
-                    'folder',
-                    'Video',
-                    videoData,
-                    detailView,
-                    {filterArea: false, limit: 4, parentFolderId: folderId},
-                    true,
-                  )}
-
-                  {renderCategorySection(
-                    'TODO : Audio',
-                    'folder',
-                    'Audio',
-                    audioData,
-                    true,
-                    {filterArea: false, limit: 4, parentFolderId: folderId},
-                    true,
-                  )}
-                </>
-              ) : (
-                <div className={styles.emptyStateContainer}>
-                  <EmptyState stateText={getLocalizedText('TODO : EMPTY')} />
-                </div>
-              )}
-            </>
-          )}
-
-          {tagStates.folder === 'Folders' &&
-            renderDataItems(folderData, true, {filterArea: true, parentFolderId: folderId, renderEmpty: true})}
-
-          {tagStates.folder === 'Image' &&
-            renderDataItems(
-              imageData,
-              detailView,
-              {filterArea: true, parentFolderId: folderId, renderEmpty: true},
-              true,
-            )}
-
-          {tagStates.folder === 'Video' &&
-            renderDataItems(
-              videoData,
-              detailView,
-              {filterArea: true, parentFolderId: folderId, renderEmpty: true},
-              true,
-            )}
-
-          {tagStates.folder === 'Audio' &&
-            renderDataItems(audioData, true, {filterArea: true, parentFolderId: folderId, renderEmpty: true})}
-        </div>
-      </>
+      <WorkroomFolderData
+        tagState={tagStates.folder}
+        folderId={folderId}
+        workTags={workTags}
+        folderData={folderData}
+        imageData={imageData}
+        videoData={videoData}
+        audioData={audioData}
+        detailView={detailView}
+        handleTagClick={tag => handleTagClick('folder', tag)}
+        renderCategorySection={renderCategorySection}
+        renderDataItems={renderDataItems}
+        filterWorkroomData={filterWorkroomData}
+        handleStart={handleStart}
+        handleEnd={handleEnd}
+        handleDeselectIfOutside={handleDeselectIfOutside}
+      />
     );
   };
 
@@ -2100,14 +1694,6 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
         style={{display: 'none'}}
         onChange={e => e.target.files && handleFileUpload(e.target.files)}
       />
-      {/* <input
-        type="file"
-  webkitdirectory=""
-  directory=""
-        ref={folderInputRef}
-        style={{display: 'none'}}
-        onChange={e => e.target.files && handleFolderUpload(e.target.files)}
-      /> */}
       {React.createElement('input', {
         type: 'file',
         ref: folderInputRef,
