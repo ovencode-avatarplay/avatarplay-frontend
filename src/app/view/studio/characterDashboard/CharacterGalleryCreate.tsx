@@ -147,8 +147,17 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
         setGeneratedImages(newImages); // 생성된 이미지 갱신
       }
     } catch (error) {
-      alert('Failed to generate images. Please try again.');
-      setCreateStep(0);
+      // alert('Failed to generate images. Please try again.');
+      alert('임시처리');
+
+      const newImages = [selectedPortraitUrl, selectedPortraitUrl, selectedPortraitUrl, selectedPortraitUrl]; // API null 나오는경우 임시처리
+
+      if (newImages.length > 0) {
+        setGeneratedImages(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
+        setGeneratedImages(newImages); // 생성된 이미지 갱신
+      }
+
+      // setCreateStep(0);
     } finally {
       setLoading(false);
     }
@@ -321,12 +330,21 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
           <Swiper
             spaceBetween={6}
             slidesPerView="auto"
-            centeredSlides={true}
-            onSlideChange={swiper => {
-              if (category === GalleryCategory.Pose) setSelectedPoseIndex(swiper.activeIndex);
-              else if (category === GalleryCategory.Expression) setSelectedExpressionIndex(swiper.activeIndex);
-              else if (category === GalleryCategory.Portrait) setSelectedPortraitIndex(swiper.activeIndex);
-            }} // 슬라이드 변경 시 활성화된 인덱스 업데이트
+            centeredSlides={false}
+            // 슬라이드 변경 시 활성화된 인덱스 업데이트
+            // onSlideChange={swiper => {
+            //   if (category === GalleryCategory.Pose) setSelectedPoseIndex(swiper.activeIndex);
+            //   else if (category === GalleryCategory.Expression) setSelectedExpressionIndex(swiper.activeIndex);
+            //   else if (category === GalleryCategory.Portrait) setSelectedPortraitIndex(swiper.activeIndex);
+            // }}
+
+            initialSlide={
+              category === GalleryCategory.Pose
+                ? selectedPoseIndex
+                : category === GalleryCategory.Expression
+                ? selectedExpressionIndex
+                : selectedPortraitIndex
+            }
             onSwiper={swiper => {
               if (category === GalleryCategory.Pose) setSelectedPoseIndex(swiper.activeIndex);
               else if (category === GalleryCategory.Expression) setSelectedExpressionIndex(swiper.activeIndex);
@@ -342,26 +360,19 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                 }}
               >
                 <div
-                  className={`${styles.swiperItem}  ${
-                    category === GalleryCategory.Pose
-                      ? selectedPoseIndex === index
-                      : category === GalleryCategory.Expression
-                      ? selectedExpressionIndex === index
-                      : selectedPortraitIndex === index
-                      ? styles.selected
-                      : ''
-                  }`}
+                  className={`${styles.swiperItem}  ${isSelected(index) ? styles.selected : ''}`}
                   style={{
                     backgroundImage: isSelected(index)
                       ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.image})`
                       : `url(${data.image})`,
                   }}
+                  onClick={() => {
+                    if (category === GalleryCategory.Pose) setSelectedPoseIndex(index);
+                    else if (category === GalleryCategory.Expression) setSelectedExpressionIndex(index);
+                    else if (category === GalleryCategory.Portrait) setSelectedPortraitIndex(index);
+                  }}
                 >
-                  {category === GalleryCategory.Pose
-                    ? selectedPoseIndex === index
-                    : category === GalleryCategory.Expression
-                    ? selectedExpressionIndex === index
-                    : selectedPortraitIndex === index && <img className={styles.checkIcon} src={LineCheck.src} />}
+                  {isSelected(index) && <img className={styles.checkIcon} src={LineCheck.src} />}
                 </div>
               </SwiperSlide>
             ))}

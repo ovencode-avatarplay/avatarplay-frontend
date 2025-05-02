@@ -445,7 +445,9 @@ const Workroom: React.FC<Props> = ({}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const LOADING_THRESHOLD = 10;
+  const MIN_DISPLAY_TIME = 1000;
 
   const [isShare, setIsShare] = useState<boolean>(false);
 
@@ -455,6 +457,13 @@ const Workroom: React.FC<Props> = ({}) => {
   const [searchResultList, setSearchResultList] = useState<WorkroomItemInfo[] | null>(null);
 
   const [requestFetch, setRequestFetch] = useState<boolean>(false);
+
+  const ref = useRef(null);
+  const [isDelaying, setIsDelaying] = useState(false);
+  const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+
+  const showContent = !isLoading && !isDelaying && isMediaLoaded;
+
   //#endregion
 
   const dropDownMenuItems: DropDownMenuItem[] = [
@@ -522,6 +531,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleTagClick = (type: keyof typeof tagStates, tag: string) => {
     setTagStates(prev => ({...prev, [type]: tag}));
 
+    setIsLoading(true);
     setIsSelecting(false);
     setSelectedItems([]);
   };
@@ -960,6 +970,59 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
+  useEffect(() => {
+    let enterTime = Date.now();
+    let delayTimer: NodeJS.Timeout;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const duration = Date.now() - enterTime;
+
+          if (duration <= LOADING_THRESHOLD) {
+            // 너무 짧으면 skeleton을 건너뜀
+            setIsLoading(false);
+            setIsDelaying(true);
+          } else {
+            // 1초 이상 보여지도록 delay 보장
+            setIsLoading(false);
+            setIsDelaying(false);
+            delayTimer = setTimeout(() => {
+              setIsDelaying(true);
+            }, MIN_DISPLAY_TIME);
+          }
+        }
+      },
+      {threshold: 1},
+    );
+    if (ref.current) observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, [tagStates]);
+
+  useEffect(() => {
+    const images = Array.from(document.querySelectorAll('img'));
+    const videos = Array.from(document.querySelectorAll('video'));
+
+    const loadPromises = [
+      ...images.map(img => {
+        return new Promise(resolve => {
+          if (img.complete) resolve(true);
+          else img.onload = () => resolve(true);
+        });
+      }),
+      ...videos.map(video => {
+        return new Promise(resolve => {
+          if (video.readyState >= 3) resolve(true);
+          else video.onloadeddata = () => resolve(true);
+        });
+      }),
+    ];
+
+    Promise.all(loadPromises).then(() => {
+      setIsMediaLoaded(true);
+    });
+  }, [tagStates]);
   //#endregion
 
   const recentData = filterWorkroomData(workroomData, {limit: 20, renderEmpty: false, trash: false});
@@ -1009,15 +1072,7 @@ const Workroom: React.FC<Props> = ({}) => {
           <div className={styles.filterArea}>{renderFilter(detailViewButton || false, detailView)}</div>
         )}
 
-        {isLoading ? (
-          <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
-            {Array.from({length: 8}).map((_, index) => (
-              <div className={styles.dataItem} key={index} data-item>
-                <WorkroomItemSkeleton detailView={detailView} />
-              </div>
-            ))}
-          </ul>
-        ) : filteredData.length > 0 ? (
+        {filteredData.length > 0 ? (
           <ul className={`${detailView ? styles.listArea : styles.gridArea}`}>
             {filteredData.map((item, index) => (
               <div className={styles.dataItem} key={index} data-item>
@@ -1623,6 +1678,18 @@ const Workroom: React.FC<Props> = ({}) => {
     }
   };
 
+  const renderSkeleton = () => {
+    return (
+      <ul className={`${styles.skeletonContainer} ${detailView ? styles.listArea : styles.gridArea}`}>
+        {Array.from({length: 8}).map((_, index) => (
+          <div className={styles.dataItem} key={index} data-item>
+            <WorkroomItemSkeleton detailView={detailView} />
+          </div>
+        ))}
+      </ul>
+    );
+  };
+
   //#endregion
 
   const splitData = [
@@ -1631,7 +1698,7 @@ const Workroom: React.FC<Props> = ({}) => {
       preContent: (
         <SwipeTagList tags={workTags} currentTag={tagStates.work} onTagChange={tag => handleTagClick('work', tag)} />
       ),
-      content: <>{renderMyWork()}</>,
+      content: <div ref={ref}>{showContent ? renderSkeleton() : renderMyWork()}</div>,
     },
     {
       label: getLocalizedText('TODO : Favorite'),
@@ -1642,7 +1709,7 @@ const Workroom: React.FC<Props> = ({}) => {
           onTagChange={tag => handleTagClick('favorite', tag)}
         />
       ),
-      content: <>{renderFavorite()}</>,
+      content: <div ref={ref}>{showContent ? renderSkeleton() : renderFavorite()}</div>,
     },
     {
       label: getLocalizedText('TODO : AI history'),
@@ -1653,7 +1720,7 @@ const Workroom: React.FC<Props> = ({}) => {
           onTagChange={tag => handleTagClick('aiHistory', tag)}
         />
       ),
-      content: <>{renderAiHistory()}</>,
+      content: <div ref={ref}>{showContent ? renderSkeleton() : renderAiHistory()}</div>,
     },
     {
       label: getLocalizedText('TODO : Gallery'),
@@ -1664,14 +1731,14 @@ const Workroom: React.FC<Props> = ({}) => {
           onTagChange={tag => handleTagClick('gallery', tag)}
         />
       ),
-      content: <>{renderGallery()}</>,
+      content: <div ref={ref}>{showContent ? renderSkeleton() : renderGallery()}</div>,
     },
     {
       label: getLocalizedText('TODO : Trash'),
       preContent: (
         <SwipeTagList tags={trashTags} currentTag={tagStates.trash} onTagChange={tag => handleTagClick('trash', tag)} />
       ),
-      content: <>{renderTrash()}</>,
+      content: <div ref={ref}>{showContent ? renderSkeleton() : renderTrash()}</div>,
     },
   ];
 

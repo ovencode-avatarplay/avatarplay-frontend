@@ -32,7 +32,7 @@ const WorkroomItemSkeleton: React.FC<Props> = ({detailView}) => {
               <div className={`${styles.fileDetail} ${styles.skeletonText}`} />
             </div>
             <div className={styles.infoRightArea}>
-              <div className={`${styles.bookMarkButton} ${styles.skeletonBox}`} />
+              {/* <div className={`${styles.bookMarkButton} ${styles.skeletonBox}`} /> */}
               <div className={`${styles.btnMenu} ${styles.skeletonBox}`} />
             </div>
           </div>

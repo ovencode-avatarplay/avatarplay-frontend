@@ -100,7 +100,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   const canCreateCharacter = [ProfileType.User, ProfileType.PD].includes(profileType);
   const canCreateContent = [ProfileType.Character, ProfileType.Channel].includes(profileType);
   const canCreateChannel = [ProfileType.User, ProfileType.PD].includes(profileType);
-  const canCreateVariation = [ProfileType.Character].includes(profileType);
+  const canCreateVariation = [ProfileType.User, ProfileType.PD].includes(profileType);
   /* 프로필 타입별 생성 권한
    PD: Feed, Character, Channel;
   Character: Feed, Contents;
