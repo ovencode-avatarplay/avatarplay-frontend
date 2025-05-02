@@ -52,6 +52,7 @@ import WorkroomGalleryModal from './WorkroomGalleryModal';
 import WorkroomSearchModal from './WorkroomSearchModal';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SwipeTagList from './SwipeTagList';
+import UploadFromWorkroom from './UploadFromWorkroom';
 //#endregion
 
 const Workroom: React.FC<Props> = ({}) => {
@@ -1702,6 +1703,13 @@ They’ll be moved to the trash and will be permanently deleted after 30days.`,
         webkitdirectory: '',
         directory: '',
       })}
+      {/* <UploadFromWorkroom
+        open={true}
+        onClose={() => {}}
+        onSelect={(urllink: string) => {
+          console.log('upload from workroom', urllink);
+        }}
+      /> */}
     </div>
   );
 };

@@ -2,7 +2,6 @@ import {BoldAudio, BoldBookMark, BoldBookMarkWhite, BoldFolder, BoldMenuDots, Li
 import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
-import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
 interface Props {
@@ -11,10 +10,10 @@ interface Props {
   isSelecting: boolean;
   isSelected: boolean;
   onSelect: (checked: boolean) => void;
-  onClickFavorite: (favorite: boolean) => void;
-  onClickMenu: () => void;
-  onClickPreview: () => void;
-  onClickItem: () => void;
+  onClickFavorite?: (favorite: boolean) => void;
+  onClickMenu?: () => void;
+  onClickPreview?: () => void;
+  onClickItem?: () => void;
 }
 
 export interface WorkroomItemInfo {
@@ -68,12 +67,14 @@ const WorkroomItem: React.FC<Props> = ({
           <div className={styles.fileDetail}>{item.detail}</div>
         </div>
         <div className={styles.infoRightArea}>
-          {detailView && !item.trash && (
+          {detailView && !item.trash && (onClickFavorite || item.favorite) && (
             <button
               className={styles.bookMarkButton}
               onClick={e => {
                 e.stopPropagation();
-                onClickFavorite(!item.favorite);
+                if (onClickFavorite) {
+                  onClickFavorite(!item.favorite);
+                }
               }}
             >
               <img
@@ -82,15 +83,20 @@ const WorkroomItem: React.FC<Props> = ({
               />
             </button>
           )}
-          <button
-            className={styles.btnMenu}
-            onClick={e => {
-              e.stopPropagation();
-              onClickMenu();
-            }}
-          >
-            <img className={styles.btnIcon} src={BoldMenuDots.src} />
-          </button>
+
+          {onClickMenu && (
+            <button
+              className={styles.btnMenu}
+              onClick={e => {
+                e.stopPropagation();
+                if (onClickMenu) {
+                  onClickMenu();
+                }
+              }}
+            >
+              <img className={styles.btnIcon} src={BoldMenuDots.src} />
+            </button>
+          )}
         </div>
       </div>
     );
@@ -101,7 +107,9 @@ const WorkroomItem: React.FC<Props> = ({
       className={styles.workroomItem}
       onClick={e => {
         e.stopPropagation();
-        onClickItem();
+        if (onClickItem) {
+          onClickItem();
+        }
       }}
     >
       {detailView ? (
@@ -122,7 +130,9 @@ const WorkroomItem: React.FC<Props> = ({
               className={styles.itemIcon}
               onClick={e => {
                 e.stopPropagation();
-                onClickPreview();
+                if (onClickPreview) {
+                  onClickPreview();
+                }
               }}
             >
               <img
@@ -143,7 +153,9 @@ const WorkroomItem: React.FC<Props> = ({
               preload="metadata"
               onClick={e => {
                 e.stopPropagation();
-                onClickPreview();
+                if (onClickPreview) {
+                  onClickPreview();
+                }
               }}
               style={{objectFit: 'cover'}}
             />
@@ -158,7 +170,9 @@ const WorkroomItem: React.FC<Props> = ({
               }}
               onClick={e => {
                 e.stopPropagation();
-                onClickPreview();
+                if (onClickPreview) {
+                  onClickPreview();
+                }
               }}
             ></div>
           )}
@@ -169,7 +183,9 @@ const WorkroomItem: React.FC<Props> = ({
           className={styles.largeViewContainer}
           onClick={e => {
             e.stopPropagation();
-            onClickPreview();
+            if (onClickPreview) {
+              onClickPreview();
+            }
           }}
         >
           <div
@@ -195,7 +211,9 @@ const WorkroomItem: React.FC<Props> = ({
             onClick={e => {
               e.stopPropagation();
 
-              onClickPreview();
+              if (onClickPreview) {
+                onClickPreview();
+              }
             }}
           >
             {item.mediaState === MediaState.Video && (
@@ -223,12 +241,14 @@ const WorkroomItem: React.FC<Props> = ({
                 />
               </div>
             )}
-            {!item.trash && (
+            {!item.trash && (onClickFavorite || item.favorite) && (
               <button
                 className={styles.bookMarkButton}
                 onClick={e => {
                   e.stopPropagation();
-                  onClickFavorite(!item.favorite);
+                  if (onClickFavorite) {
+                    onClickFavorite(!item.favorite);
+                  }
                 }}
               >
                 <img
