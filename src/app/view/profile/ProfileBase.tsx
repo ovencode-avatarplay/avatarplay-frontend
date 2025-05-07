@@ -899,7 +899,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             />
           )}
 
-          {!isMine && (
+          {!isMine && isPD && (
             <img
               className={cx(styles.icon, styles.iconNotification)}
               src="/ui/profile/icon_notification.svg"
