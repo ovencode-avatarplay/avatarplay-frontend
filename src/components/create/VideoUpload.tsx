@@ -3,6 +3,8 @@ import styles from './VideoUpload.module.css'; // 필요 시 새로운 스타일
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
   setVideoUrl: (url: string) => void;
@@ -14,6 +16,7 @@ interface Props {
 const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) => {
   const [videoUrl, setInternalVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [workroomOpen, setWorkroomOpen] = useState<boolean>(false);
 
   const handleOnFileSelect = async (file: File) => {
     try {
@@ -36,6 +39,12 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOnWorkroomItemSelect = (url: string) => {
+    setVideoUrl(url);
+    setInternalVideoUrl(url);
+    if (onChoose) onChoose();
   };
 
   const handleChooseFile = () => {
@@ -62,17 +71,35 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
     },
     {
       name: 'Workroom',
+      blockAutoClose: true,
       onClick: () => {
-        // TODO: Workroom 영상 업로드
-        console.log('TODO : Workroom');
-        handleChooseFile();
+        setWorkroomOpen(true);
       },
     },
   ];
 
   return (
     <div className={styles.box}>
-      <SelectDrawer items={selectVisibilityItems} isOpen={isOpen} onClose={onClose} selectedIndex={0} />
+      <SelectDrawer
+        items={selectVisibilityItems}
+        isOpen={isOpen}
+        onClose={() => {
+          if (workroomOpen) {
+            if (videoUrl !== '') {
+              onClose();
+            }
+          } else {
+            onClose();
+          }
+        }}
+        selectedIndex={0}
+      />
+      <UploadFromWorkroom
+        open={workroomOpen}
+        onClose={() => setWorkroomOpen(false)}
+        onSelect={handleOnWorkroomItemSelect}
+        mediaStateFilter={MediaState.Video}
+      />
       <LoadingOverlay loading={loading} />
     </div>
   );

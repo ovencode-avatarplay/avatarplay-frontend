@@ -9,7 +9,7 @@ interface Props {
   workroomItemInfo: WorkroomItemInfo;
   onClose: () => void;
   onToggleFavorite: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   onDownload: () => void;
 }
 
@@ -47,9 +47,11 @@ const GeneratedImagePreViewer: React.FC<Props> = ({
               <button className={styles.buttonItem} onClick={onDownload}>
                 <img src={LineDownload.src} />
               </button>
-              <button className={styles.buttonItem} onClick={onDelete}>
-                <img src={LineDelete.src} />
-              </button>
+              {onDelete && (
+                <button className={styles.buttonItem} onClick={onDelete}>
+                  <img src={LineDelete.src} />
+                </button>
+              )}
             </div>
             <div className={styles.infoArea}>
               <div className={styles.infoItem}>

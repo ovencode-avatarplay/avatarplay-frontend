@@ -8,6 +8,7 @@ import CustomToolTip from '../layout/shared/CustomToolTip';
 export interface SelectDrawerItem {
   name: string;
   icon?: string;
+  blockAutoClose?: boolean;
   onClick: () => void;
 }
 
@@ -79,7 +80,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
               className={styles.drawerItem}
               onClick={() => {
                 item.onClick();
-                onClose(); // 항목 클릭 시 드로어 닫기
+                if (!item.blockAutoClose) onClose(); // 항목 클릭 시 드로어 닫기
               }}
             >
               <div className={styles.drawerTextArea}>

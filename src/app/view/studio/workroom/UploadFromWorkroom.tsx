@@ -13,9 +13,10 @@ interface UploadFromWorkroomProps {
   open: boolean;
   onClose: () => void;
   onSelect: (url: string) => void;
+  mediaStateFilter?: MediaState;
 }
 
-const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, onSelect}) => {
+const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, onSelect, mediaStateFilter}) => {
   //#region TmpDefine
 
   // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
@@ -383,6 +384,8 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
   const filteredItems = workroomData.filter(item => {
     if (item.trash) return false;
 
+    const filteredMediaState = mediaStateFilter ? item.mediaState === mediaStateFilter : true;
+
     const inCurrentTag =
       currentTag === 'MyWork'
         ? true
@@ -404,7 +407,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
       item.name.toLowerCase().includes(keyword.toLowerCase()) ||
       item.detail.toLowerCase().includes(keyword.toLowerCase());
 
-    return inCurrentFolder && matchesKeyword && inCurrentTag;
+    return filteredMediaState && inCurrentFolder && matchesKeyword && inCurrentTag;
   });
 
   const currentPath =
@@ -433,6 +436,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
     <Dialog
       open={open}
       onClose={onClose}
+      style={{zIndex: '1500'}}
       PaperProps={{
         sx: {
           width: 'calc(100%)',
@@ -443,6 +447,8 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
 
           margin: '0 auto',
           borderRadius: '0px',
+
+          zIndex: '1500',
         },
       }}
     >
@@ -525,6 +531,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
                 onClickItem={() => handleItemClick(item)}
                 onSelect={() => handleItemClick(item)}
                 onClickPreview={() => handleItemClick(item)}
+                blockDefaultPreview={true}
               />
             </div>
           ))}

@@ -29,10 +29,6 @@ import {DropDownMenuItem} from '@/components/create/DropDownMenu';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import SharePopup from '@/components/layout/shared/SharePopup';
-import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
-import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
-import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
-import AudioPreViewer from '@/components/layout/shared/AudioPreViewer';
 
 // 6. 앱 내 컴포넌트 - 워크룸 관련
 import WorkroomMyWork from './WorkroomMyWork';
@@ -197,13 +193,15 @@ const Workroom: React.FC<Props> = ({}) => {
       detail: 'detail1',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
+      updateAt: '2025-04-18 09:44:53',
     },
     {
       id: 3002,
       mediaState: MediaState.Video,
       imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
-      name: 'video2',
+      name: 'aawefwaef',
       detail: 'detail2',
+      updateAt: '2025-04-18 09:12:53',
     },
     {
       id: 3003,
@@ -211,37 +209,41 @@ const Workroom: React.FC<Props> = ({}) => {
       imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
       name: 'video3',
       detail: 'detail3',
+      updateAt: '2025-04-12 09:44:53',
     },
     {
       id: 3004,
       mediaState: MediaState.Video,
       imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
-      name: 'video4',
+      name: 'asdf',
       detail: 'detail4',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
+      updateAt: '2025-02-18 09:44:53',
     },
     {
       id: 3005,
       mediaState: MediaState.Video,
       imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
-      name: 'video5',
+      name: 'qqqqz',
       detail: 'detail5',
       trash: true,
       trashedTime: '2025-04-18 09:44:53',
+      updateAt: '2021-04-18 09:44:53',
     },
     {
       id: 3006,
       mediaState: MediaState.Video,
       imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
-      name: 'video6',
+      name: '111111',
       detail: 'detail6',
+      updateAt: '2025-04-18 15:54:53',
     },
     {
       id: 3007,
       mediaState: MediaState.Video,
       imgUrl: 'https://avatar-play.s3.ap-northeast-2.amazonaws.com/video/943243a9-d787-4cae-a090-cf559a4c5339.mp4',
-      name: 'video7',
+      name: 'fbdfgafg',
       detail: 'detail7',
       favorite: true,
     },
@@ -449,9 +451,6 @@ const Workroom: React.FC<Props> = ({}) => {
   const [newFolderName, setNewFolderName] = useState<string>('');
 
   const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
-  const [imageViewOpen, setImageViewOpen] = useState<boolean>(false);
-  const [videoViewerOpen, setVideoViewerOpen] = useState<boolean>(false);
-  const [audioViewerOpen, setAudioViewerOpen] = useState<boolean>(false);
 
   const [isFileEditDrawerOpen, setIsFileEditDrawerOpen] = useState<boolean>(false);
   const [isFileMoveModalOpen, setIsFileMoveModalOpen] = useState<boolean>(false);
@@ -501,20 +500,11 @@ const Workroom: React.FC<Props> = ({}) => {
       },
     },
     {
-      name: getLocalizedText('common_sort_popular'),
-      onClick: () => {
-        setSearchResultList(null);
-        setSortDropDownOpen(false);
-        setSelectedSort(1);
-        setRequestFetch(true);
-      },
-    },
-    {
       name: getLocalizedText('common_sort_Name'),
       onClick: () => {
         setSearchResultList(null);
         setSortDropDownOpen(false);
-        setSelectedSort(2);
+        setSelectedSort(1);
         setRequestFetch(true);
       },
     },
@@ -582,13 +572,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleItemImageClick = (item: WorkroomItemInfo) => {
     if (!isSelecting) {
       setSelectedItem(item);
-      if (item.mediaState === MediaState.Video) {
-        setVideoViewerOpen(true);
-      } else if (item.mediaState === MediaState.Image) {
-        setImageViewOpen(true);
-      } else if (item.mediaState === MediaState.Audio) {
-        setAudioViewerOpen(true);
-      } else if (item.mediaState === MediaState.None) {
+      if (item.mediaState === MediaState.None) {
         handleItemClick(item);
       }
     }
@@ -956,7 +940,20 @@ const Workroom: React.FC<Props> = ({}) => {
       result = result.filter(item => item.folderLocation?.[item.folderLocation.length - 1] === option.parentFolderId);
     }
 
-    // 5. Limit 적용
+    // 5. Sort
+    if (selectedSort === 0) {
+      // 최신순 (내림차순)
+      result = result.sort((a, b) => {
+        const aTime = new Date(a.updateAt || '').getTime();
+        const bTime = new Date(b.updateAt || '').getTime();
+        return bTime - aTime;
+      });
+    } else if (selectedSort === 1) {
+      // 이름순 (오름차순)
+      result = result.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    // 6. Limit 적용
     if (option.limit) {
       result = result.slice(0, option.limit);
     }
@@ -1072,6 +1069,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 onClickMenu={() => handleMenuClick(item)}
                 onClickPreview={() => handleItemImageClick(item)}
                 onClickItem={() => handleItemClick(item)}
+                onClickDelete={handleDeletePopupOpen}
               />
             </div>
           </SwiperSlide>
@@ -1103,6 +1101,7 @@ const Workroom: React.FC<Props> = ({}) => {
         handleItemImageClick={handleItemImageClick}
         handleItemClick={handleItemClick}
         filterWorkroomData={filterWorkroomData}
+        handleDeleteItem={handleDeletePopupOpen}
       />
     );
   };
@@ -1496,25 +1495,6 @@ const Workroom: React.FC<Props> = ({}) => {
               selectedTargetFolder={selectedTargetFolder}
               onMoveToFolder={handleMoveToFolder}
             />
-          )}
-          {imageViewOpen &&
-            selectedItem &&
-            (selectedItem.generatedInfo && selectedItem.generatedInfo.isUploaded === false ? (
-              <GeneratedImagePreViewer
-                workroomItemInfo={selectedItem}
-                onClose={() => setImageViewOpen(false)}
-                onToggleFavorite={() => toggleFavorite(selectedItem.id)}
-                onDelete={handleDeletePopupOpen}
-                onDownload={handleDownload}
-              />
-            ) : (
-              <ImagePreViewer imageUrl={selectedItem?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
-            ))}
-          {videoViewerOpen && selectedItem && selectedItem.mediaState === MediaState.Video && (
-            <VideoPreViewer videoUrl={selectedItem?.imgUrl || ''} onClose={() => setVideoViewerOpen(false)} />
-          )}
-          {audioViewerOpen && selectedItem && selectedItem.mediaState === MediaState.Audio && (
-            <AudioPreViewer audioUrl={selectedItem?.imgUrl || ''} onClose={() => setAudioViewerOpen(false)} />
           )}
           {isDeletePopupOpen && (
             <CustomPopup

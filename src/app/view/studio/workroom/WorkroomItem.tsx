@@ -3,6 +3,15 @@ import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import GeneratedImagePreViewer from '@/components/layout/shared/GeneratedImagePreViewer';
+import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
+import VideoPreViewer from '@/components/layout/shared/VideoPreViewer';
+import AudioPreViewer from '@/components/layout/shared/AudioPreViewer';
+import {useEffect, useState} from 'react';
+import getLocalizedText from '@/utils/getLocalizedText';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom} from '@/app/Root';
+import ReactDOM from 'react-dom';
 
 interface Props {
   detailView: boolean;
@@ -12,8 +21,10 @@ interface Props {
   onSelect: (checked: boolean) => void;
   onClickFavorite?: (favorite: boolean) => void;
   onClickMenu?: () => void;
+  blockDefaultPreview?: boolean;
   onClickPreview?: () => void;
   onClickItem?: () => void;
+  onClickDelete?: () => void;
 }
 
 export interface WorkroomItemInfo {
@@ -29,6 +40,7 @@ export interface WorkroomItemInfo {
   generatedInfo?: GeneratedItemInfo | null;
   profileId?: number | null;
   profileCharacterIp?: CharacterIP;
+  updateAt?: string;
 }
 
 export interface GeneratedItemInfo {
@@ -49,9 +61,45 @@ const WorkroomItem: React.FC<Props> = ({
   onSelect,
   onClickFavorite,
   onClickMenu,
+  blockDefaultPreview,
   onClickPreview,
   onClickItem,
+  onClickDelete,
 }) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+
+  const [imageViewOpen, setImageViewOpen] = useState<boolean>();
+  const [videoViewerOpen, setVideoViewerOpen] = useState<boolean>();
+  const [audioViewerOpen, setAudioViewerOpen] = useState<boolean>();
+
+  const handlePreView = () => {
+    if (!item || blockDefaultPreview) return;
+    if (item.mediaState === MediaState.Image) {
+      setImageViewOpen(true);
+    } else if (item.mediaState === MediaState.Video) {
+      setVideoViewerOpen(true);
+    } else if (item.mediaState === MediaState.Audio) {
+      setAudioViewerOpen(true);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!item?.imgUrl) return;
+
+    const link = document.createElement('a');
+    link.href = item.imgUrl;
+    link.download = item.name || 'download';
+    link.click();
+
+    dataToast.open(getLocalizedText('TODO : Download successfull!'));
+  };
+
+  useEffect(() => {
+    setImageViewOpen(false);
+    setVideoViewerOpen(false);
+    setAudioViewerOpen(false);
+  }, [item.id, item.trash]);
+
   const renderFileInfoArea = () => {
     return (
       <div className={styles.fileInfoArea}>
@@ -133,6 +181,7 @@ const WorkroomItem: React.FC<Props> = ({
                 if (onClickPreview) {
                   onClickPreview();
                 }
+                handlePreView();
               }}
             >
               <img
@@ -156,6 +205,7 @@ const WorkroomItem: React.FC<Props> = ({
                 if (onClickPreview) {
                   onClickPreview();
                 }
+                handlePreView();
               }}
               style={{objectFit: 'cover'}}
             />
@@ -173,6 +223,7 @@ const WorkroomItem: React.FC<Props> = ({
                 if (onClickPreview) {
                   onClickPreview();
                 }
+                handlePreView();
               }}
             ></div>
           )}
@@ -186,6 +237,7 @@ const WorkroomItem: React.FC<Props> = ({
             if (onClickPreview) {
               onClickPreview();
             }
+            handlePreView();
           }}
         >
           <div
@@ -214,6 +266,7 @@ const WorkroomItem: React.FC<Props> = ({
               if (onClickPreview) {
                 onClickPreview();
               }
+              handlePreView();
             }}
           >
             {item.mediaState === MediaState.Video && (
@@ -260,6 +313,32 @@ const WorkroomItem: React.FC<Props> = ({
           </div>
           {renderFileInfoArea()}
         </div>
+      )}
+      {ReactDOM.createPortal(
+        <>
+          {imageViewOpen &&
+            item &&
+            (item.generatedInfo && item.generatedInfo.isUploaded === false ? (
+              <GeneratedImagePreViewer
+                workroomItemInfo={item}
+                onClose={() => setImageViewOpen(false)}
+                onToggleFavorite={() => {
+                  if (onClickFavorite) onClickFavorite(!item.favorite);
+                }}
+                onDelete={onClickDelete}
+                onDownload={handleDownload}
+              />
+            ) : (
+              <ImagePreViewer imageUrl={item?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
+            ))}
+          {videoViewerOpen && item && item.mediaState === MediaState.Video && (
+            <VideoPreViewer videoUrl={item?.imgUrl || ''} onClose={() => setVideoViewerOpen(false)} />
+          )}
+          {audioViewerOpen && item && item.mediaState === MediaState.Audio && (
+            <AudioPreViewer audioUrl={item?.imgUrl || ''} onClose={() => setAudioViewerOpen(false)} />
+          )}
+        </>,
+        document.body,
       )}
     </div>
   );

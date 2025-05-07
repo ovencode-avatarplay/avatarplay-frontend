@@ -4,7 +4,6 @@
     max-width: 1300px !important;
     margin: 0 auto;
     background-color: white;
-    z-index: 1000;
 
     overflow: hidden;
 }

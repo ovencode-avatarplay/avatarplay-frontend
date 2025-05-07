@@ -19,6 +19,7 @@ interface WorkroomDataItemsProps {
   handleItemImageClick: (item: WorkroomItemInfo) => void;
   handleItemClick: (item: WorkroomItemInfo) => void;
   filterWorkroomData: (data: WorkroomItemInfo[], option: any) => WorkroomItemInfo[];
+  handleDeleteItem: () => void;
 }
 
 const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
@@ -35,6 +36,7 @@ const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
   handleItemImageClick,
   handleItemClick,
   filterWorkroomData,
+  handleDeleteItem,
 }) => {
   const filteredData = filterWorkroomData(data, option);
 
@@ -56,6 +58,7 @@ const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
                 onClickMenu={() => handleMenuClick(item)}
                 onClickPreview={() => handleItemImageClick(item)}
                 onClickItem={() => handleItemClick(item)}
+                onClickDelete={handleDeleteItem}
               />
             </div>
           ))}
