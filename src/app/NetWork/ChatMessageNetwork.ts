@@ -61,10 +61,13 @@ export interface UrlEnterDMChatReq {
   urlLinkKey: string;
   chatRoomId: number;
 }
-
+export enum DMChatType {
+  MyChat = 0,
+  AnotherChat = 1,
+}
 export interface DMChatMessage {
   id: number;
-  dmChatType: number;
+  dmChatType: DMChatType;
   profileUrlLinkKey: string;
   profileImageUrl: string;
   profileName: string;
@@ -95,5 +98,44 @@ export const sendUrlEnterDMChat = async (payload: UrlEnterDMChatReq): Promise<Re
   } catch (error) {
     console.error('❌ Failed to enter DM chat:', error);
     throw new Error('DM 채팅방 입장 중 오류가 발생했습니다.');
+  }
+};
+
+export interface GetDMChatRoomListReq {
+  page: {
+    offset: number;
+    limit: number;
+  };
+}
+
+// 개별 DM 채팅방 정보 타입
+export interface DMChatRoomInfo {
+  roomId: number;
+  urlLinkKey: string;
+  profileName: string;
+  profileIconUrl: string;
+  lastMessage: string;
+  lastMessageAt: string;
+}
+
+// 응답 타입
+export interface GetDMChatRoomListRes {
+  dmChatRoomList: DMChatRoomInfo[];
+}
+
+/**
+ * DM 채팅방 리스트 가져오기
+ * @param payload 페이지 정보 (offset, limit)
+ * @returns DM 채팅방 리스트 응답
+ */
+export const sendGetDMChatRoomList = async (
+  payload: GetDMChatRoomListReq,
+): Promise<ResponseAPI<GetDMChatRoomListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetDMChatRoomListRes>>('/ChatMessage/getDMChatRoomList', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to fetch DM chat room list:', error);
+    throw new Error('DM 채팅방 리스트 조회 중 오류가 발생했습니다.');
   }
 };

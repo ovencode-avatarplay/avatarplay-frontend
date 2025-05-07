@@ -17,9 +17,10 @@ interface Props {
   isOption?: boolean;
   isPin?: boolean;
   isHighlight?: boolean;
-  urlLinkKeyProfile?: string;
+  roomid?: string;
   isDM?: boolean;
   onClickOption?: () => void;
+  urlLinkKey: string;
 }
 
 export enum BadgeType {
@@ -53,9 +54,10 @@ const MessageProfile: React.FC<Props> = ({
   isOption = false,
   isPin = false,
   isHighlight = false,
-  urlLinkKeyProfile,
+  roomid,
   isDM = false,
   onClickOption,
+  urlLinkKey,
 }) => {
   const router = useRouter();
   const renderBadge = () => {
@@ -101,42 +103,24 @@ const MessageProfile: React.FC<Props> = ({
     return null;
   };
 
-  const onDM = async () => {
-    if (!urlLinkKeyProfile) return;
-    const payload: UrlEnterDMChatReq = {
-      urlLinkKey: urlLinkKeyProfile,
-      chatRoomId: 0,
-    };
-
-    try {
-      const res = await sendUrlEnterDMChat(payload);
-      if (res.resultCode === 0) {
-        pushLocalizedRoute('/message/DM/' + urlLinkKeyProfile, router);
-        return;
-      } else {
-        return `⚠️ 오류: ${res.resultMessage}`;
-      }
-    } catch (error: any) {
-      return;
-    }
-  };
-
   return (
     <div className={styles.container}>
       {/* 체크 왼쪽 */}
       {checkType === CheckType.Left && renderCheck()}
 
       {/* 프로필 이미지 */}
-      <div
-        className={styles.profileContainer}
-        onClick={() => pushLocalizedRoute('/profile/' + urlLinkKeyProfile, router)}
-      >
+      <div className={styles.profileContainer} onClick={() => pushLocalizedRoute('/profile/' + roomid, router)}>
         <img src={profileImage} alt="Profile" className={styles.profileImage} />
         {isHighlight && <div className={styles.statusIndicator} />}
       </div>
 
       {isDM ? (
-        <div className={styles.profileInfo} onClick={() => {}}>
+        <div
+          className={styles.profileInfo}
+          onClick={() => {
+            pushLocalizedRoute('/DM/' + urlLinkKey + '?roomid=' + roomid, router);
+          }}
+        >
           {/* 프로필 정보 */}
           <div className={styles.profileTop}>
             <span className={styles.profileName}>{profileName}</span>
@@ -145,11 +129,7 @@ const MessageProfile: React.FC<Props> = ({
           {timestamp && <span className={styles.timestamp}>{timestamp}</span>}
         </div>
       ) : (
-        <Link
-          href={getLocalizedLink(`/chat/?v=${urlLinkKeyProfile}` || `?v=`)}
-          className={styles.profileInfo}
-          onClick={() => {}}
-        >
+        <Link href={getLocalizedLink(`/chat/?v=${roomid}` || `?v=`)} className={styles.profileInfo} onClick={() => {}}>
           {/* 프로필 정보 */}
           <div className={styles.profileTop}>
             <span className={styles.profileName}>{profileName}</span>

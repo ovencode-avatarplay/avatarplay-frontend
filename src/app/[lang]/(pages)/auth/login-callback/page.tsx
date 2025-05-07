@@ -19,7 +19,7 @@ export default function LoginCallback() {
   };
 
   // ✅ SignalR 연결
-  useSignalR(token ?? '', onGift);
+  useSignalR(token ?? '');
 
   useEffect(() => {
     const init = async () => {

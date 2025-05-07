@@ -1,19 +1,17 @@
 // src/hooks/useSignalR.ts
 
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import {HubConnectionBuilder, HubConnection, LogLevel} from '@microsoft/signalr';
 import {useEffect, useRef} from 'react';
 
 type MessageCallback = (payload: any) => void;
 type GiftCallback = (payload: any) => void;
 
-export function useSignalR(token: string, onMessage?: MessageCallback, onGift?: GiftCallback) {
+export function useSignalR(token: string) {
   const connectionRef = useRef<HubConnection | null>(null);
 
   useEffect(() => {
-    if (!token) {
-      console.warn('❗ No token provided for SignalR.');
-      return;
-    }
+    if (!token) return;
 
     const connection = new HubConnectionBuilder()
       .withUrl(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/Realtime`, {
@@ -24,10 +22,6 @@ export function useSignalR(token: string, onMessage?: MessageCallback, onGift?: 
       .build();
 
     connectionRef.current = connection;
-    if (onMessage) connection.on('ReceiveDMMessage', onMessage);
-    if (onGift) {
-      connection.on('ReceiveGiftRuby', onGift);
-    }
 
     connection
       .start()
@@ -37,38 +31,41 @@ export function useSignalR(token: string, onMessage?: MessageCallback, onGift?: 
     return () => {
       connection.stop();
     };
-  }, [token, onMessage, onGift]);
+  }, [token]);
 
-  const joinRoom = async (roomId: number) => {
-    try {
-      await connectionRef.current?.invoke('JoinRoom', String(roomId));
-      console.log(`🔔 Joined room ${roomId}`);
-    } catch (err) {
-      console.error('❌ joinRoom error:', err);
-    }
+  const onMessage = (callback: MessageCallback) => {
+    connectionRef.current?.on('ReceiveDMMessage', callback);
   };
 
-  const leaveRoom = async (roomId: number) => {
-    try {
-      await connectionRef.current?.invoke('LeaveRoom', String(roomId));
-      console.log(`🚪 Left room ${roomId}`);
-    } catch (err) {
-      console.error('❌ leaveRoom error:', err);
-    }
-  };
-
-  const sendMessage = async (roomId: number, message: string) => {
-    try {
-      await connectionRef.current?.invoke('SendDMMessage', roomId, message);
-    } catch (err) {
-      console.error('❌ sendMessage error:', err);
-    }
+  const onGift = (callback: GiftCallback) => {
+    connectionRef.current?.on('ReceiveGiftRuby', callback);
   };
 
   return {
     connection: connectionRef.current,
-    joinRoom,
-    leaveRoom,
-    sendMessage,
+    joinRoom: async (roomId: number) => {
+      await connectionRef.current?.invoke('JoinRoom', roomId);
+    },
+    leaveRoom: async (roomId: number) => {
+      await connectionRef.current?.invoke('LeaveRoom', roomId);
+    },
+    sendMessage: async (
+      roomId: number,
+      message: string,
+      emoticonId?: number,
+      mediaState?: MediaState,
+      mediaUrl?: string,
+    ) => {
+      await connectionRef.current?.invoke(
+        'SendDMMessage',
+        roomId,
+        message,
+        (emoticonId = 0),
+        (mediaState = MediaState.None),
+        (mediaUrl = ''),
+      );
+    },
+    onMessage,
+    onGift,
   };
 }

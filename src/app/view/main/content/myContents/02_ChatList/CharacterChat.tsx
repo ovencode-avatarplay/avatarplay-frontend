@@ -96,14 +96,17 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     },
   ];
 
-  const getFilter =
-    filterValue == CharacterIP[0].toString()
-      ? CharacterIP.None
-      : filterValue == CharacterIP[1].toString()
-      ? CharacterIP.Original
-      : filterValue == CharacterIP[2]
-      ? CharacterIP.Fan
-      : 0;
+  const getFilter = (() => {
+    switch (filterValue) {
+      case 'Original':
+        return CharacterIP.Original;
+      case 'Fan':
+        return CharacterIP.Fan;
+      case 'None':
+      default:
+        return CharacterIP.None;
+    }
+  })();
 
   const getSort = sortValue == 'Newest' ? 0 : sortValue == 'Name' ? 1 : sortValue == 'Popular' ? 2 : 0;
 
@@ -210,10 +213,11 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             followState={FollowState.None} // 고정값
             isHighlight={false} // 고정값
             isOption={true}
-            urlLinkKeyProfile={item.urlLinkKey}
+            roomid={item.chatRoomId.toString()}
             onClickOption={() => {
               setOpenOption(true);
             }}
+            urlLinkKey={item.urlLinkKey}
           />
         ))}
         <div ref={observerRef} style={{height: '1px'}}></div>
