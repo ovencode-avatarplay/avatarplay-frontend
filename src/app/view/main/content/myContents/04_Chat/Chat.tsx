@@ -7,6 +7,7 @@ import {Modal, Box} from '@mui/material';
 import {useAtom} from 'jotai';
 import {isOpenEditAtom} from './ChatAtom';
 import ChatEditDrawer from './ChatEditDrawer';
+import zIndex from '@mui/material/styles/zIndex';
 
 interface Message {
   id: number;
@@ -17,11 +18,10 @@ interface Message {
 }
 
 interface Props {
-  open: boolean;
-  onClose: () => void;
+  urlLinkKey: string;
 }
 
-const Chat: React.FC<Props> = ({open, onClose}) => {
+const Chat: React.FC<Props> = urlLinkKey => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -53,26 +53,16 @@ const Chat: React.FC<Props> = ({open, onClose}) => {
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
   console.log(isOpenEdit);
   return (
-    <Modal
-      open={open}
-      onClose={() => {}}
-      BackdropProps={{
-        sx: {background: 'rgba(255, 255, 255, 0.7)'},
-      }}
-    >
+    <div style={{background: 'rgba(255, 255, 255, 0.7)'}}>
       <Box className={styles.modalBox}>
         <div className={styles.container}>
-          <ChatHeader
-            onClose={() => {
-              onClose();
-            }}
-          />
+          <ChatHeader onClose={() => {}} />
           <ChatArea messages={messages} />
           <ChatBottom onSend={handleSend} />
           <ChatEditDrawer open={isOpenEdit} onClose={() => setOpenEdit(false)}></ChatEditDrawer>
         </div>
       </Box>
-    </Modal>
+    </div>
   );
 };
 

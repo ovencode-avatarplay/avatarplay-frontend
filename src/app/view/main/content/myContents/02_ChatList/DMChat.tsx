@@ -11,7 +11,6 @@ interface Props {
 
 const DMChat: React.FC<Props> = ({name}) => {
   const [selectedTag, setSelectedTag] = useState(tags[0]);
-  const [openChat, setOpenChat] = useState(false);
   return (
     <>
       <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
@@ -31,11 +30,10 @@ const DMChat: React.FC<Props> = ({name}) => {
           badgeType={BadgeType.Fan}
           followState={FollowState.Following}
           isHighlight={true}
-          onClick={() => setOpenChat(true)}
+          isDM={true}
         />
         <div style={{height: 'calc(48px + 2px)'}}></div>
       </div>
-      <Chat open={openChat} onClose={() => setOpenChat(false)} />
     </>
   );
 };

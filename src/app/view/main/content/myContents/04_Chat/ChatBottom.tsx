@@ -140,12 +140,7 @@ const AddContent: React.FC<AddContentProps> = ({setText, handleSend}) => {
         </div>
       )}
       {isDonation && (
-        <DrawerDonation
-          isOpen={isDonation}
-          giveToPDId={33}
-          onClose={() => setDonation(false)}
-          onSend={handleSendDonation}
-        />
+        <DrawerDonation isOpen={isDonation} giveToPDId={33} onClose={() => setDonation(false)} sponsoredName={'asd'} />
       )}
     </>
   );

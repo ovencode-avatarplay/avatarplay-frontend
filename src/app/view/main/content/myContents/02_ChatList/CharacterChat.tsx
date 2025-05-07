@@ -122,6 +122,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
           limit: LIMIT,
         },
         alreadyReceivedProfileIds: [],
+        search: '',
       };
 
       const response = await sendGetCharacterChatRoomList(params);
@@ -209,8 +210,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             followState={FollowState.None} // 고정값
             isHighlight={false} // 고정값
             isOption={true}
-            urlLinkKey={item.urlLinkKey}
-            onClick={() => {}}
+            urlLinkKeyProfile={item.urlLinkKey}
             onClickOption={() => {
               setOpenOption(true);
             }}

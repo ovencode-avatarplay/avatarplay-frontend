@@ -86,7 +86,7 @@ import {
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {copyCurrentUrlToClipboard, getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
-import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {channel} from 'diagnostics_channel';
 import 'swiper/css';
@@ -107,6 +107,7 @@ import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
+import {sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -774,7 +775,25 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   if (!data.isRefresh) {
     return;
   }
+  const onDM = async () => {
+    if (!urlLinkKey) return;
+    const payload: UrlEnterDMChatReq = {
+      urlLinkKey: urlLinkKey,
+      chatRoomId: 0,
+    };
 
+    try {
+      const res = await sendUrlEnterDMChat(payload);
+      if (res.resultCode === 0) {
+        pushLocalizedRoute('/message/' + urlLinkKey, router);
+        return;
+      } else {
+        return `⚠️ 오류: ${res.resultMessage}`;
+      }
+    } catch (error: any) {
+      return;
+    }
+  };
   return (
     <>
       {isMine && (
@@ -888,7 +907,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
               src="/ui/profile/icon_notification.svg"
               alt=""
               onClick={() => {
-                dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
+                onDM();
               }}
             />
           )}
