@@ -4,13 +4,17 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {supabase} from '@/utils/supabaseClient';
 import {useSignalR} from '@hooks/useSignalR';
+import {setStar} from '@/redux-store/slices/Currency';
+import {useDispatch} from 'react-redux';
 
 export default function LoginCallback() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
 
+  const dispatch = useDispatch();
   // 💎 루비 선물 수신
   const onGift = (payload: any) => {
+    dispatch(setStar(payload.amount));
     console.log(`💎 ${payload.amount} 루비를 선물 받았습니다!`);
   };
 

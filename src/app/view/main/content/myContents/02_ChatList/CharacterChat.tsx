@@ -14,6 +14,7 @@ import {
 } from '@/app/NetWork/ChatMessageNetwork';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {SportsVolleyballRounded} from '@mui/icons-material';
+import {useInView} from 'react-intersection-observer';
 
 const tags = [
   'Chatroom',
@@ -39,7 +40,42 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   const [filterValue, setFilterValue] = useState<string>(CharacterIP[1].toString());
   const [sortValue, setSortValue] = useState<string>('Newest');
-  const [ChatList, setChatList] = useState<ChatRoomInfo[]>();
+
+  const [chatList, setChatList] = useState<ChatRoomInfo[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const LIMIT = 10;
+  const {ref: observerRef, inView} = useInView();
+  useEffect(() => {
+    if (inView && hasMore && !isLoading) {
+      const fetchMore = async () => {
+        const list = await fetchCharacterChatRooms(false);
+        const sortedList = [...list].sort((a, b) => {
+          if (sortValue === 'Newest') {
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          } else if (sortValue === 'Popular') {
+            return b.likeCount - a.likeCount;
+          } else if (sortValue === 'Name') {
+            return a.characterName.localeCompare(b.characterName, 'ko-KR');
+          }
+          return 0;
+        });
+
+        setChatList(prev => [...prev, ...sortedList]);
+        setOffset(prev => prev + sortedList.length);
+        setHasMore(sortedList.length === LIMIT);
+      };
+
+      fetchMore();
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    setOffset(0);
+    setHasMore(true);
+  }, [filterValue, selectedTag, sortValue]);
+
   const optionItems: SelectDrawerArrowItem[] = [
     {
       name: 'Favorites /Unfavorites',
@@ -71,36 +107,80 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   const getSort = sortValue == 'Newest' ? 0 : sortValue == 'Popular' ? 1 : sortValue == 'Name' ? 2 : 0;
 
-  const fetchCharacterChatRooms = async () => {
+  const fetchCharacterChatRooms = async (isRefreshAll = false): Promise<ChatRoomInfo[]> => {
     try {
+      setIsLoading(true);
+      const currentOffset = isRefreshAll ? 0 : offset;
+
       const params: GetCharacterChatRoomListReq = {
-        isChatRoom: selectedTag == 'Chatroom' ? true : false,
+        isChatRoom: selectedTag === 'Chatroom',
         characterIP: getFilter,
         tag: selectedTag,
         sort: getSort,
         page: {
-          offset: 0,
-          limit: 10,
+          offset: currentOffset,
+          limit: LIMIT,
         },
-        alreadyReceivedProfileIds: [], // 초기엔 아무것도 받지 않은 상태
+        alreadyReceivedProfileIds: [],
       };
 
       const response = await sendGetCharacterChatRoomList(params);
-      return response.data?.chatRoomList ?? [];
+      const newList = response.data?.chatRoomList ?? [];
+      // 상태는 외부에서 처리할 수 있도록 값만 반환
+      return newList;
     } catch (error) {
       console.error('fetchCharacterChatRooms error:', error);
       return [];
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const list = await fetchCharacterChatRooms();
-      setChatList(list);
+      const list = await fetchCharacterChatRooms(true);
+      const sortedList = [...list].sort((a, b) => {
+        if (sortValue === 'Newest') {
+          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        } else if (sortValue === 'Popular') {
+          return b.likeCount - a.likeCount;
+        } else if (sortValue === 'Name') {
+          return a.characterName.localeCompare(b.characterName, 'ko-KR');
+        }
+        return 0;
+      });
+
+      setChatList(sortedList);
+      setOffset(sortedList.length);
+      setHasMore(sortedList.length === LIMIT);
     };
 
     fetchData();
-  }, [filterValue, selectedTag]);
+  }, [filterValue, selectedTag, sortValue]);
+
+  const formatTimestamp = (timestamp: string): string => {
+    const date = new Date(timestamp);
+    const now = new Date();
+
+    const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    if (isToday) {
+      const hours = date.getHours();
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const isAM = hours < 12;
+      const displayHour = hours % 12 === 0 ? 12 : hours % 12;
+      return `${isAM ? '오전' : '오후'} ${displayHour}:${minutes}`;
+    } else {
+      // YYYY-MM-DD 포맷
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+  };
 
   return (
     <>
@@ -113,12 +193,12 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       />
       <div className={styles.name}>Chat</div>
       <div className={styles.scrollArea}>
-        {ChatList?.map((item, index) => (
+        {chatList?.map((item, index) => (
           <MessageProfile
             key={item.chatRoomId}
             profileImage={item.profileImageUrl}
             profileName={item.characterName}
-            timestamp={item.updatedAt.toString()} // 예: "2025-04-29T01:44:00.934Z"
+            timestamp={formatTimestamp(item.updatedAt)} // 예: "2025-04-29T01:44:00.934Z"
             badgeType={
               item.characterIP == CharacterIP.Fan
                 ? BadgeType.Fan
@@ -136,7 +216,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             }}
           />
         ))}
-        <div style={{height: 'calc(48px + 2px)'}}></div>
+        <div ref={observerRef} style={{height: '1px'}}></div>
       </div>
 
       <SelectDrawer
