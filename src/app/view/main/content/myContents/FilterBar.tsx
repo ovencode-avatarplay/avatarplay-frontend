@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import styles from './FilterBar.module.css';
 import {BoldViewGallery, LineArrowDown} from '@ui/Icons';
+import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
 interface FilterBarProps {
   filters: string[]; // 예: ['Original', 'Fan']
@@ -29,8 +30,8 @@ const FilterBar: React.FC<FilterBarProps> = ({filters, sortOptions, onFilterChan
     <div className={styles.container}>
       {/* 아이콘 버튼 (전체 보기) */}
       <div
-        className={`${styles.iconButton} ${!activeFilter ? styles.active : ''}`}
-        onClick={() => handleFilterClick('None')}
+        className={`${styles.iconButton} ${activeFilter == CharacterIP.None.toString() ? styles.active : ''}`}
+        onClick={() => handleFilterClick(CharacterIP.None.toString())}
       >
         <img src={BoldViewGallery.src} alt="Gallery" className={styles.galleryIcon} />
       </div>
