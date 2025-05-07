@@ -59,7 +59,6 @@ export const sendGetCharacterChatRoomList = async (
 
 export interface UrlEnterDMChatReq {
   urlLinkKey: string;
-  chatRoomId: number;
 }
 export enum DMChatType {
   MyChat = 0,
@@ -79,7 +78,6 @@ export interface DMChatMessage {
 }
 
 export interface UrlEnterDMChatRes {
-  chatRoomId: number;
   anotherImageUrl: string;
   anotherProfileName: string;
   anotherProfileEmail: string;
@@ -102,6 +100,7 @@ export const sendUrlEnterDMChat = async (payload: UrlEnterDMChatReq): Promise<Re
 };
 
 export interface GetDMChatRoomListReq {
+  search: string;
   page: {
     offset: number;
     limit: number;
@@ -137,5 +136,32 @@ export const sendGetDMChatRoomList = async (
   } catch (error) {
     console.error('❌ Failed to fetch DM chat room list:', error);
     throw new Error('DM 채팅방 리스트 조회 중 오류가 발생했습니다.');
+  }
+};
+
+// 요청 타입
+export interface CheckDMChatLinkKeyReq {
+  profileUrlLinkKey: string;
+}
+
+// 응답 타입
+export interface CheckDMChatLinkKeyRes {
+  dmChatUrlLinkKey: string;
+}
+
+/**
+ * 특정 프로필의 DM 채팅 링크 키 확인
+ * @param payload profileUrlLinkKey 포함 요청 객체
+ * @returns dmChatUrlLinkKey 응답
+ */
+export const sendCheckDMChatLinkKey = async (
+  payload: CheckDMChatLinkKeyReq,
+): Promise<ResponseAPI<CheckDMChatLinkKeyRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<CheckDMChatLinkKeyRes>>('/ChatMessage/checkDMChatLinkKey', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to check DM chat link key:', error);
+    throw new Error('DM 채팅 링크 키 확인 중 오류가 발생했습니다.');
   }
 };

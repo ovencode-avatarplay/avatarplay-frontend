@@ -26,7 +26,7 @@ interface Props {
 const Chat: React.FC<Props> = ({urlLinkKey}) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [chatRoomId, setChatRoomId] = useState(0);
+  const [chatRoomKey, setChatRoomKey] = useState(urlLinkKey);
   const handleSend = (text: string) => {
     const newMessage: Message = {
       id: messages.length + 1,
@@ -38,7 +38,7 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
       }),
     };
     console.log('');
-    sendMessage(chatRoomId, newMessage.content);
+    sendMessage(chatRoomKey, newMessage.content);
   };
 
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
@@ -51,20 +51,24 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
     onDM();
   }, []);
 
+  const [anotherImageUrl, setAnotherImageUrl] = useState('');
+  const [anotherProfileName, setAnotherProfileName] = useState('');
+  const [anotherProfileEmail, setAnotherProfileEmail] = useState('');
   const onDM = async () => {
     if (!urlLinkKey) return;
 
     const payload: UrlEnterDMChatReq = {
       urlLinkKey,
-      chatRoomId: 0,
     };
 
     try {
       const res = await sendUrlEnterDMChat(payload);
       if (!res.data) return;
       if (res.resultCode === 0) {
-        const {chatRoomId, prevMessageInfoList} = res.data;
-
+        const {prevMessageInfoList} = res.data;
+        setAnotherImageUrl(res.data.anotherImageUrl);
+        setAnotherProfileName(res.data.anotherProfileName);
+        setAnotherProfileEmail(res.data.anotherProfileEmail);
         // ✅ 이전 메시지 변환
         const formattedMessages: Message[] = prevMessageInfoList.map(msg => ({
           id: msg.id,
@@ -77,8 +81,8 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
         }));
 
         setMessages(formattedMessages);
-        setChatRoomId(chatRoomId);
-        joinRoom(chatRoomId);
+        setChatRoomKey(chatRoomKey);
+        joinRoom(chatRoomKey);
 
         // ✅ 새 메시지 수신 핸들러
         onMessage(payload => {
@@ -106,7 +110,12 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
     <div style={{background: 'rgba(255, 255, 255, 0.7)'}}>
       <Box className={styles.modalBox}>
         <div className={styles.container}>
-          <ChatHeader onClose={() => {}} />
+          <ChatHeader
+            onClose={() => {}}
+            anotherImageUrl={anotherImageUrl}
+            anotherProfileEmail={anotherProfileEmail}
+            anotherProfileName={anotherProfileName}
+          />
           <ChatArea messages={messages} />
           <ChatBottom onSend={handleSend} />
           <ChatEditDrawer open={isOpenEdit} onClose={() => setOpenEdit(false)}></ChatEditDrawer>

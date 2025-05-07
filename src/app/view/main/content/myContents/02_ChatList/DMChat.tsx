@@ -51,6 +51,7 @@ const DMChat: React.FC = () => {
 
     try {
       const response = await sendGetDMChatRoomList({
+        search: '',
         page: {offset: currentOffset, limit: LIMIT},
       });
 

@@ -12,9 +12,12 @@ import {isOpenAddContentAtom, isOpenEditAtom} from './ChatAtom';
 
 interface Props {
   onClose: () => void;
+  anotherImageUrl: string;
+  anotherProfileName: string;
+  anotherProfileEmail: string;
 }
 
-const ChatHeader: React.FC<Props> = ({onClose}) => {
+const ChatHeader: React.FC<Props> = ({onClose, anotherImageUrl, anotherProfileName, anotherProfileEmail}) => {
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
 
   const [isOpenAddContent, setIsOpenAddContent] = useAtom(isOpenAddContentAtom);
@@ -34,10 +37,10 @@ const ChatHeader: React.FC<Props> = ({onClose}) => {
 
       {/* 프로필 및 텍스트 */}
       <div className={styles.chatInfo}>
-        <Avatar alt="profile" src="/images/profile_sample/img_sample_feed1.png" sx={{width: 40, height: 40}} />
+        <Avatar alt="profile" src={anotherImageUrl} sx={{width: 40, height: 40}} />
         <div className={styles.textInfo}>
-          <div className={styles.name}>Yuna</div>
-          <div className={styles.episode}>Ep.4 A New Girl</div>
+          <div className={styles.name}>{anotherProfileName}</div>
+          <div className={styles.episode}>{anotherProfileEmail}</div>
         </div>
       </div>
 

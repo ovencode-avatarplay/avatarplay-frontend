@@ -118,7 +118,7 @@ const MessageProfile: React.FC<Props> = ({
         <div
           className={styles.profileInfo}
           onClick={() => {
-            pushLocalizedRoute('/DM/' + urlLinkKey + '?roomid=' + roomid, router);
+            pushLocalizedRoute('/DM/' + urlLinkKey, router);
           }}
         >
           {/* 프로필 정보 */}

@@ -43,14 +43,14 @@ export function useSignalR(token: string) {
 
   return {
     connection: connectionRef.current,
-    joinRoom: async (roomId: number) => {
-      await connectionRef.current?.invoke('JoinRoom', roomId);
+    joinRoom: async (urlLinkKey: string) => {
+      await connectionRef.current?.invoke('JoinRoom', urlLinkKey);
     },
-    leaveRoom: async (roomId: number) => {
-      await connectionRef.current?.invoke('LeaveRoom', roomId);
+    leaveRoom: async (urlLinkKey: string) => {
+      await connectionRef.current?.invoke('LeaveRoom', urlLinkKey);
     },
     sendMessage: async (
-      roomId: number,
+      urlLinkKey: string,
       message: string,
       emoticonId?: number,
       mediaState?: MediaState,
@@ -58,7 +58,7 @@ export function useSignalR(token: string) {
     ) => {
       await connectionRef.current?.invoke(
         'SendDMMessage',
-        roomId,
+        urlLinkKey,
         message,
         (emoticonId = 0),
         (mediaState = MediaState.None),
