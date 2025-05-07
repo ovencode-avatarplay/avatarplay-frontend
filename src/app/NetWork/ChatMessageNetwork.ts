@@ -90,7 +90,7 @@ export interface UrlEnterDMChatRes {
  */
 export const sendUrlEnterDMChat = async (payload: UrlEnterDMChatReq): Promise<ResponseAPI<UrlEnterDMChatRes>> => {
   try {
-    const response = await api.post<ResponseAPI<UrlEnterDMChatRes>>('/api/v1/ChatMessage/urlEnterDMChat', payload);
+    const response = await api.post<ResponseAPI<UrlEnterDMChatRes>>('/ChatMessage/urlEnterDMChat', payload);
     return response.data;
   } catch (error) {
     console.error('❌ Failed to enter DM chat:', error);
