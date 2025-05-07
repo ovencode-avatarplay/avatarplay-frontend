@@ -3079,6 +3079,17 @@
     "pt-PT": "",
     "de": ""
   },
+  "common_alert_113": {
+    "en-US": "You haven't followed any profiles yet",
+    "ko": "아직 팔로잉한 프로필이 없어요",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
   "common_button_original": {
     "en-US": "Original",
     "ko": "",
@@ -8988,6 +8999,17 @@
   },
   "common_tagemotion_curiosity": {
     "en-US": "Curiosity",
+    "ko": "",
+    "ja": "",
+    "fr": "",
+    "es": "",
+    "zh-CN": "",
+    "zh-TW": "",
+    "pt-PT": "",
+    "de": ""
+  },
+  "common_tagemotion_arousal": {
+    "en-US": "Arousal",
     "ko": "",
     "ja": "",
     "fr": "",

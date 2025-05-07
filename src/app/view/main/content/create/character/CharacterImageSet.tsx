@@ -46,8 +46,7 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
 
   const [selectAlertOpen, setSelectAlertOpen] = useState<boolean>(false);
 
-  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
-  const starAmount = dataStarInfo.star;
+  const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
 
   const loraOption = [
     {
@@ -416,11 +415,11 @@ const CharacterImageSet: React.FC<CharacterImageSetProps> = ({createFinishAction
       <div className={styles.currencyArea}>
         <div className={styles.currencyItem}>
           <img className={styles.currencyIcon} src={BoldRuby.src} />
-          <span className={styles.currencyText}>10.5K</span> {/* TODO : Currency */}
+          <span className={styles.currencyText}>{formatCurrency(dataCurrencyInfo.ruby)}</span> {/* TODO : Currency */}
         </div>
         <div className={styles.currencyItem}>
           <img className={styles.currencyIcon} src={BoldStar.src} />
-          <span className={styles.currencyText}>{formatCurrency(starAmount)}</span> {/* TODO : Currency */}
+          <span className={styles.currencyText}>{formatCurrency(dataCurrencyInfo.star)}</span> {/* TODO : Currency */}
         </div>
       </div>
 

@@ -77,6 +77,7 @@ export enum EmotionState {
   Confused = 3,
   Angry = 4,
   Curiosity = 5,
+  Arousal = 6,
 }
 
 export enum GetStarType {

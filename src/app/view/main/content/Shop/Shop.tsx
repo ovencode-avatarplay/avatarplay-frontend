@@ -53,8 +53,7 @@ export const dummyBannerList: BannerUrlList[] = [
 const Shop: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<ShopTabType>(ShopTabType.SinglePlan);
 
-  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
-  const starAmount = dataStarInfo.star;
+  const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -70,11 +69,11 @@ const Shop: React.FC = () => {
             <div className={styles.currencyArea}>
               <div className={styles.currencyItem}>
                 <img className={styles.currencyIcon} src={BoldRuby.src} />
-                <div className={styles.currencyText}>{999}</div>
+                <div className={styles.currencyText}>{formatCurrency(dataCurrencyInfo.ruby)}</div>
               </div>
               <div className={styles.currencyItem}>
                 <img className={styles.currencyIcon} src={BoldStar.src} />
-                <div className={styles.currencyText}>{formatCurrency(starAmount)}</div>
+                <div className={styles.currencyText}>{formatCurrency(dataCurrencyInfo.star)}</div>
               </div>
             </div>
             <button className={styles.notification} onClick={() => {}}>
