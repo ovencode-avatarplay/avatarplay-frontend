@@ -78,12 +78,12 @@ const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onCh
         setWorkroomOpen(true);
       },
     },
-    {
-      name: 'Gallery',
-      onClick: () => {
-        if (onGalleryChoose) onGalleryChoose();
-      },
-    },
+    // {
+    //   name: 'Gallery',
+    //   onClick: () => {
+    //     if (onGalleryChoose) onGalleryChoose();
+    //   },
+    // },
   ];
 
   return (

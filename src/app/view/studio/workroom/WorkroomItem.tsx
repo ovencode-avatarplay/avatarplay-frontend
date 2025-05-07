@@ -1,4 +1,13 @@
-import {BoldAudio, BoldBookMark, BoldBookMarkWhite, BoldFolder, BoldMenuDots, LineBookMark} from '@ui/Icons';
+import {
+  BoldAudio,
+  BoldBookMark,
+  BoldBookMarkWhite,
+  BoldFolder,
+  BoldImage,
+  BoldMenuDots,
+  BoldVideo,
+  LineBookMark,
+} from '@ui/Icons';
 import styles from './WorkroomItem.module.css';
 import CustomCheckbox from '@/components/layout/shared/CustomCheckBox';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
@@ -14,6 +23,7 @@ import {ToastMessageAtom} from '@/app/Root';
 import ReactDOM from 'react-dom';
 
 interface Props {
+  uploadItem?: boolean;
   detailView: boolean;
   item: WorkroomItemInfo;
   isSelecting: boolean;
@@ -54,6 +64,7 @@ export interface GeneratedItemInfo {
 }
 
 const WorkroomItem: React.FC<Props> = ({
+  uploadItem,
   detailView,
   item,
   isSelecting,
@@ -73,6 +84,7 @@ const WorkroomItem: React.FC<Props> = ({
   const [audioViewerOpen, setAudioViewerOpen] = useState<boolean>();
 
   const handlePreView = () => {
+    console.log('adsf');
     if (!item || blockDefaultPreview) return;
     if (item.mediaState === MediaState.Image) {
       setImageViewOpen(true);
@@ -102,50 +114,68 @@ const WorkroomItem: React.FC<Props> = ({
 
   const renderFileInfoArea = () => {
     return (
-      <div className={styles.fileInfoArea}>
+      <div className={uploadItem ? styles.uploadInfoArea : styles.fileInfoArea}>
         <div className={styles.infoLeftArea}>
           <div className={styles.fileNameArea}>
+            {uploadItem && (
+              <img
+                className={detailView ? styles.categoryIconDetailView : styles.categoryIcon}
+                src={
+                  item.mediaState === MediaState.None
+                    ? BoldFolder.src
+                    : item.mediaState === MediaState.Image
+                    ? BoldImage.src
+                    : item.mediaState === MediaState.Video
+                    ? BoldVideo.src
+                    : item.mediaState === MediaState.Audio
+                    ? BoldAudio.src
+                    : ''
+                }
+              />
+            )}
             <div className={styles.fileName}>{item.name}</div>
-            {item.profileId && (
+            {!uploadItem && item.profileId && (
               <div className={item.profileCharacterIp === CharacterIP.Original ? styles.original : styles.fan}>
                 {item.profileCharacterIp === CharacterIP.Original ? 'Original' : 'Fan'}
               </div>
             )}
           </div>
-          <div className={styles.fileDetail}>{item.detail}</div>
+          {!uploadItem && <div className={styles.fileDetail}>{item.detail}</div>}
         </div>
-        <div className={styles.infoRightArea}>
-          {detailView && !item.trash && (onClickFavorite || item.favorite) && (
-            <button
-              className={styles.bookMarkButton}
-              onClick={e => {
-                e.stopPropagation();
-                if (onClickFavorite) {
-                  onClickFavorite(!item.favorite);
-                }
-              }}
-            >
-              <img
-                className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
-                src={item.favorite ? BoldBookMark.src : LineBookMark.src}
-              />
-            </button>
-          )}
+        {!uploadItem && (
+          <div className={styles.infoRightArea}>
+            {detailView && !item.trash && (onClickFavorite || item.favorite) && (
+              <button
+                className={styles.bookMarkButton}
+                onClick={e => {
+                  e.stopPropagation();
+                  if (onClickFavorite) {
+                    onClickFavorite(!item.favorite);
+                  }
+                }}
+              >
+                <img
+                  className={`${styles.bookMarkIcon} ${item.favorite ? styles.selected : ''}`}
+                  src={item.favorite ? BoldBookMark.src : LineBookMark.src}
+                />
+              </button>
+            )}
 
-          {onClickMenu && (
-            <button
-              className={styles.btnMenu}
-              onClick={e => {
-                e.stopPropagation();
-                if (onClickMenu) {
-                  onClickMenu();
-                }
-              }}
-            >
-              <img className={styles.btnIcon} src={BoldMenuDots.src} />
-            </button>
-          )}
-        </div>
+            {onClickMenu && (
+              <button
+                className={styles.btnMenu}
+                onClick={e => {
+                  e.stopPropagation();
+                  if (onClickMenu) {
+                    onClickMenu();
+                  }
+                }}
+              >
+                <img className={styles.btnIcon} src={BoldMenuDots.src} />
+              </button>
+            )}
+          </div>
+        )}
       </div>
     );
   };
@@ -161,74 +191,91 @@ const WorkroomItem: React.FC<Props> = ({
       }}
     >
       {detailView ? (
-        <div className={styles.detailViewContainer}>
-          {isSelecting && (
-            <div className={styles.selectButton} onClick={e => e.stopPropagation()}>
-              <CustomCheckbox
-                displayType="buttonOnly"
-                shapeType="square"
-                checked={isSelected}
-                onToggle={onSelect}
-                containerStyle={{width: '100%', height: '100%'}}
+        uploadItem ? (
+          <div className={styles.detailUploadItemContainer}>{renderFileInfoArea()}</div>
+        ) : (
+          <div
+            className={styles.detailViewContainer}
+            onClick={e => {
+              if (item.mediaState === MediaState.Audio) {
+                console.log('zxcvz');
+                e.stopPropagation();
+                if (onClickPreview) {
+                  onClickPreview();
+                }
+                handlePreView();
+              }
+            }}
+          >
+            {isSelecting && (
+              <div className={styles.selectButton} onClick={e => e.stopPropagation()}>
+                <CustomCheckbox
+                  displayType="buttonOnly"
+                  shapeType="square"
+                  checked={isSelected}
+                  onToggle={onSelect}
+                  containerStyle={{width: '100%', height: '100%'}}
+                />
+              </div>
+            )}
+            {(item.mediaState === MediaState.None && !item.profileId) || item.mediaState === MediaState.Audio ? (
+              <div
+                className={styles.itemIcon}
+                onClick={e => {
+                  console.log('zxcvz');
+                  e.stopPropagation();
+                  if (onClickPreview) {
+                    onClickPreview();
+                  }
+                  handlePreView();
+                }}
+              >
+                <img
+                  src={
+                    item.mediaState === MediaState.None && !item.profileId
+                      ? BoldFolder.src
+                      : item.mediaState === MediaState.Audio
+                      ? BoldAudio.src
+                      : ''
+                  }
+                />
+              </div>
+            ) : item.mediaState === MediaState.Video ? (
+              <video
+                className={styles.fileImage}
+                src={item.imgUrl}
+                muted
+                preload="metadata"
+                onClick={e => {
+                  e.stopPropagation();
+                  if (onClickPreview) {
+                    onClickPreview();
+                  }
+                  handlePreView();
+                }}
+                style={{objectFit: 'cover'}}
               />
-            </div>
-          )}
-          {(item.mediaState === MediaState.None && !item.profileId) || item.mediaState === MediaState.Audio ? (
-            <div
-              className={styles.itemIcon}
-              onClick={e => {
-                e.stopPropagation();
-                if (onClickPreview) {
-                  onClickPreview();
-                }
-                handlePreView();
-              }}
-            >
-              <img
-                src={
-                  item.mediaState === MediaState.None && !item.profileId
-                    ? BoldFolder.src
-                    : item.mediaState === MediaState.Audio
-                    ? BoldAudio.src
-                    : ''
-                }
-              />
-            </div>
-          ) : item.mediaState === MediaState.Video ? (
-            <video
-              className={styles.fileImage}
-              src={item.imgUrl}
-              muted
-              preload="metadata"
-              onClick={e => {
-                e.stopPropagation();
-                if (onClickPreview) {
-                  onClickPreview();
-                }
-                handlePreView();
-              }}
-              style={{objectFit: 'cover'}}
-            />
-          ) : (
-            <div
-              className={styles.fileImage}
-              style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
-                  item.imgUrl ? item.imgUrl : '/images/001.png'
-                })`,
-                backgroundSize: 'cover',
-              }}
-              onClick={e => {
-                e.stopPropagation();
-                if (onClickPreview) {
-                  onClickPreview();
-                }
-                handlePreView();
-              }}
-            ></div>
-          )}
-          {renderFileInfoArea()}
-        </div>
+            ) : (
+              <div
+                className={styles.fileImage}
+                style={{
+                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5)), url(${
+                    item.imgUrl ? item.imgUrl : '/images/001.png'
+                  })`,
+                  backgroundSize: 'cover',
+                }}
+                onClick={e => {
+                  e.stopPropagation();
+                  if (onClickPreview) {
+                    onClickPreview();
+                  }
+                  handlePreView();
+                }}
+              ></div>
+            )}
+            {renderFileInfoArea()}
+          </div>
+        )
       ) : (
         <div
           className={styles.largeViewContainer}
@@ -332,10 +379,19 @@ const WorkroomItem: React.FC<Props> = ({
               <ImagePreViewer imageUrl={item?.imgUrl || ''} onClose={() => setImageViewOpen(false)} />
             ))}
           {videoViewerOpen && item && item.mediaState === MediaState.Video && (
-            <VideoPreViewer videoUrl={item?.imgUrl || ''} onClose={() => setVideoViewerOpen(false)} />
+            <VideoPreViewer
+              videoName={item.name}
+              videoUrl={item?.imgUrl || ''}
+              onClose={() => setVideoViewerOpen(false)}
+            />
           )}
           {audioViewerOpen && item && item.mediaState === MediaState.Audio && (
-            <AudioPreViewer audioUrl={item?.imgUrl || ''} onClose={() => setAudioViewerOpen(false)} />
+            <AudioPreViewer
+              audioName={item.name}
+              audioUrl={item?.imgUrl || ''}
+              thumbnailUrl="/images/001.png"
+              onClose={() => setAudioViewerOpen(false)}
+            />
           )}
         </>,
         document.body,

@@ -69,6 +69,10 @@ import BoldBookMark from "./Bold/Bookmark.svg";
 import BoldBookMarkWhite from "./Bold/BookmarkWhite.svg";
 import BoldAudio from "./Bold/Audio.svg";
 import BoldFolder from "./Bold/Folder.svg";
+import BoldDelete from "./Bold/Delete.svg";
+import BoldDownload from "./Bold/Download.svg";
+import BoldPlayPrevious from "./Bold/play-previous.svg";
+import BoldPlayNext from "./Bold/play-next.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -161,6 +165,7 @@ import EmojiExcited from "./Custom/emoji_excited.svg";
 import EmojiHappy from "./Custom/emoji_happy.svg";
 import EmojiSad from "./Custom/emoji_sad.svg";
 import EmojiScared from "./Custom/emoji_scared.svg";
+import AudioWave from "./Custom/wpf_audio-wave.svg";
 
 export {
   editCircle,
@@ -258,6 +263,10 @@ export {
   BoldBookMarkWhite,
   BoldAudio,
   BoldFolder,
+  BoldDownload,
+  BoldDelete,
+  BoldPlayPrevious,
+  BoldPlayNext,
   LineAddButton,
   LineAIImage,
   LineArchive,
@@ -324,4 +333,5 @@ export {
   LinePhone,
   LineBookMark,
   LineList,
+  AudioWave,
 };

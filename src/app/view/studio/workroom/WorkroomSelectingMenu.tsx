@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './WorkroomSelectingMenu.module.css';
-import {LineFolderPlus, LineDelete, LineClose, LineShare, LineDownload, BoldFolder} from '@ui/Icons'; // 아이콘은 임의로 예시 import
+import {LineDelete, LineClose, BoldFolder, BoldShare, BoldDownload, BoldDelete} from '@ui/Icons';
+import getLocalizedText from '@/utils/getLocalizedText';
+import formatText from '@/utils/formatText';
 
 interface Props {
   selectedCount: number;
@@ -26,19 +28,21 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
   return (
     <div className={styles.selectingMenuContainer}>
       <div className={styles.leftArea}>
-        <p className={styles.selectionCount}>{`${selectedCount}개 선택함`}</p>
+        <p className={styles.selectionCount}>
+          {formatText(getLocalizedText(`TODO : Selected`), [selectedCount.toString()])}
+        </p>
       </div>
       <div className={styles.centerArea}>
         {!isTrash ? (
           <>
             {onShare && (
               <button className={styles.iconButton} aria-label="Share" onClick={onShare}>
-                <img src={LineShare.src} alt="Share" />
+                <img src={BoldShare.src} alt="Share" />
               </button>
             )}
             {onDownload && (
               <button className={styles.iconButton} aria-label="Download" onClick={onDownload}>
-                <img src={LineDownload.src} alt="Download" />
+                <img src={BoldDownload.src} alt="Download" />
               </button>
             )}
             {onMoveToFolder && (
@@ -48,7 +52,7 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
             )}
             {onMoveToTrash && (
               <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
-                <img src={LineDelete.src} alt="Move to trash" />
+                <img src={BoldDelete.src} alt="Move to trash" />
               </button>
             )}
           </>

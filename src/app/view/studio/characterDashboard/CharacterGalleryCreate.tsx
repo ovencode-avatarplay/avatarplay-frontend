@@ -63,18 +63,9 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
   };
 
   const portraitData = [
-    // {image: '/create_character/portrait/portrait_01_normal.png', id: 1, prompt: 'normal'},
-    // {image: '/create_character/portrait/portrait_02_lookingforward.png', id: 2, prompt: 'looking forward'},
-    // {image: '/create_character/portrait/portrait_03_lookingdown.png', id: 3, prompt: 'looking down'},
-    // {image: '/create_character/portrait/portrait_04_lookingup.png', id: 4, prompt: 'looking up'},
-    // {image: '/create_character/portrait/portrait_05_lookingleft.png', id: 5, prompt: 'looking left'},
-    // {image: '/create_character/portrait/portrait_06_lookingright.png', id: 6, prompt: 'looking right'},
-    {image: '/create_character/pose/pose_01_sitaside.png', id: 1, prompt: 'normal'},
-    {image: '/create_character/pose/pose_01_sitaside.png', id: 2, prompt: 'looking forward'},
-    {image: '/create_character/pose/pose_01_sitaside.png', id: 3, prompt: 'looking down'},
-    {image: '/create_character/pose/pose_01_sitaside.png', id: 4, prompt: 'looking up'},
-    {image: '/create_character/pose/pose_01_sitaside.png', id: 5, prompt: 'looking left'},
-    {image: '/create_character/pose/pose_01_sitaside.png', id: 6, prompt: 'looking right'},
+    {image: '/create_character/portrait/portrait_01_lookingforward.png', id: 1, prompt: 'looking forward'},
+    {image: '/create_character/portrait/portrait_02_lookingleft.png', id: 2, prompt: 'looking left'},
+    {image: '/create_character/portrait/portrait_03_lookingright.png', id: 3, prompt: 'looking right'},
   ];
 
   const poseData = [
@@ -95,8 +86,13 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
   ];
 
   const [selectionImages, setSelectionImages] = useState(poseData);
-  const [generatedImages, setGeneratedImages] = useState<string[]>(['', '', '', '']); // 생성된 이미지 URL 저장
+  const [generatedImages, setGeneratedImages] = useState<string[]>(['', '', '', '']);
+
   const [createStep, setCreateStep] = useState<number>(0);
+
+  const [generatedPortrait, setGeneratedPortrait] = useState<string[]>([]);
+  const [generatedPose, setGeneratedPose] = useState<string[]>([]);
+  const [generatedExpression, setGeneratedExpression] = useState<string[]>([]);
 
   //#region Handle
 
@@ -143,8 +139,8 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
       ]; // API null 나오는경우 임시처리
 
       if (newImages.length > 0) {
-        setGeneratedImages(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
-        setGeneratedImages(newImages); // 생성된 이미지 갱신
+        setGeneratedPose(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
+        setGeneratedPose(newImages); // 생성된 이미지 갱신
       }
     } catch (error) {
       // alert('Failed to generate images. Please try again.');
@@ -153,8 +149,8 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
       const newImages = [selectedPortraitUrl, selectedPortraitUrl, selectedPortraitUrl, selectedPortraitUrl]; // API null 나오는경우 임시처리
 
       if (newImages.length > 0) {
-        setGeneratedImages(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
-        setGeneratedImages(newImages); // 생성된 이미지 갱신
+        setGeneratedPose(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
+        setGeneratedPose(newImages); // 생성된 이미지 갱신
       }
 
       // setCreateStep(0);
@@ -193,8 +189,8 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
       ]; // API null 나오는경우 임시처리
 
       if (newImages.length > 0) {
-        setGeneratedImages(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
-        setGeneratedImages(newImages); // 생성된 이미지 갱신
+        setGeneratedExpression(prevImages => [...prevImages, ...newImages]); // 상태 업데이트
+        setGeneratedExpression(newImages); // 생성된 이미지 갱신
       }
     } catch (error) {
       alert('Failed to generate images. Please try again.');
@@ -259,13 +255,39 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
   //#endregion
 
   useEffect(() => {
-    if (category === GalleryCategory.Pose) setSelectionImages(poseData);
-    else if (category === GalleryCategory.Expression) setSelectionImages(ExpressionData);
-    else if (category === GalleryCategory.Portrait) setSelectionImages(portraitData);
-    else {
+    if (category === GalleryCategory.Pose) {
+      setSelectionImages(poseData);
+      setGeneratedImages(generatedPose);
+    } else if (category === GalleryCategory.Expression) {
+      setSelectionImages(ExpressionData);
+      setGeneratedImages(generatedExpression);
+    } else if (category === GalleryCategory.Portrait) {
+      setSelectionImages(portraitData);
+      setGeneratedImages(generatedPortrait);
+    } else {
       console.log('Err');
     }
+
+    setSelectedGeneratedItems([]);
   }, [category]);
+
+  useEffect(() => {
+    if (category === GalleryCategory.Pose) {
+      setGeneratedImages(generatedPose);
+    }
+  }, [generatedPose]);
+
+  useEffect(() => {
+    if (category === GalleryCategory.Expression) {
+      setGeneratedImages(generatedExpression);
+    }
+  }, [generatedExpression]);
+
+  useEffect(() => {
+    if (category === GalleryCategory.Portrait) {
+      setGeneratedImages(generatedPortrait);
+    }
+  }, [generatedPortrait]);
 
   useEffect(() => {
     if (open) {
@@ -289,7 +311,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
     <div className={styles.container}>
       <div className={styles.editArea}>
         <div className={styles.basePortraitArea}>
-          <h2 className={styles.title}>Base Portrait</h2>
+          <h2 className={styles.title}>{getLocalizedText(`TODO : Base Portrait`)}</h2>
           <div className={styles.basePortraitItem}>
             <div
               className={styles.portraitImage}
@@ -305,7 +327,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
 
         <div className={styles.promptArea}>
           <div className={styles.promptDesc}>
-            {getLocalizedText(`You can select a pose, describe it yourself, or combine both! Either way, you'll get the
+            {getLocalizedText(`TODO :You can select a pose, describe it yourself, or combine both! Either way, you'll get the
             Portaits you want.`)}
           </div>
           <MaxTextInput
@@ -316,6 +338,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                 ? expressionPrompt
                 : portraitPrompt
             }
+            placeholder={getLocalizedText('TODO : Prompt')}
             handlePromptChange={e => {
               if (category === GalleryCategory.Pose) setPosePrompt(e.target.value);
               else if (category === GalleryCategory.Expression) setExpressionPrompt(e.target.value);
@@ -326,7 +349,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
 
         {/* Swiper Section */}
         <div className={styles.swiperSection}>
-          <h2 className={styles.title}>Select {galleryCategoryText[category]}</h2>
+          <h2 className={styles.title}>{getLocalizedText(`TODO : Select ${galleryCategoryText[category]}`)}</h2>
           <Swiper
             spaceBetween={6}
             slidesPerView="auto"
@@ -380,20 +403,21 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
         </div>
       </div>
       <div className={styles.generateSection}>
-        {createStep === 0 ? (
-          <CustomButton
-            size="Large"
-            state="Normal"
-            type="Primary"
-            onClick={handleGenerateClick}
-            customClassName={[styles.generateButton]}
-          >
-            Generate
-            <div className={styles.currency}>
-              <img src={BoldRuby.src} />
-              <div>50</div>
-            </div>
-          </CustomButton>
+        <CustomButton
+          size="Large"
+          state="Normal"
+          type="Primary"
+          onClick={handleGenerateClick}
+          customClassName={[styles.generateButton]}
+        >
+          Generate
+          <div className={styles.currency}>
+            <img src={BoldRuby.src} />
+            <div>50</div>
+          </div>
+        </CustomButton>
+        {/* {createStep === 0 ? (
+          
         ) : (
           <>
             {!loading && (
@@ -408,7 +432,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                   icon={LineArrowLeft.src}
                   customClassName={[styles.selectButton]}
                 >
-                  Previous
+                  {getLocalizedText('TODO : Previous')}
                 </CustomButton>
                 <CustomButton
                   size="Large"
@@ -418,7 +442,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                   customClassName={[styles.selectButton]}
                 >
                   <div className={styles.regenerateContent}>
-                    Regenerate
+                    {getLocalizedText(`TODO : Regenerate`)}
                     <div className={styles.currency}>
                       <img className={styles.grayIcon} src={BoldRuby.src} />
                       <div>50</div>
@@ -432,16 +456,18 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                   onClick={handleSelected}
                   customClassName={[styles.selectButton]}
                 >
-                  Add
+                  {getLocalizedText(`TODO : Add`)}
                 </CustomButton>
               </div>
             )}
           </>
-        )}
+        )} */}
       </div>
       {createStep === 1 /* API 연동 되기 전에 임시로 0 으로 처리 */ && (
         <div className={styles.selectArea}>
-          <div className={styles.selectDesc}>Choose photo(s) to add. Multiple choose available</div>
+          <div className={styles.selectDesc}>
+            {getLocalizedText(`TODO : Choose photo(s) to add. Multiple choose available`)}
+          </div>
           {
             <ul className={styles.selectGrid}>
               {generatedImages.map((image, index) => (

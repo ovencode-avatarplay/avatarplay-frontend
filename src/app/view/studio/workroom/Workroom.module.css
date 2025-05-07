@@ -179,7 +179,8 @@
 } 
 
 .workroomSwiper :global(.swiper-slide) {
-  width: auto;
+    width: 100%;
+    max-width: 180px;
 }
 
 

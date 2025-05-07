@@ -8,6 +8,66 @@
     overflow: hidden;
 }
 
+.categoryArea
+{
+    display:  flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tagButton 
+{
+    display: flex;
+    width: calc(100% - 32px);
+    margin: 0px 16px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    
+    border-bottom: 1px solid var(--Neutral-100, #F1F3F4); 
+}
+
+.tagName
+{
+    display: flex;
+    padding: 20px 0px;
+    align-items: center;
+    gap: 4px;
+    flex: 1 0 0;   
+    
+    color: var(--Black, #000);    
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.21px;
+}
+
+.fileArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.rootArea
+{
+    display: flex;
+    padding: 10px 16px;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch;
+    
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+    
+}
+
 .listArea
 {
     display: flex;

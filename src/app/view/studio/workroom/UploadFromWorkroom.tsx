@@ -6,9 +6,7 @@ import WorkroomItem from './WorkroomItem';
 import Dialog from '@mui/material/Dialog';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import getLocalizedText from '@/utils/getLocalizedText';
-import {BoldMenuDots, LineSearch} from '@ui/Icons';
-import SwipeTagList from './SwipeTagList';
-
+import {LineSearch} from '@ui/Icons';
 interface UploadFromWorkroomProps {
   open: boolean;
   onClose: () => void;
@@ -351,6 +349,8 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
   const [keyword, setKeyword] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const [curStep, setCurStep] = useState<number>(0);
+
   const [tagStates, setTagStates] = useState<string[]>(['MyWork', 'Favorite', 'AIHistory', 'Gallery']);
   const [currentTag, setCurrentTag] = useState<string>('MyWork');
 
@@ -384,7 +384,9 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
   const filteredItems = workroomData.filter(item => {
     if (item.trash) return false;
 
-    const filteredMediaState = mediaStateFilter ? item.mediaState === mediaStateFilter : true;
+    const filteredMediaState = mediaStateFilter
+      ? item.mediaState === mediaStateFilter || item.mediaState === MediaState.None
+      : true;
 
     const inCurrentTag =
       currentTag === 'MyWork'
@@ -394,7 +396,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
         : currentTag === 'AIHistory'
         ? item.generatedInfo?.generatedType === 1
         : currentTag === 'Gallery'
-        ? item.profileId && item.mediaState === MediaState.None
+        ? item.profileId
         : false;
 
     const inCurrentFolder =
@@ -412,8 +414,8 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
 
   const currentPath =
     folderHistory.length > 0 || selectedFolder
-      ? [...folderHistory.map(f => f.name), selectedFolder?.name].filter(Boolean).join(' / ')
-      : getLocalizedText('TODO : Workroom');
+      ? currentTag + ' > ' + [...folderHistory.map(f => f.name), selectedFolder?.name].filter(Boolean).join(' > ')
+      : currentTag;
   //#endregion
 
   //#region Render
@@ -453,18 +455,14 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
       }}
     >
       <CreateDrawerHeader
-        title={
-          selectedFolder && (selectedFolder?.profileId === undefined || selectedFolder?.profileId === null)
-            ? currentPath
-            : searchOpen
-            ? ''
-            : getLocalizedText('TODO : Workroom')
-        }
+        title={searchOpen ? '' : getLocalizedText('TODO : Workroom')}
         onClose={() => {
           if (selectedFolder) {
             handleGoBackFolder();
           } else if (searchOpen) {
             setSearchOpen(false);
+          } else if (curStep === 1) {
+            setCurStep(0);
           } else {
             onClose();
           }
@@ -487,55 +485,67 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
                   />
                 </button>
               )}
-              <button className={styles.topButton}>
-                <img
-                  className={styles.buttonIcon}
-                  src={BoldMenuDots.src}
-                  onClick={() => {
-                    console.log('filter');
-                  }}
-                />
-              </button>
             </div>
           </>
         }
       </CreateDrawerHeader>
-      <SwipeTagList tags={tagStates} currentTag={currentTag} onTagChange={tag => setCurrentTag(tag)} />
-      <div className={styles.listArea}>
-        {filteredItems
-          .filter(item => item.mediaState === MediaState.None)
-          .map(item => (
-            <div className={styles.gridItem} key={item.id}>
-              <WorkroomItem
-                item={item}
-                detailView={true}
-                isSelecting={false}
-                isSelected={false}
-                onClickItem={() => handleItemClick(item)}
-                onSelect={() => handleItemClick(item)}
-                onClickPreview={() => handleItemClick(item)}
-              />
-            </div>
+
+      {curStep === 0 ? (
+        <div className={styles.categoryArea}>
+          {tagStates.map(item => (
+            <button
+              className={styles.tagButton}
+              onClick={() => {
+                setCurrentTag(item);
+                setCurStep(1);
+              }}
+            >
+              <div className={styles.tagName}>{item}</div>
+            </button>
           ))}
-      </div>
-      <div className={`${styles.gridArea}`}>
-        {filteredItems
-          .filter(item => item.mediaState !== MediaState.None)
-          .map(item => (
-            <div className={styles.gridItem} key={item.id}>
-              <WorkroomItem
-                item={item}
-                detailView={false}
-                isSelecting={false}
-                isSelected={false}
-                onClickItem={() => handleItemClick(item)}
-                onSelect={() => handleItemClick(item)}
-                onClickPreview={() => handleItemClick(item)}
-                blockDefaultPreview={true}
-              />
-            </div>
-          ))}
-      </div>
+        </div>
+      ) : (
+        <div className={styles.fileArea}>
+          <div className={styles.rootArea}>{currentPath}</div>
+          <div className={styles.gridArea}>
+            {filteredItems
+              .filter(item => item.mediaState === MediaState.None)
+              .map(item => (
+                <div className={styles.gridItem} key={item.id}>
+                  <WorkroomItem
+                    uploadItem={true}
+                    item={item}
+                    detailView={true}
+                    isSelecting={false}
+                    isSelected={false}
+                    onClickItem={() => handleItemClick(item)}
+                    onSelect={() => handleItemClick(item)}
+                    onClickPreview={() => handleItemClick(item)}
+                  />
+                </div>
+              ))}
+          </div>
+          <div className={`${styles.gridArea}`}>
+            {filteredItems
+              .filter(item => item.mediaState !== MediaState.None)
+              .map(item => (
+                <div className={styles.gridItem} key={item.id}>
+                  <WorkroomItem
+                    uploadItem={true}
+                    item={item}
+                    detailView={false}
+                    isSelecting={false}
+                    isSelected={false}
+                    onClickItem={() => handleItemClick(item)}
+                    onSelect={() => handleItemClick(item)}
+                    onClickPreview={() => handleItemClick(item)}
+                    blockDefaultPreview={true}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
     </Dialog>
   );
 };
