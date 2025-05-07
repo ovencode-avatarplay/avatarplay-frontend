@@ -105,7 +105,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       ? CharacterIP.Fan
       : 0;
 
-  const getSort = sortValue == 'Newest' ? 0 : sortValue == 'Popular' ? 1 : sortValue == 'Name' ? 2 : 0;
+  const getSort = sortValue == 'Newest' ? 0 : sortValue == 'Name' ? 1 : sortValue == 'Popular' ? 2 : 0;
 
   const fetchCharacterChatRooms = async (isRefreshAll = false): Promise<ChatRoomInfo[]> => {
     try {
