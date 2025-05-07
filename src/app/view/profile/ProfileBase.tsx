@@ -785,7 +785,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     try {
       const res = await sendUrlEnterDMChat(payload);
       if (res.resultCode === 0) {
-        pushLocalizedRoute('/message/' + urlLinkKey, router);
+        pushLocalizedRoute('/message/DM/' + urlLinkKey, router);
         return;
       } else {
         return `⚠️ 오류: ${res.resultMessage}`;

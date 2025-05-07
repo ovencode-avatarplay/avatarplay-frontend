@@ -111,7 +111,7 @@ const MessageProfile: React.FC<Props> = ({
     try {
       const res = await sendUrlEnterDMChat(payload);
       if (res.resultCode === 0) {
-        pushLocalizedRoute('/message/' + urlLinkKeyProfile, router);
+        pushLocalizedRoute('/message/DM/' + urlLinkKeyProfile, router);
         return;
       } else {
         return `⚠️ 오류: ${res.resultMessage}`;
