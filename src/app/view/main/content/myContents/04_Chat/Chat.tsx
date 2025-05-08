@@ -9,14 +9,16 @@ import {isOpenEditAtom} from './ChatAtom';
 import ChatEditDrawer from './ChatEditDrawer';
 import zIndex from '@mui/material/styles/zIndex';
 import {useSignalR} from '@/hooks/useSignalR';
-import {DMChatType, sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
+import {DMChatType, MediaState, sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
 
-interface Message {
+export interface Message {
   id: number;
   sender: 'me' | 'other';
   content: string;
   timestamp: string;
   isItalic?: boolean;
+  mediaType?: MediaState;
+  mediaUrl?: string;
 }
 
 interface Props {
@@ -27,7 +29,7 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [chatRoomKey, setChatRoomKey] = useState(urlLinkKey);
-  const handleSend = (text: string) => {
+  const handleSend = (text: string, mediaState: MediaState, mediaUrl: string) => {
     const newMessage: Message = {
       id: messages.length + 1,
       sender: 'me',
@@ -37,8 +39,9 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
         minute: '2-digit',
       }),
     };
-    console.log('');
-    sendMessage(chatRoomKey, newMessage.content);
+    console.log('mediaStatmediaStatemediaStatee', mediaState);
+
+    sendMessage(chatRoomKey, newMessage.content, 0, mediaState, mediaUrl);
   };
 
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
@@ -94,6 +97,8 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
               hour: '2-digit',
               minute: '2-digit',
             }),
+            mediaType: payload.mediaState,
+            mediaUrl: payload.mediaUrl,
           };
           setMessages(prev => [...prev, newMsg]);
         });

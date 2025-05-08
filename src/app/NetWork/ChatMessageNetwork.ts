@@ -64,6 +64,14 @@ export enum DMChatType {
   MyChat = 0,
   AnotherChat = 1,
 }
+
+export enum MediaState {
+  None = 0,
+  Image = 1,
+  Video = 2,
+  Audio = 3,
+}
+
 export interface DMChatMessage {
   id: number;
   dmChatType: DMChatType;
@@ -71,7 +79,7 @@ export interface DMChatMessage {
   profileImageUrl: string;
   profileName: string;
   message: string;
-  mediaState: number;
+  mediaState: MediaState;
   mediaUrl: string;
   emoticonId: number;
   createAt: string;

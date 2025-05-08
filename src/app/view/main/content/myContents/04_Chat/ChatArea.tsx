@@ -4,14 +4,7 @@ import ChatBubble from './ChatBubble';
 import ChatBlur from './ChatBlur';
 import {useAtom} from 'jotai';
 import {isOpenAddContentAtom, isOpenEmojiPickerAtom} from './ChatAtom';
-
-interface Message {
-  id: number;
-  sender: 'me' | 'other';
-  content: string;
-  timestamp: string; // e.g., "8:05 am"
-  isItalic?: boolean;
-}
+import {Message} from './Chat';
 
 interface Props {
   messages: Message[];
@@ -64,6 +57,8 @@ const ChatArea: React.FC<Props> = ({messages}) => {
               timestamp={shouldShowTimestamp ? msg.timestamp : ''}
               isItalic={msg.isItalic}
               id={idx}
+              mediaType={msg.mediaType}
+              mediaUrl={msg.mediaUrl}
             />
           </div>
         );

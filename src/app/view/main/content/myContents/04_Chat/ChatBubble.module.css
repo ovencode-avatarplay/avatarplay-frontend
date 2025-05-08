@@ -74,3 +74,21 @@
     border-radius: 50px;
     background: var(--Neutral-400, #BDC1C6);
   }
+
+  .chatMediaImage {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .chatMediaVideo {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .chatMediaAudio {
+    width: 200px;
+    margin-bottom: 8px;
+  }
+  

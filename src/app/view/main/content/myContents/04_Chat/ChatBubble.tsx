@@ -6,6 +6,7 @@ import {isBlurModeAtom, selectedBubbleIdAtom} from './ChatAtom';
 import zIndex from '@mui/material/styles/zIndex';
 import CustomContextDropDown, {DropdownItem} from '@/components/layout/shared/CustomContextDropDown';
 import {BoldTranslator, LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
+import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
 
 const items: DropdownItem[] = [
   {
@@ -32,6 +33,8 @@ interface ChatBubbleProps {
   isItalic?: boolean;
   profileImage?: string;
   id: number;
+  mediaType?: MediaState;
+  mediaUrl?: string;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -41,6 +44,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   isItalic = false,
   profileImage = '/images/profile_sample/img_sample_feed1.png',
   id,
+  mediaType,
+  mediaUrl,
 }) => {
   const isMe = sender === 'me';
   const [isBlurMode, setBlurMode] = useAtom(isBlurModeAtom);
@@ -56,8 +61,34 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
     } else {
       setIsMenuOpen(false);
     }
-    console.log('asdad');
   }, [isBlurMode]);
+
+  const renderMedia = () => {
+    if (!mediaUrl) return null;
+    if (mediaType === MediaState.Image) {
+      return <img src={mediaUrl} alt="uploaded" className={styles.chatMediaImage} />;
+    }
+
+    if (mediaType === MediaState.Video) {
+      return (
+        <video controls className={styles.chatMediaVideo}>
+          <source src={mediaUrl} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+
+    if (mediaType === MediaState.Audio) {
+      return (
+        <audio controls className={styles.chatMediaAudio}>
+          <source src={mediaUrl} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      );
+    }
+
+    return null;
+  };
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
@@ -73,6 +104,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
             position: 'relative',
           }}
         >
+          {renderMedia()} {/* ✅ 미디어 먼저 출력 */}
           <p className={isItalic ? styles.italic : ''}>{content}</p>
         </div>
         {!isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}

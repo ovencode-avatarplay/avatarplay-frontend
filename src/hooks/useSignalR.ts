@@ -61,8 +61,8 @@ export function useSignalR(token: string) {
         urlLinkKey,
         message,
         (emoticonId = 0),
-        (mediaState = MediaState.None),
-        (mediaUrl = ''),
+        (mediaState = mediaState || MediaState.None),
+        (mediaUrl = mediaUrl || ''),
       );
     },
     onMessage,
