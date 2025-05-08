@@ -81,6 +81,8 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
             hour: '2-digit',
             minute: '2-digit',
           }),
+          mediaType: msg.mediaState,
+          mediaUrl: msg.mediaUrl,
         }));
 
         setMessages(formattedMessages);

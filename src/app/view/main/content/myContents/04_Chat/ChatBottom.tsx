@@ -8,7 +8,7 @@ import {isOpenAddContentAtom, isOpenEmojiPickerAtom} from './ChatAtom';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import DrawerDonation from '../../create/common/DrawerDonation';
-import {sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
 interface Props {
   onSend: (text: string, mediaState: MediaState, mediaUrl: string) => void;
@@ -113,12 +113,23 @@ const AddContent: React.FC<AddContentProps> = ({setText, handleSend}) => {
 
       try {
         const mediaState = getDmChatMediaState(file); // ✅ 자동 판별
-        const response = await sendUpload({
-          imageList: [file],
-          mediaState: mediaState, // 또는 ContentVideo, 일단 하나만 사용
-        });
 
-        const uploadedUrl = response?.data?.imageUrlList[0];
+        const req: MediaUploadReq = {
+          mediaState,
+        };
+
+        if (mediaState === UploadMediaState.DmChatImage) {
+          req.imageList = [file]; // ✅ 이미지 → imageList
+        } else {
+          req.file = file; // ✅ 영상/오디오 → file
+        }
+
+        const response = await sendUpload(req);
+
+        let uploadedUrl;
+        if (mediaState === UploadMediaState.DmChatImage) {
+          uploadedUrl = response.data?.imageUrlList[0];
+        } else uploadedUrl = response.data?.url;
         if (uploadedUrl) {
           let chatState = MediaState.None;
           if (mediaState == UploadMediaState.DmChatAudio) chatState = MediaState.Audio;

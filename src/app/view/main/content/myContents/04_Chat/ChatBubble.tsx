@@ -97,16 +97,20 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
       <div className={styles.bubbleBlock}>
         {/* 나면 타임스탬프 왼쪽, 아니면 오른쪽 */}
         {isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
-        <div
-          className={`${styles.bubble} ${isMe ? styles.myBubble : styles.otherBubble}`}
-          style={{
-            zIndex: isBlurMode && selectedBubbleId == id ? 1 : 0,
-            position: 'relative',
-          }}
-        >
-          {renderMedia()} {/* ✅ 미디어 먼저 출력 */}
-          <p className={isItalic ? styles.italic : ''}>{content}</p>
-        </div>
+        {mediaUrl ? (
+          renderMedia()
+        ) : (
+          <div
+            className={`${styles.bubble} ${isMe ? styles.myBubble : styles.otherBubble}`}
+            style={{
+              zIndex: isBlurMode && selectedBubbleId == id ? 1 : 0,
+              position: 'relative',
+            }}
+          >
+            <p className={isItalic ? styles.italic : ''}>{content}</p>
+          </div>
+        )}
+
         {!isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
       </div>
       {isMenuOpen && (
