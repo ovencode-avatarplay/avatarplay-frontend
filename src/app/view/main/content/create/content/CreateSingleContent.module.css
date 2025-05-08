@@ -333,3 +333,27 @@ background: #3A3F3F;
 .setaConfirm:active {
 background: #1E2222;
 }
+
+.title2
+{
+    display: flex;
+    flex-direction: row;
+    color: var(--Neutral-900, #040415);
+    font-feature-settings: 'liga' off, 'clig' off;    
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 114.286% */
+    letter-spacing: -0.4px;
+}
+
+.titleAstrisk
+{
+    color: var(--Secondary-Red-1, #F75555);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.4px;
+}

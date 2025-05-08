@@ -39,6 +39,7 @@ import {getVisibilityTypeKey} from '../content/CreateSeriesContent';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import TagsData from 'data/create/tags.json';
+import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 
 interface Props {
   id?: string;
@@ -442,27 +443,28 @@ const PostMain: React.FC<Props> = ({id}) => {
         />
 
         <div className={styles.tagContainer}>
-          <CustomDropDownSelectDrawer
-            title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
+          <CustomChipSelector
+            label={getLocalizedText('common_label_002')}
             onClick={() => {
               setTagList(themeGroup?.tags || []);
               setTagOpen(true);
             }}
-            error={warnPopup}
-          ></CustomDropDownSelectDrawer>
-          <div className={styles.blackTagContainer}>
-            {selectedTags.map((tag, index) => (
-              <div key={index} className={styles.blackTag}>
-                {getLocalizedText(tag)}
-                <img
-                  src={LineClose.src}
-                  className={styles.lineClose}
-                  onClick={() => handleTagRemove(tag)} // 클릭하면 해당 태그 삭제
-                />
-              </div>
-            ))}
-          </div>
+            tagType="tags"
+            tags={selectedTags}
+            handleTagSelect={handleTagSelect}
+          />
+          <DrawerTagSelect
+            title={getLocalizedText('common_label_002')}
+            isOpen={tagOpen}
+            onClose={() => setTagOpen(false)}
+            tagList={tagList}
+            selectedTags={selectedTags}
+            onTagSelect={handleTagSelect}
+            onRefreshTags={() => setSelectedTags([])}
+            maxTagCount={maxTagCount}
+            selectedTagAlertOn={selectedTagAlertOn}
+            setSelectedTagAlertOn={setSelectedTagAlertOn}
+          />
         </div>
 
         <div style={{boxSizing: 'border-box', width: '100%'}}>
