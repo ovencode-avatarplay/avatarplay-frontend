@@ -19,6 +19,7 @@ import {FilterDataItem} from '@/components/search/FilterSelector';
 import MessageProfile, {BadgeType, FollowState} from '../01_Layout/MessageProfile';
 import {sendGetCharacterChatRoomList, sendGetDMChatRoomList} from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
+import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 
@@ -148,25 +149,42 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setOffset(0);
     setHasMore(true);
     setSearchResults({followBackCharacterList: [], recommendCharacterList: []});
+    setIsInputFocused(false);
     fetchMore(true);
   };
 
   const renderCharacterList = (list: SearchCharacterRoomInfo[]) => (
     <div>
-      {list.map(character => (
-        <MessageProfile
-          key={character.chatRoomId}
-          profileImage={character.profileImageUrl}
-          profileName={character.characterName}
-          badgeType={BadgeType.None} // TODO: 실제 데이터에 맞게 매핑
-          followState={FollowState.None} // TODO: 실제 데이터에 맞게 매핑
-          urlLinkKey={character.urlLinkKey}
-          roomid={String(character.chatRoomId)}
-          isOption={true}
-          isPin={character.isPinFix}
-          // 기타 필요한 props 추가
-        />
-      ))}
+      {list.map(character =>
+        (() => {
+          // BadgeType 매핑
+          let badgeType = BadgeType.None;
+          if (selectedTag === 'Character' || selectedTag === 'Following' || selectedTag === 'Friend') {
+            if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
+            else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
+          }
+          // followState 매핑
+          let followState = FollowState.None;
+          if (selectedTag === 'Character') followState = FollowState.Follow;
+          else if (selectedTag === 'People') followState = FollowState.AddFriend;
+          // isOption 매핑
+          const isOption = !(followState === FollowState.Follow || followState === FollowState.AddFriend);
+          return (
+            <MessageProfile
+              key={character.chatRoomId}
+              profileImage={character.profileImageUrl}
+              profileName={character.characterName}
+              badgeType={badgeType}
+              followState={followState}
+              urlLinkKey={character.urlLinkKey}
+              roomid={String(character.chatRoomId)}
+              isOption={isOption}
+              isPin={character.isPinFix}
+              // 기타 필요한 props 추가
+            />
+          );
+        })(),
+      )}
     </div>
   );
 
