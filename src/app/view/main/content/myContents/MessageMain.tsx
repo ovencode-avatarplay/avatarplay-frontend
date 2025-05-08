@@ -3,6 +3,7 @@ import styles from './MessageMain.module.css';
 import HeaderNavBarWhite from './HeaderNavBarWhite';
 import CharacterChat from './02_ChatList/CharacterChat';
 import DMChat from './02_ChatList/DMChat';
+import FriendsList from './FriendsList';
 
 const tabItems = ['Character Chat', 'DM', 'AI Help'];
 const MessageMain: React.FC = () => {
@@ -24,7 +25,7 @@ const MessageMain: React.FC = () => {
         </div>
         {activeIndex === 0 && <CharacterChat></CharacterChat>}
         {activeIndex === 1 && <DMChat></DMChat>}
-        {activeIndex === 2 && <></>}
+        {activeIndex === 2 && <FriendsList></FriendsList>}
       </div>
     </>
   );

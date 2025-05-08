@@ -12,9 +12,15 @@ interface Props {
   onFilterClick?: () => void;
   onSearchTextChange?: (text: string) => void;
   onFocusChange?: (isFocused: boolean) => void;
+  onSearch?: (
+    searchText: string,
+    isAdult: boolean,
+    positiveFilters: FilterDataItem[],
+    negativeFilters: FilterDataItem[],
+  ) => void;
 }
 
-const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, onFocusChange}) => {
+const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, onFocusChange, onSearch}) => {
   const [isAdult, setIsAdult] = useState(true);
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -77,6 +83,12 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
     onSearchTextChange?.(value); // 부모에게 전달
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchText.trim()) {
+      onSearch?.(searchText.trim(), isAdult, positiveFilters, negativeFilters);
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* ← 뒤로가기 */}
@@ -92,6 +104,7 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
             placeholder="Search"
             value={searchText}
             onChange={handleChange}
+            onKeyPress={handleKeyPress}
             onFocus={() => onFocusChange?.(true)}
             onBlur={() => onFocusChange?.(false)}
           />

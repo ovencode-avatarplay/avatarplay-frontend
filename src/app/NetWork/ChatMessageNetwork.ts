@@ -173,3 +173,156 @@ export const sendCheckDMChatLinkKey = async (
     throw new Error('DM 채팅 링크 키 확인 중 오류가 발생했습니다.');
   }
 };
+
+export interface GetSearchCharacterRoomListReq {
+  characterIP: number;
+  search: string;
+  positiveFilterTags: string[];
+  nagativeFilterTags: string[];
+  isAdults: boolean;
+}
+
+export interface SearchCharacterRoomInfo {
+  chatRoomId: number;
+  profileImageUrl: string;
+  urlLinkKey: string;
+  characterProfileId: number;
+  characterId: number;
+  characterName: string;
+  characterIP: number;
+  likeCount: number;
+  isPinFix: boolean;
+  isUnreadDot: boolean;
+  updatedAt: string;
+}
+
+export interface GetSearchCharacterRoomListRes {
+  followBackCharacterList: SearchCharacterRoomInfo[];
+  recommendCharacterList: SearchCharacterRoomInfo[];
+}
+
+/**
+ * 캐릭터 채팅방 검색 API
+ * @param payload 검색 조건을 포함한 요청 데이터
+ * @returns 검색된 캐릭터 채팅방 리스트 응답
+ */
+export const sendGetSearchCharacterRoomList = async (
+  payload: GetSearchCharacterRoomListReq,
+): Promise<ResponseAPI<GetSearchCharacterRoomListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSearchCharacterRoomListRes>>(
+      '/ChatMessage/getSearchCharacterRoomList',
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to search character rooms:', error);
+    throw new Error('캐릭터 채팅방 검색 중 오류가 발생했습니다.');
+  }
+};
+
+// 팔로우 리스트 검색
+export interface GetSearchFollowingListReq {
+  characterIP: number;
+  search: string;
+  positiveFilterTags: string[];
+  nagativeFilterTags: string[];
+  isAdults: boolean;
+  page: {
+    offset: number;
+    limit: number;
+  };
+}
+export interface GetSearchFollowingListRes {
+  followCharacterList: SearchCharacterRoomInfo[];
+}
+export const sendGetSearchFollowingList = async (
+  payload: GetSearchFollowingListReq,
+): Promise<ResponseAPI<GetSearchFollowingListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSearchFollowingListRes>>(
+      '/ChatMessage/getSearchFollowingList',
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to search following list:', error);
+    throw new Error('팔로우 리스트 검색 중 오류가 발생했습니다.');
+  }
+};
+
+// 캐릭터 추천 리스트 검색
+export interface GetSearchCharacterListReq {
+  characterIP: number;
+  search: string;
+  positiveFilterTags: string[];
+  nagativeFilterTags: string[];
+  isAdults: boolean;
+  page: {
+    offset: number;
+    limit: number;
+  };
+}
+export interface GetSearchCharacterListRes {
+  recommendCharacterList: SearchCharacterRoomInfo[];
+}
+export const sendGetSearchCharacterList = async (
+  payload: GetSearchCharacterListReq,
+): Promise<ResponseAPI<GetSearchCharacterListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSearchCharacterListRes>>(
+      '/ChatMessage/getSearchCharacterList',
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to search character list:', error);
+    throw new Error('캐릭터 추천 리스트 검색 중 오류가 발생했습니다.');
+  }
+};
+
+// 친구 리스트 검색
+export interface GetSearchFriendListReq {
+  search: string;
+  page: {
+    offset: number;
+    limit: number;
+  };
+}
+export interface GetSearchFriendListRes {
+  friendList: SearchCharacterRoomInfo[];
+}
+export const sendGetSearchFriendList = async (
+  payload: GetSearchFriendListReq,
+): Promise<ResponseAPI<GetSearchFriendListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSearchFriendListRes>>('/ChatMessage/getSearchFriendList', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to search friend list:', error);
+    throw new Error('친구 리스트 검색 중 오류가 발생했습니다.');
+  }
+};
+
+// 친구 추천 리스트 검색
+export interface GetSearchPeopleListReq {
+  search: string;
+  page: {
+    offset: number;
+    limit: number;
+  };
+}
+export interface GetSearchPeopleListRes {
+  recommendPeopleList: SearchCharacterRoomInfo[];
+}
+export const sendGetSearchPeopleList = async (
+  payload: GetSearchPeopleListReq,
+): Promise<ResponseAPI<GetSearchPeopleListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetSearchPeopleListRes>>('/ChatMessage/getSearchPeopleList', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to search people list:', error);
+    throw new Error('친구 추천 리스트 검색 중 오류가 발생했습니다.');
+  }
+};

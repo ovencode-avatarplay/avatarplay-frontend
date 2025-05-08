@@ -129,7 +129,11 @@ const MessageProfile: React.FC<Props> = ({
           {timestamp && <span className={styles.timestamp}>{timestamp}</span>}
         </div>
       ) : (
-        <Link href={getLocalizedLink(`/chat/?v=${roomid}` || `?v=`)} className={styles.profileInfo} onClick={() => {}}>
+        <Link
+          href={getLocalizedLink(`/chat/?v=${urlLinkKey}` || `?v=`)}
+          className={styles.profileInfo}
+          onClick={() => {}}
+        >
           {/* 프로필 정보 */}
           <div className={styles.profileTop}>
             <span className={styles.profileName}>{profileName}</span>

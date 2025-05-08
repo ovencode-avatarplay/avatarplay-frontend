@@ -117,7 +117,7 @@ const AddContent: React.FC<AddContentProps> = ({setText, handleSend}) => {
         const req: MediaUploadReq = {
           mediaState,
         };
-
+        console.log;
         if (mediaState === UploadMediaState.DmChatImage) {
           req.imageList = [file]; // ✅ 이미지 → imageList
         } else {
