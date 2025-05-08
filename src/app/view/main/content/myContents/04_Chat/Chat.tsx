@@ -10,6 +10,7 @@ import ChatEditDrawer from './ChatEditDrawer';
 import zIndex from '@mui/material/styles/zIndex';
 import {useSignalR} from '@/hooks/useSignalR';
 import {DMChatType, MediaState, sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
+import useCustomRouter from '@/utils/useCustomRouter';
 
 export interface Message {
   id: number;
@@ -28,6 +29,7 @@ interface Props {
 const Chat: React.FC<Props> = ({urlLinkKey}) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const {back} = useCustomRouter();
   const [chatRoomKey, setChatRoomKey] = useState(urlLinkKey);
   const handleSend = (text: string, mediaState: MediaState, mediaUrl: string) => {
     const newMessage: Message = {
@@ -118,7 +120,9 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
       <Box className={styles.modalBox}>
         <div className={styles.container}>
           <ChatHeader
-            onClose={() => {}}
+            onClose={() => {
+              back();
+            }}
             anotherImageUrl={anotherImageUrl}
             anotherProfileEmail={anotherProfileEmail}
             anotherProfileName={anotherProfileName}
