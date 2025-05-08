@@ -1005,11 +1005,9 @@ const Workroom: React.FC<Props> = ({}) => {
           const duration = Date.now() - enterTime;
 
           if (duration <= LOADING_THRESHOLD) {
-            // 너무 짧으면 skeleton을 건너뜀
             setIsLoading(false);
             setIsDelaying(true);
           } else {
-            // 1초 이상 보여지도록 delay 보장
             setIsLoading(false);
             setIsDelaying(false);
             delayTimer = setTimeout(() => {
@@ -1018,11 +1016,14 @@ const Workroom: React.FC<Props> = ({}) => {
           }
         }
       },
-      {threshold: 1},
+      {threshold: 0.1},
     );
     if (ref.current) observer.observe(ref.current);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (delayTimer) clearTimeout(delayTimer);
+    };
   }, [tagStates]);
 
   useEffect(() => {
@@ -1511,11 +1512,11 @@ const Workroom: React.FC<Props> = ({}) => {
               type="alert"
               description={getLocalizedText(
                 selectedItem?.trash
-                  ? `TODO : You’re about to delete "{name}" from the your Trash?
+                  ? `TODO : You're about to delete "{name}" from the your Trash?
 This cannot be undone.
 Deleted items cannot be recovered.`
                   : `2 folders will be deleted, containing a total of 2 items.  
-They’ll be moved to the trash and will be permanently deleted after 30days.`,
+They'll be moved to the trash and will be permanently deleted after 30days.`,
               )}
               buttons={[
                 {
