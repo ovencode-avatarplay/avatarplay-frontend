@@ -4,7 +4,7 @@ import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './CreateVariationMain.module.css';
 import SwipeTagList from '@/app/view/studio/workroom/SwipeTagList';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
-import {useLayoutEffect, useState} from 'react';
+import {useEffect, useLayoutEffect, useState} from 'react';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {
   sendGetCharacterList,
@@ -31,6 +31,7 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   const [loading, setLoading] = useState(false);
   const [detailView, setDetailView] = useState(false);
   const [characterList, setCharacterList] = useState<CharacterInfo[]>([]);
+  const [filteredList, setFilteredList] = useState<CharacterInfo[]>([]);
 
   const [selectedIpFilter, setSelectedIpFilter] = useState<CharacterIP>(CharacterIP.Original);
 
@@ -50,6 +51,10 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   }
 
   //#region function
+
+  const routerBack = () => {
+    back('/main/homefeed');
+  };
 
   // 현재 유저가 가진 캐릭터를 모두 가져옴
 
@@ -102,9 +107,18 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   //#endregion
 
-  const routerBack = () => {
-    back('/main/homefeed');
-  };
+  //#region Hooks
+
+  useEffect(() => {
+    // TODO : 필터 작업
+    // setFilteredList(characterList.filter(char => char.characterIP === selectedIpFilter));
+    setFilteredList(characterList);
+  }, [selectedIpFilter, characterList]);
+
+  useEffect(() => {
+    console.log(filteredList);
+  }, [filteredList]);
+  //#endregion
 
   //#region Render
   const renderFilter = (detailViewButton: boolean, detailView: boolean) => {
@@ -152,15 +166,15 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
       <div className={styles.characterListContainer}>
         <div className={styles.filterArea}>{renderFilter(true, detailView)}</div>
         <div className={`${styles.characterGrid} ${detailView ? styles.largeGrid : styles.detailGrid}`}>
-          {characterList.map((character, index) => {
-            return renderCharacterLargeItem(character, index);
+          {filteredList.map((character, index) => {
+            return renderCharacterItem(character, index);
           })}
         </div>
       </div>
     );
   };
 
-  const renderCharacterLargeItem = (character: CharacterInfo, key: number) => {
+  const renderCharacterItem = (character: CharacterInfo, key: number) => {
     return (
       <div
         key={key}

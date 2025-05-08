@@ -43,6 +43,7 @@ export interface WorkroomItemInfo {
   detail: string;
   mediaState: MediaState;
   imgUrl?: string;
+  mediaUrl?: string;
   folderLocation?: number[];
   favorite?: boolean;
   trash?: boolean;
@@ -84,14 +85,15 @@ const WorkroomItem: React.FC<Props> = ({
   const [audioViewerOpen, setAudioViewerOpen] = useState<boolean>();
 
   const handlePreView = () => {
-    console.log('adsf');
-    if (!item || blockDefaultPreview) return;
-    if (item.mediaState === MediaState.Image) {
-      setImageViewOpen(true);
-    } else if (item.mediaState === MediaState.Video) {
-      setVideoViewerOpen(true);
-    } else if (item.mediaState === MediaState.Audio) {
-      setAudioViewerOpen(true);
+    if (!isSelecting) {
+      if (!item || blockDefaultPreview) return;
+      if (item.mediaState === MediaState.Image) {
+        setImageViewOpen(true);
+      } else if (item.mediaState === MediaState.Video) {
+        setVideoViewerOpen(true);
+      } else if (item.mediaState === MediaState.Audio) {
+        setAudioViewerOpen(true);
+      }
     }
   };
 
@@ -198,7 +200,6 @@ const WorkroomItem: React.FC<Props> = ({
             className={styles.detailViewContainer}
             onClick={e => {
               if (item.mediaState === MediaState.Audio) {
-                console.log('zxcvz');
                 e.stopPropagation();
                 if (onClickPreview) {
                   onClickPreview();
@@ -222,7 +223,6 @@ const WorkroomItem: React.FC<Props> = ({
               <div
                 className={styles.itemIcon}
                 onClick={e => {
-                  console.log('zxcvz');
                   e.stopPropagation();
                   if (onClickPreview) {
                     onClickPreview();

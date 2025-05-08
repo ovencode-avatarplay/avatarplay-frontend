@@ -9,13 +9,14 @@ import {WorkroomItemInfo} from './WorkroomItem';
 interface Props {
   tagState: string;
   folderId: number;
-  workTags: string[];
+  folderTags: string[];
+  allData: WorkroomItemInfo[];
   folderData: WorkroomItemInfo[];
   imageData: WorkroomItemInfo[];
   videoData: WorkroomItemInfo[];
   audioData: WorkroomItemInfo[];
   detailView: boolean;
-  handleTagClick: (tagStates: string, value: string) => void;
+  handleTagClick: (value: string) => void;
   renderCategorySection: Function;
   renderDataItems: Function;
   filterWorkroomData: Function;
@@ -27,7 +28,8 @@ interface Props {
 const WorkroomFolderData: React.FC<Props> = ({
   tagState,
   folderId,
-  workTags,
+  folderTags,
+  allData,
   folderData,
   imageData,
   videoData,
@@ -43,7 +45,7 @@ const WorkroomFolderData: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <SwipeTagList tags={workTags} currentTag={tagState} onTagChange={tag => handleTagClick('folder', tag)} />
+      <SwipeTagList tags={folderTags} currentTag={tagState} onTagChange={tag => handleTagClick(tag)} />
       <div
         className={styles.folderContainer}
         onMouseDown={handleStart}
@@ -58,7 +60,7 @@ const WorkroomFolderData: React.FC<Props> = ({
         onClick={e => handleDeselectIfOutside(e)}
       >
         {tagState === 'All' ? (
-          filterWorkroomData(folderData, {trash: false, parentFolderId: folderId}).length > 0 ? (
+          filterWorkroomData(allData, {trash: false, parentFolderId: folderId}).length > 0 ? (
             <>
               {renderCategorySection(
                 'TODO : Folder',

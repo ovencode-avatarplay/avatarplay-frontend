@@ -60,6 +60,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const trashTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
   const variationTags = ['Portrait', 'Pose', 'Expressions', 'Video'];
   const searchTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
+  const folderTags = ['All', 'Folders', 'Image', 'Video', 'Audio'];
 
   type RenderDataItemsOptions = {
     filterArea?: boolean;
@@ -579,22 +580,25 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const handleItemClick = async (item: WorkroomItemInfo) => {
-    setSelectedItem(item);
-    if (item.mediaState === MediaState.None) {
-      if (item.profileId) {
-        await getCharacterInfo(item.profileId);
-        setSelectedCurrentFolder(item);
-        setIsGalleryModalOpen(true);
-        setIsSearchModalOpen(false);
-      } else {
-        if (selectedCurrentFolder) {
-          setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
+    if (!isSelecting) {
+      setSelectedItem(item);
+      if (item.mediaState === MediaState.None) {
+        if (item.profileId) {
+          await getCharacterInfo(item.profileId);
+          setSelectedCurrentFolder(item);
+          setIsGalleryModalOpen(true);
+          setIsSearchModalOpen(false);
+        } else {
+          if (selectedCurrentFolder) {
+            setFolderHistory(prev => [...prev, selectedCurrentFolder]); // 히스토리에 현재 폴더 저장
+          }
+          handleTagClick('folder', 'All');
+          setSelectedCurrentFolder(item);
+          setIsSearchModalOpen(false);
         }
-        setSelectedCurrentFolder(item);
-        setIsSearchModalOpen(false);
+      } else {
+        handleItemImageClick(item);
       }
-    } else {
-      handleItemImageClick(item);
     }
   };
 
@@ -1044,6 +1048,10 @@ const Workroom: React.FC<Props> = ({}) => {
       setIsMediaLoaded(true);
     });
   }, [tagStates]);
+
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [isSelecting]);
   //#endregion
 
   //#region Renderer
@@ -1228,7 +1236,8 @@ const Workroom: React.FC<Props> = ({}) => {
       <WorkroomFolderData
         tagState={tagStates.folder}
         folderId={folderId}
-        workTags={workTags}
+        folderTags={folderTags}
+        allData={workroomData}
         folderData={folderData}
         imageData={imageData}
         videoData={videoData}

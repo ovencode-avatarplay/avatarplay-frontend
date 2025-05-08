@@ -65,7 +65,7 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
             )}
             {onMoveToTrash && (
               <button className={styles.iconButton} aria-label="Delete" onClick={onMoveToTrash}>
-                <img src={LineDelete.src} alt="Delete" />
+                <img src={BoldDelete.src} alt="Delete" />
               </button>
             )}
           </>
