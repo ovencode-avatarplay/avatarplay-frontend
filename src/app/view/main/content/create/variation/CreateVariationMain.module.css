@@ -89,8 +89,10 @@
 
 .filterRight
 {
+    position: relative;
+
     display: flex;
-    width: 69px;
+    /* width: 69px; */
     height: 32px;
     justify-content: flex-end;
     align-items: center;
@@ -245,4 +247,11 @@
 {
     flex: 1;   
     overflow-y: auto;
+}
+
+.sortDropDown
+{
+    position: absolute;
+    top: 40px;
+
 }

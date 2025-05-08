@@ -3,21 +3,19 @@ interface Props {}
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './CreateVariationMain.module.css';
 import SwipeTagList from '@/app/view/studio/workroom/SwipeTagList';
-import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {useEffect, useLayoutEffect, useState} from 'react';
-import {getCurrentLanguage} from '@/utils/UrlMove';
 import {
-  sendGetCharacterList,
-  GetCharacterListReq,
-  sendGetCharacterProfileInfo,
   CharacterIP,
+  CreateVariationSort,
+  sendGetCreateVariationList,
+  CreateVariationInfo,
 } from '@/app/NetWork/CharacterNetwork';
-import {GetCharacterInfoReq} from '@/app/NetWork/CharacterNetwork';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {BoldAltArrowDown, BoldViewGallery, LineList} from '@ui/Icons';
 import CharacterGalleryCreate from '@/app/view/studio/characterDashboard/CharacterGalleryCreate';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import useCustomRouter from '@/utils/useCustomRouter';
+import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
 const CreateVariationMain: React.FC<Props> = ({}) => {
   const {back} = useCustomRouter();
@@ -30,16 +28,19 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   //#region State
   const [loading, setLoading] = useState(false);
   const [detailView, setDetailView] = useState(false);
-  const [characterList, setCharacterList] = useState<CharacterInfo[]>([]);
-  const [filteredList, setFilteredList] = useState<CharacterInfo[]>([]);
+
+  const [createVariationList, setCreateVariationList] = useState<CreateVariationInfo[]>([]);
 
   const [selectedIpFilter, setSelectedIpFilter] = useState<CharacterIP>(CharacterIP.Original);
+  const [selectedSortFilter, setSelectedSortFilter] = useState<CreateVariationSort>(CreateVariationSort.Newest);
 
-  const [isSelecting, setIsSelecting] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<CharacterInfo | null>(null);
+  const [selectedVariation, setSelectedVariation] = useState<CreateVariationInfo | null>(null);
   const [tagStates, setTagStates] = useState({
     variation: 'Portrait',
   });
+
+  const [sortDropDownOpen, setSortDropDownOpen] = useState(false);
+
   //#endregion
 
   useLayoutEffect(() => {
@@ -47,10 +48,29 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   }, []);
 
   function Init() {
-    getCharacterList();
+    getCreateVariationList();
   }
 
   //#region function
+
+  const dropDownMenuItems: DropDownMenuItem[] = [
+    {
+      name: getLocalizedText('common_sort_newest'),
+      onClick: () => {
+        setSortDropDownOpen(false);
+        setSelectedSortFilter(CreateVariationSort.Newest);
+        getCreateVariationList();
+      },
+    },
+    {
+      name: getLocalizedText('common_sort_Name'),
+      onClick: () => {
+        setSortDropDownOpen(false);
+        setSelectedSortFilter(CreateVariationSort.Name);
+        getCreateVariationList();
+      },
+    },
+  ];
 
   const routerBack = () => {
     back('/main/homefeed');
@@ -58,46 +78,27 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
 
   // 현재 유저가 가진 캐릭터를 모두 가져옴
 
-  const getCharacterList = async () => {
+  const getCreateVariationList = async () => {
     setLoading(true);
 
     try {
-      const characterListreq: GetCharacterListReq = {
-        languageType: getCurrentLanguage(),
-      };
-      const response = await sendGetCharacterList(characterListreq);
+      const response = await sendGetCreateVariationList({
+        characterIp: selectedIpFilter,
+        sort: selectedSortFilter,
+      });
 
       if (response.data) {
-        const characterInfoList: CharacterInfo[] = response.data?.characterInfoList;
-        setCharacterList(characterInfoList);
+        const createVariationList: CreateVariationInfo[] = response.data?.characterVariationInfoList;
+        setCreateVariationList(createVariationList);
       } else {
-        throw new Error(`No contentInfo in response for ID: `);
+        throw new Error(`No createVariationList in response`);
       }
     } catch (error) {
-      console.error('Error fetching content by user ID:', error);
+      console.error('Error fetching create variation list :', error);
     } finally {
       setLoading(false);
     }
   };
-
-  // Id로 캐릭터 정보를 가져옴
-  const getCharacterInfo = async (id: number) => {
-    try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
-      const response = await sendGetCharacterProfileInfo(req);
-
-      if (response.data) {
-        const characterInfo: CharacterInfo = response.data?.characterInfo;
-        setSelectedCharacter(characterInfo);
-      } else {
-        throw new Error(`No characterInfo in response : ${id}`);
-      }
-    } catch (error) {
-      console.error('Error get Character Info by Id :', error);
-    } finally {
-    }
-  };
-
   //#endregion
 
   //#region Handler
@@ -110,14 +111,9 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
   //#region Hooks
 
   useEffect(() => {
-    // TODO : 필터 작업
-    // setFilteredList(characterList.filter(char => char.characterIP === selectedIpFilter));
-    setFilteredList(characterList);
-  }, [selectedIpFilter, characterList]);
+    getCreateVariationList();
+  }, [selectedIpFilter, selectedSortFilter]);
 
-  useEffect(() => {
-    console.log(filteredList);
-  }, [filteredList]);
   //#endregion
 
   //#region Render
@@ -153,9 +149,18 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
             <div className={styles.filterText}>{getLocalizedText('TODO : Fan')}</div>
           </button>
         </div>
-        <div className={styles.filterRight}>
+        <div className={styles.filterRight} onClick={() => setSortDropDownOpen(true)}>
           <div className={styles.filterText}>{getLocalizedText('TODO : Filter')}</div>
           <img src={BoldAltArrowDown.src} alt="filter" />
+          {sortDropDownOpen && (
+            <DropDownMenu
+              items={dropDownMenuItems}
+              onClose={() => setSortDropDownOpen(false)}
+              className={styles.sortDropDown}
+              useSelected={true}
+              selectedIndex={selectedSortFilter}
+            />
+          )}
         </div>
       </>
     );
@@ -166,32 +171,32 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
       <div className={styles.characterListContainer}>
         <div className={styles.filterArea}>{renderFilter(true, detailView)}</div>
         <div className={`${styles.characterGrid} ${detailView ? styles.largeGrid : styles.detailGrid}`}>
-          {filteredList.map((character, index) => {
-            return renderCharacterItem(character, index);
+          {createVariationList.map((variation, index) => {
+            return renderVariationItem(variation, index);
           })}
         </div>
       </div>
     );
   };
 
-  const renderCharacterItem = (character: CharacterInfo, key: number) => {
+  const renderVariationItem = (variation: CreateVariationInfo, key: number) => {
     return (
       <div
         key={key}
         className={`${styles.characterItem} ${detailView ? styles.characterLargeItem : styles.characterDetailItem}`}
-        onClick={() => setSelectedCharacter(character)}
+        onClick={() => setSelectedVariation(variation)}
       >
         <div className={styles.characterImage}>
-          <img src={character.mainImageUrl} alt={character.name} />
+          <img src={variation.mainImageUrl} alt={variation.name} />
         </div>
         <div className={styles.characterInfoArea}>
-          <div className={styles.characterName}>{character.name}</div>
+          <div className={styles.characterName}>{variation.name}</div>
           <div
             className={`${styles.characterIp} ${
-              character.characterIP === CharacterIP.Original ? styles.original : styles.fan
+              variation.characterIP === CharacterIP.Original ? styles.original : styles.fan
             }`}
           >
-            {character.characterIP === CharacterIP.Original ? 'Original' : 'Fan'}
+            {variation.characterIP === CharacterIP.Original ? 'Original' : 'Fan'}
           </div>
         </div>
       </div>
@@ -217,15 +222,15 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
       <CreateDrawerHeader
         title={getLocalizedText('TODO : Create Variation')}
         onClose={() => {
-          if (selectedCharacter) {
-            setSelectedCharacter(null);
+          if (selectedVariation) {
+            setSelectedVariation(null);
           } else {
             routerBack();
           }
         }}
       ></CreateDrawerHeader>
 
-      {selectedCharacter ? (
+      {selectedVariation ? (
         <>
           {renderVariationList()}
           <CharacterGalleryCreate
@@ -240,7 +245,7 @@ const CreateVariationMain: React.FC<Props> = ({}) => {
                 ? GalleryCategory.Expression
                 : GalleryCategory.Portrait
             }
-            selectedPortraitUrl={selectedCharacter?.mainImageUrl || ''}
+            selectedPortraitUrl={selectedVariation?.mainImageUrl || ''}
             onUploadGalleryImages={() => {}}
           />
         </>

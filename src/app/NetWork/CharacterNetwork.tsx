@@ -109,6 +109,55 @@ export const sendGetCharacterList = async (payload: GetCharacterListReq): Promis
   }
 };
 
+// GetCreateVariationList
+
+export enum CreateVariationSort {
+  Newest = 0,
+  Name = 1,
+  Popular = 2,
+}
+
+export interface CreateVariationInfo {
+  characterId: number;
+  profileId: number;
+  profileUrlLinkKey: string;
+  name: string;
+  genderType: GenderType;
+  mainImageUrl: string;
+  characterIP: CharacterIP;
+  likeCount: number;
+  createAt: Date;
+}
+
+export interface GetCreateVariationListReq {
+  characterIp: CharacterIP;
+  sort: CreateVariationSort;
+}
+
+export interface GetCreateVariationListRes {
+  characterVariationInfoList: CreateVariationInfo[];
+}
+
+export const sendGetCreateVariationList = async (
+  payload: GetCreateVariationListReq,
+): Promise<ResponseAPI<GetCreateVariationListRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetCreateVariationListRes>>(
+      'Character/getCreateVariationList',
+      payload,
+    );
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetCreateVariationListRes Error : ${response.data.resultCode}`);
+    }
+  } catch (error) {
+    console.error('Error sending get create variation list :', error);
+    throw new Error('Failed to send get create variation list. Please try again.');
+  }
+};
+
 // Create Character
 
 export interface CreateCharacterReq {
