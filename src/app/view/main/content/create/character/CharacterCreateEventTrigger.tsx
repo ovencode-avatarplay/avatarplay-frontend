@@ -14,6 +14,7 @@ import {
   BoldVideo,
   EmojiAngry,
   EmojiBoring,
+  EmojiCuriosity,
   EmojiExcited,
   EmojiHappy,
   EmojiSad,

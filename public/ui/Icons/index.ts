@@ -165,6 +165,9 @@ import EmojiExcited from "./Custom/emoji_excited.svg";
 import EmojiHappy from "./Custom/emoji_happy.svg";
 import EmojiSad from "./Custom/emoji_sad.svg";
 import EmojiScared from "./Custom/emoji_scared.svg";
+import EmojiNormal from "./Custom/emoji_normal.svg";
+import EmojiConfused from "./Custom/emoji_confused.svg";
+import EmojiCuriosity from "./Custom/emoji_curiosity.svg";
 import AudioWave from "./Custom/wpf_audio-wave.svg";
 
 export {
@@ -329,6 +332,9 @@ export {
   EmojiHappy,
   EmojiSad,
   EmojiScared,
+  EmojiNormal,
+  EmojiConfused,
+  EmojiCuriosity,
   LineCam,
   LinePhone,
   LineBookMark,
