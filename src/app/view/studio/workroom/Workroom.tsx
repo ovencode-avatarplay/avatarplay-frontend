@@ -49,6 +49,7 @@ import WorkroomSearchModal from './WorkroomSearchModal';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SwipeTagList from './SwipeTagList';
 import UploadFromWorkroom from './UploadFromWorkroom';
+import {GalleryCategory} from '../characterDashboard/CharacterGalleryData';
 //#endregion
 
 const Workroom: React.FC<Props> = ({}) => {
@@ -67,7 +68,7 @@ const Workroom: React.FC<Props> = ({}) => {
     limit?: number;
     favorite?: boolean;
     trash?: boolean;
-    generatedType?: number;
+    generatedType?: GalleryCategory;
     parentFolderId?: number | null;
     renderEmpty?: boolean;
   };
@@ -151,7 +152,7 @@ const Workroom: React.FC<Props> = ({}) => {
       detail: 'detail1',
       folderLocation: [1001],
       generatedInfo: {
-        generatedType: 1,
+        generatedType: GalleryCategory.Portrait,
         generateModel: 'uploaded',
         imageSize: '64x64',
         positivePrompt: 'uploaded',
@@ -324,7 +325,7 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen0',
       detail: 'detail0',
       generatedInfo: {
-        generatedType: 1,
+        generatedType: GalleryCategory.Portrait,
         generateModel: 'model',
         imageSize: '64x64',
         positivePrompt: 'positive',
@@ -341,7 +342,7 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen1',
       detail: 'detail1',
       generatedInfo: {
-        generatedType: 2,
+        generatedType: GalleryCategory.Pose,
         generateModel: 'model1',
         imageSize: '128x128',
         positivePrompt: 'positive, 1',
@@ -358,7 +359,7 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen2',
       detail: 'detail2',
       generatedInfo: {
-        generatedType: 1,
+        generatedType: GalleryCategory.Expression,
         generateModel: 'model2',
         imageSize: '128x128',
         positivePrompt: 'positive, 2',
@@ -374,7 +375,7 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen3',
       detail: 'detail3',
       generatedInfo: {
-        generatedType: 2,
+        generatedType: GalleryCategory.Pose,
         generateModel: 'model3',
         imageSize: '120x120',
         positivePrompt: 'positive, 3',
@@ -390,7 +391,7 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen4',
       detail: 'detail4',
       generatedInfo: {
-        generatedType: 1,
+        generatedType: GalleryCategory.Expression,
         generateModel: 'model4',
         imageSize: '128x128',
         positivePrompt: 'positive, 4',
@@ -406,7 +407,7 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'aiGen5',
       detail: 'detail5',
       generatedInfo: {
-        generatedType: 2,
+        generatedType: GalleryCategory.Pose,
         generateModel: 'model5',
         imageSize: '128x128',
         positivePrompt: 'positive, 5',
@@ -769,7 +770,7 @@ const Workroom: React.FC<Props> = ({}) => {
     setSelectedTargetFolder(folder);
   };
 
-  const handleMoveToFolder = (targetFolder: WorkroomItemInfo | null, variationType?: number | null) => {
+  const handleMoveToFolder = (targetFolder: WorkroomItemInfo | null, variationType?: GalleryCategory | null) => {
     // targetFolder가 null이면 최상위, 아닐 때는 folderLocation 계산
     const targetFolderId = targetFolder
       ? targetFolder?.folderLocation
@@ -861,14 +862,14 @@ const Workroom: React.FC<Props> = ({}) => {
         ? {
             generatedType:
               tagStates.variation == 'Portrait'
-                ? 0
+                ? GalleryCategory.Portrait
                 : tagStates.variation == 'Pose'
-                ? 1
+                ? GalleryCategory.Pose
                 : tagStates.variation == 'Expression'
-                ? 2
+                ? GalleryCategory.Expression
                 : tagStates.variation == 'Video'
-                ? 3
-                : 4,
+                ? GalleryCategory.Video
+                : GalleryCategory.All,
             generateModel: 'Uploaded file',
             positivePrompt: '',
             negativePrompt: '',
@@ -1027,10 +1028,10 @@ const Workroom: React.FC<Props> = ({}) => {
       item =>
         item.mediaState === mediaState &&
         item.profileId &&
-        ((tagStates.variation === 'Portrait' && item.generatedInfo?.generatedType === 0) ||
-          (tagStates.variation === 'Pose' && item.generatedInfo?.generatedType === 1) ||
-          (tagStates.variation === 'Expressions' && item.generatedInfo?.generatedType === 2) ||
-          (tagStates.variation === 'Video' && item.generatedInfo?.generatedType === 3)),
+        ((tagStates.variation === 'Portrait' && item.generatedInfo?.generatedType === GalleryCategory.Portrait) ||
+          (tagStates.variation === 'Pose' && item.generatedInfo?.generatedType === GalleryCategory.Pose) ||
+          (tagStates.variation === 'Expressions' && item.generatedInfo?.generatedType === GalleryCategory.Expression) ||
+          (tagStates.variation === 'Video' && item.generatedInfo?.generatedType === GalleryCategory.Video)),
     );
   };
 
@@ -1543,6 +1544,8 @@ const Workroom: React.FC<Props> = ({}) => {
               onSelectTargetFolder={handleSelectTargetFolder}
               selectedTargetFolder={selectedTargetFolder}
               onMoveToFolder={handleMoveToFolder}
+              selectedItem={selectedItem}
+              selectingItems={workroomData.filter(item => selectedItems.includes(item.id))}
             />
           )}
           {isDeletePopupOpen && (
@@ -1593,13 +1596,6 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
                   onTagChange={tag => handleTagClick('variation', tag)}
                 />
 
-                {getFilteredVariationItems(MediaState.None).length > 0 &&
-                  renderDataItems(
-                    getFilteredVariationItems(MediaState.None),
-                    true,
-                    {filterArea: true, renderEmpty: true},
-                    true,
-                  )}
                 {renderDataItems(
                   getFilteredVariationItems(MediaState.Image),
                   detailView,

@@ -8,6 +8,8 @@ import {Dialog} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import EmptyState from '@/components/search/EmptyState';
+import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import {GalleryCategory, galleryCategoryText} from '../characterDashboard/CharacterGalleryData';
 
 interface Props {
   open: boolean;
@@ -16,7 +18,9 @@ interface Props {
   addFolder: () => void;
   selectedTargetFolder: WorkroomItemInfo | null;
   onSelectTargetFolder: (folder: WorkroomItemInfo | null) => void;
-  onMoveToFolder: (targetFolder: WorkroomItemInfo | null, variationType?: number | null) => void;
+  onMoveToFolder: (targetFolder: WorkroomItemInfo | null, variationType?: GalleryCategory | null) => void;
+  selectedItem: WorkroomItemInfo | null;
+  selectingItems: WorkroomItemInfo[] | null;
 }
 
 const WorkroomFileMoveModal: React.FC<Props> = ({
@@ -27,11 +31,13 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
   onSelectTargetFolder: onSelectFolder,
   selectedTargetFolder: selectedFolder,
   onMoveToFolder,
+  selectedItem,
+  selectingItems,
 }) => {
   const [keyword, setKeyword] = useState('');
-  const [variationType, setVariationType] = useState<'None' | 'Portrait' | 'Pose' | 'Expression'>('None');
+  const [variationType, setVariationType] = useState<GalleryCategory>(GalleryCategory.All);
 
-  const handleSelectFolder = (folder: WorkroomItemInfo) => {
+  const handleSelectFolder = (folder: WorkroomItemInfo | null) => {
     onSelectFolder(folder);
   };
   const getFilteredFolders = (gallery: boolean) => {
@@ -87,18 +93,15 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
           )
         ) : (
           <div className={styles.galleryContainer}>
-            {variationType === 'None' ? (
-              ['Portrait', 'Pose', 'Expression'].map((type, idx) => (
+            {variationType === GalleryCategory.All ? (
+              [GalleryCategory.Portrait, GalleryCategory.Pose, GalleryCategory.Expression].map((type, idx) => (
                 <div className={styles.folderItem} key={idx}>
-                  <div
-                    className={styles.folderItemContainer}
-                    onClick={() => setVariationType(type as 'Portrait' | 'Pose' | 'Expression')}
-                  >
+                  <div className={styles.folderItemContainer} onClick={() => setVariationType(type)}>
                     <div className={styles.folderIcon}>
                       <img src={BoldFolder.src} />
                     </div>
                     <div className={styles.infoArea}>
-                      <div className={styles.folderName}>{getLocalizedText(`TODO : ${type}`)}</div>
+                      <div className={styles.folderName}>{getLocalizedText(`TODO : ${galleryCategoryText[type]}`)}</div>
                     </div>
                     <button className={styles.folderButton}>
                       <img src={LineArrowRight.src} />
@@ -108,7 +111,9 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
               ))
             ) : (
               <div className={styles.galleryItemContainer}>
-                <div className={styles.galleryItemText}>{getLocalizedText(`TODO : ${variationType}`)}</div>
+                <div className={styles.galleryItemText}>
+                  {getLocalizedText(`TODO : ${galleryCategoryText[variationType]}`)}
+                </div>
               </div>
             )}
           </div>
@@ -204,12 +209,23 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
       <div className={styles.fileMoveDrawerContainer}>
         <div className={styles.searchArea}>{renderSearchBar()}</div>
         <Splitters
-          splitters={[
-            {label: getLocalizedText('TODO : Folder'), content: <>{renderFolder()}</>},
-            {label: getLocalizedText('TODO : Gallery'), content: <>{renderGallery()}</>},
-          ]}
+          splitters={
+            selectedItem?.mediaState === MediaState.Image ||
+            (selectingItems &&
+              selectingItems.length > 0 &&
+              selectingItems.every(item => item.mediaState === MediaState.Image))
+              ? [
+                  {label: getLocalizedText('TODO : Folder'), content: <>{renderFolder()}</>},
+                  {label: getLocalizedText('TODO : Gallery'), content: <>{renderGallery()}</>},
+                ]
+              : [{label: getLocalizedText('TODO : Folder'), content: <>{renderFolder()}</>}]
+          }
           splitterStyle={{margin: '0'}}
           headerStyle={{margin: 'auto', gap: '30px', flex: '1 0 0', width: '100%', justifyContent: 'space-around'}}
+          onSelectSplitButton={index => {
+            handleSelectFolder(null);
+            setVariationType(GalleryCategory.All);
+          }}
         />
         {selectedFolder !== undefined && selectedFolder !== null && (
           <div className={styles.buttonArea}>
@@ -218,11 +234,11 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
               state="Normal"
               type="Tertiary"
               onClick={() => {
-                if (variationType !== 'None') {
+                if (variationType !== GalleryCategory.All) {
                 } else {
                   onSelectFolder(null);
                 }
-                setVariationType('None');
+                setVariationType(GalleryCategory.All);
               }}
               customClassName={[styles.button]}
             >
@@ -241,23 +257,14 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
               >
                 {getLocalizedText('TODO : Move here')}
               </CustomButton>
-            ) : variationType !== 'None' ? (
+            ) : variationType !== GalleryCategory.All ? (
               <CustomButton
                 size="Medium"
                 state="Normal"
                 type="Primary"
                 customClassName={[styles.button]}
                 onClick={() => {
-                  onMoveToFolder(
-                    selectedFolder,
-                    variationType === 'Portrait'
-                      ? 1
-                      : variationType === 'Pose'
-                      ? 2
-                      : variationType === 'Expression'
-                      ? 3
-                      : null,
-                  );
+                  onMoveToFolder(selectedFolder, variationType ? variationType : null);
                   onSelectFolder(null);
                 }}
               >

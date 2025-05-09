@@ -9,7 +9,7 @@ interface WorkroomCategorySectionProps {
   tagValue: string;
   dataLength: number;
   renderDataItems: () => JSX.Element;
-  onClickTag: (key: string, value: string) => void;
+  onClickTag: (tag: string) => void;
   hideEmpty?: boolean;
 }
 
@@ -27,7 +27,7 @@ const WorkroomCategorySection: React.FC<WorkroomCategorySectionProps> = ({
       <div className={styles.categoryArea}>
         <div className={styles.categoryTitleArea}>
           <div className={styles.categoryTitle}>{getLocalizedText(titleKey)}</div>
-          <button className={styles.categoryShowMore} onClick={() => onClickTag(tagKey, tagValue)}>
+          <button className={styles.categoryShowMore} onClick={() => onClickTag(tagValue)}>
             {getLocalizedText('TODO : Show more')}
           </button>
         </div>
