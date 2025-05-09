@@ -623,16 +623,53 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleCopy = () => {
     if (!selectedItem) return;
 
-    const newItem = {
-      ...selectedItem,
-      id: getMinId(workroomData) - 1,
-      name: `Copy of ${selectedItem.name}`,
-      // 생성된 이미지가 복사될때 생성정보제거 (기획)
-      generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo,
-      profileId: null,
-    };
+    // 폴더인 경우 하위 항목들도 복사
+    if (selectedItem.mediaState === MediaState.None) {
+      const childItems = workroomData.filter(item => item.folderLocation?.includes(selectedItem.id));
 
-    setWorkroomData(prev => [...prev, newItem]);
+      const idMap = new Map<number, number>();
+      const newParentId = getMinId(workroomData) - 1;
+      idMap.set(selectedItem.id, newParentId);
+
+      childItems.forEach(item => {
+        idMap.set(item.id, getMinId(workroomData) - 1);
+      });
+
+      const itemsToCopy = [
+        {
+          ...selectedItem,
+          id: newParentId,
+          name: `Copy of ${selectedItem.name}`,
+          // 생성된 이미지가 복사될때 생성정보제거 (기획)
+          generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo,
+          profileId: null,
+        },
+        ...childItems.map(item => ({
+          ...item,
+          id: idMap.get(item.id)!,
+          name: item.mediaState === MediaState.None ? `Copy of ${item.name}` : item.name,
+          // 생성된 이미지가 복사될때 생성정보제거 (기획)
+          generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo,
+          profileId: null,
+          folderLocation: item.folderLocation?.map(id => (id === selectedItem.id ? newParentId : idMap.get(id) || id)),
+        })),
+      ];
+
+      setWorkroomData(prev => [...prev, ...itemsToCopy]);
+    } else {
+      // 일반 파일인 경우 기존 로직대로 처리
+      const newItem = {
+        ...selectedItem,
+        id: getMinId(workroomData) - 1,
+        name: `Copy of ${selectedItem.name}`,
+        // 생성된 이미지가 복사될때 생성정보제거 (기획)
+        generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo,
+        profileId: null,
+      };
+
+      setWorkroomData(prev => [...prev, newItem]);
+    }
+
     setIsFileEditDrawerOpen(false);
     dataToast.open(getLocalizedText('common_alert_091'));
   };
