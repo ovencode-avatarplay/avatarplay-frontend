@@ -14,6 +14,8 @@ import {
   sendGetSearchFriendList,
   sendGetSearchPeopleList,
   SearchCharacterRoomInfo,
+  sendAddFriend,
+  sendCancelAddFriend,
 } from '@/app/NetWork/ChatMessageNetwork';
 import {FilterDataItem} from '@/components/search/FilterSelector';
 import MessageProfile, {BadgeType, FollowState} from '../01_Layout/MessageProfile';
@@ -21,6 +23,7 @@ import {sendGetCharacterChatRoomList, sendGetDMChatRoomList} from '@/app/NetWork
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {addSearch} from './RecentSearchList';
+import {followProfile} from '@/app/NetWork/ProfileNetwork';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -30,11 +33,14 @@ interface Props {
   onClose: () => void;
 }
 
+// SearchCharacterRoomInfo에 isFriendRequested 필드 추가(로컬 상태)
+type SearchResultWithFriend = SearchCharacterRoomInfo & {followState?: FollowState};
+
 const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const [selectedTag, setSelectedTag] = useState<string>('Following');
   const [searchText, setSearchText] = useState<string>('');
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<SearchCharacterRoomInfo[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResultWithFriend[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   // 필터, isAdult 상태를 기억하기 위한 ref
@@ -88,7 +94,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
     setError(null);
-    let newList: SearchCharacterRoomInfo[] = [];
+    let newList: SearchResultWithFriend[] = [];
     let currentOffset = isRefreshAll ? 0 : offset;
     // searchText 상태를 직접 사용
     const keyword = searchText;
@@ -227,72 +233,110 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     }
   };
 
-  const renderCharacterList = (list: SearchCharacterRoomInfo[]) => (
+  // Character Follow 버튼 클릭 핸들러
+  const handleFollow = async (character: SearchResultWithFriend) => {
+    try {
+      await followProfile(character.characterProfileId, true);
+      setSearchResults(prev => prev.filter(item => item.characterProfileId !== character.characterProfileId));
+    } catch (e) {
+      alert('팔로우 실패');
+    }
+  };
+
+  // People AddFriend/Cancel 버튼 클릭 핸들러
+  const handleAddFriendToggle = async (person: SearchResultWithFriend) => {
+    try {
+      if (person.followState === FollowState.FriendCancel) {
+        await sendCancelAddFriend({canceledProfileId: person.characterProfileId});
+        setSearchResults(prev =>
+          prev.map(item =>
+            item.characterProfileId === person.characterProfileId
+              ? {...item, followState: FollowState.AddFriend}
+              : item,
+          ),
+        );
+      } else {
+        await sendAddFriend({addFriendProfileId: person.characterProfileId});
+        setSearchResults(prev =>
+          prev.map(item =>
+            item.characterProfileId === person.characterProfileId
+              ? {...item, followState: FollowState.FriendCancel}
+              : item,
+          ),
+        );
+      }
+    } catch (e) {
+      alert('친구 추가/취소 실패');
+    }
+  };
+
+  const renderCharacterList = (list: SearchResultWithFriend[]) => (
     <div>
-      {list.map(character =>
-        (() => {
-          // BadgeType 매핑
-          let badgeType = BadgeType.None;
-          if (selectedTag === 'Character' || selectedTag === 'Following' || selectedTag === 'Friend') {
-            if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
-            else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-          }
-          // followState 매핑
-          let followState = FollowState.None;
-          if (selectedTag === 'Character') followState = FollowState.Follow;
-          else if (selectedTag === 'People') followState = FollowState.AddFriend;
-          // isOption 매핑
-          const isOption = !(followState === FollowState.Follow || followState === FollowState.AddFriend);
+      {list.map(character => {
+        // BadgeType 매핑
+        let badgeType = BadgeType.None;
+        if (selectedTag === 'Character' || selectedTag === 'Following' || selectedTag === 'Friend') {
+          if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
+          else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
+        }
+        // followState 매핑
+        let followState = FollowState.None;
+        if (selectedTag === 'Character') followState = FollowState.Follow;
+        else if (selectedTag === 'People') followState = character.followState ?? FollowState.AddFriend;
+        // isOption 매핑
+        const isOption = !(
+          followState === FollowState.Follow ||
+          followState === FollowState.AddFriend ||
+          followState === FollowState.FriendCancel
+        );
+        if (selectedTag === 'Character') {
           return (
-            <>
-              {selectedTag == 'Character' ? (
-                <MessageProfile
-                  key={character.chatRoomId}
-                  profileImage={character.profileImageUrl}
-                  profileName={character.characterName}
-                  badgeType={badgeType}
-                  followState={followState}
-                  urlLinkKey={character.urlLinkKey}
-                  roomid={String(character.chatRoomId)}
-                  isOption={isOption}
-                  isPin={character.isPinFix}
-                  // 기타 필요한 props 추가
-                />
-              ) : selectedTag == 'People' ? (
-                <>
-                  <MessageProfile
-                    key={character.chatRoomId}
-                    profileImage={character.profileImageUrl}
-                    profileName={character.characterName}
-                    badgeType={badgeType}
-                    followState={followState}
-                    urlLinkKey={''}
-                    roomid={String(character.chatRoomId)}
-                    isOption={isOption}
-                    isPin={character.isPinFix}
-                    isDM={true}
-                    profileUrlLinkKey={character.urlLinkKey}
-                    // 기타 필요한 props 추가
-                  />
-                </>
-              ) : (
-                <MessageProfile
-                  key={character.chatRoomId}
-                  profileImage={character.profileImageUrl}
-                  profileName={character.characterName}
-                  badgeType={badgeType}
-                  followState={followState}
-                  urlLinkKey={character.urlLinkKey}
-                  roomid={String(character.chatRoomId)}
-                  isOption={isOption}
-                  isPin={character.isPinFix}
-                  // 기타 필요한 props 추가
-                />
-              )}
-            </>
+            <MessageProfile
+              key={character.chatRoomId}
+              profileImage={character.profileImageUrl}
+              profileName={character.characterName}
+              badgeType={badgeType}
+              followState={FollowState.Follow}
+              urlLinkKey={character.urlLinkKey}
+              roomid={String(character.chatRoomId)}
+              isOption={isOption}
+              isPin={character.isPinFix}
+              onClickButton={() => handleFollow(character)}
+            />
           );
-        })(),
-      )}
+        } else if (selectedTag === 'People') {
+          return (
+            <MessageProfile
+              key={character.chatRoomId}
+              profileImage={character.profileImageUrl}
+              profileName={character.characterName}
+              badgeType={badgeType}
+              followState={character.followState ?? FollowState.AddFriend}
+              urlLinkKey={''}
+              roomid={String(character.chatRoomId)}
+              isOption={isOption}
+              isPin={character.isPinFix}
+              isDM={true}
+              profileUrlLinkKey={character.urlLinkKey}
+              onClickButton={() => handleAddFriendToggle(character)}
+            />
+          );
+        } else {
+          return (
+            <MessageProfile
+              key={character.chatRoomId}
+              profileImage={character.profileImageUrl}
+              profileName={character.characterName}
+              badgeType={badgeType}
+              followState={followState}
+              urlLinkKey={character.urlLinkKey}
+              roomid={String(character.chatRoomId)}
+              isOption={isOption}
+              isPin={character.isPinFix}
+            />
+          );
+        }
+      })}
     </div>
   );
 

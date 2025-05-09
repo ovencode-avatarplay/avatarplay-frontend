@@ -336,3 +336,53 @@ export const sendGetSearchPeopleList = async (
     throw new Error('친구 추천 리스트 검색 중 오류가 발생했습니다.');
   }
 };
+
+// 친구 추가 요청 타입
+export interface AddFriendReq {
+  addFriendProfileId: number;
+}
+
+// 친구 추가 응답 타입
+export interface AddFriendRes {
+  friendProfileId: number;
+}
+
+/**
+ * 친구 추가 API
+ * @param payload addFriendProfileId 포함 요청 데이터
+ * @returns friendProfileId 응답
+ */
+export const sendAddFriend = async (payload: AddFriendReq): Promise<ResponseAPI<AddFriendRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<AddFriendRes>>('/ChatMessage/addFriend', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to add friend:', error);
+    throw new Error('친구 추가 중 오류가 발생했습니다.');
+  }
+};
+
+// 친구 추가 취소 요청 타입
+export interface CancelAddFriendReq {
+  canceledProfileId: number;
+}
+
+// 친구 추가 취소 응답 타입
+export interface CancelAddFriendRes {
+  canceledProfileId: number;
+}
+
+/**
+ * 친구 추가 취소 API
+ * @param payload canceledProfileId 포함 요청 데이터
+ * @returns canceledProfileId 응답
+ */
+export const sendCancelAddFriend = async (payload: CancelAddFriendReq): Promise<ResponseAPI<CancelAddFriendRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<CancelAddFriendRes>>('/ChatMessage/cancelAddFriend', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to cancel add friend:', error);
+    throw new Error('친구 추가 취소 중 오류가 발생했습니다.');
+  }
+};

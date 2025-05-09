@@ -21,6 +21,7 @@ interface Props {
   roomid?: string;
   isDM?: boolean;
   onClickOption?: () => void;
+  onClickButton?: () => void;
   urlLinkKey: string;
   profileUrlLinkKey?: string;
 }
@@ -59,6 +60,7 @@ const MessageProfile: React.FC<Props> = ({
   roomid,
   isDM = false,
   onClickOption,
+  onClickButton,
   urlLinkKey,
   profileUrlLinkKey,
 }) => {
@@ -76,13 +78,44 @@ const MessageProfile: React.FC<Props> = ({
   const renderFollowButton = () => {
     switch (followState) {
       case FollowState.Follow:
-        return <button className={styles.follow}>Follow</button>;
+        return (
+          <button
+            className={styles.follow}
+            onClick={() => {
+              if (onClickButton) onClickButton();
+            }}
+          >
+            Follow
+          </button>
+        );
       case FollowState.Following:
-        return <button className={styles.following}>Following</button>;
+        return (
+          <button
+            className={styles.following}
+            onClick={() => {
+              if (onClickButton) onClickButton();
+            }}
+          >
+            Following
+          </button>
+        );
       case FollowState.AddFriend:
-        return <button className={styles.follow}>Add Friend</button>;
+        return (
+          <button
+            className={styles.follow}
+            onClick={() => {
+              if (onClickButton) onClickButton();
+            }}
+          >
+            Add Friend
+          </button>
+        );
       case FollowState.FriendCancel:
-        return <button className={styles.following}>Cancel</button>;
+        return (
+          <button className={styles.following} onClick={onClickButton}>
+            Cancel
+          </button>
+        );
       default:
         return null;
     }
