@@ -15,6 +15,7 @@ import {
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {SportsVolleyballRounded} from '@mui/icons-material';
 import {useInView} from 'react-intersection-observer';
+import {pinFix, PinTabType} from '@/app/NetWork/CommonNetwork';
 
 const tags = [
   'Chatroom',
@@ -48,6 +49,9 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   const [alreadyReceivedProfileIds, setAlreadyReceivedProfileIds] = useState<number[]>([]);
   const LIMIT = 10;
   const {ref: observerRef, inView} = useInView();
+  const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [isPinOpen, setIsPinOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(true);
 
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
@@ -79,6 +83,21 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     setAlreadyReceivedProfileIds([]);
   }, [filterValue, selectedTag, sortValue]);
 
+  const handlePinToggle = async (roomId: number, isFix: boolean) => {
+    try {
+      await pinFix({
+        type: PinTabType.CharacterChatMessage,
+        typeValueId: roomId,
+        isFix: isFix,
+      });
+
+      // 로컬 상태 업데이트
+      setChatList(prevList => prevList.map(room => (room.chatRoomId === roomId ? {...room, isPinFix: isFix} : room)));
+    } catch (error) {
+      console.error('Failed to toggle pin:', error);
+    }
+  };
+
   const optionItems: SelectDrawerArrowItem[] = [
     {
       name: 'Favorites /Unfavorites',
@@ -88,7 +107,15 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     {
       name: 'Pin to Top / Unpin ',
       arrowName: '',
-      onClick: () => {},
+      onClick: () => {
+        if (selectedRoomId) {
+          const selectedRoom = chatList.find(room => room.chatRoomId === selectedRoomId);
+          if (selectedRoom) {
+            handlePinToggle(selectedRoomId, !selectedRoom.isPinFix);
+          }
+        }
+        setOpenOption(false);
+      },
     },
     {
       name: 'Leave',
@@ -194,6 +221,9 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     }
   };
 
+  const pinnedRooms = chatList?.filter(item => item.isPinFix) ?? [];
+  const unpinnedRooms = chatList?.filter(item => !item.isPinFix) ?? [];
+
   return (
     <>
       <MessageTagList tags={tags} defaultTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} />
@@ -203,43 +233,86 @@ const CharacterChat: React.FC<Props> = ({name}) => {
         onFilterChange={filter => setFilterValue(filter)}
         onSortChange={sort => setSortValue(sort)}
       />
-      <div className={styles.name}>Chat</div>
-      <div className={styles.scrollArea}>
-        {chatList?.map((item, index) => (
-          <MessageProfile
-            key={item.chatRoomId}
-            profileImage={item.profileImageUrl}
-            profileName={item.characterName}
-            timestamp={formatTimestamp(item.updatedAt)} // 예: "2025-04-29T01:44:00.934Z"
-            badgeType={
-              item.characterIP == CharacterIP.Fan
-                ? BadgeType.Fan
-                : item.characterIP == CharacterIP.Original
-                ? BadgeType.Original
-                : BadgeType.None
-            } // 고정값
-            followState={FollowState.None} // 고정값
-            isHighlight={false} // 고정값
-            isOption={true}
-            roomid={item.chatRoomId.toString()}
-            onClickOption={() => {
-              setOpenOption(true);
-            }}
-            urlLinkKey={item.urlLinkKey}
-          />
-        ))}
-        <div ref={observerRef} style={{height: '1px'}}></div>
+      {pinnedRooms.length > 0 && (
+        <>
+          <div className={styles.sectionHeader} onClick={() => setIsPinOpen(v => !v)}>
+            <span>Pin ({pinnedRooms.length})</span>
+            <span className={isPinOpen ? styles.arrowDown : styles.arrowRight}></span>
+          </div>
+          {isPinOpen && (
+            <div className={styles.scrollArea}>
+              {pinnedRooms.map((item, index) => (
+                <MessageProfile
+                  key={item.chatRoomId}
+                  profileImage={item.profileImageUrl}
+                  profileName={item.characterName}
+                  timestamp={formatTimestamp(item.updatedAt)}
+                  badgeType={
+                    item.characterIP == CharacterIP.Fan
+                      ? BadgeType.Fan
+                      : item.characterIP == CharacterIP.Original
+                      ? BadgeType.Original
+                      : BadgeType.None
+                  }
+                  followState={FollowState.None}
+                  isHighlight={false}
+                  isOption={true}
+                  roomid={item.chatRoomId.toString()}
+                  onClickOption={() => {
+                    setSelectedRoomId(item.chatRoomId);
+                    setOpenOption(true);
+                  }}
+                  urlLinkKey={item.urlLinkKey}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+      <div className={styles.sectionHeader} onClick={() => setIsChatOpen(v => !v)}>
+        <span>Chat ({unpinnedRooms.length})</span>
+        <span className={isChatOpen ? styles.arrowDown : styles.arrowRight}></span>
       </div>
+      {isChatOpen && (
+        <div className={styles.scrollArea}>
+          {unpinnedRooms.map((item, index) => (
+            <MessageProfile
+              key={item.chatRoomId}
+              profileImage={item.profileImageUrl}
+              profileName={item.characterName}
+              timestamp={formatTimestamp(item.updatedAt)}
+              badgeType={
+                item.characterIP == CharacterIP.Fan
+                  ? BadgeType.Fan
+                  : item.characterIP == CharacterIP.Original
+                  ? BadgeType.Original
+                  : BadgeType.None
+              }
+              followState={FollowState.None}
+              isHighlight={false}
+              isOption={true}
+              roomid={item.chatRoomId.toString()}
+              onClickOption={() => {
+                setSelectedRoomId(item.chatRoomId);
+                setOpenOption(true);
+              }}
+              urlLinkKey={item.urlLinkKey}
+            />
+          ))}
+          <div ref={observerRef} style={{height: '1px'}}></div>
+        </div>
+      )}
 
       <SelectDrawer
         isOpen={openOption}
         items={optionItems}
         onClose={() => {
           setOpenOption(false);
+          setSelectedRoomId(null);
         }}
         isCheck={false}
         selectedIndex={1}
-      ></SelectDrawer>
+      />
       {openLeavePopup && (
         <ProfilePopup
           type="alert"

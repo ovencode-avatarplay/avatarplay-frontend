@@ -127,6 +127,7 @@ export interface DMChatRoomInfo {
   profileIconUrl: string;
   lastMessage: string;
   lastMessageAt: string;
+  isPinFix: boolean;
 }
 
 // 응답 타입

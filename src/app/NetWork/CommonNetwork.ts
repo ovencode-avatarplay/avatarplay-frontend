@@ -418,6 +418,8 @@ export enum PinTabType {
   RecordCharacter = 8,
   RecordContents = 9,
   RecordGame = 10,
+  CharacterChatMessage = 11,
+  DMChatMessage = 12,
 }
 
 export const pinFix = async (payload: PinFixReq): Promise<ResponseAPI<PinFixRes>> => {

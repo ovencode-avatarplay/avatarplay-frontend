@@ -139,7 +139,13 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
 
   console.log('profile info : ', dataProfile.currentProfile);
   return (
-    <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
+    <Drawer
+      open={open}
+      onClose={onClose}
+      anchor={isLeft ? 'left' : 'right'}
+      classes={{paper: styles.drawerPaper}}
+      sx={{zIndex: 3002}}
+    >
       <div className={styles.drawerContent}>
         {/* 프로필 섹션 */}
         <div className={styles.profileSection} onClick={routeProfile}>

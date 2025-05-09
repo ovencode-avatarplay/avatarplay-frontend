@@ -6,6 +6,10 @@ import MessageTagList from '../01_Layout/MessageTagList';
 import {DMChatRoomInfo, sendGetDMChatRoomList} from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
+import ProfilePopup from '../ProfilePopup';
+import {pinFix, PinTabType} from '@/app/NetWork/CommonNetwork';
 
 const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
 
@@ -18,9 +22,57 @@ const DMChat: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [alreadyReceivedProfileIds, setAlreadyReceivedProfileIds] = useState<number[]>([]);
+  const [openOption, setOpenOption] = useState(false);
+  const [openLeavePopup, setOpenLeavePopup] = useState(false);
+  const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
   const LIMIT = 10;
+  const [isPinOpen, setIsPinOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(true);
 
   const {ref: observerRef, inView} = useInView();
+
+  const handlePinToggle = async (roomId: number, isFix: boolean) => {
+    try {
+      await pinFix({
+        type: PinTabType.DMChatMessage,
+        typeValueId: roomId,
+        isFix: isFix,
+      });
+
+      // 로컬 상태 업데이트
+      setDmList(prevList => prevList.map(room => (room.roomId === roomId ? {...room, isPinFix: isFix} : room)));
+    } catch (error) {
+      console.error('Failed to toggle pin:', error);
+    }
+  };
+
+  const optionItems: SelectDrawerArrowItem[] = [
+    {
+      name: 'Favorites /Unfavorites',
+      arrowName: '',
+      onClick: () => {},
+    },
+    {
+      name: 'Pin to Top / Unpin ',
+      arrowName: '',
+      onClick: () => {
+        if (selectedRoomId) {
+          const selectedRoom = dmList.find(room => room.roomId === selectedRoomId);
+          if (selectedRoom) {
+            handlePinToggle(selectedRoomId, !selectedRoom.isPinFix);
+          }
+        }
+        setOpenOption(false);
+      },
+    },
+    {
+      name: 'Leave',
+      arrowName: '',
+      onClick: () => {
+        setOpenLeavePopup(true);
+      },
+    },
+  ];
 
   const formatTimestamp = (timestamp: string): string => {
     const date = new Date(timestamp);
@@ -112,6 +164,9 @@ const DMChat: React.FC = () => {
     }
   }, [inView]);
 
+  const pinnedRooms = dmList.filter(dm => dm.isPinFix);
+  const unpinnedRooms = dmList.filter(dm => !dm.isPinFix);
+
   return (
     <>
       <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
@@ -121,24 +176,104 @@ const DMChat: React.FC = () => {
         onFilterChange={filter => setFilterValue(filter)}
         onSortChange={sort => setSortValue(sort)}
       />
-      <div className={styles.name}>Chat</div>
-      <div className={styles.scrollArea}>
-        {dmList.map((dm, index) => (
-          <MessageProfile
-            key={dm.roomId}
-            profileImage={dm.profileIconUrl}
-            profileName={dm.profileName}
-            timestamp={formatTimestamp(dm.lastMessageAt)}
-            badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
-            followState={FollowState.Following}
-            isHighlight={true}
-            isDM={true}
-            roomid={dm.roomId.toString()}
-            urlLinkKey={dm.urlLinkKey}
-          />
-        ))}
-        <div ref={observerRef} style={{height: '1px'}} />
+      {pinnedRooms.length > 0 && (
+        <>
+          <div className={styles.sectionHeader} onClick={() => setIsPinOpen(v => !v)}>
+            <span>Pin ({pinnedRooms.length})</span>
+            <span className={isPinOpen ? styles.arrowDown : styles.arrowRight}></span>
+          </div>
+          {isPinOpen && (
+            <div className={styles.scrollArea}>
+              {pinnedRooms.map((dm, index) => (
+                <MessageProfile
+                  key={dm.roomId}
+                  profileImage={dm.profileIconUrl}
+                  profileName={dm.profileName}
+                  timestamp={formatTimestamp(dm.lastMessageAt)}
+                  badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
+                  followState={FollowState.None}
+                  isHighlight={true}
+                  isDM={true}
+                  isOption={true}
+                  roomid={dm.roomId.toString()}
+                  urlLinkKey={dm.urlLinkKey}
+                  onClickOption={() => {
+                    setSelectedRoomId(dm.roomId);
+                    setOpenOption(true);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+      <div className={styles.sectionHeader} onClick={() => setIsChatOpen(v => !v)}>
+        <span>Chat ({unpinnedRooms.length})</span>
+        <span className={isChatOpen ? styles.arrowDown : styles.arrowRight}></span>
       </div>
+      {isChatOpen && (
+        <div className={styles.scrollArea}>
+          {unpinnedRooms.map((dm, index) => (
+            <MessageProfile
+              key={dm.roomId}
+              profileImage={dm.profileIconUrl}
+              profileName={dm.profileName}
+              timestamp={formatTimestamp(dm.lastMessageAt)}
+              badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
+              followState={FollowState.None}
+              isHighlight={true}
+              isDM={true}
+              isOption={true}
+              roomid={dm.roomId.toString()}
+              urlLinkKey={dm.urlLinkKey}
+              onClickOption={() => {
+                setSelectedRoomId(dm.roomId);
+                setOpenOption(true);
+              }}
+            />
+          ))}
+          <div ref={observerRef} style={{height: '1px'}} />
+        </div>
+      )}
+
+      <SelectDrawer
+        isOpen={openOption}
+        items={optionItems}
+        onClose={() => {
+          setOpenOption(false);
+          setSelectedRoomId(null);
+        }}
+        isCheck={false}
+        selectedIndex={1}
+      />
+
+      {openLeavePopup && (
+        <ProfilePopup
+          type="alert"
+          title="Alert"
+          description="Do you want to leave the Chatroom?"
+          buttons={[
+            {
+              label: 'Cancel',
+              onClick: () => {
+                setOpenLeavePopup(false);
+              },
+              isPrimary: false,
+            },
+            {
+              label: 'Leave',
+              onClick: () => {
+                setOpenLeavePopup(false);
+              },
+              isPrimary: true,
+            },
+          ]}
+          badgeType={BadgeType.Original}
+          profileDesc=""
+          profileImage=""
+          profileName=""
+        />
+      )}
     </>
   );
 };

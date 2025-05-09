@@ -1,7 +1,9 @@
 .Container
 {
-  width: var(--full-width); 
+  width: 100%; 
+  max-width: 1300px;
   margin-top: 58px;
+  
 }
 .tabContainer {
   width: calc(100% - 32px);
