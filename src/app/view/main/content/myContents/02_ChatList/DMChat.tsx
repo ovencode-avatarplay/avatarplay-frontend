@@ -17,6 +17,7 @@ const DMChat: React.FC = () => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [alreadyReceivedProfileIds, setAlreadyReceivedProfileIds] = useState<number[]>([]);
   const LIMIT = 10;
 
   const {ref: observerRef, inView} = useInView();
@@ -56,7 +57,7 @@ const DMChat: React.FC = () => {
         interest: '',
         sort: 0,
         page: {offset: currentOffset, limit: LIMIT},
-        alreadyReceivedProfileIds: [],
+        alreadyReceivedProfileIds: alreadyReceivedProfileIds,
       });
 
       let newList = response.data?.dmChatRoomList ?? [];
@@ -78,6 +79,11 @@ const DMChat: React.FC = () => {
         return 0;
       });
 
+      if (newList.length > 0) {
+        const newProfileIds = newList.map(item => item.roomId);
+        setAlreadyReceivedProfileIds(prev => [...prev, ...newProfileIds]);
+      }
+
       if (isRefreshAll) {
         setDmList(newList);
       } else {
@@ -96,6 +102,7 @@ const DMChat: React.FC = () => {
   useEffect(() => {
     setOffset(0);
     setHasMore(true);
+    setAlreadyReceivedProfileIds([]);
     fetchDMChatRooms(true);
   }, [filterValue, sortValue, selectedTag]);
 

@@ -237,6 +237,7 @@ export interface GetSearchFollowingListReq {
     offset: number;
     limit: number;
   };
+  alreadyReceivedProfileIds: number[];
 }
 export interface GetSearchFollowingListRes {
   followCharacterList: SearchCharacterRoomInfo[];
@@ -267,6 +268,7 @@ export interface GetSearchCharacterListReq {
     offset: number;
     limit: number;
   };
+  alreadyReceivedProfileIds: number[];
 }
 export interface GetSearchCharacterListRes {
   recommendCharacterList: SearchCharacterRoomInfo[];
@@ -293,6 +295,7 @@ export interface GetSearchFriendListReq {
     offset: number;
     limit: number;
   };
+  alreadyReceivedProfileIds: number[];
 }
 export interface GetSearchFriendListRes {
   friendList: SearchCharacterRoomInfo[];
@@ -316,6 +319,7 @@ export interface GetSearchPeopleListReq {
     offset: number;
     limit: number;
   };
+  alreadyReceivedProfileIds: number[];
 }
 export interface GetSearchPeopleListRes {
   recommendPeopleList: SearchCharacterRoomInfo[];

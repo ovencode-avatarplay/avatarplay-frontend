@@ -45,8 +45,10 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [alreadyReceivedProfileIds, setAlreadyReceivedProfileIds] = useState<number[]>([]);
   const LIMIT = 10;
   const {ref: observerRef, inView} = useInView();
+
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
       const fetchMore = async () => {
@@ -74,6 +76,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   useEffect(() => {
     setOffset(0);
     setHasMore(true);
+    setAlreadyReceivedProfileIds([]);
   }, [filterValue, selectedTag, sortValue]);
 
   const optionItems: SelectDrawerArrowItem[] = [
@@ -124,13 +127,18 @@ const CharacterChat: React.FC<Props> = ({name}) => {
           offset: currentOffset,
           limit: LIMIT,
         },
-        alreadyReceivedProfileIds: [],
+        alreadyReceivedProfileIds: alreadyReceivedProfileIds,
         search: '',
       };
 
       const response = await sendGetCharacterChatRoomList(params);
       const newList = response.data?.chatRoomList ?? [];
-      // 상태는 외부에서 처리할 수 있도록 값만 반환
+
+      if (newList.length > 0) {
+        const newProfileIds = newList.map(item => item.characterProfileId);
+        setAlreadyReceivedProfileIds(prev => [...prev, ...newProfileIds]);
+      }
+
       return newList;
     } catch (error) {
       console.error('fetchCharacterChatRooms error:', error);

@@ -29,14 +29,11 @@ interface Props {
 }
 
 const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
-  const [selectedTag, setSelectedTag] = useState(tags[0]);
-  const [searchText, setSearchText] = useState('');
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  const [searchResults, setSearchResults] = useState<{
-    followBackCharacterList: SearchCharacterRoomInfo[];
-    recommendCharacterList: SearchCharacterRoomInfo[];
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedTag, setSelectedTag] = useState<string>('Following');
+  const [searchText, setSearchText] = useState<string>('');
+  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<SearchCharacterRoomInfo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   // 필터, isAdult 상태를 기억하기 위한 ref
   const positiveFiltersRef = useRef<FilterDataItem[]>([]);
@@ -44,10 +41,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const isAdultRef = useRef(true);
 
   // 페이징 관련 상태
-  const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [isPagingLoading, setIsPagingLoading] = useState(false);
-  const LIMIT = 10;
+  const [offset, setOffset] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isPagingLoading, setIsPagingLoading] = useState<boolean>(false);
+  const [followingProfileIds, setFollowingProfileIds] = useState<number[]>([]);
+  const [characterProfileIds, setCharacterProfileIds] = useState<number[]>([]);
+  const [friendProfileIds, setFriendProfileIds] = useState<number[]>([]);
+  const [peopleProfileIds, setPeopleProfileIds] = useState<number[]>([]);
+  const LIMIT = 20;
   const {ref: observerRef, inView} = useInView();
 
   // 탭 변경 시 페이징 상태 초기화 및 첫 페이지 fetch
@@ -55,7 +56,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     if (isOpen == false) return;
     setOffset(0);
     setHasMore(true);
-    setSearchResults({followBackCharacterList: [], recommendCharacterList: []});
+    setSearchResults([]);
     fetchMore(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTag, isOpen]);
@@ -69,7 +70,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   }, [inView]);
 
   const handleClose = () => {
-    setSearchResults(null);
+    setSearchResults([]);
     setError(null);
     setSearchText('');
     setIsInputFocused(false);
@@ -83,6 +84,24 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     try {
       let newList: SearchCharacterRoomInfo[] = [];
       let currentOffset = isRefreshAll ? 0 : offset;
+
+      if (isRefreshAll) {
+        switch (selectedTag) {
+          case 'Following':
+            setFollowingProfileIds([]);
+            break;
+          case 'Character':
+            setCharacterProfileIds([]);
+            break;
+          case 'Friend':
+            setFriendProfileIds([]);
+            break;
+          case 'People':
+            setPeopleProfileIds([]);
+            break;
+        }
+      }
+
       if (selectedTag === 'Following') {
         const response = await sendGetSearchFollowingList({
           characterIP: 0,
@@ -91,6 +110,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: followingProfileIds,
         });
         newList = response.data?.followCharacterList || [];
       } else if (selectedTag === 'Character') {
@@ -101,36 +121,56 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: characterProfileIds,
         });
         newList = response.data?.recommendCharacterList || [];
       } else if (selectedTag === 'Friend') {
         const response = await sendGetSearchFriendList({
           search: searchText,
           page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: friendProfileIds,
         });
         newList = response.data?.friendList || [];
       } else if (selectedTag === 'People') {
         const response = await sendGetSearchPeopleList({
           search: searchText,
           page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: peopleProfileIds,
         });
         newList = response.data?.recommendPeopleList || [];
       }
-      setSearchResults(prev => {
-        if (!prev) return {followBackCharacterList: newList, recommendCharacterList: []};
-        return {
-          followBackCharacterList: isRefreshAll ? newList : [...prev.followBackCharacterList, ...newList],
-          recommendCharacterList: [],
-        };
-      });
-      if (newList.length < LIMIT) {
-        setHasMore(false);
+
+      if (newList.length > 0) {
+        const newProfileIds = newList.map(item => item.characterProfileId);
+
+        switch (selectedTag) {
+          case 'Following':
+            setFollowingProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+          case 'Character':
+            setCharacterProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+          case 'Friend':
+            setFriendProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+          case 'People':
+            setPeopleProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+        }
+
+        if (isRefreshAll) {
+          setSearchResults(newList);
+        } else {
+          setSearchResults(prev => [...prev, ...newList]);
+        }
+        setOffset(currentOffset + LIMIT);
+        setHasMore(newList.length === LIMIT);
       } else {
-        setHasMore(true);
+        setHasMore(false);
       }
-      setOffset(prev => prev + LIMIT);
     } catch (err) {
-      setError('검색 중 오류가 발생했습니다.');
+      setError('데이터를 불러오는 중 오류가 발생했습니다.');
+      console.error('Error fetching data:', err);
     } finally {
       setIsPagingLoading(false);
     }
@@ -148,7 +188,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     negativeFiltersRef.current = negativeFilters;
     setOffset(0);
     setHasMore(true);
-    setSearchResults({followBackCharacterList: [], recommendCharacterList: []});
+    setSearchResults([]);
     setIsInputFocused(false);
     fetchMore(true);
   };
@@ -229,26 +269,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     if (error) {
       return <div className={styles.error}>{error}</div>;
     }
-    if (!searchResults) {
-      return <EmptyState stateText="No search results found." />;
-    }
-    if (searchResults.followBackCharacterList.length === 0 && searchResults.recommendCharacterList.length === 0) {
+    if (searchResults.length === 0) {
       return <EmptyState stateText="No search results found." />;
     }
     return (
       <div className={styles.searchResults}>
-        {searchResults.followBackCharacterList.length > 0 && (
-          <div className={styles.resultSection}>
-            <h3>팔로우백 캐릭터</h3>
-            {renderCharacterList(searchResults.followBackCharacterList)}
-          </div>
-        )}
-        {searchResults.recommendCharacterList.length > 0 && (
-          <div className={styles.resultSection}>
-            <h3>추천 캐릭터</h3>
-            {renderCharacterList(searchResults.recommendCharacterList)}
-          </div>
-        )}
+        {renderCharacterList(searchResults)}
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
         {isPagingLoading && <div className={styles.loading}>불러오는 중...</div>}
@@ -270,38 +296,29 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   return (
-    <Drawer
+    <CustomDrawer
       anchor="right"
       open={isOpen}
       onClose={handleClose}
-      ModalProps={{style: {zIndex: 3000}}}
+      className={styles.drawer}
       PaperProps={{
-        className: styles.drawerContainer,
-        sx: {width: '100%', height: '100%', position: 'relative'},
+        className: styles.drawerPaper,
       }}
     >
-      <SearchBar
-        onBack={handleClose}
-        onSearchTextChange={text => {
-          setSearchText(text);
-        }}
-        onFocusChange={isFocused => setIsInputFocused(isFocused)}
-        onSearch={handleSearchBarSearch}
-      />
-
-      <div className={styles.content}>
-        {renderSubMenu()}
-
-        <MessageTagList
-          tags={tags}
-          defaultTag={tags[0]}
-          onTagChange={tag => {
-            setSelectedTag(tag);
-          }}
+      <div className={styles.container}>
+        <SearchBar
+          onBack={handleClose}
+          onSearchTextChange={text => setSearchText(text)}
+          onFocusChange={isFocused => setIsInputFocused(isFocused)}
+          onSearch={handleSearchBarSearch}
         />
-        {renderSearchResults()}
+        <div className={styles.content}>
+          <MessageTagList tags={tags} defaultTag={selectedTag} onTagChange={setSelectedTag} />
+          {renderSubMenu()}
+          {renderSearchResults()}
+        </div>
       </div>
-    </Drawer>
+    </CustomDrawer>
   );
 };
 
