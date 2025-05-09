@@ -130,3 +130,12 @@
     flex-shrink: 0;
     filter: brightness(0) saturate(100%)
   }
+
+  .logoWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+  

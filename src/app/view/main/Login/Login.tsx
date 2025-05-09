@@ -11,6 +11,11 @@ import {getLangUrlCode} from '@/configs/i18n';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import useCustomRouter from '@/utils/useCustomRouter';
+import logoTalkain from '@ui/logo_talkain.png';
+
+<div className={styles.logoWrapper}>
+  <Image src="/ui/logo_talkain.png" width={120} height={40} alt="Talkain Logo" />
+</div>;
 
 const Login = () => {
   const {back} = useCustomRouter();
