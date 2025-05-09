@@ -45,6 +45,7 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
     setVideoUrl(url);
     setInternalVideoUrl(url);
     if (onChoose) onChoose();
+    setWorkroomOpen(false);
   };
 
   const handleChooseFile = () => {

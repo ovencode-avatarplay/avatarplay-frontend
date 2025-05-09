@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import styles from './MediaUpload.module.css';
-import {BoldPlay, CircleClose, editCircle, LineUpload} from '@ui/Icons';
+import {BoldPlay, editCircle, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import ReactPlayer from 'react-player';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import getLocalizedText from '@/utils/getLocalizedText';
+import ImageUpload from '@/components/create/ImageUpload';
+import VideoUpload from '@/components/create/VideoUpload';
 
 interface Props {
   title?: string;
@@ -133,26 +135,26 @@ const MediaUpload: React.FC<Props> = ({
     setMediaUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToRemove));
   };
 
-  const selectVisibilityItems: SelectDrawerItem[] = [
-    // {
-    //   name: 'Take a photo',
-    //   onClick: () => {
-    //     handleTakePhoto();
-    //   },
-    // },
-    {
-      name: 'Workroom',
-      onClick: () => {
-        handleMediaLibrary();
-      },
-    },
-    {
-      name: 'My device',
-      onClick: () => {
-        handleChooseFile();
-      },
-    },
-  ];
+  // const selectVisibilityItems: SelectDrawerItem[] = [
+  //   // {
+  //   //   name: 'Take a photo',
+  //   //   onClick: () => {
+  //   //     handleTakePhoto();
+  //   //   },
+  //   // },
+  //   {
+  //     name: 'Workroom',
+  //     onClick: () => {
+  //       handleMediaLibrary();
+  //     },
+  //   },
+  //   {
+  //     name: 'My device',
+  //     onClick: () => {
+  //       handleChooseFile();
+  //     },
+  //   },
+  // ];
 
   const mediaVisibilityItems: SelectDrawerItem[] = [
     {
@@ -171,19 +173,19 @@ const MediaUpload: React.FC<Props> = ({
     },
   ];
 
-  const handleMediaLibrary = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = accept; // mediaType에 따라 파일 형식 설정
-    input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
-    input.onchange = event => {
-      const files = Array.from((event.target as HTMLInputElement).files || []);
-      if (files.length > 0) {
-        handleOnFileSelect(mediaType === 'image' ? files.slice(0, 1) : files); // 이미지일 경우 최대 9개 제한
-      }
-    };
-    input.click();
-  };
+  // const handleMediaLibrary = () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = accept; // mediaType에 따라 파일 형식 설정
+  //   input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
+  //   input.onchange = event => {
+  //     const files = Array.from((event.target as HTMLInputElement).files || []);
+  //     if (files.length > 0) {
+  //       handleOnFileSelect(mediaType === 'image' ? files.slice(0, 1) : files); // 이미지일 경우 최대 9개 제한
+  //     }
+  //   };
+  //   input.click();
+  // };
 
   const handleTakeMedia = () => {
     const input = document.createElement('input');
@@ -287,12 +289,12 @@ const MediaUpload: React.FC<Props> = ({
       </div>
 
       <div style={{position: 'relative'}}>
-        <SelectDrawer
+        {/* <SelectDrawer
           items={selectVisibilityItems}
           isOpen={isOpenSelectDrawer}
           onClose={() => setIsOpenSelectDrawer(false)}
           selectedIndex={0}
-        />
+        /> */}
       </div>
 
       <div style={{position: 'relative'}}>
@@ -335,6 +337,34 @@ const MediaUpload: React.FC<Props> = ({
               isPrimary: true,
             },
           ]}
+        />
+      )}
+      {mediaType === 'image' && (
+        <ImageUpload
+          isOpen={isOpenSelectDrawer}
+          onClose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          setContentImageUrl={string => {
+            setMediaUrls(prev => [...prev, string]);
+          }}
+          onChoose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+        />
+      )}
+      {mediaType === 'video' && (
+        <VideoUpload
+          isOpen={isOpenSelectDrawer}
+          onClose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          setVideoUrl={string => {
+            setMediaUrls(prev => [...prev, string]);
+          }}
+          onChoose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
         />
       )}
       <LoadingOverlay loading={isLoading} />

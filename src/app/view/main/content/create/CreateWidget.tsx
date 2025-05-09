@@ -252,9 +252,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
               passHref
             >
               <button
-                className={`${styles.drawerButton} ${styles.drawerButtonBot} ${
-                  canCreateVariation ? '' : styles.disable
-                }`}
+                className={`${styles.drawerButton}  ${canCreateVariation ? '' : styles.disable}`}
                 onClick={() => {
                   if (!canCreateVariation) return;
                   onClose();

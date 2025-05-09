@@ -47,6 +47,7 @@ const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onCh
     setContentImageUrl(url);
     setImageUrl(url);
     if (onChoose) onChoose();
+    setWorkroomOpen(false);
   };
 
   const handleChooseFile = () => {

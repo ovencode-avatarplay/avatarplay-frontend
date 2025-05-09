@@ -1,25 +1,15 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import StoryDashboardHeader from '../story-main/story-dashboard/StoryDashboardHeader';
-import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
-import {BoldPlay, BoldQuestion, CircleClose, LineClose, LineUpload} from '@ui/Icons';
+import {BoldQuestion, CircleClose, LineUpload} from '@ui/Icons';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImageGrid';
 import ReactPlayer from 'react-player';
-import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
-import {
-  FeedInfo,
-  CreateFeedInfo,
-  sendCreateFeed,
-  sendGetFeedList,
-  CreateFeedReq,
-  sendGetFeed,
-} from '@/app/NetWork/ShortsNetwork';
+import {sendCreateFeed, CreateFeedReq, sendGetFeed} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
@@ -28,10 +18,7 @@ import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDow
 import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import DrawerTagSelect from '../common/DrawerTagSelect';
-import {title} from 'process';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -40,6 +27,8 @@ import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import TagsData from 'data/create/tags.json';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import ImageUpload from '@/components/create/ImageUpload';
+import VideoUpload from '@/components/create/VideoUpload';
 
 interface Props {
   id?: string;
@@ -236,7 +225,7 @@ const PostMain: React.FC<Props> = ({id}) => {
     {
       name: 'Select Image',
       onClick: () => {
-        setMediaUrls([]);
+        // setMediaUrls([]);
         setMediaType('image');
         setIsOpenSelectDrawer(true);
       },
@@ -520,13 +509,13 @@ const PostMain: React.FC<Props> = ({id}) => {
       </div>
 
       <div style={{position: 'relative'}}>
-        <SelectDrawer
+        {/* <SelectDrawer
           items={selectVisibilityItems}
           isOpen={isOpenSelectDrawer}
           onClose={() => setIsOpenSelectDrawer(false)}
           selectedIndex={0}
           isCheck={false}
-        />
+        /> */}
       </div>
 
       <div style={{position: 'relative'}}>
@@ -577,6 +566,34 @@ const PostMain: React.FC<Props> = ({id}) => {
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
       />
+      {mediaType === 'image' && (
+        <ImageUpload
+          isOpen={isOpenSelectDrawer}
+          onClose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          setContentImageUrl={string => {
+            setMediaUrls(prev => [...prev, string]);
+          }}
+          onChoose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+        />
+      )}
+      {mediaType === 'video' && (
+        <VideoUpload
+          isOpen={isOpenSelectDrawer}
+          onClose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          setVideoUrl={string => {
+            setMediaUrls(prev => [...prev, string]);
+          }}
+          onChoose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+        />
+      )}
     </div>
   );
 };

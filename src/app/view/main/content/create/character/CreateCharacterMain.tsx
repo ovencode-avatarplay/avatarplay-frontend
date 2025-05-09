@@ -925,9 +925,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               onChoose={() => {
                 setSelectImageTypeOpen(false);
               }}
-              onGalleryChoose={() => {
-                setGalleryOpen(true);
-              }}
+              // onGalleryChoose={() => {
+              //   setGalleryOpen(true);
+              // }}
             />
           )}
         </div>
@@ -1102,8 +1102,11 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadOpen(false);
           }}
           setContentImageUrl={handlerSetImage}
-          onGalleryChoose={() => {
-            setGalleryOpen(true);
+          // onGalleryChoose={() => {
+          //   setGalleryOpen(true);
+          // }}
+          onChoose={() => {
+            setSelectImageTypeOpen(false);
           }}
         />
       )}
@@ -1132,12 +1135,12 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                 setVideoUploadOpen(true);
               },
             },
-            {
-              name: 'Gallery',
-              onClick: () => {
-                setGalleryOpen(true);
-              },
-            },
+            // {
+            //   name: 'Gallery',
+            //   onClick: () => {
+            //     setGalleryOpen(true);
+            //   },
+            // },
           ]}
           isOpen={mediaUploadOpen}
           onClose={() => {}}
