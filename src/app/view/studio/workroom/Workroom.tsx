@@ -109,7 +109,7 @@ const Workroom: React.FC<Props> = ({}) => {
       imgUrl: '/images/001.png',
       name: 'folder4',
       detail: 'detail4',
-      folderLocation: [1001],
+      folderLocation: [1000],
     },
     {
       id: 1005,
@@ -117,7 +117,7 @@ const Workroom: React.FC<Props> = ({}) => {
       imgUrl: '/images/001.png',
       name: 'folder5',
       detail: 'detail5',
-      folderLocation: [1001, 1004],
+      folderLocation: [1000, 1004],
     },
     {
       id: 1006,
@@ -125,7 +125,7 @@ const Workroom: React.FC<Props> = ({}) => {
       imgUrl: '/images/001.png',
       name: 'folder6',
       detail: 'detail6',
-      folderLocation: [1001, 1004],
+      folderLocation: [1000, 1004],
     },
     {
       id: 1007,
@@ -150,6 +150,16 @@ const Workroom: React.FC<Props> = ({}) => {
       name: 'image1',
       detail: 'detail1',
       folderLocation: [1001],
+      generatedInfo: {
+        generatedType: 1,
+        generateModel: 'uploaded',
+        imageSize: '64x64',
+        positivePrompt: 'uploaded',
+        negativePrompt: 'uploaded',
+        seed: 0,
+        isUploaded: true,
+      },
+      profileId: 520,
     },
     {
       id: 2002,
@@ -759,26 +769,55 @@ const Workroom: React.FC<Props> = ({}) => {
     setSelectedTargetFolder(folder);
   };
 
-  const handleMoveToFolder = (targetFolderId: number | null) => {
+  const handleMoveToFolder = (targetFolder: WorkroomItemInfo | null, variationType?: number | null) => {
+    // targetFolder가 null이면 최상위, 아닐 때는 folderLocation 계산
+    const targetFolderId = targetFolder
+      ? targetFolder?.folderLocation
+        ? [...targetFolder.folderLocation, targetFolder.id]
+        : [targetFolder.id]
+      : [];
+
     setWorkroomData(prev =>
       prev.map(item => {
         if (selectedItem && !isSelecting && item.id === selectedItem.id) {
           return {
             ...item,
-            folderLocation: targetFolderId ? [targetFolderId] : [],
-            // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
-            generatedInfo: item.generatedInfo ? undefined : item.generatedInfo,
-            profileId: null,
+            folderLocation: targetFolderId,
+            generatedInfo: item.generatedInfo
+              ? undefined // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
+              : variationType
+              ? {
+                  generatedType: variationType, // 폴더에서 갤러리로 이동할때 생성정보 변경 (기획)
+                  generateModel: 'uploaded',
+                  positivePrompt: '',
+                  negativePrompt: '',
+                  seed: -1,
+                  imageSize: '',
+                  isUploaded: true,
+                }
+              : item.generatedInfo, // 이동할때 생성정보 유지 (원래가 undefined)
+            profileId: variationType ? targetFolder?.profileId : null,
           };
         }
 
         if (isSelecting && selectedItems.includes(item.id)) {
           return {
             ...item,
-            folderLocation: targetFolderId ? [targetFolderId] : [],
-            // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
-            generatedInfo: item.generatedInfo ? undefined : item.generatedInfo,
-            profileId: null,
+            folderLocation: targetFolderId,
+            generatedInfo: item.generatedInfo
+              ? undefined // 생성된 이미지가 폴더로 이동할때 생성정보제거 (기획)
+              : variationType
+              ? {
+                  generatedType: variationType, // 폴더에서 갤러리로 이동할때 생성정보 변경 (기획)
+                  generateModel: 'uploaded',
+                  positivePrompt: '',
+                  negativePrompt: '',
+                  seed: -1,
+                  imageSize: '',
+                  isUploaded: true,
+                }
+              : item.generatedInfo, // 이동할때 생성정보 유지 (원래가 undefined)
+            profileId: variationType ? targetFolder?.profileId : null,
           };
         }
 

@@ -3,7 +3,7 @@ import styles from './WorkroomFileMoveModal.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import {WorkroomItemInfo} from './WorkroomItem';
-import {BoldFolderPlus, LineArrowRight, LineFolderPlus, LineSearch} from '@ui/Icons';
+import {BoldFolder, LineArrowRight, LineFolderPlus, LineSearch} from '@ui/Icons';
 import {Dialog} from '@mui/material';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import CustomButton from '@/components/layout/shared/CustomButton';
@@ -16,7 +16,7 @@ interface Props {
   addFolder: () => void;
   selectedTargetFolder: WorkroomItemInfo | null;
   onSelectTargetFolder: (folder: WorkroomItemInfo | null) => void;
-  onMoveToFolder: (folderId: number | null) => void;
+  onMoveToFolder: (targetFolder: WorkroomItemInfo | null, variationType?: number | null) => void;
 }
 
 const WorkroomFileMoveModal: React.FC<Props> = ({
@@ -29,19 +29,22 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
   onMoveToFolder,
 }) => {
   const [keyword, setKeyword] = useState('');
+  const [variationType, setVariationType] = useState<'None' | 'Portrait' | 'Pose' | 'Expression'>('None');
 
   const handleSelectFolder = (folder: WorkroomItemInfo) => {
     onSelectFolder(folder);
   };
-  const getFilteredFolders = () => {
+  const getFilteredFolders = (gallery: boolean) => {
     return folders.filter(folder => {
+      const filterGallery = folder.profileId ? gallery : !gallery;
+
       const matchKeyword = keyword.trim().length > 0 ? folder.name.toLowerCase().includes(keyword.toLowerCase()) : true;
 
       const inHierarchy = !selectedFolder
         ? !folder.folderLocation || folder.folderLocation.length === 0
         : folder.folderLocation?.[folder.folderLocation.length - 1] === selectedFolder.id;
 
-      return keyword.trim().length > 0 ? matchKeyword : inHierarchy;
+      return keyword.trim().length > 0 ? matchKeyword : inHierarchy && filterGallery;
     });
   };
 
@@ -50,8 +53,8 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
   const renderFolder = () => {
     return (
       <ul className={styles.folderArea}>
-        {getFilteredFolders().length > 0 ? (
-          getFilteredFolders().map((item, index) => (
+        {getFilteredFolders(false).length > 0 ? (
+          getFilteredFolders(false).map((item, index) => (
             <li className={styles.folderItem} key={index}>
               {renderFolderItem(item)}
             </li>
@@ -66,14 +69,76 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
   };
 
   const renderGallery = () => {
-    return <>Gallery</>;
+    return (
+      <ul className={styles.folderArea}>
+        {selectedFolder === null ? (
+          getFilteredFolders(true).length > 0 ? (
+            getFilteredFolders(true).map((item, index) => (
+              <li className={styles.folderItem} key={index}>
+                {renderGalleryItem(item)}
+              </li>
+            ))
+          ) : (
+            <li className={styles.folderItem}>
+              <div className={styles.emptyStateContainer}>
+                <EmptyState stateText={getLocalizedText('TODO : No results found')} />
+              </div>
+            </li>
+          )
+        ) : (
+          <div className={styles.galleryContainer}>
+            {variationType === 'None' ? (
+              ['Portrait', 'Pose', 'Expression'].map((type, idx) => (
+                <div className={styles.folderItem} key={idx}>
+                  <div
+                    className={styles.folderItemContainer}
+                    onClick={() => setVariationType(type as 'Portrait' | 'Pose' | 'Expression')}
+                  >
+                    <div className={styles.folderIcon}>
+                      <img src={BoldFolder.src} />
+                    </div>
+                    <div className={styles.infoArea}>
+                      <div className={styles.folderName}>{getLocalizedText(`TODO : ${type}`)}</div>
+                    </div>
+                    <button className={styles.folderButton}>
+                      <img src={LineArrowRight.src} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={styles.galleryItemContainer}>
+                <div className={styles.galleryItemText}>{getLocalizedText(`TODO : ${variationType}`)}</div>
+              </div>
+            )}
+          </div>
+        )}
+      </ul>
+    );
   };
 
   const renderFolderItem = (data: WorkroomItemInfo) => {
     return (
       <div className={styles.folderItemContainer} onClick={() => handleSelectFolder(data)}>
         <div className={styles.folderIcon}>
-          <img src={BoldFolderPlus.src} />
+          <img src={BoldFolder.src} />
+        </div>
+        <div className={styles.infoArea}>
+          <div className={styles.folderName}>{data.name}</div>
+          <div className={styles.folderDetail}>{data.detail}</div>
+        </div>
+        <button className={styles.folderButton}>
+          <img src={LineArrowRight.src} />
+        </button>
+      </div>
+    );
+  };
+
+  const renderGalleryItem = (data: WorkroomItemInfo) => {
+    return (
+      <div className={styles.folderItemContainer} onClick={() => handleSelectFolder(data)}>
+        <div className={styles.galleryFolderImg}>
+          <img src={data.imgUrl} />
         </div>
         <div className={styles.infoArea}>
           <div className={styles.folderName}>{data.name}</div>
@@ -130,7 +195,6 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
         <button
           className={styles.createButton}
           onClick={() => {
-            console.log('addFolder');
             addFolder();
           }}
         >
@@ -153,24 +217,55 @@ const WorkroomFileMoveModal: React.FC<Props> = ({
               size="Medium"
               state="Normal"
               type="Tertiary"
-              onClick={() => onSelectFolder(null)}
+              onClick={() => {
+                if (variationType !== 'None') {
+                } else {
+                  onSelectFolder(null);
+                }
+                setVariationType('None');
+              }}
               customClassName={[styles.button]}
             >
               {getLocalizedText('TODO : Cancel')}
             </CustomButton>
-            <CustomButton
-              size="Medium"
-              state="Normal"
-              type="Primary"
-              onClick={() => {
-                const targetFolderId = selectedFolder?.id ?? null;
-                onMoveToFolder(targetFolderId);
-                onSelectFolder(null);
-              }}
-              customClassName={[styles.button]}
-            >
-              {getLocalizedText('TODO : Move here')}
-            </CustomButton>
+            {selectedFolder.profileId === undefined ? (
+              <CustomButton
+                size="Medium"
+                state="Normal"
+                type="Primary"
+                onClick={() => {
+                  onMoveToFolder(selectedFolder, null);
+                  onSelectFolder(null);
+                }}
+                customClassName={[styles.button]}
+              >
+                {getLocalizedText('TODO : Move here')}
+              </CustomButton>
+            ) : variationType !== 'None' ? (
+              <CustomButton
+                size="Medium"
+                state="Normal"
+                type="Primary"
+                customClassName={[styles.button]}
+                onClick={() => {
+                  onMoveToFolder(
+                    selectedFolder,
+                    variationType === 'Portrait'
+                      ? 1
+                      : variationType === 'Pose'
+                      ? 2
+                      : variationType === 'Expression'
+                      ? 3
+                      : null,
+                  );
+                  onSelectFolder(null);
+                }}
+              >
+                {getLocalizedText('TODO : Move Gallery')}
+              </CustomButton>
+            ) : (
+              <div className={styles.button}></div>
+            )}
           </div>
         )}
       </div>

@@ -49,6 +49,7 @@
     flex-direction: column;
 
     width: 100%;
+    min-height: 50vh;
 
     align-items: flex-start;
     align-self: stretch;
@@ -60,6 +61,7 @@
     flex-direction: column;
 
     width: 100%;
+    min-height: 50vh;
 
     align-items: flex-start;
     align-self: stretch;
@@ -71,11 +73,13 @@
     bottom: 10px;
     margin: auto 0;
     width: 100%;
+    min-height: 50vh;
 }
 
 .galleryContainer
 {
     width: 100%;
+    min-height: 50vh;
 
     align-items: flex-start;
     align-self: stretch;
@@ -88,6 +92,7 @@
     flex-direction: column;
 
     width: 100%;
+    min-height: 50vh;
 
     align-items: flex-start;
     align-self: stretch;
@@ -100,6 +105,7 @@
     flex-direction: column;
 
     width: 100%;
+    min-height: 50vh;
 
     padding-top: 52px !important;
 }
@@ -110,6 +116,7 @@
     flex-direction: column;
 
     width: 100%;
+    min-height: 50vh;
 
     align-items: flex-start;
     align-self: stretch;
