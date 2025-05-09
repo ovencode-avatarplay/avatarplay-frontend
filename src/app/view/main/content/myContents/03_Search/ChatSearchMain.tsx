@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, KeyboardEvent} from 'react';
 import styles from './ChatSearchMain.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {Drawer} from '@mui/material';
@@ -20,8 +20,10 @@ import MessageProfile, {BadgeType, FollowState} from '../01_Layout/MessageProfil
 import {sendGetCharacterChatRoomList, sendGetDMChatRoomList} from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
+import {addSearch} from './RecentSearchList';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
+const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
 
 interface Props {
   isOpen: boolean;
@@ -50,6 +52,11 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const [peopleProfileIds, setPeopleProfileIds] = useState<number[]>([]);
   const LIMIT = 20;
   const {ref: observerRef, inView} = useInView();
+  const [recentSearchVersion, setRecentSearchVersion] = useState(0);
+  const [recentSearchItems, setRecentSearchItems] = useState<string[]>([]);
+
+  // 최근 검색어와 추천 태그를 합친 배열
+  const combinedList = [...recentSearchItems, ...popularTags];
 
   // 탭 변경 시 페이징 상태 초기화 및 첫 페이지 fetch
   useEffect(() => {
@@ -81,108 +88,105 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
     setError(null);
-    try {
-      let newList: SearchCharacterRoomInfo[] = [];
-      let currentOffset = isRefreshAll ? 0 : offset;
+    let newList: SearchCharacterRoomInfo[] = [];
+    let currentOffset = isRefreshAll ? 0 : offset;
+    // searchText 상태를 직접 사용
+    const keyword = searchText;
+
+    if (isRefreshAll) {
+      switch (selectedTag) {
+        case 'Following':
+          setFollowingProfileIds([]);
+          break;
+        case 'Character':
+          setCharacterProfileIds([]);
+          break;
+        case 'Friend':
+          setFriendProfileIds([]);
+          break;
+        case 'People':
+          setPeopleProfileIds([]);
+          break;
+      }
+    }
+
+    if (selectedTag === 'Following') {
+      const response = await sendGetSearchFollowingList({
+        characterIP: 0,
+        search: keyword,
+        positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
+        nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
+        isAdults: isAdultRef.current,
+        page: {offset: currentOffset, limit: LIMIT},
+        alreadyReceivedProfileIds: followingProfileIds,
+      });
+      newList = response.data?.followCharacterList || [];
+    } else if (selectedTag === 'Character') {
+      const response = await sendGetSearchCharacterList({
+        characterIP: 0,
+        search: keyword,
+        positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
+        nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
+        isAdults: isAdultRef.current,
+        page: {offset: currentOffset, limit: LIMIT},
+        alreadyReceivedProfileIds: characterProfileIds,
+      });
+      newList = response.data?.recommendCharacterList || [];
+    } else if (selectedTag === 'Friend') {
+      const response = await sendGetSearchFriendList({
+        search: keyword,
+        page: {offset: currentOffset, limit: LIMIT},
+        alreadyReceivedProfileIds: friendProfileIds,
+      });
+      newList = response.data?.friendList || [];
+    } else if (selectedTag === 'People') {
+      const response = await sendGetSearchPeopleList({
+        search: keyword,
+        page: {offset: currentOffset, limit: LIMIT},
+        alreadyReceivedProfileIds: peopleProfileIds,
+      });
+      newList = response.data?.recommendPeopleList || [];
+    }
+
+    if (newList.length > 0) {
+      const newProfileIds = newList.map(item => item.characterProfileId);
+
+      switch (selectedTag) {
+        case 'Following':
+          setFollowingProfileIds(prev => [...prev, ...newProfileIds]);
+          break;
+        case 'Character':
+          setCharacterProfileIds(prev => [...prev, ...newProfileIds]);
+          break;
+        case 'Friend':
+          setFriendProfileIds(prev => [...prev, ...newProfileIds]);
+          break;
+        case 'People':
+          setPeopleProfileIds(prev => [...prev, ...newProfileIds]);
+          break;
+      }
 
       if (isRefreshAll) {
-        switch (selectedTag) {
-          case 'Following':
-            setFollowingProfileIds([]);
-            break;
-          case 'Character':
-            setCharacterProfileIds([]);
-            break;
-          case 'Friend':
-            setFriendProfileIds([]);
-            break;
-          case 'People':
-            setPeopleProfileIds([]);
-            break;
-        }
-      }
-
-      if (selectedTag === 'Following') {
-        const response = await sendGetSearchFollowingList({
-          characterIP: 0,
-          search: searchText,
-          positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
-          nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
-          isAdults: isAdultRef.current,
-          page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: followingProfileIds,
-        });
-        newList = response.data?.followCharacterList || [];
-      } else if (selectedTag === 'Character') {
-        const response = await sendGetSearchCharacterList({
-          characterIP: 0,
-          search: searchText,
-          positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
-          nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
-          isAdults: isAdultRef.current,
-          page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: characterProfileIds,
-        });
-        newList = response.data?.recommendCharacterList || [];
-      } else if (selectedTag === 'Friend') {
-        const response = await sendGetSearchFriendList({
-          search: searchText,
-          page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: friendProfileIds,
-        });
-        newList = response.data?.friendList || [];
-      } else if (selectedTag === 'People') {
-        const response = await sendGetSearchPeopleList({
-          search: searchText,
-          page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: peopleProfileIds,
-        });
-        newList = response.data?.recommendPeopleList || [];
-      }
-
-      if (newList.length > 0) {
-        const newProfileIds = newList.map(item => item.characterProfileId);
-
-        switch (selectedTag) {
-          case 'Following':
-            setFollowingProfileIds(prev => [...prev, ...newProfileIds]);
-            break;
-          case 'Character':
-            setCharacterProfileIds(prev => [...prev, ...newProfileIds]);
-            break;
-          case 'Friend':
-            setFriendProfileIds(prev => [...prev, ...newProfileIds]);
-            break;
-          case 'People':
-            setPeopleProfileIds(prev => [...prev, ...newProfileIds]);
-            break;
-        }
-
-        if (isRefreshAll) {
-          setSearchResults(newList);
-        } else {
-          setSearchResults(prev => [...prev, ...newList]);
-        }
-        setOffset(currentOffset + LIMIT);
-        setHasMore(newList.length === LIMIT);
+        setSearchResults(newList);
       } else {
-        setHasMore(false);
+        setSearchResults(prev => [...prev, ...newList]);
       }
-    } catch (err) {
-      setError('데이터를 불러오는 중 오류가 발생했습니다.');
-      console.error('Error fetching data:', err);
-    } finally {
-      setIsPagingLoading(false);
+      setOffset(currentOffset + LIMIT);
+      setHasMore(newList.length === LIMIT);
+    } else {
+      setHasMore(false);
     }
+    setIsPagingLoading(false);
   };
 
   // SearchBar에서 필터, isAdult 상태를 ref에 저장
   const handleSearchBarSearch = (
-    searchText: string,
+    keyword: string,
     isAdult: boolean,
     positiveFilters: FilterDataItem[],
     negativeFilters: FilterDataItem[],
   ) => {
+    addSearch(keyword, recentSearchItems, setRecentSearchItems);
     isAdultRef.current = isAdult;
     positiveFiltersRef.current = positiveFilters;
     negativeFiltersRef.current = negativeFilters;
@@ -190,7 +194,37 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     setSearchResults([]);
     setIsInputFocused(false);
+    setSearchText(keyword);
     fetchMore(true);
+  };
+
+  // 최근 검색어 선택 시
+  const handleRecentSearchSelect = (keyword: string) => {
+    setSearchText(keyword);
+    setIsInputFocused(false);
+    setTimeout(() => {
+      handleSearchBarSearch(keyword, isAdultRef.current, positiveFiltersRef.current, negativeFiltersRef.current);
+    }, 0);
+  };
+
+  // 추천 검색어 클릭 시
+  const handlePopularTagClick = (tag: string) => {
+    setSearchText(tag);
+    setIsInputFocused(false);
+    setTimeout(() => {
+      handleSearchBarSearch(tag, isAdultRef.current, positiveFiltersRef.current, negativeFiltersRef.current);
+    }, 0);
+  };
+
+  // 키보드 이벤트 핸들러 (최근 검색어만)
+  const handleSearchBarKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isInputFocused || recentSearchItems.length === 0) return;
+    if (e.key === 'Enter') {
+      if (searchText.trim()) {
+        handleSearchBarSearch(searchText, isAdultRef.current, positiveFiltersRef.current, negativeFiltersRef.current);
+        e.preventDefault();
+      }
+    }
   };
 
   const renderCharacterList = (list: SearchCharacterRoomInfo[]) => (
@@ -286,11 +320,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     if (!isInputFocused) return null;
     return (
       <div className={styles.subMenu}>
-        <RecentSearchList
-          initialItems={['anime', 'Prince', 'anime3']}
-          onRemove={keyword => console.log(`${keyword} removed`)}
-        />
-        <PopularTagList tags={['Romance', 'Fantasy', 'AI Friend']} onTagClick={tag => console.log('clicked:', tag)} />
+        <RecentSearchList onSelect={handleRecentSearchSelect} />
+        <PopularTagList tags={popularTags} onTagClick={handlePopularTagClick} />
       </div>
     );
   };
@@ -308,9 +339,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       <div className={styles.container}>
         <SearchBar
           onBack={handleClose}
-          onSearchTextChange={text => setSearchText(text)}
-          onFocusChange={isFocused => setIsInputFocused(isFocused)}
+          onSearchTextChange={setSearchText}
+          onFocusChange={setIsInputFocused}
           onSearch={handleSearchBarSearch}
+          onKeyDown={handleSearchBarKeyDown}
+          value={searchText}
+          onChange={setSearchText}
         />
         <div className={styles.content}>
           <MessageTagList tags={tags} defaultTag={selectedTag} onTagChange={setSelectedTag} />

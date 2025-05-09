@@ -6,6 +6,7 @@ import {useEffect, useRef} from 'react';
 
 type MessageCallback = (payload: any) => void;
 type GiftCallback = (payload: any) => void;
+type NotificationCallback = (payload: any) => void;
 
 export function useSignalR(token: string) {
   const connectionRef = useRef<HubConnection | null>(null);
@@ -41,6 +42,10 @@ export function useSignalR(token: string) {
     connectionRef.current?.on('ReceiveGiftRuby', callback);
   };
 
+  const onNotification = (callback: NotificationCallback) => {
+    connectionRef.current?.on('ReceiveNotification', callback);
+  };
+
   return {
     connection: connectionRef.current,
     joinRoom: async (urlLinkKey: string) => {
@@ -67,5 +72,6 @@ export function useSignalR(token: string) {
     },
     onMessage,
     onGift,
+    onNotification,
   };
 }

@@ -39,3 +39,8 @@
     white-space: nowrap;
   }
   
+  .active {
+    background: #f0f4fa;
+    border-radius: 6px;
+  }
+  

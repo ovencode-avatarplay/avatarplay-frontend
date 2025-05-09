@@ -4,9 +4,11 @@ import styles from './PopularTagList.module.css';
 interface Props {
   tags: string[];
   onTagClick?: (tag: string) => void;
+  activeIndex?: number;
+  onMouseMoveIndex?: (idx: number) => void;
 }
 
-const PopularTagList: React.FC<Props> = ({tags, onTagClick}) => {
+const PopularTagList: React.FC<Props> = ({tags, onTagClick, activeIndex = -1, onMouseMoveIndex}) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -14,8 +16,13 @@ const PopularTagList: React.FC<Props> = ({tags, onTagClick}) => {
       </div>
 
       <div className={styles.tagList}>
-        {tags.map(tag => (
-          <button key={tag} className={styles.hashtag} onClick={() => onTagClick?.(tag)}>
+        {tags.map((tag, idx) => (
+          <button
+            key={tag}
+            className={styles.hashtag + ' ' + (activeIndex === idx ? styles.active : '')}
+            onMouseDown={() => onTagClick?.(tag)}
+            onMouseMove={() => onMouseMoveIndex?.(idx)}
+          >
             #{tag}
           </button>
         ))}

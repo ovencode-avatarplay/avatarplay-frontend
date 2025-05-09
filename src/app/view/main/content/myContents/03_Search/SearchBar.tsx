@@ -18,12 +18,23 @@ interface Props {
     positiveFilters: FilterDataItem[],
     negativeFilters: FilterDataItem[],
   ) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, onFocusChange, onSearch}) => {
+const SearchBar: React.FC<Props> = ({
+  onBack,
+  onFilterClick,
+  onSearchTextChange,
+  onFocusChange,
+  onSearch,
+  onKeyDown,
+  value,
+  onChange,
+}) => {
   const [isAdult, setIsAdult] = useState(true);
   const [filterDialogOn, setFilterDialogOn] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
 
   // Filter State
@@ -73,19 +84,18 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
   };
 
   const handleClear = () => {
-    setSearchText('');
+    onChange('');
     onSearchTextChange?.('');
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchText(value);
-    onSearchTextChange?.(value); // 부모에게 전달
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+    onSearchTextChange?.(e.target.value); // 부모에게 전달
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchText.trim()) {
-      onSearch?.(searchText.trim(), isAdult, positiveFilters, negativeFilters);
+    if (e.key === 'Enter' && value.trim()) {
+      onSearch?.(value.trim(), isAdult, positiveFilters, negativeFilters);
     }
   };
 
@@ -102,16 +112,17 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
           <input
             className={styles.input}
             placeholder="Search"
-            value={searchText}
-            onChange={handleChange}
+            value={value}
+            onChange={handleInputChange}
             onKeyPress={handleKeyPress}
+            onKeyDown={onKeyDown}
             onFocus={() => onFocusChange?.(true)}
             onBlur={() => onFocusChange?.(false)}
           />
 
           {/* X 버튼 */}
           <div className={styles.buttonBox}>
-            {searchText && (
+            {value && (
               <button className={styles.clearButton} onClick={handleClear}>
                 <img src={LinePlus.src} alt="clear" className={styles.clearIcon} />
               </button>
@@ -131,7 +142,6 @@ const SearchBar: React.FC<Props> = ({onBack, onFilterClick, onSearchTextChange, 
       <div
         className={styles.filterIconWrap}
         onClick={() => {
-          console.log('asdasd');
           setFilterDialogOn(true);
         }}
       >

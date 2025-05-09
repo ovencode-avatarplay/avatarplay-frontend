@@ -221,7 +221,7 @@ const DMChat: React.FC = () => {
               timestamp={formatTimestamp(dm.lastMessageAt)}
               badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
               followState={FollowState.None}
-              isHighlight={true}
+              isHighlight={false}
               isDM={true}
               isOption={true}
               roomid={dm.roomId.toString()}
