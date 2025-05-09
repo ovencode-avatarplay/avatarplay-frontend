@@ -170,18 +170,52 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           // isOption 매핑
           const isOption = !(followState === FollowState.Follow || followState === FollowState.AddFriend);
           return (
-            <MessageProfile
-              key={character.chatRoomId}
-              profileImage={character.profileImageUrl}
-              profileName={character.characterName}
-              badgeType={badgeType}
-              followState={followState}
-              urlLinkKey={character.urlLinkKey}
-              roomid={String(character.chatRoomId)}
-              isOption={isOption}
-              isPin={character.isPinFix}
-              // 기타 필요한 props 추가
-            />
+            <>
+              {selectedTag == 'Character' ? (
+                <MessageProfile
+                  key={character.chatRoomId}
+                  profileImage={character.profileImageUrl}
+                  profileName={character.characterName}
+                  badgeType={badgeType}
+                  followState={followState}
+                  urlLinkKey={character.urlLinkKey}
+                  roomid={String(character.chatRoomId)}
+                  isOption={isOption}
+                  isPin={character.isPinFix}
+                  // 기타 필요한 props 추가
+                />
+              ) : selectedTag == 'People' ? (
+                <>
+                  <MessageProfile
+                    key={character.chatRoomId}
+                    profileImage={character.profileImageUrl}
+                    profileName={character.characterName}
+                    badgeType={badgeType}
+                    followState={followState}
+                    urlLinkKey={''}
+                    roomid={String(character.chatRoomId)}
+                    isOption={isOption}
+                    isPin={character.isPinFix}
+                    isDM={true}
+                    profileUrlLinkKey={character.urlLinkKey}
+                    // 기타 필요한 props 추가
+                  />
+                </>
+              ) : (
+                <MessageProfile
+                  key={character.chatRoomId}
+                  profileImage={character.profileImageUrl}
+                  profileName={character.characterName}
+                  badgeType={badgeType}
+                  followState={followState}
+                  urlLinkKey={character.urlLinkKey}
+                  roomid={String(character.chatRoomId)}
+                  isOption={isOption}
+                  isPin={character.isPinFix}
+                  // 기타 필요한 props 추가
+                />
+              )}
+            </>
           );
         })(),
       )}

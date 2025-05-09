@@ -108,11 +108,15 @@ export const sendUrlEnterDMChat = async (payload: UrlEnterDMChatReq): Promise<Re
 };
 
 export interface GetDMChatRoomListReq {
+  isDMChatRoom: boolean;
   search: string;
+  interest: string;
+  sort: number;
   page: {
     offset: number;
     limit: number;
   };
+  alreadyReceivedProfileIds: number[];
 }
 
 // 개별 DM 채팅방 정보 타입
@@ -128,6 +132,7 @@ export interface DMChatRoomInfo {
 // 응답 타입
 export interface GetDMChatRoomListRes {
   dmChatRoomList: DMChatRoomInfo[];
+  dmChatRecommendProfileList: SearchCharacterRoomInfo[];
 }
 
 /**

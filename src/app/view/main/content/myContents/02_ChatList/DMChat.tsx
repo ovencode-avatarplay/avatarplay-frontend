@@ -51,8 +51,12 @@ const DMChat: React.FC = () => {
 
     try {
       const response = await sendGetDMChatRoomList({
+        isDMChatRoom: true,
         search: '',
+        interest: '',
+        sort: 0,
         page: {offset: currentOffset, limit: LIMIT},
+        alreadyReceivedProfileIds: [],
       });
 
       let newList = response.data?.dmChatRoomList ?? [];

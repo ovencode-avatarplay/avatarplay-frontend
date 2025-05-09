@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './MessageProfile.module.css';
 import {BoldInfo, BoldMore, BoldPin, LineCheck, LineDelete} from '@ui/Icons';
 import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import Link from 'next/link';
-import {sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
+import {sendCheckDMChatLinkKey, sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 interface Props {
   profileImage: string;
@@ -21,6 +22,7 @@ interface Props {
   isDM?: boolean;
   onClickOption?: () => void;
   urlLinkKey: string;
+  profileUrlLinkKey?: string;
 }
 
 export enum BadgeType {
@@ -58,6 +60,7 @@ const MessageProfile: React.FC<Props> = ({
   isDM = false,
   onClickOption,
   urlLinkKey,
+  profileUrlLinkKey,
 }) => {
   const router = useRouter();
   const renderBadge = () => {
@@ -103,6 +106,21 @@ const MessageProfile: React.FC<Props> = ({
     return null;
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  const checkDMLinkKey = async () => {
+    try {
+      setIsLoading(true);
+      const response = await sendCheckDMChatLinkKey({profileUrlLinkKey: profileUrlLinkKey || ''});
+      setIsLoading(false);
+      if (response.resultCode === 0) {
+        pushLocalizedRoute('/DM/' + response.data?.dmChatUrlLinkKey, router);
+      } else {
+        console.log(`에러 발생: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.log('요청 중 오류가 발생했습니다.');
+    }
+  };
   return (
     <div className={styles.container}>
       {/* 체크 왼쪽 */}
@@ -118,7 +136,8 @@ const MessageProfile: React.FC<Props> = ({
         <div
           className={styles.profileInfo}
           onClick={() => {
-            pushLocalizedRoute('/DM/' + urlLinkKey, router);
+            if (urlLinkKey == '') checkDMLinkKey();
+            else pushLocalizedRoute('/DM/' + urlLinkKey, router);
           }}
         >
           {/* 프로필 정보 */}
@@ -160,6 +179,8 @@ const MessageProfile: React.FC<Props> = ({
           </button>
         )}
       </div>
+
+      <LoadingOverlay loading={isLoading} />
     </div>
   );
 };
