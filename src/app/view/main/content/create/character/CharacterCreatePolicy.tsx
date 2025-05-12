@@ -662,16 +662,24 @@ const CharacterCreatePolicy: React.FC<Props> = ({
           tagType="node"
           reactNode={
             <div className={styles.blackTagContainer}>
-              {positionCountry.map((tag, index) => (
-                <div key={index} className={styles.blackTag}>
-                  {getLocalizedText(getLangKey(tag))}
-                  <img
-                    src={LineClose.src}
-                    className={styles.lineClose}
-                    onClick={() => onPositionCountryChange(positionCountry.filter((_, i) => i !== index))}
-                  />
+              {positionCountry.length ===
+              Object.values(LanguageType).filter(value => typeof value === 'number').length ? (
+                <div className={styles.blackTag}>
+                  {getLocalizedText('shared017_label_002')}
+                  <img src={LineClose.src} className={styles.lineClose} onClick={() => onPositionCountryChange([])} />
                 </div>
-              ))}
+              ) : (
+                positionCountry.map((tag, index) => (
+                  <div key={index} className={styles.blackTag}>
+                    {getLocalizedText(getLangKey(tag))}
+                    <img
+                      src={LineClose.src}
+                      className={styles.lineClose}
+                      onClick={() => onPositionCountryChange(positionCountry.filter((_, i) => i !== index))}
+                    />
+                  </div>
+                ))
+              )}
             </div>
           }
           error={positionCountry.length === 0 && essentialWarning}

@@ -706,36 +706,46 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     })}
                   />
 
-                  {data.dataCountry.tagList.map((one, index) => {
-                    const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
-                    // const countryStr = keys[Number(one)];
-                    const countryStr = getLangKey(Number(one));
-
-                    return (
-                      <div className={styles.tag} key={index}>
-                        <div className={styles.value}>
-                          {/* <input
-                  value={one}
-                  className={styles.hide}
-                  autoComplete="off"
-                  {...register(`postCountry.${index}`, {required: true})}
-                /> */}
-                          {getLocalizedText(countryStr)}
-                        </div>
-                        <div
-                          className={styles.btnRemoveWrap}
-                          onClick={e => {
-                            const postCountryList = data.dataCountry.tagList.filter(v => v != one);
-                            data.dataCountry.tagList = postCountryList;
-                            setValue('postCountry', postCountryList);
-                            setData({...data});
-                          }}
-                        >
-                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                        </div>
+                  {data.dataCountry.tagList.length ===
+                  Object.values(LanguageType).filter(value => typeof value === 'number').length ? (
+                    <div className={styles.tag}>
+                      <div className={styles.value}>{getLocalizedText('shared017_label_002')}</div>
+                      <div
+                        className={styles.btnRemoveWrap}
+                        onClick={e => {
+                          setValue('postCountry', []);
+                          data.dataCountry.tagList = [];
+                          data.dataCountry.isAll = false;
+                          setData({...data});
+                        }}
+                      >
+                        <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
                       </div>
-                    );
-                  })}
+                    </div>
+                  ) : (
+                    data.dataCountry.tagList.map((one, index) => {
+                      const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
+                      // const countryStr = keys[Number(one)];
+                      const countryStr = getLangKey(Number(one));
+
+                      return (
+                        <div className={styles.tag} key={index}>
+                          <div className={styles.value}>{getLocalizedText(countryStr)}</div>
+                          <div
+                            className={styles.btnRemoveWrap}
+                            onClick={e => {
+                              const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                              data.dataCountry.tagList = postCountryList;
+                              setValue('postCountry', postCountryList);
+                              setData({...data});
+                            }}
+                          >
+                            <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               }
               containerStyle={{width: '100%'}}
