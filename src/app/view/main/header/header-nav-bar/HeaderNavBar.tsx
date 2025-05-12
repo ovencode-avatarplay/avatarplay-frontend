@@ -19,11 +19,13 @@ import {setBottomNavColor, setSelectedIndex} from '@/redux-store/slices/MainCont
 import HamburgerBar from '../../sidebar/HamburgerBar';
 import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
+import NotificationMain from '../../Notification/NotificationMain';
 
 const HeaderNavBar = () => {
   const [logo, setLogo] = useState(logoTalkain);
   const dispatch = useDispatch();
   const [isHamOpen, setIsHamOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
 
@@ -72,7 +74,7 @@ const HeaderNavBar = () => {
                 <img className={styles.rewardIcon} src={BoldReward.src} />
               </button>
             </Link>
-            <button className={styles.notification} onClick={() => {}}>
+            <button className={styles.notification} onClick={() => setShowNotification(true)}>
               <img className={styles.notificationIcon} src={BoldNotification.src} />
               <div className={styles.redDot}></div>
             </button>
@@ -96,6 +98,7 @@ const HeaderNavBar = () => {
         isLeft={false}
         open={isHamOpen}
       ></HamburgerBar>
+      {showNotification && <NotificationMain open={showNotification} onClose={() => setShowNotification(false)} />}
     </header>
   );
 };
