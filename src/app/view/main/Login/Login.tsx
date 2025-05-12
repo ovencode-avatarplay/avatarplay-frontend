@@ -5,7 +5,6 @@ import Image from 'next/image';
 import styles from './Login.module.css';
 import {AppleLogo, FacebookLogo, GoogleLogo, KakatalkLogo, LineClose} from '@ui/Icons';
 import {useRouter} from 'next/navigation';
-import {sendSignIn} from '@/app/NetWork/AuthNetwork';
 import {getBrowserLanguage} from '@/utils/browserInfo';
 import {getLangUrlCode} from '@/configs/i18n';
 import getLocalizedText from '@/utils/getLocalizedText';
