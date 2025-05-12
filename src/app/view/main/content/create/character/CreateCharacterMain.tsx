@@ -30,7 +30,6 @@ import {
   GetStarType,
   sendCreateCharacter2,
 } from '@/app/NetWork/CharacterNetwork';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
 import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
@@ -288,30 +287,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     }
     setSelectImageTypeOpen(false);
   };
-  //#region File Upload
-
-  const handleFileSelection = async (file: File) => {
-    try {
-      const req: MediaUploadReq = {
-        mediaState: UploadMediaState.CharacterImage,
-        file: file,
-      };
-      const response = await sendUpload(req);
-      if (response?.data) {
-        const imgUrl: string = response.data.url;
-
-        handlerSetImage(imgUrl);
-      } else {
-        throw new Error('Unexpected API response: No data');
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      // 빈블럭
-    }
-  };
-
-  //#endregion
 
   const handleOnClickThumbnail = () => {
     setSelectImageTypeOpen(true);

@@ -48,8 +48,8 @@ import WorkroomGalleryModal from './WorkroomGalleryModal';
 import WorkroomSearchModal from './WorkroomSearchModal';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SwipeTagList from './SwipeTagList';
-import UploadFromWorkroom from './UploadFromWorkroom';
 import {GalleryCategory} from '../characterDashboard/CharacterGalleryData';
+import {CreateFolderReq, MoveFolderReq, SendCreateFolder, SendMoveFolder} from '@/app/NetWork/WorkroomNetwork';
 //#endregion
 
 const Workroom: React.FC<Props> = ({}) => {
@@ -675,13 +675,11 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const handleMove = () => {
-    console.log('handleMove');
     setIsFileMoveModalOpen(true);
     setIsFileEditDrawerOpen(false);
   };
 
   const handleShare = () => {
-    console.log('handleShare');
     setIsShare(true);
     setIsFileEditDrawerOpen(false);
   };
@@ -783,23 +781,32 @@ const Workroom: React.FC<Props> = ({}) => {
     setSelectedItems([]);
   };
 
-  const handleAddFolder = () => {
+  const handleAddFolder = async () => {
     if (newFolderName.trim() !== '') {
-      const newFolder: WorkroomItemInfo = {
-        id: getMinId(workroomData) - 1,
-        mediaState: MediaState.None,
-        imgUrl: '',
-        name: newFolderName,
-        detail: getLocalizedText('TODO : New folder'),
-        favorite: false,
-        trash: false,
-        folderLocation: selectedCurrentFolder?.id ? [selectedCurrentFolder.id] : [],
+      const req: CreateFolderReq = {
+        Name: newFolderName,
+        ParentFolderId: selectedCurrentFolder?.id ?? null,
       };
 
-      setWorkroomData(prev => [...prev, newFolder]);
-      setIsFolderNamePopupOpen(false);
-      setNewFolderName('');
-      dataToast.open(getLocalizedText('TODO : Folder created'));
+      const response = await SendCreateFolder(req);
+
+      if (response.data) {
+        const newFolder: WorkroomItemInfo = {
+          id: response.data.folderId,
+          mediaState: MediaState.None,
+          imgUrl: '',
+          name: newFolderName,
+          detail: getLocalizedText('TODO : New folder'),
+          favorite: false,
+          trash: false,
+          folderLocation: selectedCurrentFolder?.id ? [selectedCurrentFolder.id] : [],
+        };
+
+        setWorkroomData(prev => [...prev, newFolder]);
+        setIsFolderNamePopupOpen(false);
+        setNewFolderName('');
+        dataToast.open(getLocalizedText('TODO : Folder created'));
+      }
     }
   };
 
@@ -807,13 +814,20 @@ const Workroom: React.FC<Props> = ({}) => {
     setSelectedTargetFolder(folder);
   };
 
-  const handleMoveToFolder = (targetFolder: WorkroomItemInfo | null, variationType?: GalleryCategory | null) => {
+  const handleMoveToFolder = async (targetFolder: WorkroomItemInfo | null, variationType?: GalleryCategory | null) => {
     // targetFolder가 null이면 최상위, 아닐 때는 folderLocation 계산
     const targetFolderId = targetFolder
       ? targetFolder?.folderLocation
         ? [...targetFolder.folderLocation, targetFolder.id]
         : [targetFolder.id]
       : [];
+
+    const req: MoveFolderReq = {
+      FolderId: selectedItem?.id ?? 0,
+      NewParentFolderId: targetFolderId[targetFolderId.length - 1],
+    };
+
+    const response = await SendMoveFolder(req);
 
     setWorkroomData(prev =>
       prev.map(item => {
@@ -1501,7 +1515,6 @@ const Workroom: React.FC<Props> = ({}) => {
                   name: getLocalizedText('TODO: Create folder'),
                   onClick: () => {
                     setIsFolderNamePopupOpen(true);
-                    console.log('create folder');
                   },
                 },
                 {
@@ -1765,13 +1778,6 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
         webkitdirectory: '',
         directory: '',
       })}
-      {/* <UploadFromWorkroom
-        open={true}
-        onClose={() => {}}
-        onSelect={(urllink: string) => {
-          console.log('upload from workroom', urllink);
-        }}
-      /> */}
     </div>
   );
 };

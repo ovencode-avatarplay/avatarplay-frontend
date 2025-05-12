@@ -17,6 +17,8 @@
 
 .tagButton 
 {
+    cursor: pointer;
+    
     display: flex;
     width: calc(100% - 32px);
     margin: 0px 16px;

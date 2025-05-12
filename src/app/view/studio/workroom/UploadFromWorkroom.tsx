@@ -351,7 +351,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
 
   const [curStep, setCurStep] = useState<number>(0);
 
-  const [tagStates, setTagStates] = useState<string[]>(['MyWork', 'Favorite', 'AIHistory', 'Gallery']);
+  const tagStates: string[] = ['MyWork', 'Favorite', 'AIHistory', 'Gallery'];
   const [currentTag, setCurrentTag] = useState<string>('MyWork');
 
   //#region Handle
@@ -365,7 +365,6 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
   };
 
   const handleItemClick = (item: WorkroomItemInfo) => {
-    console.log('handleItemClick', item.name);
     if (item.mediaState === MediaState.None) {
       // 폴더라면 진입
       if (selectedFolder) {
@@ -461,6 +460,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
             handleGoBackFolder();
           } else if (searchOpen) {
             setSearchOpen(false);
+            setKeyword('');
           } else if (curStep === 1) {
             setCurStep(0);
           } else {
@@ -490,7 +490,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
         }
       </CreateDrawerHeader>
 
-      {curStep === 0 ? (
+      {!searchOpen && curStep === 0 ? (
         <div className={styles.categoryArea}>
           {tagStates.map(item => (
             <button

@@ -87,7 +87,7 @@ const EventTriggerContainer: React.FC<Props> = ({
                       className={styles.imagePreview}
                       style={{
                         backgroundImage: item.mediaUrl ? `url(${item.mediaUrl})` : '',
-                        backgroundSize: 'contain',
+                        backgroundSize: 'cover',
                         width: '100%',
                         height: '100%',
                       }}

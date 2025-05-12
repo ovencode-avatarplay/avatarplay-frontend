@@ -7,10 +7,9 @@ import {COMMON_TAG_HEAD_INTEREST, SelectBox} from '@/app/view/profile/ProfileBas
 import {Dialog, Drawer} from '@mui/material';
 import cx from 'classnames';
 
-import {getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {getPdInfo, MediaState, PdPortfolioInfo, updatePdInfo, UpdatePdInfoReq} from '@/app/NetWork/ProfileNetwork';
-import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {getAuth} from '@/app/NetWork/AuthNetwork';
@@ -20,6 +19,7 @@ import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import ImageUpload from '@/components/create/ImageUpload';
 type Props = {
   profileId: number;
 };
@@ -237,101 +237,104 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
     back('/main/homefeed');
   };
 
-  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  //#region File Drop
+  // const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
 
-    if (data.dragStatus >= DragStatusType.InnerClick) {
-      data.dragStatus = DragStatusType.OuterClick;
-      return;
-    }
+  //   if (data.dragStatus >= DragStatusType.InnerClick) {
+  //     data.dragStatus = DragStatusType.OuterClick;
+  //     return;
+  //   }
 
-    DropOuter(e);
-    data.dragStatus = DragStatusType.OuterClick;
-    setData({...data});
-  };
+  //   DropOuter(e);
+  //   data.dragStatus = DragStatusType.OuterClick;
+  //   setData({...data});
+  // };
 
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
+  // const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  // };
 
-  const extractFileExtension = (fileName: string) => {
-    let fileLength = fileName.length;
-    let fileDot = fileName.lastIndexOf('.');
-    let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
-    return fileExtension;
-  };
+  // const extractFileExtension = (fileName: string) => {
+  //   let fileLength = fileName.length;
+  //   let fileDot = fileName.lastIndexOf('.');
+  //   let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
+  //   return fileExtension;
+  // };
 
-  const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.items) {
-      let index = 0;
-      Array.from(e.dataTransfer.items).forEach(async (item, i) => {
-        if (item.kind === 'file') {
-          const file = item.getAsFile();
-          if (file == null) return;
-          const fileExtension = extractFileExtension(file.name);
-          if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-            const fileName = file.name.replace(/\.[^/.]+$/, '');
-            data.thumbnail = {
-              fileName: fileName,
-              index: 0,
-              fileBlob: file,
-              file: URL.createObjectURL(file),
-            };
-            setValue('iconUrl', data.thumbnail.file);
-            setData({...data});
-          }
-        }
-      });
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      Array.from(e.dataTransfer.items).forEach((file, i) => {});
-    }
-  };
+  // const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  //   if (e.dataTransfer.items) {
+  //     let index = 0;
+  //     Array.from(e.dataTransfer.items).forEach(async (item, i) => {
+  //       if (item.kind === 'file') {
+  //         const file = item.getAsFile();
+  //         if (file == null) return;
+  //         const fileExtension = extractFileExtension(file.name);
+  //         if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+  //           const fileName = file.name.replace(/\.[^/.]+$/, '');
+  //           data.thumbnail = {
+  //             fileName: fileName,
+  //             index: 0,
+  //             fileBlob: file,
+  //             file: URL.createObjectURL(file),
+  //           };
+  //           setValue('iconUrl', data.thumbnail.file);
+  //           setData({...data});
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     // Use DataTransfer interface to access the file(s)
+  //     Array.from(e.dataTransfer.items).forEach((file, i) => {});
+  //   }
+  // };
 
-  const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
-    data.dragStatus = DragStatusType.InnerClick;
-    // e.preventDefault();
-  };
+  // const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
+  //   data.dragStatus = DragStatusType.InnerClick;
+  //   // e.preventDefault();
+  // };
 
-  const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
-    let files = e.target.files;
-    let index = 0;
-    if (!files?.length) {
-      return;
-    }
+  // const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   console.log('onUploadClicked');
+  //   let files = e.target.files;
+  //   let index = 0;
+  //   if (!files?.length) {
+  //     return;
+  //   }
 
-    for (let i = 0; i < files?.length; i++) {
-      const file = files[i];
-      const fileExtension = extractFileExtension(file.name);
-      if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-        index++;
-        const fileName = file.name.replace(/\.[^/.]+$/, '');
-        data.thumbnail = {
-          fileName: fileName,
-          index: 0,
-          fileBlob: file,
-          file: URL.createObjectURL(file),
-        };
+  //   for (let i = 0; i < files?.length; i++) {
+  //     const file = files[i];
+  //     const fileExtension = extractFileExtension(file.name);
+  //     if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+  //       index++;
+  //       const fileName = file.name.replace(/\.[^/.]+$/, '');
+  //       data.thumbnail = {
+  //         fileName: fileName,
+  //         index: 0,
+  //         fileBlob: file,
+  //         file: URL.createObjectURL(file),
+  //       };
 
-        const dataUpload: MediaUploadReq = {
-          mediaState: MediaState.Image,
-          file: file,
-          imageList: [],
-        };
-        const resUpload = await sendUpload(dataUpload);
+  //       const dataUpload: MediaUploadReq = {
+  //         mediaState: MediaState.Image,
+  //         file: file,
+  //         imageList: [],
+  //       };
+  //       const resUpload = await sendUpload(dataUpload);
 
-        data.thumbnail = {
-          fileName: fileName,
-          index: 0,
-          fileBlob: file,
-          file: resUpload.data?.url || '',
-        };
-        setValue('iconUrl', data.thumbnail.file);
-        setData({...data});
-      }
-    }
-  };
+  //       data.thumbnail = {
+  //         fileName: fileName,
+  //         index: 0,
+  //         fileBlob: file,
+  //         file: resUpload.data?.url || '',
+  //       };
+  //       setValue('iconUrl', data.thumbnail.file);
+  //       setData({...data});
+  //     }
+  //   }
+  // };
+  //#endregion
 
   const checkValid = async () => {
     const list = getValues('pdPortfolioInfoList');
@@ -344,6 +347,8 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
     data.countValid.valid = countValidCorrect;
     setData({...data});
   };
+
+  const [imgUploadOpen, setImgUploadOpen] = useState(false);
 
   return (
     <>
@@ -369,7 +374,24 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
       <main className={cx(styles.main)}>
         <form className={styles.container} onSubmit={onSubmit}>
           <section className={styles.uploadThumbnailSection}>
-            <label className={styles.uploadBtn} htmlFor="file-upload">
+            <div className={styles.uploadBtn} onClick={() => setImgUploadOpen(true)}>
+              {!data.thumbnail?.file ? (
+                <div className={styles.uploadWrap}>
+                  <img src={LineUpload.src} alt="" />
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
+                </div>
+              ) : (
+                <div className={styles.thumbnailContainer}>
+                  <div className={styles.thumbnailWrap}>
+                    <img className={styles.thumbnail} src={data.thumbnail?.file} alt="" />
+                    <div className={styles.iconEditWrap}>
+                      <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* <label className={styles.uploadBtn} htmlFor="file-upload">
               <input {...register('iconUrl', {required: true})} type="hidden" />
               <input
                 className={styles.hidden}
@@ -400,7 +422,7 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
                   </div>
                 </div>
               )}
-            </label>
+            </label> */}
           </section>
           <section className={styles.nicknameSection}>
             <h2 className={styles.label}>{getLocalizedText('common_alert_043')}</h2>
@@ -804,6 +826,25 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
           }}
         />
       )}
+      <ImageUpload
+        isOpen={imgUploadOpen}
+        onClose={() => {
+          setImgUploadOpen(false);
+        }}
+        setContentImageUrl={(url: string) => {
+          data.thumbnail = {
+            fileName: data.thumbnail?.fileName || '',
+            index: 0,
+            fileBlob: data.thumbnail?.fileBlob,
+            file: url || '',
+          };
+          setValue('iconUrl', data.thumbnail.file);
+          setData({...data});
+        }}
+        onChoose={() => {
+          setImgUploadOpen(false);
+        }}
+      />
     </>
   );
 };
@@ -862,91 +903,94 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
     setData({...data});
   };
 
-  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  //#region File Drop
+  // const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
 
-    if (data.dragStatus >= DragStatusType.InnerClick) {
-      data.dragStatus = DragStatusType.OuterClick;
-      return;
-    }
+  //   if (data.dragStatus >= DragStatusType.InnerClick) {
+  //     data.dragStatus = DragStatusType.OuterClick;
+  //     return;
+  //   }
 
-    DropOuter(e);
-    data.dragStatus = DragStatusType.OuterClick;
-    setData({...data});
-  };
+  //   DropOuter(e);
+  //   data.dragStatus = DragStatusType.OuterClick;
+  //   setData({...data});
+  // };
 
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
+  // const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  // };
 
-  const extractFileExtension = (fileName: string) => {
-    let fileLength = fileName.length;
-    let fileDot = fileName.lastIndexOf('.');
-    let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
-    return fileExtension;
-  };
+  // const extractFileExtension = (fileName: string) => {
+  //   let fileLength = fileName.length;
+  //   let fileDot = fileName.lastIndexOf('.');
+  //   let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
+  //   return fileExtension;
+  // };
 
-  const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.items) {
-      let index = 0;
-      Array.from(e.dataTransfer.items).forEach(async (item, i) => {
-        if (item.kind === 'file') {
-          const file = item.getAsFile();
-          if (file == null) return;
-          const fileExtension = extractFileExtension(file.name);
-          if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-            const fileName = file.name.replace(/\.[^/.]+$/, '');
-            const dataUpload: MediaUploadReq = {
-              mediaState: MediaState.Image,
-              file: file,
-              imageList: [],
-            };
-            const resUpload = await sendUpload(dataUpload);
-            const iconUrl = resUpload.data?.url || '';
-            data.iconUrl = iconUrl;
-            setValue('imageUrl', iconUrl);
-            setData({...data});
-          }
-        }
-      });
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      Array.from(e.dataTransfer.items).forEach((file, i) => {});
-    }
-  };
+  // const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  //   if (e.dataTransfer.items) {
+  //     let index = 0;
+  //     Array.from(e.dataTransfer.items).forEach(async (item, i) => {
+  //       if (item.kind === 'file') {
+  //         const file = item.getAsFile();
+  //         if (file == null) return;
+  //         const fileExtension = extractFileExtension(file.name);
+  //         if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+  //           const fileName = file.name.replace(/\.[^/.]+$/, '');
+  //           const dataUpload: MediaUploadReq = {
+  //             mediaState: MediaState.Image,
+  //             file: file,
+  //             imageList: [],
+  //           };
+  //           const resUpload = await sendUpload(dataUpload);
+  //           const iconUrl = resUpload.data?.url || '';
+  //           data.iconUrl = iconUrl;
+  //           setValue('imageUrl', iconUrl);
+  //           setData({...data});
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     // Use DataTransfer interface to access the file(s)
+  //     Array.from(e.dataTransfer.items).forEach((file, i) => {});
+  //   }
+  // };
 
-  const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
-    data.dragStatus = DragStatusType.InnerClick;
-    // e.preventDefault();
-  };
+  // const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
+  //   data.dragStatus = DragStatusType.InnerClick;
+  //   // e.preventDefault();
+  // };
 
-  const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
-    let files = e.target.files;
-    let index = 0;
-    if (!files?.length) {
-      return;
-    }
+  // const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   console.log('onUploadClicked');
+  //   let files = e.target.files;
+  //   let index = 0;
+  //   if (!files?.length) {
+  //     return;
+  //   }
 
-    for (let i = 0; i < files?.length; i++) {
-      const file = files[i];
-      const fileExtension = extractFileExtension(file.name);
-      if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-        index++;
-        const fileName = file.name.replace(/\.[^/.]+$/, '');
-        const dataUpload: MediaUploadReq = {
-          mediaState: MediaState.Image,
-          file: file,
-          imageList: [],
-        };
-        const resUpload = await sendUpload(dataUpload);
-        const iconUrl = resUpload.data?.url || '';
-        data.iconUrl = iconUrl;
-        setValue('imageUrl', iconUrl);
-        setData({...data});
-      }
-    }
-  };
+  //   for (let i = 0; i < files?.length; i++) {
+  //     const file = files[i];
+  //     const fileExtension = extractFileExtension(file.name);
+  //     if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+  //       index++;
+  //       const fileName = file.name.replace(/\.[^/.]+$/, '');
+  //       const dataUpload: MediaUploadReq = {
+  //         mediaState: MediaState.Image,
+  //         file: file,
+  //         imageList: [],
+  //       };
+  //       const resUpload = await sendUpload(dataUpload);
+  //       const iconUrl = resUpload.data?.url || '';
+  //       data.iconUrl = iconUrl;
+  //       setValue('imageUrl', iconUrl);
+  //       setData({...data});
+  //     }
+  //   }
+  // };
+  //#endregion
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -974,6 +1018,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
   };
 
   const isCreate = id == -1;
+  const [imgUploadOpen, setImgUploadOpen] = useState(false);
 
   return (
     <Drawer
@@ -995,7 +1040,29 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
       <div className={styles.handleContent}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <section className={styles.uploadThumbnailSection}>
-            <label className={styles.uploadBtn} htmlFor="file-upload2">
+            <div
+              className={cx(styles.uploadBtn, errors.imageUrl && styles.error)}
+              onClick={() => setImgUploadOpen(true)}
+            >
+              {!data.iconUrl ? (
+                <div className={styles.uploadWrap}>
+                  <img src={LineUpload.src} alt="" />
+                  <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
+                </div>
+              ) : (
+                <div className={styles.thumbnailContainer}>
+                  <div className={styles.thumbnailWrap}>
+                    <img className={styles.thumbnail} src={data.iconUrl} alt="" />
+                    <div className={styles.iconEditWrap}>
+                      <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <input {...register('imageUrl', {required: true})} type="hidden" />
+
+            {/* <label className={styles.uploadBtn} htmlFor="file-upload2">
               <input {...register('imageUrl', {required: true})} type="hidden" />
               <input
                 className={styles.hidden}
@@ -1026,7 +1093,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
                   </div>
                 </div>
               )}
-            </label>
+            </label> */}
           </section>
           <div className={styles.label}>
             {getLocalizedText('createcontent007_label_004')}
@@ -1069,6 +1136,19 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
               {getLocalizedText('common_button_submit')}
             </CustomButton>
           </div>
+          <ImageUpload
+            isOpen={imgUploadOpen}
+            onClose={() => setImgUploadOpen(false)}
+            setContentImageUrl={(url: string) => {
+              const iconUrl = url || '';
+              data.iconUrl = iconUrl;
+              setValue('imageUrl', iconUrl);
+              setData({...data});
+            }}
+            onChoose={() => {
+              setImgUploadOpen(false);
+            }}
+          />
         </form>
       </div>
     </Drawer>

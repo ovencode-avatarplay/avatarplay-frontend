@@ -9,30 +9,47 @@ import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
   setContentImageUrl: (url: string) => void;
+  setContentImageUrls?: (urls: string[]) => void;
   isOpen: boolean;
   onClose: () => void;
   onChoose?: () => void;
   onGalleryChoose?: () => void;
+  multiple?: boolean;
 }
 
-const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onChoose, onGalleryChoose}) => {
+const ImageUpload: React.FC<Props> = ({
+  setContentImageUrl,
+  setContentImageUrls,
+  isOpen,
+  onClose,
+  onChoose,
+  onGalleryChoose,
+  multiple = false,
+}) => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [workroomOpen, setWorkroomOpen] = useState<boolean>(false);
 
-  const handleOnFileSelect = async (file: File) => {
+  const handleOnFileSelect = async (files: FileList) => {
     try {
       setLoading(true);
-      const req: MediaUploadReq = {
-        mediaState: UploadMediaState.ContentImage,
-        file,
-      };
-      const response = await sendUpload(req);
+      const uploadResults: string[] = [];
 
-      if (response?.data) {
-        const url: string = response.data.url;
-        setContentImageUrl(url);
-        setImageUrl(url);
+      for (const file of Array.from(files)) {
+        const req: MediaUploadReq = {
+          mediaState: UploadMediaState.ContentImage,
+          file,
+        };
+        const response = await sendUpload(req);
+        if (response?.data?.url) {
+          uploadResults.push(response.data.url);
+        }
+      }
+
+      if (uploadResults.length > 0) {
+        setImageUrl(uploadResults[0]);
+        setContentImageUrl?.(uploadResults[0]);
+        setContentImageUrls?.(uploadResults);
       } else {
         console.error('Image upload failed.');
       }
@@ -54,11 +71,11 @@ const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onCh
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.multiple = false;
+    input.multiple = multiple ?? false;
     input.onchange = event => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (file) {
-        handleOnFileSelect(file);
+      const files = (event.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        handleOnFileSelect(files);
         if (onChoose) onChoose();
       }
     };
@@ -79,12 +96,6 @@ const ImageUpload: React.FC<Props> = ({setContentImageUrl, isOpen, onClose, onCh
         setWorkroomOpen(true);
       },
     },
-    // {
-    //   name: 'Gallery',
-    //   onClick: () => {
-    //     if (onGalleryChoose) onGalleryChoose();
-    //   },
-    // },
   ];
 
   return (
