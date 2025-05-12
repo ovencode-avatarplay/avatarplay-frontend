@@ -2,10 +2,14 @@ import React, {useState} from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import styles from './NotificationMain.module.css';
-import {LineClose} from '@ui/Icons';
+import {LineClose, LineSetting} from '@ui/Icons';
 import Notice from './Notice';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
+import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
+import {Settings} from '@mui/icons-material';
 
 interface NotificationMainProps {
+  open: boolean;
   onClose: () => void;
 }
 
@@ -39,33 +43,32 @@ const notifications = [
   },
 ];
 
-const tabItems = ['Announcements', 'Notifications'];
+const tags = ['All', 'Request', 'Notice', 'System'];
 
-export default function NotificationMain({onClose}: NotificationMainProps) {
-  const [activeIndex, setActiveIndex] = useState(1);
+export default function NotificationMain({open, onClose}: NotificationMainProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <Modal open={true} onClose={onClose}>
+    <Modal open={open} onClose={onClose}>
       <div className={styles.modalContainer}>
         <div className={styles.header}>
-          <div className={styles.title}>Notification</div>
-          <button className={styles.closeBtn} onClick={onClose}>
-            <img src={LineClose.src} className={styles.blackFilter} />
-          </button>
+          <CustomArrowHeader title="Notification" onClose={onClose}>
+            <button className={styles.settingBtn}>
+              <img src={LineSetting.src} alt="setting" style={{width: 24, height: 24}} />
+            </button>
+          </CustomArrowHeader>
         </div>
         <div className={styles.tabContainer}>
-          {tabItems.map((label, index) => (
-            <div
-              key={label}
-              className={`${styles.tab} ${index === activeIndex ? styles.active : ''}`}
-              onClick={() => setActiveIndex(index)}
-            >
-              {label}
-            </div>
-          ))}
+          <SwipeTagList
+            tags={tags}
+            currentTag={tags[activeIndex]}
+            onTagChange={tag => setActiveIndex(tags.indexOf(tag))}
+          />
         </div>
-        {activeIndex === 0 && <div>공지사항 컴포넌트</div>}
+        {activeIndex === 0 && <Notice />}
         {activeIndex === 1 && <Notice />}
+        {activeIndex === 2 && <Notice />}
+        {activeIndex === 3 && <Notice />}
       </div>
     </Modal>
   );

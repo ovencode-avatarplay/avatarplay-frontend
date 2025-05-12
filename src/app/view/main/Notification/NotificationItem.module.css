@@ -1,0 +1,123 @@
+.notification {
+  display: flex;
+  gap: 12px;
+  padding: 5px 5px;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: flex-start;
+}
+.unread {
+  background: #ebebeb;
+  border-radius: 10px;
+  
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3da9fc;
+  margin-right: 4px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.systemAvatar {
+  width: 40px;
+  height: 40px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(1%) saturate(6269%) hue-rotate(178deg) brightness(95%) contrast(85%);
+}
+.content {
+  flex: 1;
+  min-width: 0;
+}
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.notiTitle {
+  font-weight: 500;
+  font-size: 15px;
+  color: #222;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.timeText {
+  font-size: 12px;
+  color: #aaa;
+}
+.menu {
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #bbb;
+}
+.actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+.accept {
+  border-radius: 8px;
+  background: var(--Neutral-800, #2c3131);
+  color: #fff;
+  display: flex;
+  height: 30px;
+  padding: 0px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--White, #FFF);
+font-feature-settings: 'liga' off, 'clig' off;
+font-family: Lato;
+font-size: 12px;
+font-style: normal;
+font-weight: 600;
+line-height: 10px; /* 83.333% */
+letter-spacing: -0.4px;
+}
+.decline {
+    display: flex;
+    height: 30px;
+    padding: 0px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    border-radius: 8px;
+border: 1px solid var(--Border-1, #EAECF0);
+background: var(--White, #FFF);
+color: var(--Black, #000000);
+font-feature-settings: 'liga' off, 'clig' off;
+font-family: Lato;
+font-size: 12px;
+font-style: normal;
+font-weight: 600;
+line-height: 10px; /* 83.333% */
+letter-spacing: -0.4px;
+}
+.notiText {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #444;
+  white-space: pre-line;
+}
+.profileContainer {
+  position: relative;
+  display: inline-block;
+}
+.statusIndicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  background: #FD55D3;
+  border: 2px solid #fff;
+  border-radius: 50%;
+} 

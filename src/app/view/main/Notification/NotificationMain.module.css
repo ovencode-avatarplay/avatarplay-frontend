@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0px 0px 40px;
+  justify-self: center;
   position: relative;
   width: 100%;
   max-width: 1300px;
@@ -13,7 +13,7 @@
 
 .header {
   display: flex;
-  padding: 17px 10px 17px 16px;
+  padding-right: 6px;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
@@ -49,11 +49,9 @@
 
 .tabContainer {
   width: 100%;
-  padding: 0 10px;
   display: flex;
-  height: 40px;
-  background: #ffffff;
-  border-bottom: 1px solid #eaecf0;
+  
+  background: #ffffff;  
   position: relative;
 }
 

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './Styles.module.css';
 import MessageProfile, {BadgeType, CheckType, FollowState} from '../01_Layout/MessageProfile';
 import FilterBar from '../FilterBar';
-import MessageTagList from '../01_Layout/MessageTagList';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import ProfilePopup from '../ProfilePopup';
@@ -226,7 +226,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   return (
     <>
-      <MessageTagList tags={tags} defaultTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} />
+      <SwipeTagList tags={tags} currentTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
       <FilterBar
         filters={[CharacterIP[1].toString(), CharacterIP[2].toString()]}
         sortOptions={['Newest', 'Popular', 'Name']}

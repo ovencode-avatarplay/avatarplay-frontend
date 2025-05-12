@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './Styles.module.css';
 import MessageProfile, {BadgeType, FollowState} from '../01_Layout/MessageProfile';
 import FilterBar from '../FilterBar';
-import MessageTagList from '../01_Layout/MessageTagList';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {DMChatRoomInfo, sendGetDMChatRoomList} from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
@@ -169,7 +169,7 @@ const DMChat: React.FC = () => {
 
   return (
     <>
-      <MessageTagList tags={tags} defaultTag="All" onTagChange={tag => setSelectedTag(tag)} />
+      <SwipeTagList tags={tags} currentTag="All" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
       <FilterBar
         filters={['Original', 'Fan']}
         sortOptions={['Newest', 'Oldest']}

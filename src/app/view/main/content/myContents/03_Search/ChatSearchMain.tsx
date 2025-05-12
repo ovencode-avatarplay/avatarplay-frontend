@@ -3,7 +3,6 @@ import styles from './ChatSearchMain.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {Drawer} from '@mui/material';
 import SearchBar from './SearchBar';
-import MessageTagList from '../01_Layout/MessageTagList';
 import RecentSearchList from './RecentSearchList';
 import PopularTagList from './PopularTagList';
 import {relative} from 'path';
@@ -24,6 +23,7 @@ import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {addSearch} from './RecentSearchList';
 import {followProfile} from '@/app/NetWork/ProfileNetwork';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -391,7 +391,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           onChange={setSearchText}
         />
         <div className={styles.content}>
-          <MessageTagList tags={tags} defaultTag={selectedTag} onTagChange={setSelectedTag} />
+          <SwipeTagList tags={tags} currentTag={selectedTag} onTagChange={setSelectedTag} />
           {renderSubMenu()}
           {renderSearchResults()}
         </div>

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import styles from './MessageTagList.module.css';
+import React, {useEffect, useState} from 'react';
+import styles from './SwipeTagList.module.css';
 import CustomHashtag from '@/components/layout/shared/CustomHashtag';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -7,20 +7,29 @@ import getLocalizedText from '@/utils/getLocalizedText';
 interface Props {
   tags: string[]; // 외부에서 전달
   onTagChange?: (tag: string) => void;
-  defaultTag?: string;
+  currentTag?: string;
+  isBorder?: boolean;
 }
-
-const MessageTagList: React.FC<Props> = ({tags, onTagChange, defaultTag}) => {
-  const [activeTag, setActiveTag] = useState<string>(defaultTag ?? tags[0]);
+const SwipeTagList: React.FC<Props> = ({tags, onTagChange, currentTag, isBorder = true}) => {
+  const [activeTag, setActiveTag] = useState<string>(currentTag ?? tags[0]);
   const [isCentered, setIsCentered] = useState<boolean>(false);
-
   const handleTagClick = (tag: string) => {
     setActiveTag(tag);
     onTagChange?.(tag);
   };
 
+  useEffect(() => {
+    if (currentTag) {
+      setActiveTag(currentTag);
+    }
+  }, [currentTag]);
+
+  const getLocalizedTag = (tag: string) => {
+    return getLocalizedText(tag);
+  };
+
   return (
-    <div className={styles.container}>
+    <div className={isBorder ? styles.container : styles.containerNoBorder}>
       <div className={styles.tags}>
         <Swiper
           className={styles.horizonSwiper}
@@ -34,7 +43,8 @@ const MessageTagList: React.FC<Props> = ({tags, onTagChange, defaultTag}) => {
               <CustomHashtag
                 isSelected={activeTag === tag}
                 onClickAction={() => handleTagClick(tag)}
-                text={getLocalizedText(tag)}
+                text={getLocalizedTag(tag)}
+                unselectedClassName={styles.unselectedClassName}
               />
             </SwiperSlide>
           ))}
@@ -43,5 +53,4 @@ const MessageTagList: React.FC<Props> = ({tags, onTagChange, defaultTag}) => {
     </div>
   );
 };
-
-export default MessageTagList;
+export default SwipeTagList;

@@ -1,33 +1,121 @@
 import React from 'react';
 import styles from './Notice.module.css';
+import NotificationItem, {NotificationAction} from './NotificationItem';
 
 const notifications = [
   {
     id: 1,
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    title: 'Notification text',
-    text: '',
+    avatar: '/lora/anylora.png',
+    title: '[oo] sent you a friend request',
     time: '2m',
-    type: 'action',
+    type: 'action' as const,
     unread: true,
+    actions: [
+      {label: 'Accept', onClick: () => {}, type: 'primary' as const},
+      {label: 'Ignore', onClick: () => {}, type: 'secondary' as const},
+    ],
   },
   {
     id: 2,
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    title: 'Notification text',
-    text: 'Notification text',
+    avatar: '/lora/anylora.png',
+    title: '{OO} has requested to become a manager of {Channel00} with {OO permission}.',
     time: '2m',
-    type: 'normal',
-    unread: false,
+    type: 'action' as const,
+    unread: true,
+    actions: [
+      {label: 'Accept', onClick: () => {}, type: 'primary' as const},
+      {label: 'Ignore', onClick: () => {}, type: 'secondary' as const},
+      {label: 'Preview', onClick: () => {}, type: 'secondary' as const},
+    ],
   },
   {
     id: 3,
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    title: 'Notification text',
-    text: 'Notification text',
+    avatar: '/lora/anylora.png',
+    title: '[oo] followed [target]',
     time: '2m',
-    type: 'normal',
+    type: 'normal' as const,
     unread: false,
+    text: '',
+  },
+  {
+    id: 4,
+    avatar: '/lora/anylora.png',
+    title: '[oo] followed you',
+    time: '2m',
+    type: 'action' as const,
+    unread: false,
+    actions: [{label: 'Follow', onClick: () => {}, type: 'primary' as const}],
+  },
+  {
+    id: 5,
+    avatar: '/lora/anylora.png',
+    title: '📩 [oo] sent you a new message.',
+    time: '2m',
+    type: 'action' as const,
+    unread: false,
+    actions: [{label: 'Follow', onClick: () => {}, type: 'primary' as const}],
+  },
+  {
+    id: 6,
+    avatar: '/lora/anylora.png',
+    title: '[oo] commented on [target name]',
+    time: '2m',
+    type: 'normal' as const,
+    unread: false,
+    text: '',
+  },
+  {
+    id: 7,
+    avatar: '/lora/anylora.png',
+    title: 'You have subscribed to {target} contents',
+    time: '2m',
+    type: 'normal' as const,
+    unread: false,
+    text: '',
+  },
+  {
+    id: 8,
+    avatar: '/lora/anylora.png',
+    title: '{OO} has donated ⭐ 50 stars to {Target}.',
+    time: '2m',
+    type: 'action' as const,
+    unread: false,
+    actions: [{label: 'View Donation Details', onClick: () => {}, type: 'primary' as const}],
+    isSystem: true,
+  },
+  {
+    id: 9,
+    avatar: '/lora/anylora.png',
+    title: '{ㅇㅇ user}, whom you follow, has created a new {character/channel}.',
+    time: '2m',
+    type: 'action' as const,
+    unread: false,
+    actions: [{label: 'View Profile', onClick: () => {}, type: 'primary' as const}],
+    isSystem: true,
+  },
+  {
+    id: 10,
+    avatar: '/lora/anylora.png',
+    title: '[oo] commented on [target name]',
+    time: '2m',
+    type: 'normal' as const,
+    unread: true,
+    text: '',
+    isSystem: true,
+  },
+  {
+    id: 11,
+    avatar: '/lora/anylora.png',
+    title: '❗ Recharge Failed',
+    time: '2m',
+    type: 'system' as const,
+    unread: true,
+    text: 'The transaction was not completed or an error occurred.\nPlease try again or contact support.',
+    actions: [
+      {label: 'Try Again', onClick: () => {}, type: 'primary' as const},
+      {label: 'Contact Support', onClick: () => {}, type: 'secondary' as const},
+    ],
+    isSystem: true,
   },
 ];
 
@@ -35,27 +123,17 @@ const Notice: React.FC = () => {
   return (
     <div className={styles.list}>
       {notifications.map(n => (
-        <div key={n.id} className={styles.notification + (n.unread ? ' ' + styles.unread : '')}>
-          <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
-            {n.unread && <span className={styles.dot} />}
-            <img src={n.avatar} className={styles.avatar} alt="avatar" />
-          </div>
-          <div className={styles.content}>
-            <div className={styles.titleRow}>
-              <span className={styles.notiTitle}>{n.title}</span>
-              <span className={styles.timeText}>{n.time}</span>
-              <span className={styles.menu}>⋮</span>
-            </div>
-            {n.type === 'action' ? (
-              <div className={styles.actions}>
-                <button className={styles.accept}>Accept</button>
-                <button className={styles.decline}>Decline</button>
-              </div>
-            ) : (
-              <div className={styles.notiText}>{n.text}</div>
-            )}
-          </div>
-        </div>
+        <NotificationItem
+          key={n.id}
+          avatar={n.avatar}
+          title={n.title}
+          text={n.text}
+          time={n.time}
+          unread={n.unread}
+          actions={n.actions}
+          type={n.type}
+          isSystem={n.isSystem}
+        />
       ))}
     </div>
   );

@@ -50,10 +50,13 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
   console.log(messages);
 
   const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
-  const {joinRoom, onMessage, sendMessage} = useSignalR(jwt || '');
+  const {joinRoom, leaveRoom, onMessage, sendMessage} = useSignalR(jwt || '');
 
   useEffect(() => {
     onDM();
+    return () => {
+      leaveRoom(chatRoomKey);
+    };
   }, []);
 
   const [anotherImageUrl, setAnotherImageUrl] = useState('');

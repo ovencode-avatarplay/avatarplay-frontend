@@ -69,6 +69,7 @@ import BoldTranslator from "./Bold/Translator.svg";
 import BoldLeave from "./Bold/Leave.svg";
 import BoldReport from "./Bold/Report.svg";
 import BoldUserCircle from "./Bold/UserCircle.svg";
+import BoldSetting from "./Bold/Setting.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -334,4 +335,5 @@ export {
   LinePhone,
   Emoticon,
   VideoFrame,
+  BoldSetting,
 };
