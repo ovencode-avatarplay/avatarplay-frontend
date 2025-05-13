@@ -1,16 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from './VideoContentUpload.module.css';
-import {
-  LineArrowDown,
-  BoldCirclePlus,
-  BoldFolderPlus,
-  BoldQuestion,
-  CircleClose,
-  LineClose,
-  LineDashboard,
-  LineDelete,
-  LineUpload,
-} from '@ui/Icons';
+import {LineArrowDown, CircleClose, LineDelete, LineUpload} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, sendUploadTempFile, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {

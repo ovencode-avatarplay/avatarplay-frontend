@@ -11,7 +11,7 @@ import {
   LineUpload,
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-// import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+
 import {
   ContentCategoryType,
   ContentEpisodeWebtoonInfo,
@@ -134,29 +134,6 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
     } else setCountryDrawerOpen(null);
   };
 
-  // const handleFileUpload = async (files: FileList) => {
-  //   try {
-  //     setIsLoading(true);
-  //     const req: MediaUploadReq = {
-  //       mediaState: UploadMediaState.ContentEpisodeWebtoonImage,
-  //       imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
-  //     };
-
-  //     const response = await sendUpload(req);
-  //     if (!response.data) return;
-
-  //     const validImages = response.data.imageUrlList.filter((url): url is string => !!url);
-  //     const validImageNames = response.data.imageNameList.filter((name): name is string => !!name);
-
-  //     setImageFiles(prev => [...prev, ...validImages]);
-  //     setImageNames(prev => [...prev, ...validImageNames]);
-  //   } catch (error) {
-  //     console.error('파일 업로드 중 오류 발생:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   // 파일 삭제 처리 (개별 삭제)
   const handleRemoveImage = (index: number) => {
     setImageFiles(prev => prev.filter((_, i) => i !== index));
@@ -220,39 +197,6 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const handleRemoveField = (index: number) => {
     setSubtitleFields(prevFields => prevFields.filter((_, i) => i !== index));
   };
-
-  // 필드별 파일 업로드 처리
-  // const handleFileUploadForField = async (files: FileList, fieldIndex: number) => {
-  //   try {
-  //     setIsLoading(true);
-  //     const req: MediaUploadReq = {
-  //       mediaState: UploadMediaState.ContentEpisodeWebtoonSubtitle,
-  //       imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
-  //     };
-
-  //     const response = await sendUpload(req);
-  //     if (!response.data) return;
-
-  //     const validUrls = response.data.imageUrlList.filter((url): url is string => !!url);
-  //     const validFileNames = response.data.imageNameList.filter((name): name is string => !!name);
-
-  //     setSubtitleFields(prevFields =>
-  //       prevFields.map((field, i) =>
-  //         i === fieldIndex
-  //           ? {
-  //               ...field,
-  //               fileUrl: [...field.fileUrl, ...validUrls],
-  //               fileName: [...field.fileName, ...validFileNames],
-  //             }
-  //           : field,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     console.error('파일 업로드 중 오류 발생:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleFileUploadForField = (urls: string[], fieldIndex: number) => {
     const validFileNames = urls.map(url => url.split('/').pop() || '');
@@ -531,7 +475,11 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         }}
         multiple={true}
         setContentImageUrl={() => {}}
-        uploadType={UploadMediaState.ContentEpisodeWebtoonImage}
+        uploadType={
+          selectedIndex !== null && selectedIndex >= 0
+            ? UploadMediaState.ContentEpisodeWebtoonSubtitle
+            : UploadMediaState.ContentEpisodeWebtoonImage
+        }
       />
       <LoadingOverlay loading={isLoading} />
     </>

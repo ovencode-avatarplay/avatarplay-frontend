@@ -5,7 +5,6 @@ import {getCurrentLanguage} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
 import {BoldQuestion, CircleClose, LineUpload} from '@ui/Icons';
-// import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import ReactPlayer from 'react-player';
 import PostImageGrid from './PostImageGrid';

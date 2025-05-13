@@ -1071,6 +1071,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       </div>
       {imgUploadSelectModalOpen && <>{renderUploadSelectModal()}</>}
       {imageViewOpen && <ImagePreViewer imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
+      {/* 이벤트 트리거 미디어 업로드 */}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
         <ImageUpload
           isOpen={imgUploadOpen}
@@ -1085,7 +1086,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           onChoose={() => {
             setSelectImageTypeOpen(false);
           }}
-          uploadType={UploadMediaState.CharacterImage}
+          uploadType={UploadMediaState.TriggerImage}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
@@ -1096,6 +1097,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setVideoUploadOpen(false);
           }}
           setContentVideoUrl={handlerSetVideo}
+          uploadType={UploadMediaState.TriggerVideo}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && mediaUploadOpen && (
@@ -1113,12 +1115,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                 setVideoUploadOpen(true);
               },
             },
-            // {
-            //   name: 'Gallery',
-            //   onClick: () => {
-            //     setGalleryOpen(true);
-            //   },
-            // },
           ]}
           isOpen={mediaUploadOpen}
           onClose={() => {}}

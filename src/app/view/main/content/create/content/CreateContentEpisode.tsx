@@ -31,6 +31,7 @@ import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 export interface CreateContentEpisodeProps {
   contentId?: string;
@@ -268,6 +269,8 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             setContentMediaUrls={setMediaUrls}
             defaultImage={defaultImage ? defaultImage : undefined}
             triggerWarning={triggerWarning}
+            uploadImageType={UploadMediaState.ContentEpisodeWebtoonImage}
+            uploadVideoType={UploadMediaState.ContentEpisodeVideo}
           ></MediaUpload>
         </div>
         <CustomInput

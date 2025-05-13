@@ -4,7 +4,6 @@ import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from 'reac
 import styles from './CreateChannel.module.scss';
 import {BoldRadioButton, BoldRadioButtonSelected, LineDelete, LineUpload, LineArrowLeft} from '@ui/Icons';
 import {FieldErrors, useForm} from 'react-hook-form';
-// import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {
   mapOperatorAuthorityType,
   MediaState,
