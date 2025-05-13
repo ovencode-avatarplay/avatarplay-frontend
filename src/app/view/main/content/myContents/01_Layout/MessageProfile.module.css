@@ -54,7 +54,12 @@
 .profileName {
   font-weight: 600;
   font-size: 14px;
+  max-width: 200px;
   color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 
 /* 타임스탬프 */
@@ -155,6 +160,7 @@ background: var(--Neutral-100, #F1F3F4);
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 /* 옵션 영역 (핀 + 점 세개) */
@@ -163,6 +169,7 @@ background: var(--Neutral-100, #F1F3F4);
   align-items: center;
   gap: 8px;
   margin-left: 8px;
+  flex-shrink: 0;
 }
 
 .pinIcon,

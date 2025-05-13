@@ -55,7 +55,11 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
   useEffect(() => {
     onDM();
     return () => {
-      leaveRoom(chatRoomKey);
+      if (chatRoomKey) {
+        leaveRoom(chatRoomKey).catch(error => {
+          console.log('채팅방 퇴장 중 에러:', error);
+        });
+      }
     };
   }, []);
 
