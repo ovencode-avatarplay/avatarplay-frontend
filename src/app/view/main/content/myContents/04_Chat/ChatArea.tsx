@@ -57,7 +57,7 @@ const ChatArea: React.FC<Props> = ({messages}) => {
               content={msg.message}
               timestamp={shouldShowTimestamp ? currentMinute : ''}
               isItalic={false}
-              id={idx}
+              id={msg.id}
               mediaType={msg.mediaState}
               mediaUrl={msg.mediaUrl}
               profileImage={msg.profileImageUrl}

@@ -56,7 +56,7 @@ const SelectDrawer: React.FC<SelectDrawerProps> = ({
             },
           },
         }}
-        style={{zIndex: '1399'}}
+        style={{zIndex: '3005'}}
       >
         <div className={styles.handleArea}>
           <div className={styles.handleBar}></div>

@@ -412,3 +412,39 @@ export const sendReadChatRoom = async (payload: ReadChatRoomReq): Promise<Respon
     throw new Error('채팅방 읽음 처리 중 오류가 발생했습니다.');
   }
 };
+
+// 채팅방 타입 enum
+export enum ChatRoomType {
+  None = 0,
+  Character = 1,
+  DM = 2,
+}
+
+// 채팅방 나가기 요청 타입
+export interface LeaveChatRoomReq {
+  chatRoomType: ChatRoomType;
+  dmRoomId: number;
+  characterUrlLinkKey: string;
+}
+
+// 채팅방 나가기 응답 타입
+export interface LeaveChatRoomRes {
+  chatRoomType: ChatRoomType;
+  dmRoomId: number;
+  characterUrlLinkKey: string;
+}
+
+/**
+ * 채팅방 나가기 API
+ * @param payload chatRoomType, dmRoomId, characterUrlLinkKey 포함 요청 데이터
+ * @returns 채팅방 정보 응답
+ */
+export const sendLeaveChatRoom = async (payload: LeaveChatRoomReq): Promise<ResponseAPI<LeaveChatRoomRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<LeaveChatRoomRes>>('/ChatMessage/leave', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to leave chat room:', error);
+    throw new Error('채팅방 나가기 중 오류가 발생했습니다.');
+  }
+};

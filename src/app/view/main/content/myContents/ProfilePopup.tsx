@@ -76,7 +76,7 @@ const ProfilePopup: React.FC<PopupProps> = ({
                   <span className={styles.profileName}>{profileName}</span>
                   {renderBadge()}
                 </div>
-                <span className={styles.profileDesc}>asas</span>
+                {/* <span className={styles.profileDesc}>asas</span> */}
               </div>
             </div>
           </div>

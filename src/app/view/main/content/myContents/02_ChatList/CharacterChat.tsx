@@ -11,6 +11,8 @@ import {
   GetCharacterChatRoomListReq,
   GetCharacterChatRoomListRes,
   sendGetCharacterChatRoomList,
+  sendLeaveChatRoom,
+  ChatRoomType,
 } from '@/app/NetWork/ChatMessageNetwork';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {SportsVolleyballRounded} from '@mui/icons-material';
@@ -50,6 +52,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
   const LIMIT = 10;
   const {ref: observerRef, inView} = useInView();
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<ChatRoomInfo | null>(null);
   const [isPinOpen, setIsPinOpen] = useState(true);
   const [isChatOpen, setIsChatOpen] = useState(true);
 
@@ -223,6 +226,37 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   const pinnedRooms = chatList?.filter(item => item.isPinFix) ?? [];
   const unpinnedRooms = chatList?.filter(item => !item.isPinFix) ?? [];
+  const sortedChatList = [...pinnedRooms, ...unpinnedRooms];
+
+  const handleLeaveChatRoom = async (roomId: number) => {
+    try {
+      const selectedRoom = chatList.find(room => room.chatRoomId === roomId);
+      if (!selectedRoom) return;
+
+      await sendLeaveChatRoom({
+        chatRoomType: ChatRoomType.Character,
+        dmRoomId: 0,
+        characterUrlLinkKey: selectedRoom.urlLinkKey,
+      });
+
+      // 채팅방 목록에서 제거
+      setChatList(prevList => prevList.filter(room => room.chatRoomId !== roomId));
+      setOpenLeavePopup(false);
+      setSelectedRoomId(null);
+      setSelectedRoom(null);
+    } catch (error) {
+      console.error('Failed to leave chat room:', error);
+    }
+  };
+
+  const handleRoomSelect = (roomId: number) => {
+    const room = chatList.find(room => room.chatRoomId === roomId);
+    if (room) {
+      setSelectedRoomId(roomId);
+      setSelectedRoom(room);
+      setOpenOption(true);
+    }
+  };
 
   return (
     <>
@@ -233,75 +267,31 @@ const CharacterChat: React.FC<Props> = ({name}) => {
         onFilterChange={filter => setFilterValue(filter)}
         onSortChange={sort => setSortValue(sort)}
       />
-      {pinnedRooms.length > 0 && (
-        <>
-          <div className={styles.sectionHeader} onClick={() => setIsPinOpen(v => !v)}>
-            <span>Pin ({pinnedRooms.length})</span>
-            <span className={isPinOpen ? styles.arrowDown : styles.arrowRight}></span>
-          </div>
-          {isPinOpen && (
-            <div className={styles.scrollArea}>
-              {pinnedRooms.map((item, index) => (
-                <MessageProfile
-                  key={item.chatRoomId}
-                  profileImage={item.profileImageUrl}
-                  profileName={item.characterName}
-                  timestamp={formatTimestamp(item.updatedAt)}
-                  badgeType={
-                    item.characterIP == CharacterIP.Fan
-                      ? BadgeType.Fan
-                      : item.characterIP == CharacterIP.Original
-                      ? BadgeType.Original
-                      : BadgeType.None
-                  }
-                  followState={FollowState.None}
-                  isHighlight={false}
-                  isOption={true}
-                  roomid={item.chatRoomId.toString()}
-                  onClickOption={() => {
-                    setSelectedRoomId(item.chatRoomId);
-                    setOpenOption(true);
-                  }}
-                  urlLinkKey={item.urlLinkKey}
-                />
-              ))}
-            </div>
-          )}
-        </>
-      )}
-      <div className={styles.sectionHeader} onClick={() => setIsChatOpen(v => !v)}>
-        <span>Chat ({unpinnedRooms.length})</span>
-        <span className={isChatOpen ? styles.arrowDown : styles.arrowRight}></span>
+      <div className={styles.scrollArea}>
+        {sortedChatList.map((item, index) => (
+          <MessageProfile
+            key={item.chatRoomId}
+            profileImage={item.profileImageUrl}
+            profileName={item.characterName}
+            timestamp={formatTimestamp(item.updatedAt)}
+            badgeType={
+              item.characterIP == CharacterIP.Fan
+                ? BadgeType.Fan
+                : item.characterIP == CharacterIP.Original
+                ? BadgeType.Original
+                : BadgeType.None
+            }
+            followState={FollowState.None}
+            isHighlight={false}
+            isOption={true}
+            isPin={item.isPinFix}
+            roomid={item.chatRoomId.toString()}
+            onClickOption={() => handleRoomSelect(item.chatRoomId)}
+            urlLinkKey={item.urlLinkKey}
+          />
+        ))}
+        <div ref={observerRef} style={{height: '1px'}}></div>
       </div>
-      {isChatOpen && (
-        <div className={styles.scrollArea}>
-          {unpinnedRooms.map((item, index) => (
-            <MessageProfile
-              key={item.chatRoomId}
-              profileImage={item.profileImageUrl}
-              profileName={item.characterName}
-              timestamp={formatTimestamp(item.updatedAt)}
-              badgeType={
-                item.characterIP == CharacterIP.Fan
-                  ? BadgeType.Fan
-                  : item.characterIP == CharacterIP.Original
-                  ? BadgeType.Original
-                  : BadgeType.None
-              }
-              followState={FollowState.None}
-              isHighlight={false}
-              isOption={true}
-              roomid={item.chatRoomId.toString()}
-              onClickOption={() => {
-                setSelectedRoomId(item.chatRoomId);
-                setOpenOption(true);
-              }}
-              urlLinkKey={item.urlLinkKey}
-            />
-          ))}
-          <div ref={observerRef} style={{height: '1px'}}></div>
-        </div>
-      )}
 
       <SelectDrawer
         isOpen={openOption}
@@ -313,7 +303,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
         isCheck={false}
         selectedIndex={1}
       />
-      {openLeavePopup && (
+      {openLeavePopup && selectedRoom && (
         <ProfilePopup
           type="alert"
           title="Alert"
@@ -323,22 +313,25 @@ const CharacterChat: React.FC<Props> = ({name}) => {
               label: 'Cancel',
               onClick: () => {
                 setOpenLeavePopup(false);
+                setSelectedRoom(null);
               },
               isPrimary: false,
             },
             {
               label: 'Leave',
               onClick: () => {
-                setOpenLeavePopup(false);
+                if (selectedRoom) {
+                  handleLeaveChatRoom(selectedRoom.chatRoomId);
+                }
               },
               isPrimary: true,
             },
           ]}
-          badgeType={BadgeType.Original}
-          profileDesc="asdasdad"
-          profileImage="/lora/meina_hentai.png"
-          profileName="asdasds"
-        ></ProfilePopup>
+          badgeType={selectedRoom.characterIP === CharacterIP.Fan ? BadgeType.Fan : BadgeType.Original}
+          profileDesc={selectedRoom.characterName}
+          profileImage={selectedRoom.profileImageUrl}
+          profileName={selectedRoom.characterName}
+        />
       )}
     </>
   );

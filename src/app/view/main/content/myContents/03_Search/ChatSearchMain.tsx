@@ -24,6 +24,8 @@ import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {addSearch} from './RecentSearchList';
 import {followProfile} from '@/app/NetWork/ProfileNetwork';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
+import SelectDrawer from '@/components/create/SelectDrawer';
+import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -81,6 +83,10 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     }
     // eslint-disable-next-line
   }, [inView]);
+
+  const [openOption, setOpenOption] = useState(false);
+  const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<SearchResultWithFriend | null>(null);
 
   const handleClose = () => {
     setSearchResults([]);
@@ -270,6 +276,40 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     }
   };
 
+  const handleRoomSelect = (room: SearchResultWithFriend) => {
+    setSelectedRoomId(room.chatRoomId);
+    setSelectedRoom(room);
+    setOpenOption(true);
+  };
+
+  const optionItems: SelectDrawerArrowItem[] = [
+    {
+      name: 'Favorites /Unfavorites',
+      arrowName: '',
+      onClick: () => {},
+    },
+    {
+      name: 'Unfriend/ Unfollow',
+      arrowName: '',
+      onClick: () => {
+        if (selectedRoom) {
+          // 핀 고정/해제 로직
+        }
+        setOpenOption(false);
+      },
+    },
+    {
+      name: 'Report',
+      arrowName: '',
+      onClick: () => {
+        if (selectedRoom) {
+          // 채팅방 나가기 로직
+        }
+        setOpenOption(false);
+      },
+    },
+  ];
+
   const renderCharacterList = (list: SearchResultWithFriend[]) => (
     <div>
       {list.map(character => {
@@ -284,11 +324,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         if (selectedTag === 'Character') followState = FollowState.Follow;
         else if (selectedTag === 'People') followState = character.followState ?? FollowState.AddFriend;
         // isOption 매핑
-        const isOption = !(
-          followState === FollowState.Follow ||
-          followState === FollowState.AddFriend ||
-          followState === FollowState.FriendCancel
-        );
+        const isOption = selectedTag === 'Following' || selectedTag === 'Friend';
+
         if (selectedTag === 'Character') {
           return (
             <MessageProfile
@@ -333,6 +370,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
               roomid={String(character.chatRoomId)}
               isOption={isOption}
               isPin={character.isPinFix}
+              onClickOption={() => handleRoomSelect(character)}
             />
           );
         }
@@ -396,6 +434,17 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           {renderSearchResults()}
         </div>
       </div>
+      <SelectDrawer
+        isOpen={openOption}
+        items={optionItems}
+        onClose={() => {
+          setOpenOption(false);
+          setSelectedRoomId(null);
+          setSelectedRoom(null);
+        }}
+        isCheck={false}
+        selectedIndex={1}
+      />
     </CustomDrawer>
   );
 };

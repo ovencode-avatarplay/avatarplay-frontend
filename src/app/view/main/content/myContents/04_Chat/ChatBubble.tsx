@@ -9,24 +9,7 @@ import {BoldTranslator, LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePrevi
 import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-
-const items: DropdownItem[] = [
-  {
-    label: 'Copy',
-    onClick: () => {}, // TODO
-    icon: LineCopy.src,
-  },
-  {
-    label: 'Delete',
-    onClick: () => {}, // TODO
-    icon: LineDelete.src,
-    iconStyle: {
-      filter:
-        'brightness(0) saturate(100%) invert(53%) sepia(93%) saturate(1308%) hue-rotate(321deg) brightness(92%) contrast(110%)',
-    },
-    labelStyle: {color: '#F75555'},
-  },
-];
+import {useSignalR} from '@/hooks/useSignalR';
 
 interface ChatBubbleProps {
   sender: 'me' | 'other';
@@ -38,6 +21,7 @@ interface ChatBubbleProps {
   mediaType?: MediaState;
   mediaUrl?: string;
   profileUrlLinkKey: string;
+  isDeleted?: boolean;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -50,22 +34,59 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   mediaType,
   mediaUrl,
   profileUrlLinkKey,
+  isDeleted = false,
 }) => {
   const isMe = sender === 'me';
   const [isBlurMode, setBlurMode] = useAtom(isBlurModeAtom);
   const [selectedBubbleId, setSelectedBubbleId] = useAtom(selectedBubbleIdAtom);
+  const [localIsDeleted, setLocalIsDeleted] = useState(isDeleted);
+
+  const jwt = localStorage.getItem('jwt');
+  const {deleteMessage} = useSignalR(jwt || '');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteMessage(id);
+      setLocalIsDeleted(true);
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error('메시지 삭제 실패:', error);
+    }
+  };
+
+  const items: DropdownItem[] = [
+    {
+      label: 'Copy',
+      onClick: () => {}, // TODO
+      icon: LineCopy.src,
+    },
+    {
+      label: 'Delete',
+      onClick: handleDelete,
+      icon: LineDelete.src,
+      iconStyle: {
+        filter:
+          'brightness(0) saturate(100%) invert(53%) sepia(93%) saturate(1308%) hue-rotate(321deg) brightness(92%) contrast(110%)',
+      },
+      labelStyle: {color: '#F75555'},
+    },
+  ];
+
   const handleClick = () => {
-    setBlurMode(!isBlurMode);
-    setSelectedBubbleId(id);
+    if (isMe) {
+      setBlurMode(!isBlurMode);
+      setSelectedBubbleId(id);
+    }
   };
 
   useEffect(() => {
     if (selectedBubbleId === id) {
-      setIsMenuOpen(isBlurMode);
+      setIsMenuOpen(isBlurMode && isMe);
     } else {
       setIsMenuOpen(false);
     }
-  }, [isBlurMode]);
+  }, [isBlurMode, selectedBubbleId, id, isMe]);
 
   const renderMedia = () => {
     if (!mediaUrl) return null;
@@ -95,9 +116,9 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   };
 
   const router = useRouter();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <div className={`${styles.messageWrapper} ${isMe ? styles.right : styles.left}`} onClick={() => handleClick()}>
+    <div className={`${styles.messageWrapper} ${isMe ? styles.right : styles.left}`} onClick={handleClick}>
       {!isMe && (
         <Avatar
           src={profileImage}
@@ -108,42 +129,37 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
         />
       )}
       <div className={styles.bubbleBlock}>
-        {/* 나면 타임스탬프 왼쪽, 아니면 오른쪽 */}
         {isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
-        {mediaUrl ? (
+        {mediaUrl && !localIsDeleted ? (
           renderMedia()
         ) : (
           <div
             className={`${styles.bubble} ${isMe ? styles.myBubble : styles.otherBubble}`}
             style={{
-              zIndex: isBlurMode && selectedBubbleId == id ? 1 : 0,
+              zIndex: isBlurMode && selectedBubbleId === id ? 1 : 0,
               position: 'relative',
             }}
           >
-            <p className={isItalic ? styles.italic : ''}>{content}</p>
+            <p className={isItalic ? styles.italic : ''}>{localIsDeleted ? '삭제된 메시지입니다.' : content}</p>
           </div>
         )}
-
         {!isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
       </div>
-      {/* {isMenuOpen && (
-        <div className={styles.translatorButton} style={!isMe ? {left: '40px'} : undefined}>
-          <img src={BoldTranslator.src}></img>
-        </div>
-      )} */}
-      <CustomContextDropDown
-        open={isMenuOpen}
-        onClose={close}
-        items={items}
-        style={{
-          position: 'absolute',
-          top: '100%',
-          marginTop: '15px',
-          zIndex: 1000,
-          maxWidth: '160px',
-          ...(!isMe && {left: '40px'}), // ✅ 추가
-        }}
-      />
+      {!localIsDeleted && (
+        <CustomContextDropDown
+          open={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          items={items}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            marginTop: '15px',
+            zIndex: 1000,
+            maxWidth: '160px',
+            ...(!isMe && {left: '40px'}),
+          }}
+        />
+      )}
     </div>
   );
 };

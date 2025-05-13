@@ -3,7 +3,14 @@ import styles from './Styles.module.css';
 import MessageProfile, {BadgeType, FollowState} from '../01_Layout/MessageProfile';
 import FilterBar from '../FilterBar';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
-import {DMChatRoomInfo, sendGetDMChatRoomList} from '@/app/NetWork/ChatMessageNetwork';
+import {
+  DMChatRoomInfo,
+  GetDMChatRoomListReq,
+  GetDMChatRoomListRes,
+  sendGetDMChatRoomList,
+  sendLeaveChatRoom,
+  ChatRoomType,
+} from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import SelectDrawer from '@/components/create/SelectDrawer';
@@ -25,6 +32,7 @@ const DMChat: React.FC = () => {
   const [openOption, setOpenOption] = useState(false);
   const [openLeavePopup, setOpenLeavePopup] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<DMChatRoomInfo | null>(null);
   const LIMIT = 10;
   const [isPinOpen, setIsPinOpen] = useState(true);
   const [isChatOpen, setIsChatOpen] = useState(true);
@@ -166,6 +174,37 @@ const DMChat: React.FC = () => {
 
   const pinnedRooms = dmList.filter(dm => dm.isPinFix);
   const unpinnedRooms = dmList.filter(dm => !dm.isPinFix);
+  const sortedDmList = [...pinnedRooms, ...unpinnedRooms];
+
+  const handleLeaveChatRoom = async (roomId: number) => {
+    try {
+      const selectedRoom = dmList.find(room => room.roomId === roomId);
+      if (!selectedRoom) return;
+
+      await sendLeaveChatRoom({
+        chatRoomType: ChatRoomType.DM,
+        dmRoomId: selectedRoom.roomId,
+        characterUrlLinkKey: '',
+      });
+
+      // 채팅방 목록에서 제거
+      setDmList(prevList => prevList.filter(room => room.roomId !== roomId));
+      setOpenLeavePopup(false);
+      setSelectedRoomId(null);
+      setSelectedRoom(null);
+    } catch (error) {
+      console.error('Failed to leave chat room:', error);
+    }
+  };
+
+  const handleRoomSelect = (roomId: number) => {
+    const room = dmList.find(room => room.roomId === roomId);
+    if (room) {
+      setSelectedRoomId(roomId);
+      setSelectedRoom(room);
+      setOpenOption(true);
+    }
+  };
 
   return (
     <>
@@ -176,65 +215,26 @@ const DMChat: React.FC = () => {
         onFilterChange={filter => setFilterValue(filter)}
         onSortChange={sort => setSortValue(sort)}
       />
-      {pinnedRooms.length > 0 && (
-        <>
-          <div className={styles.sectionHeader} onClick={() => setIsPinOpen(v => !v)}>
-            <span>Pin ({pinnedRooms.length})</span>
-            <span className={isPinOpen ? styles.arrowDown : styles.arrowRight}></span>
-          </div>
-          {isPinOpen && (
-            <div className={styles.scrollArea}>
-              {pinnedRooms.map((dm, index) => (
-                <MessageProfile
-                  key={dm.roomId}
-                  profileImage={dm.profileIconUrl}
-                  profileName={dm.profileName}
-                  timestamp={formatTimestamp(dm.lastMessageAt)}
-                  badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
-                  followState={FollowState.None}
-                  isHighlight={true}
-                  isDM={true}
-                  isOption={true}
-                  roomid={dm.roomId.toString()}
-                  urlLinkKey={dm.urlLinkKey}
-                  onClickOption={() => {
-                    setSelectedRoomId(dm.roomId);
-                    setOpenOption(true);
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </>
-      )}
-      <div className={styles.sectionHeader} onClick={() => setIsChatOpen(v => !v)}>
-        <span>Chat ({unpinnedRooms.length})</span>
-        <span className={isChatOpen ? styles.arrowDown : styles.arrowRight}></span>
+      <div className={styles.scrollArea}>
+        {sortedDmList.map((dm, index) => (
+          <MessageProfile
+            key={dm.roomId}
+            profileImage={dm.profileIconUrl}
+            profileName={dm.profileName}
+            timestamp={formatTimestamp(dm.lastMessageAt)}
+            badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
+            followState={FollowState.None}
+            isHighlight={false}
+            isDM={true}
+            isOption={true}
+            isPin={dm.isPinFix}
+            roomid={dm.roomId.toString()}
+            urlLinkKey={dm.urlLinkKey}
+            onClickOption={() => handleRoomSelect(dm.roomId)}
+          />
+        ))}
+        <div ref={observerRef} style={{height: '1px'}} />
       </div>
-      {isChatOpen && (
-        <div className={styles.scrollArea}>
-          {unpinnedRooms.map((dm, index) => (
-            <MessageProfile
-              key={dm.roomId}
-              profileImage={dm.profileIconUrl}
-              profileName={dm.profileName}
-              timestamp={formatTimestamp(dm.lastMessageAt)}
-              badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
-              followState={FollowState.None}
-              isHighlight={false}
-              isDM={true}
-              isOption={true}
-              roomid={dm.roomId.toString()}
-              urlLinkKey={dm.urlLinkKey}
-              onClickOption={() => {
-                setSelectedRoomId(dm.roomId);
-                setOpenOption(true);
-              }}
-            />
-          ))}
-          <div ref={observerRef} style={{height: '1px'}} />
-        </div>
-      )}
 
       <SelectDrawer
         isOpen={openOption}
@@ -263,7 +263,9 @@ const DMChat: React.FC = () => {
             {
               label: 'Leave',
               onClick: () => {
-                setOpenLeavePopup(false);
+                if (selectedRoom) {
+                  handleLeaveChatRoom(selectedRoom.roomId);
+                }
               },
               isPrimary: true,
             },
