@@ -219,6 +219,7 @@ export enum InteractionType {
   Character = 3,
   Channel = 4,
   Episode = 5,
+  Friend = 6,
 }
 // Feed Like API 호출 함수
 export const sendLike = async (

@@ -42,9 +42,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const [selectedTag, setSelectedTag] = useState<string>('Following');
   const [searchText, setSearchText] = useState<string>('');
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<SearchResultWithFriend[]>([]);
+  const [favoriteList, setFavoriteList] = useState<SearchResultWithFriend[]>([]);
+  const [normalList, setNormalList] = useState<SearchResultWithFriend[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [favoriteOpen, setFavoriteOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(true);
   // 필터, isAdult 상태를 기억하기 위한 ref
   const positiveFiltersRef = useRef<FilterDataItem[]>([]);
   const negativeFiltersRef = useRef<FilterDataItem[]>([]);
@@ -71,7 +74,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     if (isOpen == false) return;
     setOffset(0);
     setHasMore(true);
-    setSearchResults([]);
+    setFavoriteList([]);
+    setNormalList([]);
     fetchMore(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTag, isOpen]);
@@ -89,7 +93,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const [selectedRoom, setSelectedRoom] = useState<SearchResultWithFriend | null>(null);
 
   const handleClose = () => {
-    setSearchResults([]);
+    setFavoriteList([]);
+    setNormalList([]);
     setError(null);
     setSearchText('');
     setIsInputFocused(false);
@@ -100,9 +105,9 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
     setError(null);
-    let newList: SearchResultWithFriend[] = [];
+    let newFavoriteList: SearchResultWithFriend[] = [];
+    let newNormalList: SearchResultWithFriend[] = [];
     let currentOffset = isRefreshAll ? 0 : offset;
-    // searchText 상태를 직접 사용
     const keyword = searchText;
 
     if (isRefreshAll) {
@@ -132,7 +137,10 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         page: {offset: currentOffset, limit: LIMIT},
         alreadyReceivedProfileIds: followingProfileIds,
       });
-      newList = response.data?.followCharacterList || [];
+      if (response.data) {
+        newFavoriteList = response.data.favoriteCharacterList || [];
+        newNormalList = response.data.followCharacterList || [];
+      }
     } else if (selectedTag === 'Character') {
       const response = await sendGetSearchCharacterList({
         characterIP: 0,
@@ -143,25 +151,33 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         page: {offset: currentOffset, limit: LIMIT},
         alreadyReceivedProfileIds: characterProfileIds,
       });
-      newList = response.data?.recommendCharacterList || [];
+      if (response.data) {
+        newFavoriteList = response.data.favoriteCharacterList || [];
+        newNormalList = response.data.recommendCharacterList || [];
+      }
     } else if (selectedTag === 'Friend') {
       const response = await sendGetSearchFriendList({
         search: keyword,
         page: {offset: currentOffset, limit: LIMIT},
         alreadyReceivedProfileIds: friendProfileIds,
       });
-      newList = response.data?.friendList || [];
+      if (response.data) {
+        newFavoriteList = response.data.favoriteFriendList || [];
+        newNormalList = response.data.friendList || [];
+      }
     } else if (selectedTag === 'People') {
       const response = await sendGetSearchPeopleList({
         search: keyword,
         page: {offset: currentOffset, limit: LIMIT},
         alreadyReceivedProfileIds: peopleProfileIds,
       });
-      newList = response.data?.recommendPeopleList || [];
+      if (response.data) {
+        newNormalList = response.data.recommendPeopleList || [];
+      }
     }
 
-    if (newList.length > 0) {
-      const newProfileIds = newList.map(item => item.characterProfileId);
+    if (newFavoriteList.length > 0 || newNormalList.length > 0) {
+      const newProfileIds = [...newFavoriteList, ...newNormalList].map(item => item.characterProfileId);
 
       switch (selectedTag) {
         case 'Following':
@@ -179,12 +195,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       }
 
       if (isRefreshAll) {
-        setSearchResults(newList);
+        setFavoriteList(newFavoriteList);
+        setNormalList(newNormalList);
       } else {
-        setSearchResults(prev => [...prev, ...newList]);
+        setFavoriteList(prev => [...prev, ...newFavoriteList]);
+        setNormalList(prev => [...prev, ...newNormalList]);
       }
       setOffset(currentOffset + LIMIT);
-      setHasMore(newList.length === LIMIT);
+      setHasMore(newFavoriteList.length + newNormalList.length === LIMIT);
     } else {
       setHasMore(false);
     }
@@ -204,7 +222,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     negativeFiltersRef.current = negativeFilters;
     setOffset(0);
     setHasMore(true);
-    setSearchResults([]);
+    setFavoriteList([]);
+    setNormalList([]);
     setIsInputFocused(false);
     setSearchText(keyword);
     fetchMore(true);
@@ -243,7 +262,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const handleFollow = async (character: SearchResultWithFriend) => {
     try {
       await followProfile(character.characterProfileId, true);
-      setSearchResults(prev => prev.filter(item => item.characterProfileId !== character.characterProfileId));
+      setFavoriteList(prev => prev.filter(item => item.characterProfileId !== character.characterProfileId));
+      setNormalList(prev => prev.filter(item => item.characterProfileId !== character.characterProfileId));
     } catch (e) {
       alert('팔로우 실패');
     }
@@ -254,7 +274,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     try {
       if (person.followState === FollowState.FriendCancel) {
         await sendCancelAddFriend({canceledProfileId: person.characterProfileId});
-        setSearchResults(prev =>
+        setFavoriteList(prev =>
+          prev.map(item =>
+            item.characterProfileId === person.characterProfileId
+              ? {...item, followState: FollowState.AddFriend}
+              : item,
+          ),
+        );
+        setNormalList(prev =>
           prev.map(item =>
             item.characterProfileId === person.characterProfileId
               ? {...item, followState: FollowState.AddFriend}
@@ -263,7 +290,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         );
       } else {
         await sendAddFriend({addFriendProfileId: person.characterProfileId});
-        setSearchResults(prev =>
+        setFavoriteList(prev =>
+          prev.map(item =>
+            item.characterProfileId === person.characterProfileId
+              ? {...item, followState: FollowState.FriendCancel}
+              : item,
+          ),
+        );
+        setNormalList(prev =>
           prev.map(item =>
             item.characterProfileId === person.characterProfileId
               ? {...item, followState: FollowState.FriendCancel}
@@ -310,55 +344,78 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     },
   ];
 
-  const renderCharacterList = (list: SearchResultWithFriend[]) => (
-    <div>
-      {list.map(character => {
-        // BadgeType 매핑
-        let badgeType = BadgeType.None;
-        if (selectedTag === 'Character' || selectedTag === 'Following' || selectedTag === 'Friend') {
+  const renderCharacterList = (list: SearchResultWithFriend[]) => {
+    if (selectedTag === 'Following' || selectedTag === 'Friend' || selectedTag === 'Character') {
+      return (
+        <div>
+          <div className={styles.section}>
+            <div className={styles.sectionHeader} onClick={() => setFavoriteOpen(!favoriteOpen)}>
+              <span>Favorite ({favoriteList.length})</span>
+              <span className={favoriteOpen ? styles.arrowDown : styles.arrowRight}></span>
+            </div>
+            {favoriteOpen &&
+              favoriteList.map(character => {
+                let badgeType = BadgeType.None;
+                if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
+                else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
+
+                return (
+                  <MessageProfile
+                    key={character.chatRoomId}
+                    profileImage={character.profileImageUrl}
+                    profileName={character.characterName}
+                    badgeType={badgeType}
+                    followState={selectedTag === 'Character' ? FollowState.Follow : FollowState.None}
+                    urlLinkKey={character.urlLinkKey}
+                    roomid={String(character.chatRoomId)}
+                    isOption={selectedTag !== 'Character'}
+                    isPin={character.isPinFix}
+                    onClickButton={selectedTag === 'Character' ? () => handleFollow(character) : undefined}
+                    onClickOption={selectedTag !== 'Character' ? () => handleRoomSelect(character) : undefined}
+                  />
+                );
+              })}
+          </div>
+          <div className={styles.section}>
+            <div className={styles.sectionHeader} onClick={() => setListOpen(!listOpen)}>
+              <span>{selectedTag}</span>
+              <span className={listOpen ? styles.arrowDown : styles.arrowRight}></span>
+            </div>
+            {listOpen &&
+              normalList.map(character => {
+                let badgeType = BadgeType.None;
+                if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
+                else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
+
+                return (
+                  <MessageProfile
+                    key={character.chatRoomId}
+                    profileImage={character.profileImageUrl}
+                    profileName={character.characterName}
+                    badgeType={badgeType}
+                    followState={selectedTag === 'Character' ? FollowState.Follow : FollowState.None}
+                    urlLinkKey={character.urlLinkKey}
+                    roomid={String(character.chatRoomId)}
+                    isOption={selectedTag !== 'Character'}
+                    isPin={character.isPinFix}
+                    onClickButton={selectedTag === 'Character' ? () => handleFollow(character) : undefined}
+                    onClickOption={selectedTag !== 'Character' ? () => handleRoomSelect(character) : undefined}
+                  />
+                );
+              })}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {list.map(character => {
+          let badgeType = BadgeType.None;
           if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
           else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-        }
-        // followState 매핑
-        let followState = FollowState.None;
-        if (selectedTag === 'Character') followState = FollowState.Follow;
-        else if (selectedTag === 'People') followState = character.followState ?? FollowState.AddFriend;
-        // isOption 매핑
-        const isOption = selectedTag === 'Following' || selectedTag === 'Friend';
+          let followState = character.followState ?? FollowState.AddFriend;
 
-        if (selectedTag === 'Character') {
-          return (
-            <MessageProfile
-              key={character.chatRoomId}
-              profileImage={character.profileImageUrl}
-              profileName={character.characterName}
-              badgeType={badgeType}
-              followState={FollowState.Follow}
-              urlLinkKey={character.urlLinkKey}
-              roomid={String(character.chatRoomId)}
-              isOption={isOption}
-              isPin={character.isPinFix}
-              onClickButton={() => handleFollow(character)}
-            />
-          );
-        } else if (selectedTag === 'People') {
-          return (
-            <MessageProfile
-              key={character.chatRoomId}
-              profileImage={character.profileImageUrl}
-              profileName={character.characterName}
-              badgeType={badgeType}
-              followState={character.followState ?? FollowState.AddFriend}
-              urlLinkKey={''}
-              roomid={String(character.chatRoomId)}
-              isOption={isOption}
-              isPin={character.isPinFix}
-              isDM={true}
-              profileUrlLinkKey={character.urlLinkKey}
-              onClickButton={() => handleAddFriendToggle(character)}
-            />
-          );
-        } else {
           return (
             <MessageProfile
               key={character.chatRoomId}
@@ -366,17 +423,19 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
               profileName={character.characterName}
               badgeType={badgeType}
               followState={followState}
-              urlLinkKey={character.urlLinkKey}
+              urlLinkKey={''}
               roomid={String(character.chatRoomId)}
-              isOption={isOption}
+              isOption={false}
               isPin={character.isPinFix}
-              onClickOption={() => handleRoomSelect(character)}
+              isDM={true}
+              profileUrlLinkKey={character.urlLinkKey}
+              onClickButton={() => handleAddFriendToggle(character)}
             />
           );
-        }
-      })}
-    </div>
-  );
+        })}
+      </div>
+    );
+  };
 
   const renderSearchResults = () => {
     if (isLoading && offset === 0) {
@@ -385,12 +444,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     if (error) {
       return <div className={styles.error}>{error}</div>;
     }
-    if (searchResults.length === 0) {
+    if (favoriteList.length === 0 && normalList.length === 0) {
       return <EmptyState stateText="No search results found." />;
     }
     return (
       <div className={styles.searchResults}>
-        {renderCharacterList(searchResults)}
+        {renderCharacterList(favoriteList.concat(normalList))}
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
         {isPagingLoading && <div className={styles.loading}>불러오는 중...</div>}

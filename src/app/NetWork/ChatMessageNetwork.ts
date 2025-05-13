@@ -209,8 +209,8 @@ export interface SearchCharacterRoomInfo {
 }
 
 export interface GetSearchCharacterRoomListRes {
-  followBackCharacterList: SearchCharacterRoomInfo[];
-  recommendCharacterList: SearchCharacterRoomInfo[];
+  favoriteCharacterList: SearchCharacterRoomInfo[];
+  friendCharacterList: SearchCharacterRoomInfo[];
 }
 
 /**
