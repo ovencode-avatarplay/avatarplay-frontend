@@ -16,6 +16,7 @@ import {
   UrlEnterDMChatReq,
   sendReadChatRoom,
   DMChatMessage,
+  ChatState,
 } from '@/app/NetWork/ChatMessageNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
 
@@ -40,6 +41,7 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
       mediaState: mediaState,
       mediaUrl: mediaUrl,
       emoticonId: 0,
+      chatState: ChatState.Create,
       createAt: new Date().toISOString(),
     };
 

@@ -72,6 +72,10 @@ export enum MediaState {
   Audio = 3,
 }
 
+export enum ChatState {
+  Create = 1,
+  Delete = 2,
+}
 export interface DMChatMessage {
   id: number;
   dmChatType: DMChatType;
@@ -82,6 +86,7 @@ export interface DMChatMessage {
   mediaState: MediaState;
   mediaUrl: string;
   emoticonId: number;
+  chatState: ChatState;
   createAt: string;
 }
 

@@ -62,6 +62,7 @@ const ChatArea: React.FC<Props> = ({messages}) => {
               mediaUrl={msg.mediaUrl}
               profileImage={msg.profileImageUrl}
               profileUrlLinkKey={msg.profileUrlLinkKey}
+              chatState={msg.chatState}
             />
           </div>
         );

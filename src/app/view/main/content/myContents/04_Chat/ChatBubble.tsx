@@ -10,6 +10,8 @@ import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import {useSignalR} from '@/hooks/useSignalR';
+import {ChatState} from '@/app/NetWork/ChatNetwork';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 interface ChatBubbleProps {
   sender: 'me' | 'other';
@@ -22,6 +24,7 @@ interface ChatBubbleProps {
   mediaUrl?: string;
   profileUrlLinkKey: string;
   isDeleted?: boolean;
+  chatState: ChatState;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -35,21 +38,33 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   mediaUrl,
   profileUrlLinkKey,
   isDeleted = false,
+  chatState,
 }) => {
   const isMe = sender === 'me';
   const [isBlurMode, setBlurMode] = useAtom(isBlurModeAtom);
   const [selectedBubbleId, setSelectedBubbleId] = useAtom(selectedBubbleIdAtom);
   const [localIsDeleted, setLocalIsDeleted] = useState(isDeleted);
+  const [localChatState, setLocalChatState] = useState(chatState);
 
   const jwt = localStorage.getItem('jwt');
   const {deleteMessage} = useSignalR(jwt || '');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const handleDelete = async () => {
+    if (localChatState === ChatState.Delete) {
+      dataToast.open('이미 삭제된 메시지입니다.', ToastType.Error);
+      console.log('이미 삭제된 메시지입니다.');
+      return;
+    }
+
     try {
       await deleteMessage(id);
       setLocalIsDeleted(true);
+      setLocalChatState(ChatState.Delete);
       setIsMenuOpen(false);
+      setBlurMode(false);
+      setSelectedBubbleId(null);
     } catch (error) {
       console.error('메시지 삭제 실패:', error);
     }
@@ -74,7 +89,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   ];
 
   const handleClick = () => {
-    if (isMe) {
+    if (isMe && localChatState === ChatState.Create) {
       setBlurMode(!isBlurMode);
       setSelectedBubbleId(id);
     }
@@ -118,7 +133,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   const router = useRouter();
 
   return (
-    <div className={`${styles.messageWrapper} ${isMe ? styles.right : styles.left}`} onClick={handleClick}>
+    <div className={`${styles.messageWrapper} ${isMe ? styles.right : styles.left}`}>
       {!isMe && (
         <Avatar
           src={profileImage}
@@ -139,8 +154,9 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
               zIndex: isBlurMode && selectedBubbleId === id ? 1 : 0,
               position: 'relative',
             }}
+            onClick={handleClick}
           >
-            <p className={isItalic ? styles.italic : ''}>{localIsDeleted ? '삭제된 메시지입니다.' : content}</p>
+            <p className={isItalic ? styles.italic : ''}>{localIsDeleted ? '메시지가 삭제되었습니다' : content}</p>
           </div>
         )}
         {!isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
