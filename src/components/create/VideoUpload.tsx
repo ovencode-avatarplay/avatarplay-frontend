@@ -99,6 +99,7 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
         open={workroomOpen}
         onClose={() => setWorkroomOpen(false)}
         onSelect={handleOnWorkroomItemSelect}
+        multiple={false}
         mediaStateFilter={MediaState.Video}
       />
       <LoadingOverlay loading={loading} />

@@ -94,6 +94,8 @@ const WorkroomItem: React.FC<Props> = ({
       } else if (item.mediaState === MediaState.Audio) {
         setAudioViewerOpen(true);
       }
+    } else {
+      onSelect(!isSelected);
     }
   };
 

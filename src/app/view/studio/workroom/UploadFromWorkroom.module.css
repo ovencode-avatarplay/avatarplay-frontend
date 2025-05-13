@@ -90,6 +90,7 @@
     align-content: center;
     gap: 10px;
     flex-wrap: wrap;
+    margin-bottom: 80px;
 }
 
 .gridItem
@@ -158,3 +159,20 @@
 {
     width: 100%;
 }
+
+.selectingMenuArea
+{
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+

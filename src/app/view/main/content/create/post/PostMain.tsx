@@ -575,9 +575,13 @@ const PostMain: React.FC<Props> = ({id}) => {
           setContentImageUrl={string => {
             setMediaUrls(prev => [...prev, string]);
           }}
+          setContentImageUrls={urls => {
+            setMediaUrls(prev => [...prev, ...urls]);
+          }}
           onChoose={() => {
             setIsOpenSelectDrawer(false);
           }}
+          multiple={true}
         />
       )}
       {mediaType === 'video' && (

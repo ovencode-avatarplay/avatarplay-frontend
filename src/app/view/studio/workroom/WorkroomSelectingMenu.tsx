@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './WorkroomSelectingMenu.module.css';
-import {LineDelete, LineClose, BoldFolder, BoldShare, BoldDownload, BoldDelete} from '@ui/Icons';
+import {LineDelete, LineClose, BoldFolder, BoldShare, BoldDownload, BoldDelete, LineCheck} from '@ui/Icons';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 
@@ -12,6 +12,7 @@ interface Props {
   onRestore?: () => void;
   onMoveToTrash?: () => void;
   onExitSelecting?: () => void;
+  onSubmitSelect?: () => void;
   isTrash?: boolean;
 }
 
@@ -23,6 +24,7 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
   onRestore,
   onMoveToTrash,
   onExitSelecting,
+  onSubmitSelect,
   isTrash,
 }) => {
   return (
@@ -72,6 +74,11 @@ const WorkroomSelectingMenu: React.FC<Props> = ({
         )}
       </div>
       <div className={styles.rightArea}>
+        {onSubmitSelect && (
+          <button className={styles.iconButton} aria-label="Submit" onClick={onSubmitSelect}>
+            <img src={LineCheck.src} alt="Submit" />
+          </button>
+        )}
         <button className={styles.iconButton} aria-label="Close" onClick={onExitSelecting}>
           <img src={LineClose.src} alt="Close selecting mode" />
         </button>

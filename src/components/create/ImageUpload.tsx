@@ -67,6 +67,13 @@ const ImageUpload: React.FC<Props> = ({
     setWorkroomOpen(false);
   };
 
+  const handleOnWorkroomItemSelectMultiple = (urls: string[]) => {
+    setContentImageUrls?.(urls || []);
+    setImageUrl(urls[0]);
+    if (onChoose) onChoose();
+    setWorkroomOpen(false);
+  };
+
   const handleChooseFile = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -119,6 +126,8 @@ const ImageUpload: React.FC<Props> = ({
           open={workroomOpen}
           onClose={() => setWorkroomOpen(false)}
           onSelect={handleOnWorkroomItemSelect}
+          multiple={multiple}
+          onSelectMultiple={handleOnWorkroomItemSelectMultiple}
           mediaStateFilter={MediaState.Image}
         />,
         document.body,

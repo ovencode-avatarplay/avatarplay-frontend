@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import styles from './UploadFromWorkroom.module.css';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import {WorkroomItemInfo} from './WorkroomItem';
@@ -7,14 +7,24 @@ import Dialog from '@mui/material/Dialog';
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {LineSearch} from '@ui/Icons';
+import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 interface UploadFromWorkroomProps {
   open: boolean;
   onClose: () => void;
   onSelect: (url: string) => void;
   mediaStateFilter?: MediaState;
+  multiple?: boolean;
+  onSelectMultiple?: (urls: string[]) => void;
 }
 
-const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, onSelect, mediaStateFilter}) => {
+const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({
+  open,
+  onClose,
+  onSelect,
+  mediaStateFilter,
+  multiple = false,
+  onSelectMultiple,
+}) => {
   //#region TmpDefine
 
   // All 에서 보여지는 folder 리스트는 4개입니다. (기획)
@@ -354,6 +364,13 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
   const tagStates: string[] = ['MyWork', 'Favorite', 'AIHistory', 'Gallery'];
   const [currentTag, setCurrentTag] = useState<string>('MyWork');
 
+  const [selectedItem, setSelectedItem] = useState<WorkroomItemInfo | null>(null);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const holdTimer = useRef<NodeJS.Timeout | null>(null);
+  const holdTime = 1000;
+  const [isHolding, setIsHolding] = useState(false);
+
   //#region Handle
   const handleGoBackFolder = () => {
     setFolderHistory(prev => {
@@ -369,14 +386,71 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
       // 폴더라면 진입
       if (selectedFolder) {
         setFolderHistory([...folderHistory, selectedFolder]);
-        setSelectedFolder(item);
-      } else {
-        setSelectedFolder(item);
       }
+      setSelectedFolder(item);
     } else if (item.imgUrl) {
-      onSelect(item.imgUrl);
+      if (multiple) {
+        if (!isSelecting) {
+          setIsSelecting(true); // 선택 모드 진입
+          setSelectedItems([item.id]);
+        } else {
+          // 선택 토글
+          setSelectedItems(prev => (prev.includes(item.id) ? prev.filter(id => id !== item.id) : [...prev, item.id]));
+        }
+      } else {
+        setSelectedItem(item);
+        onSelect(item.imgUrl); // 단일 선택
+      }
     }
   };
+
+  //#region Container에서 길게 입력으로 선택활성화 시키기
+  const handleStart = () => {
+    holdTimer.current = setTimeout(() => {
+      setIsHolding(true);
+      setIsSelecting(true);
+    }, holdTime);
+  };
+
+  const handleEnd = () => {
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+    }
+    setIsHolding(false); // holding 상태 초기화
+  };
+
+  const handleDeselectIfOutside = (event: React.MouseEvent | React.TouchEvent) => {
+    const target = event.target as HTMLElement;
+    const container = event.currentTarget as HTMLElement;
+
+    const isInsideItem = target.closest('[data-item]');
+    const isInsideContainer = container.contains(target);
+
+    // 조건: holding이 아니라면 해제 처리 (holding 중이면 setIsSelecting을 해제하지 않음)
+    if (!isInsideItem && isSelecting && !isHolding && isInsideContainer) {
+      setIsSelecting(false);
+      setSelectedItem(null);
+      setSelectedItems([]);
+    }
+  };
+
+  //#endregion
+
+  const toggleSelectItem = (id: number, checked: boolean) => {
+    if (!isSelecting) return;
+
+    setSelectedItems(prev => (checked ? [...prev, id] : prev.filter(itemId => itemId !== id)));
+  };
+  const handleItemImageClick = (item: WorkroomItemInfo) => {
+    if (!isSelecting) {
+      handleItemClick(item);
+      if (item.mediaState === MediaState.None) {
+        handleItemClick(item);
+      }
+    }
+  };
+
   //#endregion
 
   //#region Render
@@ -452,6 +526,7 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
           zIndex: '1500',
         },
       }}
+      onClick={e => handleDeselectIfOutside(e)}
     >
       <CreateDrawerHeader
         title={searchOpen ? '' : getLocalizedText('TODO : Workroom')}
@@ -516,8 +591,8 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
                     uploadItem={true}
                     item={item}
                     detailView={true}
-                    isSelecting={false}
-                    isSelected={false}
+                    isSelecting={isSelecting}
+                    isSelected={selectedItems?.includes(item.id)}
                     onClickItem={() => handleItemClick(item)}
                     onSelect={() => handleItemClick(item)}
                     onClickPreview={() => handleItemClick(item)}
@@ -525,7 +600,19 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
                 </div>
               ))}
           </div>
-          <div className={`${styles.gridArea}`}>
+          <div
+            className={`${styles.gridArea}`}
+            onMouseDown={handleStart}
+            onMouseUp={handleEnd}
+            onMouseLeave={handleEnd}
+            onTouchStart={handleStart}
+            onTouchCancel={handleEnd}
+            onTouchEnd={e => {
+              handleEnd();
+              handleDeselectIfOutside(e);
+            }}
+            onClick={e => handleDeselectIfOutside(e)}
+          >
             {filteredItems
               .filter(item => item.mediaState !== MediaState.None)
               .map(item => (
@@ -534,11 +621,11 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
                     uploadItem={true}
                     item={item}
                     detailView={false}
-                    isSelecting={false}
-                    isSelected={false}
+                    isSelecting={isSelecting}
+                    isSelected={selectedItems?.includes(item.id)}
                     onClickItem={() => handleItemClick(item)}
-                    onSelect={() => handleItemClick(item)}
-                    onClickPreview={() => handleItemClick(item)}
+                    onSelect={checked => toggleSelectItem(item.id, checked)}
+                    onClickPreview={() => handleItemImageClick(item)}
                     blockDefaultPreview={true}
                   />
                 </div>
@@ -546,6 +633,30 @@ const UploadFromWorkroom: React.FC<UploadFromWorkroomProps> = ({open, onClose, o
           </div>
         </div>
       )}
+      <div className={styles.selectingMenuArea}>
+        {selectedItems.length > 0 && (
+          <WorkroomSelectingMenu
+            selectedCount={selectedItems.length}
+            onExitSelecting={() => {
+              setSelectedItems([]);
+              setIsSelecting(false);
+            }}
+            onSubmitSelect={() => {
+              const selectedUrls = workroomData
+                .filter(item => selectedItems.includes(item.id))
+                .map(item => item.imgUrl)
+                .filter(Boolean) as string[];
+
+              if (selectedUrls.length > 0) {
+                onSelectMultiple?.(selectedUrls); // 다중 전달
+                setIsSelecting(false);
+                setSelectedItems([]);
+                onClose();
+              }
+            }}
+          />
+        )}
+      </div>
     </Dialog>
   );
 };

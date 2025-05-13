@@ -6,12 +6,7 @@ import {
   BoldAltArrowUp as BoldAltArrowUpTwo,
   BoldAltArrowUpTwo as BoldAltArrowUp,
   LineArrowDown,
-  BoldCirclePlus,
-  BoldFolderPlus,
-  BoldQuestion,
   CircleClose,
-  LineClose,
-  LineDashboard,
   LineDelete,
   LineUpload,
 } from '@ui/Icons';
@@ -49,7 +44,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
   const [onPreview, setOnPreview] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 파일의 인덱스
-  console.log(defaultEpisodeWebtoonInfo);
+
   const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
   const [imageFiles, setImageFiles] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
@@ -531,6 +526,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
             setImageFiles(prev => [...prev, ...urls]);
             setImageNames(prev => [...prev, ...urls]);
           }
+          setIsUploadOpen(false);
         }}
         multiple={true}
         setContentImageUrl={() => {}}
