@@ -845,7 +845,7 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
         onChoose={() => {
           setImgUploadOpen(false);
         }}
-        uploadType={UploadMediaState.ContentImage}
+        uploadType={UploadMediaState.ProfileImage}
       />
     </>
   );
@@ -1150,7 +1150,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             onChoose={() => {
               setImgUploadOpen(false);
             }}
-            uploadType={UploadMediaState.ContentImage}
+            uploadType={UploadMediaState.ProfileImage}
           />
         </form>
       </div>

@@ -56,6 +56,8 @@ export enum UploadMediaState {
   WorkroomItemAudioType = 25,
   // 워크룸 문서 업로드
   WorkroomItemDocumentType = 26,
+  // 프로필 이미지
+  ProfileImage = 27,
 }
 
 export interface MediaUploadInfo {
