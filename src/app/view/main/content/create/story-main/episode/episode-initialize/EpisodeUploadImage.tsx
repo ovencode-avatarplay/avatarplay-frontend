@@ -27,11 +27,11 @@ const EpisodeUploadImage: React.FC<Props> = ({imgUrl, setImgUrl}) => {
     try {
       const req: MediaUploadReq = {
         mediaState: UploadMediaState.CharacterImage,
-        file: file,
+        fileList: [file],
       };
       const response = await sendUpload(req);
       if (response?.data) {
-        const imgUrl: string = response.data.url;
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url;
 
         setImgUrl(imgUrl);
       } else {

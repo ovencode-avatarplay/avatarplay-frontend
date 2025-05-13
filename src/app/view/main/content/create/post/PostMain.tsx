@@ -29,6 +29,7 @@ import TagsData from 'data/create/tags.json';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 import ImageUpload from '@/components/create/ImageUpload';
 import VideoUpload from '@/components/create/VideoUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 interface Props {
   id?: string;
@@ -582,6 +583,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             setIsOpenSelectDrawer(false);
           }}
           multiple={true}
+          uploadType={UploadMediaState.FeedImage}
         />
       )}
       {mediaType === 'video' && (
@@ -590,12 +592,13 @@ const PostMain: React.FC<Props> = ({id}) => {
           onClose={() => {
             setIsOpenSelectDrawer(false);
           }}
-          setVideoUrl={string => {
+          setContentVideoUrl={string => {
             setMediaUrls(prev => [...prev, string]);
           }}
           onChoose={() => {
             setIsOpenSelectDrawer(false);
           }}
+          uploadType={UploadMediaState.FeedVideo}
         />
       )}
     </div>

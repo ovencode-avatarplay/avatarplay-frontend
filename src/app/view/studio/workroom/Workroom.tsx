@@ -782,6 +782,11 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const handleAddFolder = async () => {
+    if (isNameError(newFolderName)) {
+      dataToast.open(getLocalizedText('TODO : Invalid folder name'));
+      return;
+    }
+
     if (newFolderName.trim() !== '') {
       const req: CreateFolderReq = {
         Name: newFolderName,
@@ -1086,6 +1091,16 @@ const Workroom: React.FC<Props> = ({}) => {
     );
   };
 
+  const isNameError = (name: string): boolean => {
+    // 금지된 특수 문자 정규식
+    const forbiddenPattern = /[\\\/:*?"<>|]/;
+    return forbiddenPattern.test(name);
+  };
+
+  //#endregion
+
+  //#region Hook
+
   useEffect(() => {
     let enterTime = Date.now();
     let delayTimer: NodeJS.Timeout;
@@ -1144,6 +1159,7 @@ const Workroom: React.FC<Props> = ({}) => {
   useEffect(() => {
     setSelectedItems([]);
   }, [isSelecting]);
+
   //#endregion
 
   //#region Renderer

@@ -22,6 +22,7 @@ import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import ImageUpload from '@/components/create/ImageUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 export interface WebtoonUploadField {
   id: number;
@@ -530,6 +531,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         }}
         multiple={true}
         setContentImageUrl={() => {}}
+        uploadType={UploadMediaState.ContentEpisodeWebtoonImage}
       />
       <LoadingOverlay loading={isLoading} />
     </>

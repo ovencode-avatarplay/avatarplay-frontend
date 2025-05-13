@@ -20,6 +20,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 import ImageUpload from '@/components/create/ImageUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 type Props = {
   profileId: number;
 };
@@ -844,6 +845,7 @@ const ProfileUpdate = ({profileId = 0}: Props) => {
         onChoose={() => {
           setImgUploadOpen(false);
         }}
+        uploadType={UploadMediaState.ContentImage}
       />
     </>
   );
@@ -1148,6 +1150,7 @@ export const DrawerCreatePortfolio = ({dataList, id, open, onClose, onChange}: D
             onChoose={() => {
               setImgUploadOpen(false);
             }}
+            uploadType={UploadMediaState.ContentImage}
           />
         </form>
       </div>

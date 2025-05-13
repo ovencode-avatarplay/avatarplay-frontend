@@ -93,19 +93,15 @@ const MediaUpload: React.FC<Props> = ({
       // 업로드 요청 객체 생성
       const req: MediaUploadReq = {
         mediaState: state, // 적절한 MediaState 설정
+        fileList: files,
       };
 
-      if (state === UploadMediaState.ContentImage) {
-        req.file = files[0];
-      } else {
-        req.file = files[0];
-      }
       // 파일 업로드 API 호출
       const response = await sendUpload(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data.url; // 업로드된 메인 이미지 URL
-        const additionalUrls: string[] = response.data.imageUrlList || []; // 추가 이미지 URL 리스트
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url; // 업로드된 메인 이미지 URL
+        const additionalUrls: string[] = response.data.mediaUploadInfoList.slice(1).map(info => info.url) || []; // 추가 이미지 URL 리스트
 
         console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
         console.log('Additional Image URLs:', additionalUrls); // 추가 이미지 결과 로그 출력
@@ -359,7 +355,7 @@ const MediaUpload: React.FC<Props> = ({
           onClose={() => {
             setIsOpenSelectDrawer(false);
           }}
-          setVideoUrl={string => {
+          setContentVideoUrl={string => {
             setMediaUrls(prev => [...prev, string]);
           }}
           onChoose={() => {

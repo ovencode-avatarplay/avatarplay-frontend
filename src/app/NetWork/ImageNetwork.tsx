@@ -2,39 +2,75 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 export enum UploadMediaState {
+  // None
   None = 0,
+  // 캐릭터 이미지
   CharacterImage = 1,
+  // 갤러리 이미지
   GalleryImage = 2,
+  // 배경 이미지
   BackgroundImage = 3,
+  // 스토리 이미지
   StoryImage = 4,
+  // TTS 보이스
   TtsVoice = 5,
+  // 트리거 이미지
   TriggerImage = 6,
+  // 트리거 영상
   TriggerVideo = 7,
+  // 트리거 음성
   TriggerAudio = 8,
+  // 피드 영상
   FeedVideo = 9,
+  // 피드 이미지
   FeedImage = 10,
+  // 압축 피드 영상
   CompressFeedVideo = 11,
+  // 압축 피드 이미지
   CompressFeedImage = 12,
+  // 컨텐츠 에피소드 영상
   ContentEpisodeVideo = 13,
+  // 컨텐츠 에피소드 자막
   ContentEpisodeSubtitle = 14,
+  // 컨텐츠 에피소드 더빙
   ContentEpisodeDubbing = 15,
+  // 컨텐츠 에피소드 웹툰 이미지
   ContentEpisodeWebtoonImage = 16,
+  // 컨텐츠 에피소드 웹툰 자막 이미지
   ContentEpisodeWebtoonSubtitle = 17,
+  // 컨텐츠 이미지
   ContentImage = 18,
+  // 컨텐츠 영상
   ContentVideo = 19,
+  // DM 채팅 이미지
+  DmChatImage = 20,
+  // DM 채팅 영상
+  DmChatVideo = 21,
+  // DM 채팅 오디오
+  DmChatAudio = 22,
+  // 워크룸 이미지 업로드
+  WorkroomItemImageType = 23,
+  // 워크룸 비디오 업로드
+  WorkroomItemVideoType = 24,
+  // 워크룸 오디오 업로드
+  WorkroomItemAudioType = 25,
+  // 워크룸 문서 업로드
+  WorkroomItemDocumentType = 26,
 }
+
+export interface MediaUploadInfo {
+  fileName: string;
+  url: string;
+  playTime: string;
+}
+
 export interface MediaUploadReq {
-  mediaState: number; // Enum 타입
-  file?: File; // 업로드할 파일
-  imageList?: File[]; // 추가 이미지 파일 리스트 (선택적)
+  mediaState: UploadMediaState; // Enum 타입
+  fileList?: File[]; // 추가 이미지 파일 리스트 (선택적)
 }
 
 export interface MediaUploadRes {
-  url: string; // 메인 URL
-  imageUrlList: string[]; // 추가 이미지 URL 리스트
-  imageNameList: string[]; // 추가 이미지 URL 리스트
-  playTime: string;
-  fileName: string;
+  mediaUploadInfoList: MediaUploadInfo[];
 }
 
 export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {
@@ -43,18 +79,12 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
 
     formData.append('MediaState', payload.mediaState.toString()); // Enum 값 추가
 
-    if (payload.file) {
-      formData.append('File', payload.file);
-    } else {
-      formData.append('File', new Blob()); // 빈 Blob 추가
-    }
-
-    if (Array.isArray(payload.imageList) && payload.imageList.length > 0) {
-      payload.imageList.forEach(file => {
-        formData.append('ImageList', file);
+    if (Array.isArray(payload.fileList) && payload.fileList.length > 0) {
+      payload.fileList.forEach(file => {
+        formData.append('fileList', file);
       });
     } else {
-      formData.append('ImageList', new Blob([])); // 빈 Blob 추가
+      formData.append('fileList', new Blob([])); // 빈 Blob 추가
     }
 
     const response = await api.post<ResponseAPI<MediaUploadRes>>('Resource/upload', formData, {

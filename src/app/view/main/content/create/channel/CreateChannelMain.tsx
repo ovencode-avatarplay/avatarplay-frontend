@@ -46,6 +46,7 @@ import {DrawerMultipleTags} from './ChannelMultiTags';
 import {DrawerCharacterSearch, DrawerCharacterSearchType} from './ChannelMemberSet';
 import Splitters from '@/components/layout/shared/CustomSplitter';
 import ImageUpload from '@/components/create/ImageUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 type Props = {
   id: number;
@@ -1120,6 +1121,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         onChoose={() => {
           setImgUploadOpen(false);
         }}
+        uploadType={UploadMediaState.ContentImage}
       />
 
       {data.dataPopupRemove.isOpen && (

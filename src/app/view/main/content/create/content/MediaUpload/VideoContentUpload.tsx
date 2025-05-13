@@ -247,12 +247,12 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
       if (type === 'subtitle') {
         const req: MediaUploadReq = {
           mediaState: UploadMediaState.ContentEpisodeSubtitle,
-          file: files[0],
+          fileList: files,
         };
         const response = await sendUpload(req);
 
         if (response?.data && index !== undefined) {
-          const {url, fileName} = response.data;
+          const {url, fileName} = response.data.mediaUploadInfoList[0];
 
           setSubtitleFields(prev => prev.map((field, i) => (i === index ? {...field, fileUrl: url, fileName} : field)));
 

@@ -15,6 +15,7 @@ interface Props {
   onChoose?: () => void;
   onGalleryChoose?: () => void;
   multiple?: boolean;
+  uploadType?: UploadMediaState;
 }
 
 const ImageUpload: React.FC<Props> = ({
@@ -25,51 +26,62 @@ const ImageUpload: React.FC<Props> = ({
   onChoose,
   onGalleryChoose,
   multiple = false,
+  uploadType = UploadMediaState.ContentImage,
 }) => {
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState(''); // 이미지 업로드가 성공했는지 확인하기위해 이미지 하나를 내부에서 체크
   const [loading, setLoading] = useState(false);
   const [workroomOpen, setWorkroomOpen] = useState<boolean>(false);
 
   const handleOnFileSelect = async (files: FileList) => {
+    if (!files || files.length === 0) return;
+
+    setLoading(true);
     try {
-      setLoading(true);
-      const uploadResults: string[] = [];
+      const fileArray = Array.from(files);
 
-      for (const file of Array.from(files)) {
-        const req: MediaUploadReq = {
-          mediaState: UploadMediaState.ContentImage,
-          file,
-        };
-        const response = await sendUpload(req);
-        if (response?.data?.url) {
-          uploadResults.push(response.data.url);
+      const req: MediaUploadReq = {
+        mediaState: uploadType,
+        fileList: fileArray,
+      };
+
+      const response = await sendUpload(req);
+      const uploadInfos = response?.data?.mediaUploadInfoList;
+
+      if (uploadInfos && uploadInfos.length > 0) {
+        const uploadResults = uploadInfos.map(info => info.url).filter((url): url is string => !!url);
+
+        const firstUrl = uploadResults[0];
+        setImageUrl(firstUrl);
+        if (uploadResults.length > 0) {
+          if (uploadResults.length > 1) {
+            setContentImageUrls?.(uploadResults);
+          } else {
+            setContentImageUrl?.(firstUrl);
+          }
+        } else {
+          alert('파일 업로드는 성공했지만 URL이 없습니다.');
         }
-      }
-
-      if (uploadResults.length > 0) {
-        setImageUrl(uploadResults[0]);
-        setContentImageUrl?.(uploadResults[0]);
-        setContentImageUrls?.(uploadResults);
       } else {
-        console.error('Image upload failed.');
+        alert('업로드에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('전체 업로드 실패:', error);
+      alert('파일 업로드 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleOnWorkroomItemSelect = (url: string) => {
-    setContentImageUrl(url);
     setImageUrl(url);
+    setContentImageUrl(url);
     if (onChoose) onChoose();
     setWorkroomOpen(false);
   };
 
   const handleOnWorkroomItemSelectMultiple = (urls: string[]) => {
-    setContentImageUrls?.(urls || []);
     setImageUrl(urls[0]);
+    setContentImageUrls?.(urls || []);
     if (onChoose) onChoose();
     setWorkroomOpen(false);
   };

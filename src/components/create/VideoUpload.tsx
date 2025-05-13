@@ -7,35 +7,64 @@ import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
-  setVideoUrl: (url: string) => void;
+  setContentVideoUrl: (url: string) => void;
+  setContentVideoUrls?: (urls: string[]) => void;
   isOpen: boolean;
   onClose: () => void;
   onChoose?: () => void;
+  multiple?: boolean;
+  uploadType?: UploadMediaState;
 }
 
-const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) => {
-  const [videoUrl, setInternalVideoUrl] = useState('');
+const VideoUpload: React.FC<Props> = ({
+  setContentVideoUrl,
+  setContentVideoUrls,
+  isOpen,
+  onClose,
+  onChoose,
+  multiple = false,
+  uploadType = UploadMediaState.ContentVideo,
+}) => {
+  const [videoUrl, setVideoUrl] = useState(''); // 비디오 업로드가 성공했는지 확인하기위해 비디오 하나를 내부에서 체크
+
   const [loading, setLoading] = useState(false);
   const [workroomOpen, setWorkroomOpen] = useState<boolean>(false);
 
-  const handleOnFileSelect = async (file: File) => {
-    try {
-      setLoading(true);
-      const req: MediaUploadReq = {
-        mediaState: UploadMediaState.TriggerVideo,
-        file,
-      };
-      const response = await sendUpload(req);
+  const handleOnFileSelect = async (files: FileList) => {
+    if (!files || files.length === 0) return;
 
-      if (response?.data) {
-        const url: string = response.data.url;
-        setVideoUrl(url);
-        setInternalVideoUrl(url);
+    setLoading(true);
+
+    try {
+      const fileArray = Array.from(files);
+
+      const req: MediaUploadReq = {
+        mediaState: uploadType,
+        fileList: fileArray,
+      };
+
+      const response = await sendUpload(req);
+      const uploadInfos = response?.data?.mediaUploadInfoList;
+
+      if (uploadInfos && uploadInfos.length > 0) {
+        const uploadResults = uploadInfos.map(info => info.url).filter((url): url is string => !!url);
+
+        setVideoUrl(uploadResults[0]);
+        if (uploadResults.length > 0) {
+          if (uploadResults.length > 1) {
+            setContentVideoUrls?.(uploadResults);
+          } else {
+            setContentVideoUrl(uploadResults[0]);
+          }
+        } else {
+          alert('파일 업로드는 성공했지만 URL이 없습니다.');
+        }
       } else {
-        console.error('Video upload failed.');
+        alert('업로드에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('전체 업로드 실패:', error);
+      alert('파일 업로드 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -43,7 +72,14 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
 
   const handleOnWorkroomItemSelect = (url: string) => {
     setVideoUrl(url);
-    setInternalVideoUrl(url);
+    setContentVideoUrl(url);
+    if (onChoose) onChoose();
+    setWorkroomOpen(false);
+  };
+
+  const handleOnWorkroomItemSelectMultiple = (urls: string[]) => {
+    setVideoUrl(urls[0]);
+    setContentVideoUrls?.(urls || []);
     if (onChoose) onChoose();
     setWorkroomOpen(false);
   };
@@ -52,11 +88,11 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'video/*';
-    input.multiple = false;
+    input.multiple = multiple ?? false;
     input.onchange = event => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (file) {
-        handleOnFileSelect(file);
+      const files = (event.target as HTMLInputElement).files;
+      if (files) {
+        handleOnFileSelect(files);
         if (onChoose) onChoose();
       }
     };
@@ -99,7 +135,8 @@ const VideoUpload: React.FC<Props> = ({setVideoUrl, isOpen, onClose, onChoose}) 
         open={workroomOpen}
         onClose={() => setWorkroomOpen(false)}
         onSelect={handleOnWorkroomItemSelect}
-        multiple={false}
+        multiple={multiple}
+        onSelectMultiple={handleOnWorkroomItemSelectMultiple}
         mediaStateFilter={MediaState.Video}
       />
       <LoadingOverlay loading={loading} />

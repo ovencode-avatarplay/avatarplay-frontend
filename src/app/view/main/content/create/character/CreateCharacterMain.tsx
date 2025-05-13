@@ -49,6 +49,7 @@ import CharacterGalleryModal from '@/app/view/studio/characterDashboard/Characte
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -903,6 +904,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               // onGalleryChoose={() => {
               //   setGalleryOpen(true);
               // }}
+              uploadType={UploadMediaState.CharacterImage}
             />
           )}
         </div>
@@ -1083,6 +1085,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           onChoose={() => {
             setSelectImageTypeOpen(false);
           }}
+          uploadType={UploadMediaState.CharacterImage}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
@@ -1092,7 +1095,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadType(null);
             setVideoUploadOpen(false);
           }}
-          setVideoUrl={handlerSetVideo}
+          setContentVideoUrl={handlerSetVideo}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && mediaUploadOpen && (
