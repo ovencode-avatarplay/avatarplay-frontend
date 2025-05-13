@@ -53,7 +53,6 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
-    console.log('asdasd');
     if (defaultEpisodeWebtoonInfo) {
       const webtoonSource = defaultEpisodeWebtoonInfo.webtoonSourceUrlList.find(
         info => info.webtoonLanguageType === ContentLanguageType.Source,
@@ -275,7 +274,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         </div>
 
         {/* 이미지 업로드 리스트 */}
-        <div className={styles.videoUploadBox}>
+        <div className={styles.webtoonUploadBox}>
           {field.fileUrl.length > 0 ? (
             <ul className={styles.fileList}>
               {field.fileUrl.map((image, imageIndex) => (
@@ -299,7 +298,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         </div>
 
         {/* 공통 이동 버튼 */}
-        <div className={styles.videoButtonContainer}>
+        <div className={styles.webtoonButtonContainer}>
           <img
             src={BoldAltArrowUpTwo.src}
             className={styles.arrowButton}
@@ -374,11 +373,11 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
       >
         {getLocalizedText('common_button_preview')}
       </div>
-      <div className={styles.videoUploadContainer}>
+      <div className={styles.webtoonUploadContainer}>
         <span className={styles.label}>{getLocalizedText('common_filter_webtoon')}</span>
         <div className={styles.uploadGroup}>
           <div
-            className={`${styles.videoUploadBox} ${
+            className={`${styles.webtoonUploadBox} ${
               hasError && imageFiles.length == 0 ? styles.videoUploadBoxError : ''
             }`}
           >
@@ -407,7 +406,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
             )}
           </div>
 
-          <div className={styles.videoButtonContainer}>
+          <div className={styles.webtoonButtonContainer}>
             <img src={BoldAltArrowUpTwo.src} className={styles.arrowButton} onClick={() => handleMoveImage('top')} />
             <img src={BoldAltArrowUp.src} className={styles.arrowButton} onClick={() => handleMoveImage('up')} />
             <img src={BoldAltArrowDown.src} className={styles.arrowButton} onClick={() => handleMoveImage('down')} />
