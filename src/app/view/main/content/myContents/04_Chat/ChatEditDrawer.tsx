@@ -17,7 +17,16 @@ interface Props {
   onDelete?: () => void;
 }
 
-const ChatEditDrawer: React.FC<Props> = ({open, onClose, onRename, onCopy, onMove, onShare, onDownload, onDelete}) => {
+const ChatEditDrawer: React.FC<Props> = ({
+  open,
+  onClose,
+  onRename,
+  onCopy,
+  onMove,
+  onShare,
+  onDownload: onReport,
+  onDelete,
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectLang, setSelectLang] = useState<string>('korea');
 
@@ -29,7 +38,7 @@ const ChatEditDrawer: React.FC<Props> = ({open, onClose, onRename, onCopy, onMov
       <CustomDrawer open={open} onClose={onClose}>
         <ul className={styles.fileEditDrawerContainer}>
           <>
-            <li className={styles.editDrawerButton} onClick={onMove}>
+            {/* <li className={styles.editDrawerButton} onClick={onMove}>
               <div className={styles.itemBox}>
                 <img src={BoldTranslator.src} className={styles.icons}></img>
                 {getLocalizedText('TODO : Move to a folder')}
@@ -56,17 +65,17 @@ const ChatEditDrawer: React.FC<Props> = ({open, onClose, onRename, onCopy, onMov
                 <img src={BoldReport.src} className={styles.icons}></img>
                 {getLocalizedText('TODO : Share')}
               </div>
-            </li>
-            <li className={styles.editDrawerButton} onClick={onDownload}>
+            </li> */}
+            <li className={styles.editDrawerButton} onClick={onReport}>
               <div className={styles.itemBox}>
                 <img src={BoldReport.src} className={styles.icons}></img>
-                {getLocalizedText('TODO : Download')}
+                {getLocalizedText('TODO : Report')}
               </div>
             </li>
             <li className={styles.editDrawerButton} onClick={onDelete}>
               <div className={styles.itemBox}>
                 <img src={BoldLeave.src} className={styles.icons}></img>
-                {getLocalizedText('TODO : Delete')}
+                {getLocalizedText('TODO : Leave')}
               </div>
             </li>
           </>

@@ -9,47 +9,47 @@ import {isOpenEditAtom} from './ChatAtom';
 import ChatEditDrawer from './ChatEditDrawer';
 import zIndex from '@mui/material/styles/zIndex';
 import {useSignalR} from '@/hooks/useSignalR';
-import {DMChatType, MediaState, sendUrlEnterDMChat, UrlEnterDMChatReq} from '@/app/NetWork/ChatMessageNetwork';
+import {
+  DMChatType,
+  MediaState,
+  sendUrlEnterDMChat,
+  UrlEnterDMChatReq,
+  sendReadChatRoom,
+  DMChatMessage,
+} from '@/app/NetWork/ChatMessageNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
-
-export interface Message {
-  id: number;
-  sender: 'me' | 'other';
-  content: string;
-  timestamp: string;
-  isItalic?: boolean;
-  mediaType?: MediaState;
-  mediaUrl?: string;
-}
 
 interface Props {
   urlLinkKey: string;
 }
 
 const Chat: React.FC<Props> = ({urlLinkKey}) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<DMChatMessage[]>([]);
+  const [roomId, setRoomId] = useState<number>(0);
 
   const {back} = useCustomRouter();
   const [chatRoomKey, setChatRoomKey] = useState(urlLinkKey);
   const handleSend = (text: string, mediaState: MediaState, mediaUrl: string) => {
-    const newMessage: Message = {
+    const newMessage: DMChatMessage = {
       id: messages.length + 1,
-      sender: 'me',
-      content: text,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      dmChatType: DMChatType.MyChat,
+      profileUrlLinkKey: '', // 현재 사용자의 profileUrlLinkKey
+      profileImageUrl: '', // 현재 사용자의 profileImageUrl
+      profileName: '', // 현재 사용자의 profileName
+      message: text,
+      mediaState: mediaState,
+      mediaUrl: mediaUrl,
+      emoticonId: 0,
+      createAt: new Date().toISOString(),
     };
-    console.log('mediaStatmediaStatemediaStatee', mediaState);
 
-    sendMessage(chatRoomKey, newMessage.content, 0, mediaState, mediaUrl);
+    sendMessage(chatRoomKey, newMessage.message, 0, mediaState, mediaUrl);
   };
 
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
   console.log(messages);
 
-  const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
+  const jwt = localStorage.getItem('jwt');
   const {joinRoom, leaveRoom, onMessage, sendMessage} = useSignalR(jwt || '');
 
   useEffect(() => {
@@ -81,37 +81,20 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
         setAnotherImageUrl(res.data.anotherImageUrl);
         setAnotherProfileName(res.data.anotherProfileName);
         setAnotherProfileEmail(res.data.anotherProfileEmail);
-        // ✅ 이전 메시지 변환
-        const formattedMessages: Message[] = prevMessageInfoList.map(msg => ({
-          id: msg.id,
-          sender: msg.dmChatType === DMChatType.MyChat ? 'me' : 'other',
-          content: msg.message,
-          timestamp: new Date(msg.createAt).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-          mediaType: msg.mediaState,
-          mediaUrl: msg.mediaUrl,
-        }));
+        setRoomId(res.data.roomId);
 
-        setMessages(formattedMessages);
+        setMessages(prevMessageInfoList);
         setChatRoomKey(chatRoomKey);
         joinRoom(chatRoomKey);
 
         // ✅ 새 메시지 수신 핸들러
         onMessage(payload => {
-          const newMsg: Message = {
-            id: payload.id,
-            sender: payload.dmChatType === DMChatType.MyChat ? 'me' : 'other',
-            content: payload.message,
-            timestamp: new Date(payload.createAt).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-            mediaType: payload.mediaState,
-            mediaUrl: payload.mediaUrl,
-          };
-          setMessages(prev => [...prev, newMsg]);
+          setMessages(prev => [...prev, payload]);
+
+          // 상대방이 보낸 메시지일 경우에만 읽음 처리
+          if (payload.dmChatType === DMChatType.AnotherChat) {
+            sendReadChatRoom({roomId: roomId}).catch(error => console.error('채팅방 읽음 처리 실패:', error));
+          }
         });
 
         return;

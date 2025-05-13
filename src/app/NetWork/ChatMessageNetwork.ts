@@ -90,6 +90,7 @@ export interface UrlEnterDMChatRes {
   anotherProfileName: string;
   anotherProfileEmail: string;
   prevMessageInfoList: DMChatMessage[];
+  roomId: number;
 }
 
 /**
@@ -384,5 +385,30 @@ export const sendCancelAddFriend = async (payload: CancelAddFriendReq): Promise<
   } catch (error) {
     console.error('❌ Failed to cancel add friend:', error);
     throw new Error('친구 추가 취소 중 오류가 발생했습니다.');
+  }
+};
+
+// 채팅방 읽음 처리 요청 타입
+export interface ReadChatRoomReq {
+  roomId: number;
+}
+
+// 채팅방 읽음 처리 응답 타입
+export interface ReadChatRoomRes {
+  // 빈 객체 반환
+}
+
+/**
+ * 채팅방 읽음 처리 API
+ * @param payload roomId 포함 요청 데이터
+ * @returns 빈 객체 응답
+ */
+export const sendReadChatRoom = async (payload: ReadChatRoomReq): Promise<ResponseAPI<ReadChatRoomRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<ReadChatRoomRes>>('/ChatMessage/read', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to read chat room:', error);
+    throw new Error('채팅방 읽음 처리 중 오류가 발생했습니다.');
   }
 };

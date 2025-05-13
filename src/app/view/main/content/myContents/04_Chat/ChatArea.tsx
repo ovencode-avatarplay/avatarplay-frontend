@@ -4,16 +4,17 @@ import ChatBubble from './ChatBubble';
 import ChatBlur from './ChatBlur';
 import {useAtom} from 'jotai';
 import {isOpenAddContentAtom, isOpenEmojiPickerAtom} from './ChatAtom';
-import {Message} from './Chat';
+import {DMChatMessage, DMChatType} from '@/app/NetWork/ChatMessageNetwork';
 
 interface Props {
-  messages: Message[];
+  messages: DMChatMessage[];
 }
 
 // "8:05 am" → "8:05"
 const extractMinute = (timestamp: string) => {
-  const [time] = timestamp.split(' ');
-  const [hour, minute] = time.split(':');
+  const date = new Date(timestamp);
+  const hour = date.getHours().toString().padStart(2, '0');
+  const minute = date.getMinutes().toString().padStart(2, '0');
   return `${hour}:${minute}`;
 };
 
@@ -38,12 +39,12 @@ const ChatArea: React.FC<Props> = ({messages}) => {
         const prevMsg = messages[idx - 1];
         const nextMsg = messages[idx + 1];
 
-        const currentMinute = extractMinute(msg.timestamp);
-        const prevMinute = prevMsg ? extractMinute(prevMsg.timestamp) : null;
-        const nextMinute = nextMsg ? extractMinute(nextMsg.timestamp) : null;
+        const currentMinute = extractMinute(msg.createAt);
+        const prevMinute = prevMsg ? extractMinute(prevMsg.createAt) : null;
+        const nextMinute = nextMsg ? extractMinute(nextMsg.createAt) : null;
 
         // 시간 표시: 같은 분의 마지막 메시지에만
-        const shouldShowTimestamp = !nextMsg || extractMinute(nextMsg.timestamp) !== currentMinute;
+        const shouldShowTimestamp = !nextMsg || extractMinute(nextMsg.createAt) !== currentMinute;
 
         // 간격: 분이 바뀔 때만 30px
         const isNewMinute = !prevMsg || currentMinute !== prevMinute;
@@ -52,13 +53,15 @@ const ChatArea: React.FC<Props> = ({messages}) => {
         return (
           <div key={msg.id} className={gapClass}>
             <ChatBubble
-              sender={msg.sender}
-              content={msg.content}
-              timestamp={shouldShowTimestamp ? msg.timestamp : ''}
-              isItalic={msg.isItalic}
+              sender={msg.dmChatType === DMChatType.MyChat ? 'me' : 'other'}
+              content={msg.message}
+              timestamp={shouldShowTimestamp ? currentMinute : ''}
+              isItalic={false}
               id={idx}
-              mediaType={msg.mediaType}
+              mediaType={msg.mediaState}
               mediaUrl={msg.mediaUrl}
+              profileImage={msg.profileImageUrl}
+              profileUrlLinkKey={msg.profileUrlLinkKey}
             />
           </div>
         );

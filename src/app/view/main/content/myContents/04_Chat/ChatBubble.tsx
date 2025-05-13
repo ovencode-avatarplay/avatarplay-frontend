@@ -7,6 +7,8 @@ import zIndex from '@mui/material/styles/zIndex';
 import CustomContextDropDown, {DropdownItem} from '@/components/layout/shared/CustomContextDropDown';
 import {BoldTranslator, LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePreview} from '@ui/Icons';
 import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
+import {pushLocalizedRoute} from '@/utils/UrlMove';
+import {useRouter} from 'next/navigation';
 
 const items: DropdownItem[] = [
   {
@@ -35,6 +37,7 @@ interface ChatBubbleProps {
   id: number;
   mediaType?: MediaState;
   mediaUrl?: string;
+  profileUrlLinkKey: string;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -46,6 +49,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   id,
   mediaType,
   mediaUrl,
+  profileUrlLinkKey,
 }) => {
   const isMe = sender === 'me';
   const [isBlurMode, setBlurMode] = useAtom(isBlurModeAtom);
@@ -90,10 +94,19 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
     return null;
   };
 
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <div className={`${styles.messageWrapper} ${isMe ? styles.right : styles.left}`} onClick={() => handleClick()}>
-      {!isMe && <Avatar src={profileImage} sx={{width: 32, height: 32}} />}
+      {!isMe && (
+        <Avatar
+          src={profileImage}
+          sx={{width: 32, height: 32}}
+          onClick={() => {
+            pushLocalizedRoute('/profile/' + profileUrlLinkKey + '?indexTab=1', router);
+          }}
+        />
+      )}
       <div className={styles.bubbleBlock}>
         {/* 나면 타임스탬프 왼쪽, 아니면 오른쪽 */}
         {isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
@@ -113,11 +126,11 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
 
         {!isMe && timestamp && <span className={styles.timestamp}>{timestamp}</span>}
       </div>
-      {isMenuOpen && (
+      {/* {isMenuOpen && (
         <div className={styles.translatorButton} style={!isMe ? {left: '40px'} : undefined}>
           <img src={BoldTranslator.src}></img>
         </div>
-      )}
+      )} */}
       <CustomContextDropDown
         open={isMenuOpen}
         onClose={close}
