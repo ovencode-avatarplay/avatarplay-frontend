@@ -107,108 +107,115 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
+    setIsLoading(true); // API 호출 시작 시 로딩 상태로 설정
     setError(null);
     let newFavoriteList: SearchResultWithFriend[] = [];
     let newNormalList: SearchResultWithFriend[] = [];
     let currentOffset = isRefreshAll ? 0 : offset;
     const keyword = searchText;
 
-    if (isRefreshAll) {
-      switch (selectedTag) {
-        case 'Following':
-          setFollowingProfileIds([]);
-          break;
-        case 'Character':
-          setCharacterProfileIds([]);
-          break;
-        case 'Friend':
-          setFriendProfileIds([]);
-          break;
-        case 'People':
-          setPeopleProfileIds([]);
-          break;
-      }
-    }
-
-    if (selectedTag === 'Following') {
-      const response = await sendGetSearchFollowingList({
-        characterIP: 0,
-        search: keyword,
-        positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
-        nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
-        isAdults: isAdultRef.current,
-        page: {offset: currentOffset, limit: LIMIT},
-        alreadyReceivedProfileIds: followingProfileIds,
-      });
-      if (response.data) {
-        newFavoriteList = response.data.favoriteCharacterList || [];
-        newNormalList = response.data.followCharacterList || [];
-      }
-    } else if (selectedTag === 'Character') {
-      const response = await sendGetSearchCharacterList({
-        characterIP: 0,
-        search: keyword,
-        positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
-        nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
-        isAdults: isAdultRef.current,
-        page: {offset: currentOffset, limit: LIMIT},
-        alreadyReceivedProfileIds: characterProfileIds,
-      });
-      if (response.data) {
-        newNormalList = response.data.recommendCharacterList || [];
-      }
-    } else if (selectedTag === 'Friend') {
-      const response = await sendGetSearchFriendList({
-        search: keyword,
-        page: {offset: currentOffset, limit: LIMIT},
-        alreadyReceivedProfileIds: friendProfileIds,
-      });
-      if (response.data) {
-        newFavoriteList = response.data.favoriteFriendList || [];
-        newNormalList = response.data.friendList || [];
-      }
-    } else if (selectedTag === 'People') {
-      const response = await sendGetSearchPeopleList({
-        search: keyword,
-        page: {offset: currentOffset, limit: LIMIT},
-        alreadyReceivedProfileIds: peopleProfileIds,
-      });
-      if (response.data) {
-        newNormalList = response.data.recommendPeopleList || [];
-      }
-    }
-
-    if (newFavoriteList.length > 0 || newNormalList.length > 0) {
-      const newProfileIds = [...newFavoriteList, ...newNormalList].map(item => item.characterProfileId);
-
-      switch (selectedTag) {
-        case 'Following':
-          setFollowingProfileIds(prev => [...prev, ...newProfileIds]);
-          break;
-        case 'Character':
-          setCharacterProfileIds(prev => [...prev, ...newProfileIds]);
-          break;
-        case 'Friend':
-          setFriendProfileIds(prev => [...prev, ...newProfileIds]);
-          break;
-        case 'People':
-          setPeopleProfileIds(prev => [...prev, ...newProfileIds]);
-          break;
-      }
-
+    try {
       if (isRefreshAll) {
-        setFavoriteList(newFavoriteList);
-        setNormalList(newNormalList);
-      } else {
-        setFavoriteList(prev => [...prev, ...newFavoriteList]);
-        setNormalList(prev => [...prev, ...newNormalList]);
+        switch (selectedTag) {
+          case 'Following':
+            setFollowingProfileIds([]);
+            break;
+          case 'Character':
+            setCharacterProfileIds([]);
+            break;
+          case 'Friend':
+            setFriendProfileIds([]);
+            break;
+          case 'People':
+            setPeopleProfileIds([]);
+            break;
+        }
       }
-      setOffset(currentOffset + LIMIT);
-      setHasMore(newFavoriteList.length + newNormalList.length === LIMIT);
-    } else {
-      setHasMore(false);
+
+      if (selectedTag === 'Following') {
+        const response = await sendGetSearchFollowingList({
+          characterIP: 0,
+          search: keyword,
+          positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
+          nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
+          isAdults: isAdultRef.current,
+          page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: followingProfileIds,
+        });
+        if (response.data) {
+          newFavoriteList = response.data.favoriteCharacterList || [];
+          newNormalList = response.data.followCharacterList || [];
+        }
+      } else if (selectedTag === 'Character') {
+        const response = await sendGetSearchCharacterList({
+          characterIP: 0,
+          search: keyword,
+          positiveFilterTags: positiveFiltersRef.current.map(f => f.key),
+          nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
+          isAdults: isAdultRef.current,
+          page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: characterProfileIds,
+        });
+        if (response.data) {
+          newNormalList = response.data.recommendCharacterList || [];
+        }
+      } else if (selectedTag === 'Friend') {
+        const response = await sendGetSearchFriendList({
+          search: keyword,
+          page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: friendProfileIds,
+        });
+        if (response.data) {
+          newFavoriteList = response.data.favoriteFriendList || [];
+          newNormalList = response.data.friendList || [];
+        }
+      } else if (selectedTag === 'People') {
+        const response = await sendGetSearchPeopleList({
+          search: keyword,
+          page: {offset: currentOffset, limit: LIMIT},
+          alreadyReceivedProfileIds: peopleProfileIds,
+        });
+        if (response.data) {
+          newNormalList = response.data.recommendPeopleList || [];
+        }
+      }
+
+      if (newFavoriteList.length > 0 || newNormalList.length > 0) {
+        const newProfileIds = [...newFavoriteList, ...newNormalList].map(item => item.characterProfileId);
+
+        switch (selectedTag) {
+          case 'Following':
+            setFollowingProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+          case 'Character':
+            setCharacterProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+          case 'Friend':
+            setFriendProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+          case 'People':
+            setPeopleProfileIds(prev => [...prev, ...newProfileIds]);
+            break;
+        }
+
+        if (isRefreshAll) {
+          setFavoriteList(newFavoriteList);
+          setNormalList(newNormalList);
+        } else {
+          setFavoriteList(prev => [...prev, ...newFavoriteList]);
+          setNormalList(prev => [...prev, ...newNormalList]);
+        }
+        setOffset(currentOffset + LIMIT);
+        setHasMore(newFavoriteList.length + newNormalList.length === LIMIT);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      setError('검색 중 오류가 발생했습니다.');
+    } finally {
+      setIsPagingLoading(false);
+      setIsLoading(false); // API 호출 완료 후 로딩 상태 해제
     }
-    setIsPagingLoading(false);
   };
 
   // SearchBar에서 필터, isAdult 상태를 ref에 저장
@@ -482,13 +489,13 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   const renderSearchResults = () => {
-    if (isLoading && offset === 0) {
-      return <div className={styles.loading}>검색 중...</div>;
+    if (isLoading) {
+      return <div className={styles.loading}></div>;
     }
     if (error) {
       return <div className={styles.error}>{error}</div>;
     }
-    if (favoriteList.length === 0 && normalList.length === 0) {
+    if (!isLoading && favoriteList.length === 0 && normalList.length === 0) {
       return <EmptyState stateText="No search results found." />;
     }
     return (

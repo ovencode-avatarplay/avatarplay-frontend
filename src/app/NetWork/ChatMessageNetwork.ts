@@ -128,6 +128,7 @@ export interface GetDMChatRoomListReq {
 // 개별 DM 채팅방 정보 타입
 export interface DMChatRoomInfo {
   roomId: number;
+  profileId: number;
   urlLinkKey: string;
   profileName: string;
   profileIconUrl: string;
@@ -139,7 +140,7 @@ export interface DMChatRoomInfo {
 // 응답 타입
 export interface GetDMChatRoomListRes {
   dmChatRoomList: DMChatRoomInfo[];
-  dmChatRecommendProfileList: SearchCharacterRoomInfo[];
+  dmChatRecommendProfileList: DMChatRoomInfo[];
 }
 
 /**
@@ -247,6 +248,7 @@ export interface GetSearchFollowingListReq {
   alreadyReceivedProfileIds: number[];
 }
 export interface GetSearchFollowingListRes {
+  favoriteCharacterList: SearchCharacterRoomInfo[];
   followCharacterList: SearchCharacterRoomInfo[];
 }
 export const sendGetSearchFollowingList = async (
@@ -305,6 +307,7 @@ export interface GetSearchFriendListReq {
   alreadyReceivedProfileIds: number[];
 }
 export interface GetSearchFriendListRes {
+  favoriteFriendList: SearchCharacterRoomInfo[];
   friendList: SearchCharacterRoomInfo[];
 }
 export const sendGetSearchFriendList = async (

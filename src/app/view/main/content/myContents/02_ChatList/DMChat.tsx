@@ -10,6 +10,7 @@ import {
   sendGetDMChatRoomList,
   sendLeaveChatRoom,
   ChatRoomType,
+  SearchCharacterRoomInfo,
 } from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
@@ -18,10 +19,28 @@ import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import ProfilePopup from '../ProfilePopup';
 import {pinFix, PinTabType, bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 
-const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
+const tags = [
+  'Chatroom',
+  'common_tag_music',
+  'common_tag_bl',
+  'common_tag_gravure',
+  'common_tag_novel',
+  'common_tag_drama',
+  'common_tag_anime',
+  'common_tag_edu',
+  'common_tag_sports',
+  'common_tag_star',
+  'common_tag_brand',
+];
+
+// API 응답 타입 정의
+interface DMChatRoomResponse {
+  dmChatRoomList: DMChatRoomInfo[];
+  dmChatRecommendProfileList: DMChatRoomInfo[];
+}
 
 const DMChat: React.FC = () => {
-  const [selectedTag, setSelectedTag] = useState(tags[0]);
+  const [selectedTag, setSelectedTag] = useState<string>(tags[0]);
   const [filterValue, setFilterValue] = useState<string>('Original');
   const [sortValue, setSortValue] = useState<string>('Newest');
   const [dmList, setDmList] = useState<DMChatRoomInfo[]>([]);
@@ -131,13 +150,17 @@ const DMChat: React.FC = () => {
       const response = await sendGetDMChatRoomList({
         isDMChatRoom: true,
         search: '',
-        interest: '',
+        interest: selectedTag === 'Chatroom' ? '' : selectedTag,
         sort: 0,
         page: {offset: currentOffset, limit: LIMIT},
         alreadyReceivedProfileIds: alreadyReceivedProfileIds,
       });
 
-      let newList = response.data?.dmChatRoomList ?? [];
+      // 태그에 따라 다른 리스트 사용
+      let newList =
+        selectedTag === 'Chatroom'
+          ? response.data?.dmChatRoomList ?? []
+          : response.data?.dmChatRecommendProfileList ?? [];
 
       // 필터 처리 (CharacterIP는 서버에서 따로 안 주므로 테스트용 로직)
       const filter = filterValue === 'Original' ? '1' : filterValue === 'Fan' ? '2' : '0';
@@ -225,7 +248,7 @@ const DMChat: React.FC = () => {
 
   return (
     <>
-      <SwipeTagList tags={tags} currentTag="All" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
+      <SwipeTagList tags={tags} currentTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
       <FilterBar
         filters={['Original', 'Fan']}
         sortOptions={['Newest', 'Oldest']}
