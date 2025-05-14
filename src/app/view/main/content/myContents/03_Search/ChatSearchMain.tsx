@@ -27,6 +27,8 @@ import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -54,6 +56,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const negativeFiltersRef = useRef<FilterDataItem[]>([]);
   const isAdultRef = useRef(true);
 
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   // 페이징 관련 상태
   const [offset, setOffset] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -377,10 +380,16 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       onClick: async () => {
         if (selectedRoom) {
           try {
-            await followProfile(selectedRoom.characterProfileId, false);
-            // Following/Friend 목록에서만 제거
-            if (selectedTag === 'Following' || selectedTag === 'Friend') {
-              setNormalList(prev => prev.filter(item => item.characterProfileId !== selectedRoom.characterProfileId));
+            const result = await followProfile(selectedRoom.characterProfileId, false);
+            if (result == 0) {
+              // Following/Friend 목록에서만 제거
+              if (selectedTag === 'Following' || selectedTag === 'Friend') {
+                setNormalList(prev => prev.filter(item => item.characterProfileId !== selectedRoom.characterProfileId));
+              }
+            } else if (result != 0) {
+              if (result == 22) {
+                dataToast.open('이미 언팔로우 상태입니다.', ToastType.Error);
+              }
             }
             setOpenOption(false);
           } catch (e) {
