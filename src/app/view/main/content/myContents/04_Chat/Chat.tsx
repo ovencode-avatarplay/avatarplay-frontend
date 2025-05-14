@@ -19,6 +19,7 @@ import {
   ChatState,
 } from '@/app/NetWork/ChatMessageNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 interface Props {
   urlLinkKey: string;
@@ -52,9 +53,14 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
   console.log(messages);
 
   const jwt = localStorage.getItem('jwt');
-  const {joinRoom, leaveRoom, onMessage, sendMessage} = useSignalR(jwt || '');
+  const {joinRoom, leaveRoom, onMessage, sendMessage, onDMError} = useSignalR(jwt || '');
 
   useEffect(() => {
+    // ReceiveDMError 이벤트 수신
+    onDMError(error => {
+      console.warn(`[DM 에러] ${error.code}: ${error.message}`);
+      dataToast.open('팔로우 상대가 아니라 메시지 전송이 제한됩니다.', ToastType.Error);
+    });
     onDM();
     return () => {
       if (chatRoomKey) {
@@ -68,6 +74,7 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
   const [anotherImageUrl, setAnotherImageUrl] = useState('');
   const [anotherProfileName, setAnotherProfileName] = useState('');
   const [anotherProfileEmail, setAnotherProfileEmail] = useState('');
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   const onDM = async () => {
     if (!urlLinkKey) return;
 
