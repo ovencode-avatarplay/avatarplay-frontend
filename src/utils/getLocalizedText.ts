@@ -53,7 +53,6 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
   const localizedItem = localizationSources[lowerKey];
 
   if (!localizedItem) {
-    console.warn(`로컬라이징 작업 필요: ${key}`);
     return `${key}`;
   }
 

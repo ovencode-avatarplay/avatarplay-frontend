@@ -22,6 +22,9 @@ export enum UploadMediaState {
   ContentEpisodeWebtoonSubtitle = 17,
   ContentImage = 18,
   ContentVideo = 19,
+  DmChatImage = 20,
+  DmChatVideo = 21,
+  DmChatAudio = 22,
 }
 export interface MediaUploadReq {
   mediaState: number; // Enum 타입

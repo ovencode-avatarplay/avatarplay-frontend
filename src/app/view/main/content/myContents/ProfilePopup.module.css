@@ -1,0 +1,260 @@
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+  
+  .popupContainer {
+    width: 320px;
+    max-height: 716px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    text-align: center;
+  }
+ 
+  
+  .popupTextArea {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  .popupTitle {
+    font-family: 'Lato';
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 120%;
+    color: #000;
+  }
+  
+  .popupDescription {
+    font-family: 'Lato';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 140%;
+    color: #80868B;
+  }
+  
+  .popupButtons {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  .popupButton {
+    flex-grow: 1;
+
+    font-family: 'Lato';
+  }   
+  .textButton {
+    align-self: stretch;
+    
+    color: var(--Neutral-600, #80868B);
+    text-align: center;
+    font-family: Lato;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 18.2px */
+  }
+
+  /* 전체 컨테이너 */
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 77px;
+    
+    padding: 10px 16px;
+  }
+  
+  /* 프로필 컨테이너 */
+  .profileContainer {
+    position: relative;
+    width: 45px;
+    height: 45px;
+  }
+  
+  .profileImage {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.5px solid rgba(0, 0, 0, 0.4);
+  }
+  
+  /* 상태 표시 (핑크색 원) */
+  .statusIndicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #FD55D3;
+    border-radius: 50%;
+  }
+  
+  /* 프로필 정보 */
+  .profileInfo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 8px;
+  }
+  
+  /* 상단 프로필 라인 */
+  .profileTop {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  /* 프로필 이름 */
+  .profileName {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+  }
+  
+  /* 타임스탬프 */
+  .timestamp {
+    font-size: 12px;
+    color: #9AA0A6;
+  }
+  
+  /* 정보 아이콘 */
+  .infoIcon {
+    width: 20px;
+    height: 20px;
+    color: #DADCE0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-right: 16px;
+  }
+  
+  .info {
+    filter: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(114%) hue-rotate(184deg) brightness(90%) contrast(97%);
+  }
+  
+  .delete {
+    filter: brightness(0) saturate(100%);
+  }
+  
+  /* 뱃지 스타일 */
+  .fanBadge {
+    font-size: 10px;
+    font-weight: 600;
+    background: #e9e9e9;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 999px;
+  }
+  
+  .originalBadge {
+    display: flex;
+    width: 50px;
+    height: 20px;
+    
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 999px;
+    background: var(--Primary-3, #FFE6F8);
+    color: #FD55D3;
+  }
+  
+  /* 팔로우 버튼 */
+  .follow {
+    display: flex;
+    height: 36px;
+    padding: 8px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;border-radius: 8px;
+    background: var(--Neutral-800, #2C3131);
+    color: white;
+  }
+  
+  .following {
+    color: #9aa0a6;
+    display: flex;
+    width: 105px;
+    height: 36px;
+    padding: 0px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 8px;
+  background: var(--Neutral-100, #F1F3F4);
+  }
+  
+  /* 체크 아이콘 */
+  .checkLeft,
+  .checkRight {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .checkLeft {
+    margin-right: 8px;
+  }
+  
+  .checkRight {
+    margin-left: 8px;
+  }
+  
+  /* 오른쪽 영역 */
+  .rightArea {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* 옵션 영역 (핀 + 점 세개) */
+  .optionWrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px;
+  }
+  
+  .pinIcon,
+  .moreIcon {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) saturate(100%)
+  }
+  
+  .moreIcon {
+    cursor: pointer;
+  }
+  
+  .profileDesc{
+    color: var(--Black, #000);
+font-family: Lato;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+letter-spacing: -0.18px;
+align-self: flex-start;
+  }

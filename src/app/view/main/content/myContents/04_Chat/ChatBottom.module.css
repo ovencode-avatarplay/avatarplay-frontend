@@ -1,0 +1,159 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%; position: absolute;
+  }
+  
+.box
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 6px 10px;
+  gap: 7px;
+  background: #ffffff;   
+}
+
+  .plusButton {
+    width: 26px;
+    height: 26px;
+    background: #e8eaed;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* 부드러운 회전 */
+    
+  }
+  
+  .inputWrap {
+    display: flex;
+    align-items: flex-end;
+    padding: 4px;
+    gap: 6px;
+    flex: 1;
+    height: 38px;
+    background: #e8eaed;
+    border-radius: 20px;
+  }
+  
+  .inputIcon {
+    width: 30px;
+    height: 30px;
+    background: #fd55d3;
+    border-radius: 30px;
+  }
+  
+  .inputField {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    padding: 4px;
+    color: #000;
+    font-style: italic;
+  }
+  
+  .sendWrap {
+    width: 30px;
+    height: 30px;
+    background: #121414;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .sendIcon {
+    color: white;
+    font-size: 18px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+  
+  .micIcon{
+    filter: brightness(0) saturate(100%);    
+    cursor: pointer;
+  }
+
+  .addContent {
+    display: flex;
+    padding: 0 25px; /* padding만 남겨 */
+    height: 0px; /* 기본 높이 0 */
+    overflow: hidden;
+    align-items: center;
+    gap: 26px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    background: #FFF;
+  
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0s ease;
+    pointer-events: none;
+  }
+  
+  .show {
+    height: 100%; /* 여기에 진짜 높이 부여 */
+    transform: translateY(0);
+    opacity: 1;
+    border-top: 1px solid var(--Border-1, #EAECF0);
+    border-bottom: 1px solid var(--Border-1, #EAECF0);
+    pointer-events: auto;
+  }
+  
+  
+  .addItem
+  {
+    display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+width: 44px;
+height: 64px;
+  }
+
+  .addItemRound
+  {
+    display: flex;
+padding: 10px;
+align-items: center;
+gap: 10px;
+border-radius: 999px;
+background: var(--Neutral-100, #F1F3F4);
+width: 34px;
+height: 34px;
+justify-content: center;
+cursor: pointer;
+}
+
+  .addItemText{
+    color: #000;
+font-family: Lato;
+font-size: 14px;
+font-style: normal;
+font-weight: 500;
+line-height: 140%; /* 19.6px */
+  }
+
+  .addItemIcon{
+    filter: brightness(0) saturate(100%);
+  
+  }
+.pickerWrap {
+  width: 100%;
+  height: 100%;
+}
+
+
+.pickerWrap em-emoji-picker {
+  width: 100%;
+}

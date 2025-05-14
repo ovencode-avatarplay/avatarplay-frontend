@@ -6,12 +6,27 @@ interface CustomHashtagProps {
   onClickAction: () => void;
   isSelected: boolean;
   color?: string;
+  selectedClassName?: string | null;
+  unselectedClassName?: string | null;
 }
 
-const CustomHashtag: React.FC<CustomHashtagProps> = ({text, onClickAction, isSelected, color}) => {
+const CustomHashtag: React.FC<CustomHashtagProps> = ({
+  text,
+  onClickAction,
+  isSelected,
+  color,
+  selectedClassName,
+  unselectedClassName,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const getButtonClass = () => {
+    if (selectedClassName !== undefined && selectedClassName !== '') {
+      if (isSelected) return selectedClassName;
+    }
+    if (unselectedClassName !== undefined && unselectedClassName !== '') {
+      if (!isSelected) return unselectedClassName;
+    }
     if (isSelected) return styles.active;
     if (isHovered) return styles.hover;
     return styles.default;

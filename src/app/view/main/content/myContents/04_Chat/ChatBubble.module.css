@@ -1,0 +1,94 @@
+.messageWrapper {
+    display: flex;
+    width: 100%;
+    position: relative;
+  }
+  
+  .left {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  
+  .right {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  
+  .bubbleBlock {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    max-width: 80%;
+    align-items: flex-end;
+    flex-wrap: nowrap; /* 💡 줄바꿈 방지 */
+  }
+  
+  
+  .bubble {
+    padding: 8px 12px;
+    max-width: 260px;
+    word-break: break-word;
+    border-radius: 0px 12px 12px 12px;
+    backdrop-filter: blur(7.5px);
+  }
+  
+  .otherBubble {
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+  }
+  
+  .myBubble {
+    background: rgba(242, 130, 214, 0.6);
+    color: #000000;
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+    
+  }
+  
+  .myBubble p {
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+  }
+  .timestamp {
+    font-size: 11px;
+    color: #2c3131;
+    white-space: nowrap; /* 💡 줄바꿈 방지 */
+    align-self: flex-end;
+  }
+  .italic {
+    font-style: italic;
+  }
+  .blur {
+    filter: blur(10px);
+  }
+  
+  .translatorButton{
+    position: absolute;
+    
+    margin-top: -40px;
+    z-index:  1000;    
+    display: flex;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    background: var(--Neutral-400, #BDC1C6);
+  }
+
+  .chatMediaImage {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .chatMediaVideo {
+    max-width: 200px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .chatMediaAudio {
+    width: 200px;
+    margin-bottom: 8px;
+  }
+  

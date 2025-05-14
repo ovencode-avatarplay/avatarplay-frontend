@@ -1,0 +1,98 @@
+.container {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  padding: 0 0 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 0 16px;
+  height: 37px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+}
+
+.clearAllButton {
+  font-size: 13px;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.clearAllButton:hover {
+  background: #f2f2f2;
+  color: #222;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  width: 100%;
+}
+
+.keyword {
+  font-size: 15px;
+  font-weight: 500;
+  color: #80868b;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.keyword:hover {
+  color: #222;
+}
+
+.clearButton {
+  background: #e8eaed;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.15s;
+}
+.clearButton:hover {
+  background: #d3d6da;
+}
+
+.clearIcon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.empty {
+  color: #bbb;
+  font-size: 14px;
+  text-align: center;
+  padding: 24px 0 0 0;
+}
+
+.active {
+  background: #f0f4fa;
+  border-radius: 6px;
+}
+  

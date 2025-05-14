@@ -1,0 +1,76 @@
+
+.drawerPaper
+{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.container
+{
+    width: 100%;
+    height: 100%;
+    background-color: white
+}
+.subMenu
+{
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    max-height: 300px;
+    top: 50px;
+    z-index: 100;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.content
+{
+    margin-top: 38px;
+    justify-content: center;
+    
+    align-items: center;
+    align-content: center;          
+}
+.noFoundSearch
+{
+    margin-top: 35px;
+    justify-content: center;
+}
+
+.drawerContainer {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: var(--text-color);
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: var(--error-color);
+}
+
+.searchResults {
+  
+}
+
+.resultSection {
+  margin-bottom: 24px;
+}
+
+.resultSection h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-color);
+}

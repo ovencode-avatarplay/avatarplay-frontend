@@ -86,7 +86,7 @@ import {
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {copyCurrentUrlToClipboard, getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
-import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import {channel} from 'diagnostics_channel';
 import 'swiper/css';
@@ -107,6 +107,8 @@ import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
+import {sendCheckDMChatLinkKey} from '@/app/NetWork/ChatMessageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -695,7 +697,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       console.error('An error occurred while Following:', error);
     }
   };
-
+  const [isLoading, setIsLoading] = useState(false);
   const routerBack = () => {
     back('/main/homefeed');
   };
@@ -774,6 +776,21 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   if (!data.isRefresh) {
     return;
   }
+
+  const checkDMLinkKey = async () => {
+    try {
+      setIsLoading(true);
+      const response = await sendCheckDMChatLinkKey({profileUrlLinkKey: urlLinkKey});
+      setIsLoading(false);
+      if (response.resultCode === 0) {
+        pushLocalizedRoute('/DM/' + response.data?.dmChatUrlLinkKey, router);
+      } else {
+        console.log(`에러 발생: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.log('요청 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <>
@@ -883,13 +900,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             />
           )}
 
-          {!isMine && (
+          {!isMine && isPD && (
             <img
               className={cx(styles.icon, styles.iconNotification)}
               src="/ui/profile/icon_notification.svg"
               alt=""
               onClick={() => {
-                dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
+                checkDMLinkKey();
               }}
             />
           )}
@@ -1298,6 +1315,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         ]}
         selectedIndex={-1}
       />
+
+      <LoadingOverlay loading={isLoading} />
     </>
   );
 });

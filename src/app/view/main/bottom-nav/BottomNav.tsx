@@ -175,7 +175,7 @@ export default function BottomNav() {
             const isMy = button.label == 'My';
             const isPlus = button.label == 'Plus';
             const isMessage = button.label == 'Content';
-            if (!isMy && !isPlus && !isMessage) {
+            if (!isMy && !isPlus) {
               return (
                 <Link
                   key={index}
@@ -229,18 +229,6 @@ export default function BottomNav() {
                   <div className={styles.navButtonPlusWrap}>
                     <img className={styles.buttonIconPlus} src={LinePlus.src} />
                   </div>
-                </button>
-              );
-            } else if (isMessage) {
-              return (
-                <button
-                  className={`${styles.navButton} 
-                ${selectedIndex === index ? styles.selected : ''} 
-                ${selectedIndex === index && colorMode === 0 ? styles['light-mode'] : ''}`}
-                  onClick={() => dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal)}
-                >
-                  {/* 다크모드 화이트 모드로 변경 */}
-                  {button.icon}
                 </button>
               );
             }

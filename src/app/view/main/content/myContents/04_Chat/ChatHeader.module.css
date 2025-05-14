@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #f1f3f4;
+    background-color: #fff;
+  }
+  
+  .backButton {
+    padding: 0;
+    margin-right: 8px;
+  }
+  
+  .chatInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1;
+  }
+  
+  .textInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #121414;
+    line-height: 100%;
+  }
+  
+  .episode {
+    font-size: 14px;
+    color: #9aa0a6;
+    line-height: 100%;
+  }
+  
+  .rightIcons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .arrowIcon
+  {
+    filter: brightness(0) saturate(100%);
+    width: 20px;
+    height: 20px;
+  }
+
+  .camIcon
+  {
+    filter: brightness(0) saturate(100%);
+    width: 24px;
+    height: 24px;
+  }
+
+  .phoneIcon
+  {
+    filter: brightness(0) saturate(100%);
+    width: 20px;
+    height: 20px;
+  }
