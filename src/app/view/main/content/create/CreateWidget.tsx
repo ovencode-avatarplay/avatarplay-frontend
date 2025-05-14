@@ -144,7 +144,10 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 ValueComponent={SelectBoxValueComponent}
                 OptionComponent={SelectBoxOptionComponent}
                 onChange={async id => {
-                  const resData = await selectProfile(id);
+                  const resData = await selectProfile(
+                    id,
+                    data.profileList.find(v => v.profileId == id)?.profileTabType,
+                  );
                   if (!resData?.profileSimpleInfo) return;
 
                   dispatch(updateProfile(resData?.profileSimpleInfo));
