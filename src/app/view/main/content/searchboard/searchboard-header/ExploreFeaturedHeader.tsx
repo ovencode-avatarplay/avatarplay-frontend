@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
-import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
 import styles from './ExploreFeaturedHeader.module.css';
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
@@ -12,19 +11,33 @@ interface ExploreFeaturedHeaderProps {
 }
 
 const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) => {
+  const [gap, setGap] = useState(13); // 기본값 (1300px * 1%)
+
+  useEffect(() => {
+    const updateGap = () => {
+      const containerWidth = window.innerWidth;
+      const newGap = containerWidth * 0.01; // 1% 계산
+      setGap(newGap);
+    };
+
+    updateGap(); // 최초 실행
+    window.addEventListener('resize', updateGap); // 리사이즈 대응
+
+    return () => window.removeEventListener('resize', updateGap);
+  }, []);
+
   useEffect(() => {
     const paginationElement = document.querySelector(`.${styles.customPagination}`);
     if (paginationElement) {
-      paginationElement.classList.add('swiper-pagination'); // Swiper가 인식하도록 클래스 추가
+      paginationElement.classList.add('swiper-pagination');
     }
   }, []);
 
   return (
     <div className={styles.swiperContainer}>
       <Swiper
-        spaceBetween={11} // 아이템 간격
+        spaceBetween={gap}
         slidesPerView={'auto'}
-        // slidesPerView={1.08}
         loop={true}
         centeredSlides={true}
         grabCursor={true}
@@ -39,15 +52,14 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
       >
         {items.map((item, index) => (
           <SwiperSlide className={styles.swiperItem} key={index}>
-            <Link className={styles.link} key={index} href={item.imageLinkUrl}>
+            <Link className={styles.link} href={item.imageLinkUrl}>
               <div
                 className={styles.backImage}
                 style={{
-                  background: `url(${item.imageUrl}) `,
+                  backgroundImage: `url(${item.imageUrl})`,
                   backgroundPosition: 'center',
-                  backgroundSize: '100% 100%',
+                  backgroundSize: 'cover',
                   backgroundRepeat: 'no-repeat',
-                  // backgroundAttachment: 'fill',
                 }}
               >
                 <div className={styles.textArea}>
