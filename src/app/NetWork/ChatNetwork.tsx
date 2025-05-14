@@ -131,7 +131,10 @@ export enum ChatType {
   TriggerInfo = 2,
   Intro = 3,
 }
-
+export enum ChatState {
+  Create = 1,
+  Delete = 2,
+}
 export interface MessageInfo {
   id: number;
   userName: string;

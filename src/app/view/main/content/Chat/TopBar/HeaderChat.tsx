@@ -50,6 +50,7 @@ const TopBar: React.FC<ChatTopBarProps> = ({
             <div className={styles.left}>
               <img
                 className={styles.buttonImage}
+                alt="Left Back"
                 src={Left.src}
                 onClick={() => {
                   routerBack();

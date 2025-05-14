@@ -84,7 +84,7 @@ import {
 } from '@/app/NetWork/CharacterNetwork';
 import {copyCurrentUrlToClipboard, getBackUrl} from '@/utils/util-1';
 import {useInView} from 'react-intersection-observer';
-import {getCurrentLanguage, getLocalizedLink} from '@/utils/UrlMove';
+import {getCurrentLanguage, getLocalizedLink, pushLocalizedRoute} from '@/utils/UrlMove';
 import {deleteChannel, getChannelInfo, GetChannelRes} from '@/app/NetWork/ChannelNetwork';
 import PopupSubscription from '../main/content/create/common/PopupSubscription';
 import PopupSubscriptionList from './PopupSubscriptionList';
@@ -102,6 +102,8 @@ import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
+import {sendCheckDMChatLinkKey} from '@/app/NetWork/ChatMessageNetwork';
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -690,7 +692,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       console.error('An error occurred while Following:', error);
     }
   };
-
+  const [isLoading, setIsLoading] = useState(false);
   const routerBack = () => {
     back('/main/homefeed');
   };
@@ -770,6 +772,21 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
     return;
   }
 
+  const checkDMLinkKey = async () => {
+    try {
+      setIsLoading(true);
+      const response = await sendCheckDMChatLinkKey({profileUrlLinkKey: urlLinkKey});
+      setIsLoading(false);
+      if (response.resultCode === 0) {
+        pushLocalizedRoute('/DM/' + response.data?.dmChatUrlLinkKey, router);
+      } else {
+        console.log(`에러 발생: ${response.resultMessage}`);
+      }
+    } catch (error) {
+      console.log('요청 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <>
       {isMine && (
@@ -817,6 +834,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {((!isMine && isPath) || isNeedBackBtn) && (
             <div
               className={styles.backBtn}
+              data-testid="left-back-btn"
               onClick={() => {
                 if (isPath) {
                   routerBack();
@@ -825,7 +843,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 }
               }}
             >
-              <img src={LineArrowLeft.src} alt="" />
+              <img src={LineArrowLeft.src} alt="Left Back" />
             </div>
           )}
           <div
@@ -877,13 +895,13 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             />
           )}
 
-          {!isMine && (
+          {!isMine && isPD && (
             <img
               className={cx(styles.icon, styles.iconNotification)}
               src="/ui/profile/icon_notification.svg"
               alt=""
               onClick={() => {
-                dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
+                checkDMLinkKey();
               }}
             />
           )}
@@ -1292,6 +1310,8 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         ]}
         selectedIndex={-1}
       />
+
+      <LoadingOverlay loading={isLoading} />
     </>
   );
 });

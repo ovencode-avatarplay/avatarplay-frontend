@@ -6,6 +6,7 @@
     box-sizing: border-box;
     overflow-y: scroll;
     overflow-x: hidden;
+    
   }
   
   /* Drawer 내부 콘텐츠 */

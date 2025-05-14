@@ -65,6 +65,11 @@ import BoldVerticalGrid from "./Bold/Vertical_Grid.svg";
 import BoldVideo from "./Bold/Video.svg";
 import BoldViewGallery from "./Bold/View_Gallery.svg";
 import BoldMessenger from "./Bold/Messenger.svg";
+import BoldTranslator from "./Bold/Translator.svg";
+import BoldLeave from "./Bold/Leave.svg";
+import BoldReport from "./Bold/Report.svg";
+import BoldUserCircle from "./Bold/UserCircle.svg";
+import BoldSetting from "./Bold/Setting.svg";
 import BoldBookMark from "./Bold/Bookmark.svg";
 import BoldBookMarkWhite from "./Bold/BookmarkWhite.svg";
 import BoldAudio from "./Bold/Audio.svg";
@@ -131,6 +136,8 @@ import LineNotification from "./Line/Notification.svg";
 import LineReward from "./Line/Reward.svg";
 import LineHome from "./Line/Home.svg";
 import LineTime from "./Line/line_time.svg";
+import LineFriendList from "./Line/FriendList.svg";
+import LineSearchThin from "./Line/Search_Thin.svg";
 import LineCam from "./Line/Cam.svg";
 import LinePhone from "./Line/Phone.svg";
 import LineBookMark from "./Line/Bookmark.svg";
@@ -168,6 +175,8 @@ import EmojiScared from "./Custom/emoji_scared.svg";
 import EmojiNormal from "./Custom/emoji_normal.svg";
 import EmojiConfused from "./Custom/emoji_confused.svg";
 import EmojiCuriosity from "./Custom/emoji_curiosity.svg";
+import Emoticon from "./Custom/Emoticon.svg";
+import VideoFrame from "./Custom/Video_Frame.svg";
 import AudioWave from "./Custom/wpf_audio-wave.svg";
 
 export {
@@ -262,6 +271,10 @@ export {
   BoldContentLists,
   BoldSearch,
   BoldMessenger,
+  BoldTranslator,
+  BoldLeave,
+  BoldReport,
+  BoldUserCircle,
   BoldBookMark,
   BoldBookMarkWhite,
   BoldAudio,
@@ -335,8 +348,13 @@ export {
   EmojiNormal,
   EmojiConfused,
   EmojiCuriosity,
+  LineFriendList,
+  LineSearchThin,
   LineCam,
   LinePhone,
+  Emoticon,
+  VideoFrame,
+  BoldSetting,
   LineBookMark,
   LineList,
   AudioWave,

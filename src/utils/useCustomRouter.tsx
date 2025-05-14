@@ -32,6 +32,10 @@ const useCustomRouter = () => {
   const pathname = usePathname();
   const [data, setData] = useAtom(routerAtom);
 
+  const currentParams2 = new URLSearchParams(searchParams.toString());
+  console.log('searchPares', currentParams2);
+  console.log('pathname', pathname);
+
   useEffect(() => {
     storePathValues();
   }, [pathname, searchParams]);
