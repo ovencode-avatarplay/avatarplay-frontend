@@ -133,6 +133,10 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       }
 
       if (selectedTag === 'Following') {
+        console.log(
+          'positiveFiltersRef.current.map(f => f.key)',
+          positiveFiltersRef.current.map(f => f.key),
+        );
         const response = await sendGetSearchFollowingList({
           characterIP: 0,
           search: keyword,

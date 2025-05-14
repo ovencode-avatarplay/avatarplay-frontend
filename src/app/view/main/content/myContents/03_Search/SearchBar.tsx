@@ -81,6 +81,9 @@ const SearchBar: React.FC<Props> = ({
       }),
     );
     handlerFilterSaved(filters.positive, filters.negative);
+    if (onSearch && value.trim()) {
+      onSearch(value.trim(), isAdult, filters.positive, filters.negative);
+    }
   };
 
   const handleClear = () => {
@@ -128,7 +131,18 @@ const SearchBar: React.FC<Props> = ({
               </button>
             )}
 
-            <div className={styles.adultToggle} onClick={() => setIsAdult(!isAdult)}>
+            <div
+              className={styles.adultToggle}
+              onClick={() => {
+                setIsAdult(prev => {
+                  const next = !prev;
+                  if (onSearch && value.trim()) {
+                    onSearch(value.trim(), next, positiveFilters, negativeFilters);
+                  }
+                  return next;
+                });
+              }}
+            >
               <div className={styles.toggleBase}>
                 <div className={`${styles.toggleButton} ${isAdult ? styles.on : ''}`} />
               </div>
