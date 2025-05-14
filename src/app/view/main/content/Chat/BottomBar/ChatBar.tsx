@@ -35,7 +35,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
   onUpdateChatBarCount,
   onUpdateAiBarCount,
   onRemoveChat,
-  inputRef
+  inputRef,
 }) => {
   const [chatBars, setChatBars] = useState<string[]>(['main']);
   const [inputValues, setInputValues] = useState<{[key: string]: string}>({main: ''});
@@ -307,7 +307,7 @@ const ChatBar: React.FC<ChatBarProps> = ({
               {Object.values(inputValues).every(value => value.trim() === '') ? (
                 <img src={AiText.src} alt="AI Recommend" onClick={handleAIRecommend} className={styles.inputButton} />
               ) : (
-                <img src={BotSend.src} alt="AI Recommend" onClick={handleSend} className={styles.inputButton} />
+                <img src={BotSend.src} alt="Send Chat" onClick={handleSend} className={styles.inputButton} />
               )}
             </>
           )}

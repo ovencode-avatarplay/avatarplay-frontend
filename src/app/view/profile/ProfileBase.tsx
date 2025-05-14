@@ -822,6 +822,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {((!isMine && isPath) || isNeedBackBtn) && (
             <div
               className={styles.backBtn}
+              data-testid="left-back-btn"
               onClick={() => {
                 if (isPath) {
                   routerBack();
@@ -830,7 +831,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
                 }
               }}
             >
-              <img src={LineArrowLeft.src} alt="" />
+              <img src={LineArrowLeft.src} alt="Left Back" />
             </div>
           )}
           <div
