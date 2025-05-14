@@ -16,7 +16,7 @@ import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import ProfilePopup from '../ProfilePopup';
-import {pinFix, PinTabType} from '@/app/NetWork/CommonNetwork';
+import {pinFix, PinTabType, bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 
 const tags = ['All', 'My', 'Story', 'Music', 'Gravure', 'Custom1', 'Custom2'];
 
@@ -58,7 +58,24 @@ const DMChat: React.FC = () => {
     {
       name: 'Favorites /Unfavorites',
       arrowName: '',
-      onClick: () => {},
+      onClick: async () => {
+        if (selectedRoom) {
+          try {
+            const response = await bookmark({
+              interactionType: InteractionType.Friend,
+              typeValueId: selectedRoom.roomId,
+              isBookMark: true,
+            });
+
+            if (response?.data) {
+              // UI 업데이트 로직이 필요한 경우 여기에 추가
+            }
+            setOpenOption(false);
+          } catch (e) {
+            alert('즐겨찾기 실패');
+          }
+        }
+      },
     },
     {
       name: 'Pin to Top / Unpin ',

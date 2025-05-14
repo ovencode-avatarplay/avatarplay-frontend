@@ -17,7 +17,7 @@ import {
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {SportsVolleyballRounded} from '@mui/icons-material';
 import {useInView} from 'react-intersection-observer';
-import {pinFix, PinTabType} from '@/app/NetWork/CommonNetwork';
+import {pinFix, PinTabType, bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 
 const tags = [
   'Chatroom',
@@ -105,7 +105,24 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     {
       name: 'Favorites /Unfavorites',
       arrowName: '',
-      onClick: () => {},
+      onClick: async () => {
+        if (selectedRoom) {
+          try {
+            const response = await bookmark({
+              interactionType: InteractionType.Character,
+              typeValueId: selectedRoom.characterProfileId,
+              isBookMark: true,
+            });
+
+            if (response?.data) {
+              // UI 업데이트 로직이 필요한 경우 여기에 추가
+            }
+            setOpenOption(false);
+          } catch (e) {
+            alert('즐겨찾기 실패');
+          }
+        }
+      },
     },
     {
       name: 'Pin to Top / Unpin ',

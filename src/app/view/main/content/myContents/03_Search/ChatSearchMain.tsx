@@ -26,6 +26,7 @@ import {followProfile} from '@/app/NetWork/ProfileNetwork';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
+import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -76,6 +77,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     setFavoriteList([]);
     setNormalList([]);
+    setFavoriteOpen(false);
     fetchMore(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTag, isOpen]);
@@ -98,6 +100,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setError(null);
     setSearchText('');
     setIsInputFocused(false);
+    setFavoriteOpen(false);
     onClose();
   };
 
@@ -152,7 +155,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         alreadyReceivedProfileIds: characterProfileIds,
       });
       if (response.data) {
-        newFavoriteList = response.data.favoriteCharacterList || [];
         newNormalList = response.data.recommendCharacterList || [];
       }
     } else if (selectedTag === 'Friend') {
@@ -320,16 +322,60 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     {
       name: 'Favorites /Unfavorites',
       arrowName: '',
-      onClick: () => {},
+      onClick: async () => {
+        if (selectedRoom) {
+          try {
+            // 현재 선택된 프로필이 Favorite 목록에 있는지 확인
+            const isInFavoriteList = favoriteList.some(
+              item => item.characterProfileId === selectedRoom.characterProfileId,
+            );
+
+            const response = await bookmark({
+              interactionType: selectedTag === 'Following' ? InteractionType.Character : InteractionType.Friend,
+              typeValueId: selectedRoom.characterProfileId,
+              isBookMark: !isInFavoriteList, // Favorite 목록에 있으면 false, 없으면 true
+            });
+
+            if (response?.data) {
+              if (isInFavoriteList) {
+                // Favorite 목록에서 제거
+                setFavoriteList(prev =>
+                  prev.filter(item => item.characterProfileId !== selectedRoom.characterProfileId),
+                );
+              } else {
+                // Favorite 목록에 추가
+                setFavoriteList(prev => {
+                  const exists = prev.some(item => item.characterProfileId === selectedRoom.characterProfileId);
+                  if (!exists) {
+                    return [...prev, selectedRoom];
+                  }
+                  return prev;
+                });
+              }
+            }
+            setOpenOption(false);
+          } catch (e) {
+            alert('즐겨찾기 실패');
+          }
+        }
+      },
     },
     {
       name: 'Unfriend/ Unfollow',
       arrowName: '',
-      onClick: () => {
+      onClick: async () => {
         if (selectedRoom) {
-          // 핀 고정/해제 로직
+          try {
+            await followProfile(selectedRoom.characterProfileId, false);
+            // Following/Friend 목록에서만 제거
+            if (selectedTag === 'Following' || selectedTag === 'Friend') {
+              setNormalList(prev => prev.filter(item => item.characterProfileId !== selectedRoom.characterProfileId));
+            }
+            setOpenOption(false);
+          } catch (e) {
+            alert('언팔로우 실패');
+          }
         }
-        setOpenOption(false);
       },
     },
     {
@@ -345,7 +391,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   ];
 
   const renderCharacterList = (list: SearchResultWithFriend[]) => {
-    if (selectedTag === 'Following' || selectedTag === 'Friend' || selectedTag === 'Character') {
+    if (selectedTag === 'Following' || selectedTag === 'Friend') {
       return (
         <div>
           <div className={styles.section}>
@@ -365,13 +411,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
                     badgeType={badgeType}
-                    followState={selectedTag === 'Character' ? FollowState.Follow : FollowState.None}
+                    followState={FollowState.None}
                     urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
-                    isOption={selectedTag !== 'Character'}
+                    isOption={true}
                     isPin={character.isPinFix}
-                    onClickButton={selectedTag === 'Character' ? () => handleFollow(character) : undefined}
-                    onClickOption={selectedTag !== 'Character' ? () => handleRoomSelect(character) : undefined}
+                    onClickOption={() => handleRoomSelect(character)}
                   />
                 );
               })}
@@ -393,13 +438,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
                     badgeType={badgeType}
-                    followState={selectedTag === 'Character' ? FollowState.Follow : FollowState.None}
+                    followState={FollowState.None}
                     urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
-                    isOption={selectedTag !== 'Character'}
+                    isOption={true}
                     isPin={character.isPinFix}
-                    onClickButton={selectedTag === 'Character' ? () => handleFollow(character) : undefined}
-                    onClickOption={selectedTag !== 'Character' ? () => handleRoomSelect(character) : undefined}
+                    onClickOption={() => handleRoomSelect(character)}
                   />
                 );
               })}
