@@ -459,6 +459,7 @@ export const sendLeaveChatRoom = async (payload: LeaveChatRoomReq): Promise<Resp
 
 export interface CheckUnreadReddotReq {
   checkRoomIdList: number[];
+  isNewest: boolean;
 }
 export interface CheckUnreadReddotRes {
   dmChatUrlLinkKey: {

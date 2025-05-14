@@ -108,6 +108,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
+
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
     setIsLoading(true); // API 호출 시작 시 로딩 상태로 설정
@@ -437,6 +438,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     isOption={true}
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
+                    isDM={selectedTag === 'Friend'}
+                    profileUrlLinkKey={character.urlLinkKey}
                   />
                 );
               })}
@@ -464,6 +467,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     isOption={true}
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
+                    isDM={selectedTag === 'Friend'}
+                    profileUrlLinkKey={character.urlLinkKey}
                   />
                 );
               })}
@@ -478,7 +483,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           let badgeType = BadgeType.None;
           if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
           else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-          let followState = character.followState ?? FollowState.AddFriend;
+          let followState = selectedTag === 'People' ? FollowState.AddFriend : FollowState.Follow;
 
           return (
             <MessageProfile
@@ -493,7 +498,13 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
               isPin={character.isPinFix}
               isDM={true}
               profileUrlLinkKey={character.urlLinkKey}
-              onClickButton={() => handleAddFriendToggle(character)}
+              onClickButton={() => {
+                if (selectedTag === 'People') {
+                  handleAddFriendToggle(character);
+                } else {
+                  handleFollow(character);
+                }
+              }}
             />
           );
         })}

@@ -223,13 +223,25 @@ const DMChat: React.FC = () => {
       try {
         const roomIdList = dmList.map(dm => dm.roomId);
         if (roomIdList.length === 0) return;
-        const res = await sendCheckUnreadReddot({checkRoomIdList: roomIdList});
-        if (!isUnmounted && res.data?.dmChatUrlLinkKey) {
+        const res = await sendCheckUnreadReddot({
+          checkRoomIdList: roomIdList,
+          isNewest: sortValue === 'Newest',
+        });
+        if (!isUnmounted && res.data && res.data.dmChatUrlLinkKey) {
+          // 하이라이트 맵 생성
           const map: Record<number, boolean> = {};
           res.data.dmChatUrlLinkKey.forEach((item: {key: number; value: boolean}) => {
             map[item.key] = item.value;
           });
           setHighlightMap(map);
+
+          // 응답 roomId 순서대로 dmList 재정렬
+          if (res.data.dmChatUrlLinkKey.length > 0) {
+            setDmList(prevList => {
+              const roomMap = new Map(prevList.map(room => [room.roomId, room]));
+              return res.data!.dmChatUrlLinkKey.map(item => roomMap.get(item.key)).filter(Boolean) as typeof prevList;
+            });
+          }
         }
       } catch (e) {
         // 에러 무시
@@ -241,7 +253,7 @@ const DMChat: React.FC = () => {
       isUnmounted = true;
       clearInterval(timer);
     };
-  }, [dmList]);
+  }, []);
 
   const pinnedRooms = dmList.filter(dm => dm.isPinFix);
   const unpinnedRooms = dmList.filter(dm => !dm.isPinFix);

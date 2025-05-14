@@ -169,8 +169,7 @@ const MessageProfile: React.FC<Props> = ({
         <div
           className={styles.profileInfo}
           onClick={() => {
-            if (urlLinkKey == '') checkDMLinkKey();
-            else pushLocalizedRoute('/DM/' + urlLinkKey, router);
+            checkDMLinkKey();
           }}
         >
           {/* 프로필 정보 */}
