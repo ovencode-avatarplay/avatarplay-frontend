@@ -1,7 +1,7 @@
 // WorkroomFolderData.tsx
 import React from 'react';
 import styles from './Workroom.module.css';
-import SwipeTagList from './SwipeTagList';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import EmptyState from '@/components/search/EmptyState';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {WorkroomItemInfo} from './WorkroomItem';

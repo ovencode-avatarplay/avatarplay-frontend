@@ -2,7 +2,7 @@ interface Props {}
 
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './CreateVariationMain.module.css';
-import SwipeTagList from '@/app/view/studio/workroom/SwipeTagList';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {useEffect, useLayoutEffect, useState} from 'react';
 import {
   CharacterIP,

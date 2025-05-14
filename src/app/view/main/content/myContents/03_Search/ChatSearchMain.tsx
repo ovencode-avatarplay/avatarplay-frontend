@@ -23,12 +23,13 @@ import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
 import {addSearch} from './RecentSearchList';
 import {followProfile} from '@/app/NetWork/ProfileNetwork';
-import SwipeTagList from '@/components/layout/shared/SwipeTagList';
+
 import SelectDrawer from '@/components/create/SelectDrawer';
 import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];

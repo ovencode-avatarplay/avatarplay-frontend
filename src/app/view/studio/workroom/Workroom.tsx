@@ -47,7 +47,7 @@ import WorkroomFileMoveModal from './WorkroomFileMoveModal';
 import WorkroomGalleryModal from './WorkroomGalleryModal';
 import WorkroomSearchModal from './WorkroomSearchModal';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
-import SwipeTagList from './SwipeTagList';
+import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {GalleryCategory} from '../characterDashboard/CharacterGalleryData';
 import {CreateFolderReq, MoveFolderReq, SendCreateFolder, SendMoveFolder} from '@/app/NetWork/WorkroomNetwork';
 //#endregion
