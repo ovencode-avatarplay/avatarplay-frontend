@@ -11,6 +11,7 @@ import {
   sendLeaveChatRoom,
   ChatRoomType,
   SearchCharacterRoomInfo,
+  sendCheckUnreadReddot,
 } from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
@@ -55,6 +56,7 @@ const DMChat: React.FC = () => {
   const LIMIT = 10;
   const [isPinOpen, setIsPinOpen] = useState(true);
   const [isChatOpen, setIsChatOpen] = useState(true);
+  const [highlightMap, setHighlightMap] = useState<Record<number, boolean>>({});
 
   const {ref: observerRef, inView} = useInView();
 
@@ -212,6 +214,35 @@ const DMChat: React.FC = () => {
     }
   }, [inView]);
 
+  // 폴링으로 레드닷 상태 체크
+  useEffect(() => {
+    if (dmList.length === 0) return;
+    let timer: NodeJS.Timeout;
+    let isUnmounted = false;
+    const poll = async () => {
+      try {
+        const roomIdList = dmList.map(dm => dm.roomId);
+        if (roomIdList.length === 0) return;
+        const res = await sendCheckUnreadReddot({checkRoomIdList: roomIdList});
+        if (!isUnmounted && res.data?.dmChatUrlLinkKey) {
+          const map: Record<number, boolean> = {};
+          res.data.dmChatUrlLinkKey.forEach((item: {key: number; value: boolean}) => {
+            map[item.key] = item.value;
+          });
+          setHighlightMap(map);
+        }
+      } catch (e) {
+        // 에러 무시
+      }
+    };
+    poll();
+    timer = setInterval(poll, 2000);
+    return () => {
+      isUnmounted = true;
+      clearInterval(timer);
+    };
+  }, [dmList]);
+
   const pinnedRooms = dmList.filter(dm => dm.isPinFix);
   const unpinnedRooms = dmList.filter(dm => !dm.isPinFix);
   const sortedDmList = [...pinnedRooms, ...unpinnedRooms];
@@ -264,7 +295,7 @@ const DMChat: React.FC = () => {
             timestamp={formatTimestamp(dm.lastMessageAt)}
             badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
             followState={FollowState.None}
-            isHighlight={false}
+            isHighlight={highlightMap[dm.roomId] === true}
             isDM={true}
             isOption={true}
             isPin={dm.isPinFix}

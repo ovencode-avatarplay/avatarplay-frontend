@@ -456,3 +456,29 @@ export const sendLeaveChatRoom = async (payload: LeaveChatRoomReq): Promise<Resp
     throw new Error('채팅방 나가기 중 오류가 발생했습니다.');
   }
 };
+
+export interface CheckUnreadReddotReq {
+  checkRoomIdList: number[];
+}
+export interface CheckUnreadReddotRes {
+  dmChatUrlLinkKey: {
+    key: number;
+    value: boolean;
+  }[];
+}
+/**
+ * 채팅방의 안읽은 레드닷(알림) 여부 확인 API
+ * @param payload checkRoomIdList 포함 요청 데이터
+ * @returns 각 roomId별로 레드닷 여부를 반환
+ */
+export const sendCheckUnreadReddot = async (
+  payload: CheckUnreadReddotReq,
+): Promise<ResponseAPI<CheckUnreadReddotRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<CheckUnreadReddotRes>>('/ChatMessage/checkUnreadReddot', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to check unread reddot:', error);
+    throw new Error('채팅방 레드닷 확인 중 오류가 발생했습니다.');
+  }
+};
