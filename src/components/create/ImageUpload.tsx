@@ -77,6 +77,7 @@ const ImageUpload: React.FC<Props> = ({
     setContentImageUrl(url);
     if (onChoose) onChoose();
     setWorkroomOpen(false);
+    onClose();
   };
 
   const handleOnWorkroomItemSelectMultiple = (urls: string[]) => {
@@ -84,6 +85,7 @@ const ImageUpload: React.FC<Props> = ({
     setContentImageUrls?.(urls || []);
     if (onChoose) onChoose();
     setWorkroomOpen(false);
+    onClose();
   };
 
   const handleChooseFile = () => {
@@ -121,7 +123,7 @@ const ImageUpload: React.FC<Props> = ({
     <div className={styles.box}>
       <SelectDrawer
         items={selectVisibilityItems}
-        isOpen={isOpen}
+        isOpen={isOpen && !workroomOpen}
         onClose={() => {
           if (workroomOpen) {
             if (imageUrl !== '') {

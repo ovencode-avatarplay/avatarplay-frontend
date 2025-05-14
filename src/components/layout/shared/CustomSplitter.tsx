@@ -116,7 +116,7 @@ const Splitters: React.FC<SplittersProps> = ({
               <div
                 key={index}
                 className={styles.contentWrap}
-                style={{zIndex: isActive ? 0 : -1, opacity: isActive ? 1 : 0}}
+                style={{zIndex: isActive ? 0 : -1, opacity: isActive ? 1 : 0, height: isActive ? 'auto' : '0px'}}
               >
                 {splitter.content}
               </div>
