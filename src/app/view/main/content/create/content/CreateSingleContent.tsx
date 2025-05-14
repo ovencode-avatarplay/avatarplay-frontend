@@ -37,6 +37,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {profile} from 'console';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 enum CategoryTypes {
   Webtoon = 0,
@@ -345,6 +346,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
           triggerWarning={triggerWarning}
+          uploadImageType={UploadMediaState.ContentImage}
+          uploadVideoType={UploadMediaState.ContentVideo}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"

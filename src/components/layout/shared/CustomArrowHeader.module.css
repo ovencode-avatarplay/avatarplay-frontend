@@ -22,6 +22,9 @@
 }
 
 .baseArea > .backButton{
+
+    cursor: pointer;
+
     display: flex;
     height: 40px;
     padding: 14px 0px 14px 16px;

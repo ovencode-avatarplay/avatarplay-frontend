@@ -1,4 +1,3 @@
-import {ChatLevelInfo} from '@/app/view/main/content/Chat/MainChat/ChatTypes';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 // 초기 상태 타입 정의
@@ -9,7 +8,6 @@ export type ChattingState = {
   episodeId: number;
   StoryUrl: string;
   streamKey?: string;
-  levelInfo: ChatLevelInfo | null;
 };
 
 // 초기 상태
@@ -20,7 +18,6 @@ export const initialStateChatting: ChattingState = {
   episodeId: 0,
   StoryUrl: '',
   streamKey: '',
-  levelInfo: null,
 };
 
 export const chattingSlice = createSlice({
@@ -42,9 +39,6 @@ export const chattingSlice = createSlice({
     setStreamKey: (state, action: PayloadAction<string>) => {
       state.streamKey = action.payload;
     },
-    setLevelInfo: (state, action: PayloadAction<ChatLevelInfo>) => {
-      state.levelInfo = action.payload;
-    },
     setStateChatting: (state, action: PayloadAction<ChattingState>) => {
       // 전체 상태를 새롭게 업데이트
       state.storyName = action.payload.storyName;
@@ -52,13 +46,12 @@ export const chattingSlice = createSlice({
       state.episodeId = action.payload.episodeId;
       state.storyId = action.payload.storyId;
       state.streamKey = action.payload.streamKey;
-      state.levelInfo = action.payload.levelInfo;
       console.log('state ', state);
     },
   },
 });
 
 // 액션과 리듀서 내보내기
-export const {setStoryName, setEpisodeName, setEpisodeId, setStoryId, setStreamKey, setStateChatting, setLevelInfo} =
+export const {setStoryName, setEpisodeName, setEpisodeId, setStoryId, setStreamKey, setStateChatting} =
   chattingSlice.actions;
 export default chattingSlice.reducer;

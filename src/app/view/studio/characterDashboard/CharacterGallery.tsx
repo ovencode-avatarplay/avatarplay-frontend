@@ -102,8 +102,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
 
       const req: MediaUploadReq = {
         mediaState: UploadMediaState.GalleryImage,
-        file: file,
-        imageList: [],
+        fileList: [file],
       };
 
       // 파일 업로드 API 호출
@@ -113,9 +112,9 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       const uploadedImage = 'local uploaded image';
 
       if (response?.data) {
-        const imgUrl: string = response.data.url;
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url;
 
-        console.log('Additional image URLs:', response.data.url); // 추가할 이미지 URL
+        console.log('Additional image URLs:', response.data.mediaUploadInfoList); // 추가할 이미지 URL
 
         let updatedGalleryUrls: string[] = [];
         updatedGalleryUrls = [imgUrl];

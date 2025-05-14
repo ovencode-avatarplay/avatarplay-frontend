@@ -2,14 +2,26 @@
   position: relative;
   width : var(--full-width);
   
-  height: 100vh;
-  overflow-y: scroll;
+  height: 100%;
   background-color: white;
   display: flex;
   flex-direction: column;
-
+  
   overflow: hidden;
+  overflow-y: scroll;
+
+  padding-bottom: 140px;
 }
+
+.container::-webkit-scrollbar {
+  display: none;  
+}
+
+.container {
+  scrollbar-width: none;  
+  -ms-overflow-style: none;  
+}
+
 
 .editArea
 {
@@ -65,6 +77,34 @@
   
 .changeButton {
   margin-top: 8px;
+}
+
+.promptArea
+{
+  display: flex;
+  width: 100%;
+  padding: 0px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.promptDesc
+{
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 0 0;
+
+  color: var(--Black, #000);
+  text-align: center;
+  font-feature-settings: 'liga' off, 'clig' off; 
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 114.286% */
+  letter-spacing: -0.4px;
+
 }
   
 .prompt {
@@ -164,6 +204,18 @@
   width: var(--second-width);
 }
 
+.selectArea
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 16px; */
+  align-self: stretch;
+
+  height: 100%;
+  
+}
+
 .selectDesc
 {
   margin-bottom: 22px;
@@ -196,4 +248,15 @@
 .grayIcon
 {
   filter: sepia(1%) saturate(4552%) hue-rotate(225deg) brightness(90%) contrast(77%);
+}
+
+
+.selectingMenuContainer
+{
+    position: fixed;
+    bottom: 10px;
+    margin: auto 0;
+    width: 100%;
+
+    z-index: 500;
 }

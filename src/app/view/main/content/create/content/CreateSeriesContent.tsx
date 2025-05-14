@@ -30,6 +30,7 @@ import {useAtom} from 'jotai';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import TagsData from 'data/create/tags.json';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 enum CategoryTypes {
   Webtoon = 0,
@@ -281,6 +282,8 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
           triggerWarning={triggerWarning}
+          uploadImageType={UploadMediaState.ContentImage}
+          uploadVideoType={UploadMediaState.ContentVideo}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"

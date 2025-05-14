@@ -39,22 +39,6 @@ export interface MessageGroup {
   mediaData?: MediaData[];
 }
 
-export interface ChatLevelInfo {
-  level: number;
-  exp: number;
-  requireExp: number;
-  profileFrameGrade: ChatGrade;
-  chatBubbleGrade: ChatGrade;
-  levelPanelGrade: ChatGrade;
-}
-
-export enum ChatGrade {
-  None = 0,
-  Bronze = 1,
-  Silver = 2,
-  Gold = 3,
-}
-
 export const COMMAND_NARRATION = '*';
 
 export const COMMAND_END = '$';

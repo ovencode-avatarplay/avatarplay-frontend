@@ -20,8 +20,8 @@ import UserDropdown from '@/components/layout/shared/UserDropdown';
 import {setSkipStoryInit} from '@/redux-store/slices/StoryInfo';
 import {useAtom} from 'jotai';
 import {useRouter} from 'next/navigation';
-import {ToastMessageAtom, ToastType} from '@/app/Root';
 import getLocalizedText from '@/utils/getLocalizedText';
+import {ToastType} from '@/app/Root';
 
 export default function BottomNav() {
   const router = useRouter();
@@ -165,7 +165,6 @@ export default function BottomNav() {
 
   React.useEffect(() => {}, [colorMode]);
 
-  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   return (
     <footer>
       <div className={` ${styles.bottomNav} ${colorMode === 1 ? styles['light-mode'] : styles['light-mode']}`}>

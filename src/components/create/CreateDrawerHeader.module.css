@@ -51,3 +51,8 @@
     letter-spacing: -0.4px;
 }
  
+.childrenArea
+{
+    display: flex;
+    width: max-content;  
+}

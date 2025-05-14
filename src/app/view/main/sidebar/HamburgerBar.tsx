@@ -98,6 +98,10 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
     }
   };
 
+  const routeWorkroom = () => {
+    pushLocalizedRoute('/studio/workroom', router);
+  };
+
   const handleUserLogout = async () => {
     try {
       // Sign out from the app
@@ -240,6 +244,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Story (tmp)', routeStory)}
           {renderMenuItem('', 'Character (tmp)', routeCharacter)}
           {renderMenuItem('', 'Prompt (tmp)', routePrompt)}
+          {renderMenuItem('', 'Workroom', routeWorkroom)}
           {/*
           {renderMenuItem('', getLocalizedText('common_button_supportandabout'), () => {
             setSupportOpen(!supportOpen);

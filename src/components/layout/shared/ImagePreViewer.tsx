@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './CharacterCreateViewImage.module.css';
+import styles from './ImagePreViewer.module.css';
 import {LineClose} from '@ui/Icons';
 import EmptyState from '@/components/search/EmptyState';
 
@@ -8,7 +8,7 @@ interface Props {
   onClose: () => void;
 }
 
-const CharacterCreateViewImage: React.FC<Props> = ({imageUrl, onClose}) => {
+const ImagePreViewer: React.FC<Props> = ({imageUrl, onClose}) => {
   return (
     <div className={styles.backdrop} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -35,4 +35,4 @@ const CharacterCreateViewImage: React.FC<Props> = ({imageUrl, onClose}) => {
   );
 };
 
-export default CharacterCreateViewImage;
+export default ImagePreViewer;

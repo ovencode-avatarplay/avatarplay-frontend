@@ -1,20 +1,5 @@
-.topBarContainer
-{ 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    width: 100%;
-    max-width: 1300px; 
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
-}
-
-
-.topNavigation { 
+.topNavigation {
+    position: absolute;
     display: flex;
     flex-direction: row; 
     align-items: center;
@@ -42,19 +27,17 @@
     justify-self: center;
 } 
 
-/* .left > .button
+.left > .button
 {
-
     width: 20px;
     height: 20px; 
     
     align-self: center;
     justify-self: center;
-} */
+}
  
  
-.left > .buttonImage{
-    cursor: pointer;
+.left > .button > .buttonImage{
     width: 20px;
     height: 20px;  
     align-self: center;
@@ -67,7 +50,6 @@
 }
 
 .chat {
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 7px;
@@ -144,34 +126,3 @@
 
 }
  
-
-.eventGuageContainer
-{  
-  z-index: 10; 
-  width: 100%;  
-  height: 100%;
-}
-
-.characterLevel {
-    display: flex;
-    padding: 2px 8px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    
-    border-radius: 999px;
-    background: var(--Primary-4, #FFF5FD);
-    
-    color: var(--Primary-1, #FD55D3);
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    letter-spacing: -0.24px;
-}
-
-.rewardBorderWrapper
-{
-    align-items: center;
-    justify-content: center;
-}

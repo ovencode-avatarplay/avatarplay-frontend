@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
 import {Pagination} from 'swiper/modules';
+import 'swiper/css/pagination';
 import styles from './ExploreFeaturedHeader.module.css';
 import {BannerUrlList} from '@/app/NetWork/ExploreNetwork';
 import Link from 'next/link';

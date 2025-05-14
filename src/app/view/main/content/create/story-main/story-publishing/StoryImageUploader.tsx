@@ -59,18 +59,18 @@ const StoryImageUpload: React.FC<Props> = ({
       // Upload 객체 생성
       const req: MediaUploadReq = {
         mediaState: UploadMediaState.StoryImage, // 적절한 MediaState 설정
-        file,
+        fileList: [file],
       };
 
       // 파일 업로드 API 호출
       const response = await sendUpload(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data.url; // 메인 이미지 URL
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url; // 메인 이미지 URL
         setImagePreview(imgUrl); // 미리보기 업데이트
         dispatch(setThumbnail(imgUrl)); // Redux 상태 업데이트
 
-        console.log('Image URLs:', response.data.imageUrlList); // 추가 이미지 URL 로그 출력
+        console.log('Image URLs:', response.data.mediaUploadInfoList); // 추가 이미지 URL 로그 출력
 
         setDialogOpen(false);
       } else {

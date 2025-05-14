@@ -6,17 +6,12 @@ import {
   BoldAltArrowUp as BoldAltArrowUpTwo,
   BoldAltArrowUpTwo as BoldAltArrowUp,
   LineArrowDown,
-  BoldCirclePlus,
-  BoldFolderPlus,
-  BoldQuestion,
   CircleClose,
-  LineClose,
-  LineDashboard,
   LineDelete,
   LineUpload,
 } from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+
 import {
   ContentCategoryType,
   ContentEpisodeWebtoonInfo,
@@ -26,6 +21,8 @@ import {
 import PreviewViewer from './PreviewViewer';
 import getLocalizedText from '@/utils/getLocalizedText';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import ImageUpload from '@/components/create/ImageUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 export interface WebtoonUploadField {
   id: number;
@@ -48,14 +45,14 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const [CountryDrawerOpen, setCountryDrawerOpen] = useState<{type: 'subtitle'; index: number} | null>(null);
   const [onPreview, setOnPreview] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null); // 선택된 파일의 인덱스
-  console.log(defaultEpisodeWebtoonInfo);
+
   const [subtitleFields, setSubtitleFields] = useState<WebtoonUploadField[]>([]);
   const [imageFiles, setImageFiles] = useState<string[]>([]);
   const [imageNames, setImageNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   // ✅ 기존 데이터가 있으면 초기값 설정
   useEffect(() => {
-    console.log('asdasd');
     if (defaultEpisodeWebtoonInfo) {
       const webtoonSource = defaultEpisodeWebtoonInfo.webtoonSourceUrlList.find(
         info => info.webtoonLanguageType === ContentLanguageType.Source,
@@ -136,29 +133,6 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
     } else setCountryDrawerOpen(null);
   };
 
-  const handleFileUpload = async (files: FileList) => {
-    try {
-      setIsLoading(true);
-      const req: MediaUploadReq = {
-        mediaState: UploadMediaState.ContentEpisodeWebtoonImage,
-        imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
-      };
-
-      const response = await sendUpload(req);
-      if (!response.data) return;
-
-      const validImages = response.data.imageUrlList.filter((url): url is string => !!url);
-      const validImageNames = response.data.imageNameList.filter((name): name is string => !!name);
-
-      setImageFiles(prev => [...prev, ...validImages]);
-      setImageNames(prev => [...prev, ...validImageNames]);
-    } catch (error) {
-      console.error('파일 업로드 중 오류 발생:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // 파일 삭제 처리 (개별 삭제)
   const handleRemoveImage = (index: number) => {
     setImageFiles(prev => prev.filter((_, i) => i !== index));
@@ -222,37 +196,20 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
   const handleRemoveField = (index: number) => {
     setSubtitleFields(prevFields => prevFields.filter((_, i) => i !== index));
   };
-  // 필드별 파일 업로드 처리
-  const handleFileUploadForField = async (files: FileList, fieldIndex: number) => {
-    try {
-      setIsLoading(true);
-      const req: MediaUploadReq = {
-        mediaState: UploadMediaState.ContentEpisodeWebtoonSubtitle,
-        imageList: Array.from(files), // ✅ 여러 개의 파일을 imageList로 보냄
-      };
 
-      const response = await sendUpload(req);
-      if (!response.data) return;
-
-      const validUrls = response.data.imageUrlList.filter((url): url is string => !!url);
-      const validFileNames = response.data.imageNameList.filter((name): name is string => !!name);
-
-      setSubtitleFields(prevFields =>
-        prevFields.map((field, i) =>
-          i === fieldIndex
-            ? {
-                ...field,
-                fileUrl: [...field.fileUrl, ...validUrls],
-                fileName: [...field.fileName, ...validFileNames],
-              }
-            : field,
-        ),
-      );
-    } catch (error) {
-      console.error('파일 업로드 중 오류 발생:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleFileUploadForField = (urls: string[], fieldIndex: number) => {
+    const validFileNames = urls.map(url => url.split('/').pop() || '');
+    setSubtitleFields(prevFields =>
+      prevFields.map((field, i) =>
+        i === fieldIndex
+          ? {
+              ...field,
+              fileUrl: [...field.fileUrl, ...urls],
+              fileName: [...field.fileName, ...validFileNames],
+            }
+          : field,
+      ),
+    );
   };
 
   // 필드 내 이미지 삭제
@@ -317,7 +274,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         </div>
 
         {/* 이미지 업로드 리스트 */}
-        <div className={styles.videoUploadBox}>
+        <div className={styles.webtoonUploadBox}>
           {field.fileUrl.length > 0 ? (
             <ul className={styles.fileList}>
               {field.fileUrl.map((image, imageIndex) => (
@@ -341,7 +298,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         </div>
 
         {/* 공통 이동 버튼 */}
-        <div className={styles.videoButtonContainer}>
+        <div className={styles.webtoonButtonContainer}>
           <img
             src={BoldAltArrowUpTwo.src}
             className={styles.arrowButton}
@@ -367,17 +324,19 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
             className={styles.uploadButton}
             style={{width: '100%'}}
             onClick={() => {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.accept = 'image/*';
-              input.multiple = true;
-              input.onchange = e => {
-                const files = (e.target as HTMLInputElement).files;
-                if (files) {
-                  handleFileUploadForField(files, fieldIndex);
-                }
-              };
-              input.click();
+              // const input = document.createElement('input');
+              // input.type = 'file';
+              // input.accept = 'image/*';
+              // input.multiple = true;
+              // input.onchange = e => {
+              //   const files = (e.target as HTMLInputElement).files;
+              //   if (files) {
+              //     handleFileUploadForField(files, fieldIndex);
+              //   }
+              // };
+              // input.click();
+              setSelectedIndex(fieldIndex);
+              setIsUploadOpen(true);
             }}
           >
             <img src={LineUpload.src} alt="Upload" className={styles.icon} />
@@ -414,11 +373,11 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
       >
         {getLocalizedText('common_button_preview')}
       </div>
-      <div className={styles.videoUploadContainer}>
+      <div className={styles.webtoonUploadContainer}>
         <span className={styles.label}>{getLocalizedText('common_filter_webtoon')}</span>
         <div className={styles.uploadGroup}>
           <div
-            className={`${styles.videoUploadBox} ${
+            className={`${styles.webtoonUploadBox} ${
               hasError && imageFiles.length == 0 ? styles.videoUploadBoxError : ''
             }`}
           >
@@ -447,7 +406,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
             )}
           </div>
 
-          <div className={styles.videoButtonContainer}>
+          <div className={styles.webtoonButtonContainer}>
             <img src={BoldAltArrowUpTwo.src} className={styles.arrowButton} onClick={() => handleMoveImage('top')} />
             <img src={BoldAltArrowUp.src} className={styles.arrowButton} onClick={() => handleMoveImage('up')} />
             <img src={BoldAltArrowDown.src} className={styles.arrowButton} onClick={() => handleMoveImage('down')} />
@@ -460,17 +419,19 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
               className={styles.uploadButton}
               style={{width: '100%'}}
               onClick={() => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.multiple = true;
-                input.onchange = e => {
-                  const files = (e.target as HTMLInputElement).files;
-                  if (files) {
-                    handleFileUpload(files);
-                  }
-                };
-                input.click();
+                // const input = document.createElement('input');
+                // input.type = 'file';
+                // input.accept = 'image/*';
+                // input.multiple = true;
+                // input.onchange = e => {
+                //   const files = (e.target as HTMLInputElement).files;
+                //   if (files) {
+                //     handleFileUpload(files);
+                //   }
+                // };
+                // input.click();
+                setSelectedIndex(-1);
+                setIsUploadOpen(true);
               }}
             >
               <img src={LineUpload.src} alt="Upload" className={styles.icon} />
@@ -499,6 +460,26 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         mediaUrls={imageFiles ? imageFiles : []}
         type={ContentCategoryType.Webtoon}
       ></PreviewViewer>
+      <ImageUpload
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        setContentImageUrls={(urls: string[]) => {
+          if (selectedIndex !== null && selectedIndex >= 0) {
+            handleFileUploadForField(urls, selectedIndex);
+          } else {
+            setImageFiles(prev => [...prev, ...urls]);
+            setImageNames(prev => [...prev, ...urls]);
+          }
+          setIsUploadOpen(false);
+        }}
+        multiple={true}
+        setContentImageUrl={() => {}}
+        uploadType={
+          selectedIndex !== null && selectedIndex >= 0
+            ? UploadMediaState.ContentEpisodeWebtoonSubtitle
+            : UploadMediaState.ContentEpisodeWebtoonImage
+        }
+      />
       <LoadingOverlay loading={isLoading} />
     </>
   );
