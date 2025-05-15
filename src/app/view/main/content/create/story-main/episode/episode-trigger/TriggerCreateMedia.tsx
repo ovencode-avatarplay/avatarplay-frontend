@@ -60,11 +60,7 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
       };
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
-      if (state === UploadMediaState.Story) {
-        req.fileList = files;
-      } else {
-        req.fileList = files;
-      }
+      req.fileList = files;
 
       // 파일 업로드 API 호출
       const response = await sendUpload(req);

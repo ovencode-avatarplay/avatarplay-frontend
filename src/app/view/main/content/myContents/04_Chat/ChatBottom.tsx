@@ -86,21 +86,6 @@ const AddContent: React.FC<AddContentProps> = ({setText, handleSend}) => {
     setText(price);
     // handleSend();
   };
-  const getDmChatMediaState = (file: File): UploadMediaState => {
-    const mimeType = file.type;
-
-    if (mimeType.startsWith('image/')) {
-      return UploadMediaState.Chat;
-    }
-    if (mimeType.startsWith('video/')) {
-      return UploadMediaState.Chat;
-    }
-    if (mimeType.startsWith('audio/')) {
-      return UploadMediaState.Chat;
-    }
-
-    return UploadMediaState.None;
-  };
 
   const handleMediaUpload = async () => {
     const input = document.createElement('input');
