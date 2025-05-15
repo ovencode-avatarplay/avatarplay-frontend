@@ -46,7 +46,7 @@ const HeaderNavBar = () => {
               dispatch(setSelectedIndex(0));
             }}
           >
-            <Image src={logo} alt="Logo" width={85} height={17} priority className={styles.logo} />
+            <Image src={logo} alt="Logo" width={84} height={20} priority className={styles.logo} />
           </div>
         </Link>
       </div>
