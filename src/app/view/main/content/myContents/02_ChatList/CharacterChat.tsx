@@ -254,7 +254,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       await sendLeaveChatRoom({
         chatRoomType: ChatRoomType.Character,
         dmRoomId: 0,
-        characterUrlLinkKey: selectedRoom.urlLinkKey,
+        characterUrlLinkKey: selectedRoom.profileUrlLinkKey,
       });
 
       // 채팅방 목록에서 제거
@@ -304,7 +304,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             isOption={true}
             isPin={item.isPinFix}
             roomid={item.chatRoomId.toString()}
-            profileUrlLinkKey={item.urlLinkKey}
+            profileUrlLinkKey={item.profileUrlLinkKey}
             onClickOption={() => handleRoomSelect(item.chatRoomId)}
           />
         ))}

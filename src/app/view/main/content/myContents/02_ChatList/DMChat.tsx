@@ -200,17 +200,60 @@ const DMChat: React.FC = () => {
   };
 
   useEffect(() => {
+    if (inView && hasMore && !isLoading) {
+      const fetchMore = async () => {
+        const currentOffset = offset;
+        try {
+          const response = await sendGetDMChatRoomList({
+            isDMChatRoom: true,
+            search: '',
+            interest: selectedTag === 'Chatroom' ? '' : selectedTag,
+            sort: 0,
+            page: {offset: currentOffset, limit: LIMIT},
+            alreadyReceivedProfileIds: alreadyReceivedProfileIds,
+          });
+
+          let newList = response.data?.dmChatRoomList ?? [];
+
+          // 필터 처리
+          const filter = CharacterIP.None.toString();
+          newList = newList.filter((_, i) => {
+            const characterIP = i % 2 === 0 ? '1' : '2';
+            return filter === '0';
+          });
+
+          // 정렬
+          newList.sort((a, b) => {
+            if (sortValue === 'Newest') {
+              return new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime();
+            } else if (sortValue === 'Oldest') {
+              return new Date(a.lastMessageAt).getTime() - new Date(b.lastMessageAt).getTime();
+            }
+            return 0;
+          });
+
+          if (newList.length > 0) {
+            const newProfileIds = newList.map(item => item.roomId);
+            setAlreadyReceivedProfileIds(prev => [...prev, ...newProfileIds]);
+            setDmList(prev => [...prev, ...newList]);
+            setOffset(currentOffset + newList.length);
+            setHasMore(newList.length === LIMIT);
+          }
+        } catch (error) {
+          console.error('DM 페이징 오류:', error);
+        }
+      };
+
+      fetchMore();
+    }
+  }, [inView]);
+
+  useEffect(() => {
     setOffset(0);
     setHasMore(true);
     setAlreadyReceivedProfileIds([]);
     fetchDMChatRooms(true);
   }, [filterValue, sortValue, selectedTag]);
-
-  useEffect(() => {
-    if (inView && hasMore && !isLoading) {
-      fetchDMChatRooms(false);
-    }
-  }, [inView]);
 
   // 폴링으로 레드닷 상태 체크
   useEffect(() => {
@@ -313,7 +356,7 @@ const DMChat: React.FC = () => {
             isOption={true}
             isPin={dm.isPinFix}
             roomid={dm.roomId.toString()}
-            profileUrlLinkKey={dm.urlLinkKey}
+            profileUrlLinkKey={dm.profileUrlLinkKey}
             onClickOption={() => handleRoomSelect(dm.roomId)}
           />
         ))}

@@ -17,7 +17,7 @@ export interface GetCharacterChatRoomListReq {
 export interface ChatRoomInfo {
   chatRoomId: number;
   profileImageUrl: string;
-  urlLinkKey: string;
+  profileUrlLinkKey: string;
   characterProfileId: number;
   characterId: number;
   characterName: string;
@@ -129,7 +129,7 @@ export interface GetDMChatRoomListReq {
 export interface DMChatRoomInfo {
   roomId: number;
   profileId: number;
-  urlLinkKey: string;
+  profileUrlLinkKey: string;
   profileName: string;
   profileIconUrl: string;
   lastMessage: string;
