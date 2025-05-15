@@ -165,10 +165,10 @@ const DMChat: React.FC = () => {
           : response.data?.dmChatRecommendProfileList ?? [];
 
       // 필터 처리 (CharacterIP는 서버에서 따로 안 주므로 테스트용 로직)
-      const filter = filterValue === 'Original' ? '1' : filterValue === 'Fan' ? '2' : '0';
+      const filter = CharacterIP.None.toString();
       newList = newList.filter((_, i) => {
         const characterIP = i % 2 === 0 ? '1' : '2';
-        return filter === '0' || filter === characterIP;
+        return filter === '0';
       });
 
       // 정렬
@@ -221,6 +221,7 @@ const DMChat: React.FC = () => {
     let isUnmounted = false;
     const poll = async () => {
       try {
+        console.log('dmList', dmList);
         const roomIdList = dmList.map(dm => dm.roomId);
         if (roomIdList.length === 0) return;
         const res = await sendCheckUnreadReddot({
@@ -253,7 +254,7 @@ const DMChat: React.FC = () => {
       isUnmounted = true;
       clearInterval(timer);
     };
-  }, []);
+  }, [dmList.length]);
 
   const pinnedRooms = dmList.filter(dm => dm.isPinFix);
   const unpinnedRooms = dmList.filter(dm => !dm.isPinFix);
@@ -297,6 +298,7 @@ const DMChat: React.FC = () => {
         sortOptions={['Newest', 'Oldest']}
         onFilterChange={filter => setFilterValue(filter)}
         onSortChange={sort => setSortValue(sort)}
+        filterOnly="0"
       />
       <div className={styles.scrollArea}>
         {sortedDmList.map((dm, index) => (
@@ -305,7 +307,7 @@ const DMChat: React.FC = () => {
             profileImage={dm.profileIconUrl}
             profileName={dm.profileName}
             timestamp={formatTimestamp(dm.lastMessageAt)}
-            badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
+            badgeType={BadgeType.None}
             followState={FollowState.None}
             isHighlight={highlightMap[dm.roomId] === true}
             isDM={true}

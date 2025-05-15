@@ -431,7 +431,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     key={character.chatRoomId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
-                    badgeType={badgeType}
+                    badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
                     urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
@@ -460,7 +460,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     key={character.chatRoomId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
-                    badgeType={badgeType}
+                    badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
                     urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
@@ -490,7 +490,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
               key={character.chatRoomId}
               profileImage={character.profileImageUrl}
               profileName={character.characterName}
-              badgeType={badgeType}
+              badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
               followState={followState}
               urlLinkKey={''}
               roomid={String(character.chatRoomId)}
