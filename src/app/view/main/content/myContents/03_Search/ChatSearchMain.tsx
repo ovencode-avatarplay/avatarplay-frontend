@@ -29,6 +29,7 @@ import {SelectDrawerArrowItem} from '@/components/create/SelectDrawerArrow';
 import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import {LineArrowDown} from '@ui/Icons';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -418,7 +419,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setFavoriteOpen(!favoriteOpen)}>
               <div className={styles.sectionHeaderText}>Favorite ({favoriteList.length})</div>
-              <span className={favoriteOpen ? styles.arrowDown : styles.arrowRight}></span>
+              <img src={LineArrowDown.src} alt="arrow" style={{transform: `rotate(${favoriteOpen ? 180 : 0}deg)`}} />
             </div>
             {favoriteOpen &&
               favoriteList.map(character => {
@@ -446,7 +447,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setListOpen(!listOpen)}>
               <div className={styles.sectionHeaderText}>{selectedTag}</div>
-              <span className={listOpen ? styles.arrowDown : styles.arrowRight}></span>
+              <img src={LineArrowDown.src} alt="arrow" style={{transform: `rotate(${listOpen ? 180 : 0}deg)`}} />
             </div>
             {listOpen &&
               normalList.map(character => {
