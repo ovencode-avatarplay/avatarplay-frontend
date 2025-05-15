@@ -41,6 +41,7 @@
   flex-direction: column;
   justify-content: center;
   margin-left: 8px;
+  cursor: pointer;
 }
 
 /* 상단 프로필 라인 */

@@ -236,6 +236,7 @@ const DMChat: React.FC = () => {
           });
           setHighlightMap(map);
 
+          console.log('sortedDmList', sortedDmList);
           // 응답 roomId 순서대로 dmList 재정렬
           if (res.data.dmChatUrlLinkKey.length > 0) {
             setDmList(prevList => {
@@ -289,7 +290,7 @@ const DMChat: React.FC = () => {
       setOpenOption(true);
     }
   };
-
+  console.log('sortedDmList', sortedDmList);
   return (
     <>
       <SwipeTagList tags={tags} currentTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
@@ -315,6 +316,7 @@ const DMChat: React.FC = () => {
             isPin={dm.isPinFix}
             roomid={dm.roomId.toString()}
             urlLinkKey={dm.urlLinkKey}
+            profileUrlLinkKey={dm.urlLinkKey}
             onClickOption={() => handleRoomSelect(dm.roomId)}
           />
         ))}

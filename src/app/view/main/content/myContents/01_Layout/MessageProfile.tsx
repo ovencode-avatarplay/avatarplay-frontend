@@ -23,7 +23,7 @@ interface Props {
   onClickOption?: () => void;
   onClickButton?: () => void;
   urlLinkKey: string;
-  profileUrlLinkKey?: string;
+  profileUrlLinkKey: string;
 }
 
 export enum BadgeType {

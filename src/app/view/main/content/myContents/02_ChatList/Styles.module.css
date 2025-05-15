@@ -1,6 +1,7 @@
 .scrollArea
 {
     overflow-y: auto;
+    margin-bottom: 80px;
     
 }
 .scrollArea::-webkit-scrollbar {
