@@ -31,6 +31,7 @@ const tags = [
   'common_tag_sports',
   'common_tag_star',
   'common_tag_brand',
+  'common_filterinterest_dating',
 ];
 interface Props {
   name?: string;
@@ -253,7 +254,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       await sendLeaveChatRoom({
         chatRoomType: ChatRoomType.Character,
         dmRoomId: 0,
-        characterUrlLinkKey: selectedRoom.urlLinkKey,
+        characterUrlLinkKey: selectedRoom.profileUrlLinkKey,
       });
 
       // 채팅방 목록에서 제거
@@ -303,10 +304,11 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             isOption={true}
             isPin={item.isPinFix}
             roomid={item.chatRoomId.toString()}
+            profileUrlLinkKey={item.profileUrlLinkKey}
             onClickOption={() => handleRoomSelect(item.chatRoomId)}
-            urlLinkKey={item.urlLinkKey}
           />
         ))}
+        <div style={{marginBottom: '80px'}}></div>
         <div ref={observerRef} style={{height: '1px'}}></div>
       </div>
 

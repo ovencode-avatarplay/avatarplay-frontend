@@ -8,9 +8,10 @@ interface FilterBarProps {
   sortOptions: string[]; // 예: ['Newest', 'Oldest']
   onFilterChange?: (selected: string) => void;
   onSortChange?: (selected: string) => void;
+  filterOnly?: string;
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({filters, sortOptions, onFilterChange, onSortChange}) => {
+const FilterBar: React.FC<FilterBarProps> = ({filters, sortOptions, onFilterChange, onSortChange, filterOnly = ''}) => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [selectedSort, setSelectedSort] = useState<string>(sortOptions[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -29,25 +30,30 @@ const FilterBar: React.FC<FilterBarProps> = ({filters, sortOptions, onFilterChan
   return (
     <div className={styles.container}>
       {/* 아이콘 버튼 (전체 보기) */}
-      <div
-        className={`${styles.iconButton} ${activeFilter == CharacterIP.None.toString() ? styles.active : ''}`}
-        onClick={() => handleFilterClick(CharacterIP.None.toString())}
-      >
-        <img src={BoldViewGallery.src} alt="Gallery" className={styles.galleryIcon} />
-      </div>
 
-      {/* 필터 버튼들 */}
-      <div className={styles.filterButtons}>
-        {filters.map(filter => (
-          <button
-            key={filter}
-            className={`${styles.filterButton} ${activeFilter === filter ? styles.selected : ''}`}
-            onClick={() => handleFilterClick(filter)}
+      {filterOnly === '' && (
+        <>
+          <div
+            className={`${styles.iconButton} ${activeFilter == CharacterIP.None.toString() ? styles.active : ''}`}
+            onClick={() => handleFilterClick(CharacterIP.None.toString())}
           >
-            {filter}
-          </button>
-        ))}
-      </div>
+            <img src={BoldViewGallery.src} alt="Gallery" className={styles.galleryIcon} />
+          </div>
+
+          {/* 필터 버튼들 */}
+          <div className={styles.filterButtons}>
+            {filters.map(filter => (
+              <button
+                key={filter}
+                className={`${styles.filterButton} ${activeFilter === filter ? styles.selected : ''}`}
+                onClick={() => handleFilterClick(filter)}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* 정렬 드롭다운 */}
       <div className={styles.sortDropdown} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>

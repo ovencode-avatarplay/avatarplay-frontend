@@ -30,6 +30,7 @@ import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
+import {LineArrowDown} from '@ui/Icons';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -109,6 +110,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
+
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
     setIsLoading(true); // API 호출 시작 시 로딩 상태로 설정
@@ -417,8 +419,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         <div>
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setFavoriteOpen(!favoriteOpen)}>
-              <span>Favorite ({favoriteList.length})</span>
-              <span className={favoriteOpen ? styles.arrowDown : styles.arrowRight}></span>
+              <div className={styles.sectionHeaderText}>Favorite ({favoriteList.length})</div>
+              <img src={LineArrowDown.src} alt="arrow" style={{transform: `rotate(${favoriteOpen ? 180 : 0}deg)`}} />
             </div>
             {favoriteOpen &&
               favoriteList.map(character => {
@@ -431,21 +433,22 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     key={character.chatRoomId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
-                    badgeType={badgeType}
+                    badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
-                    urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
                     isOption={true}
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
+                    isDM={selectedTag === 'Friend'}
+                    profileUrlLinkKey={character.profileUrlLinkKey}
                   />
                 );
               })}
           </div>
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setListOpen(!listOpen)}>
-              <span>{selectedTag}</span>
-              <span className={listOpen ? styles.arrowDown : styles.arrowRight}></span>
+              <div className={styles.sectionHeaderText}>{selectedTag}</div>
+              <img src={LineArrowDown.src} alt="arrow" style={{transform: `rotate(${listOpen ? 180 : 0}deg)`}} />
             </div>
             {listOpen &&
               normalList.map(character => {
@@ -458,13 +461,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     key={character.chatRoomId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
-                    badgeType={badgeType}
+                    badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
-                    urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
                     isOption={true}
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
+                    isDM={selectedTag === 'Friend'}
+                    profileUrlLinkKey={character.profileUrlLinkKey}
                   />
                 );
               })}
@@ -479,22 +483,27 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           let badgeType = BadgeType.None;
           if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
           else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-          let followState = character.followState ?? FollowState.AddFriend;
+          let followState = selectedTag === 'People' ? FollowState.AddFriend : FollowState.Follow;
 
           return (
             <MessageProfile
               key={character.chatRoomId}
               profileImage={character.profileImageUrl}
               profileName={character.characterName}
-              badgeType={badgeType}
+              badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
               followState={followState}
-              urlLinkKey={''}
               roomid={String(character.chatRoomId)}
               isOption={false}
               isPin={character.isPinFix}
               isDM={true}
-              profileUrlLinkKey={character.urlLinkKey}
-              onClickButton={() => handleAddFriendToggle(character)}
+              profileUrlLinkKey={character.profileUrlLinkKey}
+              onClickButton={() => {
+                if (selectedTag === 'People') {
+                  handleAddFriendToggle(character);
+                } else {
+                  handleFollow(character);
+                }
+              }}
             />
           );
         })}

@@ -8,6 +8,7 @@ type MessageCallback = (payload: any) => void;
 type GiftCallback = (payload: any) => void;
 type NotificationCallback = (payload: any) => void;
 type DeleteMessageCallback = (payload: any) => void;
+type DMErrorCallback = (error: {code: string; message: string}) => void;
 
 let globalConnection: HubConnection | null = null;
 
@@ -62,6 +63,10 @@ export function useSignalR(token: string) {
     connectionRef.current?.on('ReceiveDMMessageDeleted', callback);
   }, []);
 
+  const onDMError = useCallback((callback: DMErrorCallback) => {
+    connectionRef.current?.on('ReceiveDMError', callback);
+  }, []);
+
   return {
     connection: connectionRef.current,
     joinRoom: async (urlLinkKey: string) => {
@@ -93,5 +98,6 @@ export function useSignalR(token: string) {
     onGift,
     onNotification,
     onMessageDeleted,
+    onDMError,
   };
 }

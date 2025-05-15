@@ -17,7 +17,7 @@ export interface GetCharacterChatRoomListReq {
 export interface ChatRoomInfo {
   chatRoomId: number;
   profileImageUrl: string;
-  urlLinkKey: string;
+  profileUrlLinkKey: string;
   characterProfileId: number;
   characterId: number;
   characterName: string;
@@ -129,7 +129,7 @@ export interface GetDMChatRoomListReq {
 export interface DMChatRoomInfo {
   roomId: number;
   profileId: number;
-  urlLinkKey: string;
+  profileUrlLinkKey: string;
   profileName: string;
   profileIconUrl: string;
   lastMessage: string;
@@ -140,7 +140,6 @@ export interface DMChatRoomInfo {
 // 응답 타입
 export interface GetDMChatRoomListRes {
   dmChatRoomList: DMChatRoomInfo[];
-  dmChatRecommendProfileList: DMChatRoomInfo[];
 }
 
 /**
@@ -198,7 +197,7 @@ export interface GetSearchCharacterRoomListReq {
 export interface SearchCharacterRoomInfo {
   chatRoomId: number;
   profileImageUrl: string;
-  urlLinkKey: string;
+  profileUrlLinkKey: string;
   characterProfileId: number;
   characterId: number;
   characterName: string;
@@ -454,5 +453,32 @@ export const sendLeaveChatRoom = async (payload: LeaveChatRoomReq): Promise<Resp
   } catch (error) {
     console.error('❌ Failed to leave chat room:', error);
     throw new Error('채팅방 나가기 중 오류가 발생했습니다.');
+  }
+};
+
+export interface CheckUnreadReddotReq {
+  checkRoomIdList: number[];
+  isNewest: boolean;
+}
+export interface CheckUnreadReddotRes {
+  dmChatUrlLinkKey: {
+    key: number;
+    value: boolean;
+  }[];
+}
+/**
+ * 채팅방의 안읽은 레드닷(알림) 여부 확인 API
+ * @param payload checkRoomIdList 포함 요청 데이터
+ * @returns 각 roomId별로 레드닷 여부를 반환
+ */
+export const sendCheckUnreadReddot = async (
+  payload: CheckUnreadReddotReq,
+): Promise<ResponseAPI<CheckUnreadReddotRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<CheckUnreadReddotRes>>('/ChatMessage/checkUnreadReddot', payload);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to check unread reddot:', error);
+    throw new Error('채팅방 레드닷 확인 중 오류가 발생했습니다.');
   }
 };

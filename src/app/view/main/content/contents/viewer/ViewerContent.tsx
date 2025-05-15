@@ -326,7 +326,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             info.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
               const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase();
               const url = fileInfo.videoSourceUrl;
-              await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
+              const format = url.toLowerCase().endsWith('.srt') ? 'text/srt' : 'text/vtt';
+              await player.addTextTrackAsync(url, lang, 'subtitles', format);
             }),
           );
           player.setTextTrackVisibility(true);
