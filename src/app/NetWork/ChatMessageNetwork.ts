@@ -140,7 +140,6 @@ export interface DMChatRoomInfo {
 // 응답 타입
 export interface GetDMChatRoomListRes {
   dmChatRoomList: DMChatRoomInfo[];
-  dmChatRecommendProfileList: DMChatRoomInfo[];
 }
 
 /**

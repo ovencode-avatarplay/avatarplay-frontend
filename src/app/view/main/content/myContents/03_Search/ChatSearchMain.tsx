@@ -433,7 +433,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     profileName={character.characterName}
                     badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
-                    urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
                     isOption={true}
                     isPin={character.isPinFix}
@@ -462,7 +461,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     profileName={character.characterName}
                     badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
-                    urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
                     isOption={true}
                     isPin={character.isPinFix}
@@ -492,7 +490,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
               profileName={character.characterName}
               badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
               followState={followState}
-              urlLinkKey={''}
               roomid={String(character.chatRoomId)}
               isOption={false}
               isPin={character.isPinFix}

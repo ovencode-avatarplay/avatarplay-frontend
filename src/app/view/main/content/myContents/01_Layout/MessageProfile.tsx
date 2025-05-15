@@ -22,7 +22,6 @@ interface Props {
   isDM?: boolean;
   onClickOption?: () => void;
   onClickButton?: () => void;
-  urlLinkKey: string;
   profileUrlLinkKey: string;
 }
 
@@ -61,7 +60,6 @@ const MessageProfile: React.FC<Props> = ({
   isDM = false,
   onClickOption,
   onClickButton,
-  urlLinkKey,
   profileUrlLinkKey,
 }) => {
   const router = useRouter();
@@ -160,7 +158,10 @@ const MessageProfile: React.FC<Props> = ({
       {checkType === CheckType.Left && renderCheck()}
 
       {/* 프로필 이미지 */}
-      <div className={styles.profileContainer} onClick={() => pushLocalizedRoute('/profile/' + roomid, router)}>
+      <div
+        className={styles.profileContainer}
+        onClick={() => pushLocalizedRoute('/profile/' + profileUrlLinkKey, router)}
+      >
         <img src={profileImage} alt="Profile" className={styles.profileImage} />
         {isHighlight && <div className={styles.statusIndicator} />}
       </div>
@@ -181,7 +182,7 @@ const MessageProfile: React.FC<Props> = ({
         </div>
       ) : (
         <Link
-          href={getLocalizedLink(`/chat/?v=${urlLinkKey}` || `?v=`)}
+          href={getLocalizedLink(`/chat/?v=${profileUrlLinkKey}` || `?v=`)}
           className={styles.profileInfo}
           onClick={() => {}}
         >

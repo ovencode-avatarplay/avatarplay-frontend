@@ -32,6 +32,7 @@ const tags = [
   'common_tag_sports',
   'common_tag_star',
   'common_tag_brand',
+  'common_filterinterest_dating',
 ];
 
 // API 응답 타입 정의
@@ -159,10 +160,7 @@ const DMChat: React.FC = () => {
       });
 
       // 태그에 따라 다른 리스트 사용
-      let newList =
-        selectedTag === 'Chatroom'
-          ? response.data?.dmChatRoomList ?? []
-          : response.data?.dmChatRecommendProfileList ?? [];
+      let newList = response.data?.dmChatRoomList ?? [];
 
       // 필터 처리 (CharacterIP는 서버에서 따로 안 주므로 테스트용 로직)
       const filter = CharacterIP.None.toString();
@@ -315,7 +313,6 @@ const DMChat: React.FC = () => {
             isOption={true}
             isPin={dm.isPinFix}
             roomid={dm.roomId.toString()}
-            urlLinkKey={dm.urlLinkKey}
             profileUrlLinkKey={dm.urlLinkKey}
             onClickOption={() => handleRoomSelect(dm.roomId)}
           />
