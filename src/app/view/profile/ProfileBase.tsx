@@ -1319,6 +1319,11 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         onClose={() => {
           setIsReportOpen(false);
         }}
+        reportData={{
+          reportType: 0,
+          reportContentId: data.profileId,
+          reportContentUrl: data.urlLinkKey,
+        }}
       />
       <LoadingOverlay loading={isLoading} />
     </>
@@ -2363,6 +2368,7 @@ export const TabContentComponentWrap = ({
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
   const router = useRouter();
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [data, setData] = useState<{
     tabContentMenu: TabContentMenuType;
     isShareOpened: boolean;
@@ -2507,7 +2513,7 @@ export const TabContentComponentWrap = ({
           alert('hide api 연동 필요');
         }}
         onReport={() => {
-          alert('report api 연동 필요');
+          setIsReportOpen(true);
         }}
       />
       <SharePopup
@@ -2518,6 +2524,17 @@ export const TabContentComponentWrap = ({
           setData(v => ({...v, isShareOpened: false}));
         }}
       ></SharePopup>
+      <ReportDrawer
+        open={isReportOpen}
+        onClose={() => {
+          setIsReportOpen(false);
+        }}
+        reportData={{
+          reportType: 0,
+          reportContentId: profileId,
+          reportContentUrl: profileUrlLinkKey,
+        }}
+      />
     </>
   );
 };

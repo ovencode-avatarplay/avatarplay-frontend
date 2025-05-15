@@ -8,13 +8,21 @@ import CustomButton from '../layout/shared/CustomButton';
 import CustomCheckbox from '../layout/shared/CustomCheckBox';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {InteractionType, sendReport} from '@/app/NetWork/CommonNetwork';
+
+export interface ReportData {
+  reportType: number;
+  reportContentId: number;
+  reportContentUrl?: string;
+}
 
 interface ReportDrawerProps {
   open: boolean;
   onClose: () => void;
+  reportData?: ReportData;
 }
 
-const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose}) => {
+const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) => {
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
 
   const [selectedValue, setSelectedValue] = useState<number>(0);
@@ -22,7 +30,29 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose}) => {
   const [agreement, setAgreement] = useState<boolean>(false);
 
   const handleReport = async () => {
-    console.log('Report : ' + selectedValue + '/' + input[selectedValue]);
+    try {
+      const response = await sendReport({
+        interactionType: reportData?.reportType || 0, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
+        typeValueId: reportData?.reportContentId || 0, // 신고 대상 ID
+        isReport: true, // true = 신고, false = 취소
+      });
+    } catch (error) {
+      console.error('🚨 신고 API 호출 오류:', error);
+    }
+    console.log(
+      'Report : ' +
+        reportData?.reportType +
+        ' / ' +
+        reportData?.reportContentId +
+        ' / ' +
+        reportData?.reportContentUrl +
+        'has problem ' +
+        selectedValue +
+        ' / ' +
+        input[selectedValue],
+    );
+
+    //TODO : 신고 전송 API 작업 필요
 
     dataToast.open(
       getLocalizedText('TODO : Your report has been successfully received and will be reviewed shortly.'),
