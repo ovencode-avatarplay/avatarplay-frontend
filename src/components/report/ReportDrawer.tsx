@@ -6,6 +6,8 @@ import styles from './ReportDrawer.module.css';
 import {useState} from 'react';
 import CustomButton from '../layout/shared/CustomButton';
 import CustomCheckbox from '../layout/shared/CustomCheckBox';
+import {useAtom} from 'jotai';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
 
 interface ReportDrawerProps {
   open: boolean;
@@ -13,6 +15,8 @@ interface ReportDrawerProps {
 }
 
 const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose}) => {
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
+
   const [selectedValue, setSelectedValue] = useState<number>(0);
   const [input, setInput] = useState<string[]>(['', '', '', '', '']);
   const [agreement, setAgreement] = useState<boolean>(false);
@@ -20,6 +24,10 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose}) => {
   const handleReport = async () => {
     console.log('Report : ' + selectedValue + '/' + input[selectedValue]);
 
+    dataToast.open(
+      getLocalizedText('TODO : Your report has been successfully received and will be reviewed shortly.'),
+      ToastType.Normal,
+    );
     onClose();
   };
 
