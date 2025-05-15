@@ -513,9 +513,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   const renderSearchResults = () => {
-    if (isLoading) {
-      return <div className={styles.loading}></div>;
-    }
     if (error) {
       return <div className={styles.error}>{error}</div>;
     }
@@ -527,7 +524,11 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         {renderCharacterList(favoriteList.concat(normalList))}
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
-        {isPagingLoading && <div className={styles.loading}>불러오는 중...</div>}
+        {isPagingLoading && (
+          <div className={styles.loading} style={{position: 'absolute', bottom: 0, width: '100%'}}>
+            불러오는 중...
+          </div>
+        )}
       </div>
     );
   };
