@@ -110,10 +110,9 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
-
   const fetchMore = async (isRefreshAll = false) => {
     setIsPagingLoading(true);
-    setIsLoading(true); // API 호출 시작 시 로딩 상태로 설정
+    setIsLoading(true);
     setError(null);
     let newFavoriteList: SearchResultWithFriend[] = [];
     let newNormalList: SearchResultWithFriend[] = [];
@@ -139,10 +138,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       }
 
       if (selectedTag === 'Following') {
-        console.log(
-          'positiveFiltersRef.current.map(f => f.key)',
-          positiveFiltersRef.current.map(f => f.key),
-        );
         const response = await sendGetSearchFollowingList({
           characterIP: 0,
           search: keyword,
@@ -216,7 +211,13 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           setNormalList(prev => [...prev, ...newNormalList]);
         }
         setOffset(currentOffset + LIMIT);
-        setHasMore(newFavoriteList.length + newNormalList.length === LIMIT);
+
+        // Following 태그일 때는 favoriteList와 normalList를 각각 확인
+        if (selectedTag === 'Following') {
+          setHasMore(newFavoriteList.length === LIMIT || newNormalList.length === LIMIT);
+        } else {
+          setHasMore(newNormalList.length === LIMIT);
+        }
       } else {
         setHasMore(false);
       }
@@ -224,7 +225,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       setError('검색 중 오류가 발생했습니다.');
     } finally {
       setIsPagingLoading(false);
-      setIsLoading(false); // API 호출 완료 후 로딩 상태 해제
+      setIsLoading(false);
     }
   };
 
