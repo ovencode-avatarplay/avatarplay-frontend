@@ -269,8 +269,8 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             setContentMediaUrls={setMediaUrls}
             defaultImage={defaultImage ? defaultImage : undefined}
             triggerWarning={triggerWarning}
-            uploadImageType={UploadMediaState.ContentEpisodeWebtoonImage}
-            uploadVideoType={UploadMediaState.ContentEpisodeVideo}
+            uploadImageType={UploadMediaState.Content}
+            uploadVideoType={UploadMediaState.Content}
           ></MediaUpload>
         </div>
         <CustomInput

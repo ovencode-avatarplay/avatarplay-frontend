@@ -236,7 +236,7 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
       setIsLoading(true);
       if (type === 'subtitle') {
         const req: MediaUploadReq = {
-          mediaState: UploadMediaState.ContentEpisodeSubtitle,
+          mediaState: UploadMediaState.Content,
           fileList: files,
         };
         const response = await sendUpload(req);

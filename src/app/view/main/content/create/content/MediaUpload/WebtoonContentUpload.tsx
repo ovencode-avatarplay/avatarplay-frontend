@@ -474,11 +474,7 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
         }}
         multiple={true}
         setContentImageUrl={() => {}}
-        uploadType={
-          selectedIndex !== null && selectedIndex >= 0
-            ? UploadMediaState.ContentEpisodeWebtoonSubtitle
-            : UploadMediaState.ContentEpisodeWebtoonImage
-        }
+        uploadType={UploadMediaState.Content}
       />
       <LoadingOverlay loading={isLoading} />
     </>

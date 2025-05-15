@@ -346,8 +346,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
           triggerWarning={triggerWarning}
-          uploadImageType={UploadMediaState.ContentImage}
-          uploadVideoType={UploadMediaState.ContentVideo}
+          uploadImageType={UploadMediaState.Content}
+          uploadVideoType={UploadMediaState.Content}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"

@@ -527,7 +527,7 @@ const EpisodeInitialize: React.FC<Props> = ({
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: UploadMediaState.CharacterImage,
+        mediaState: UploadMediaState.Character,
         fileList: [file],
       };
       const response = await sendUpload(req);

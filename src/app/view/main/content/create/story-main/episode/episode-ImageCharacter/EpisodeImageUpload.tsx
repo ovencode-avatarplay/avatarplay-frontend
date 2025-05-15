@@ -63,7 +63,7 @@ const EpisodeBackgroundUpload: React.FC<Props> = ({
     try {
       // Upload 객체 생성
       const req: MediaUploadReq = {
-        mediaState: UploadMediaState.BackgroundImage, // 적절한 MediaState 설정
+        mediaState: UploadMediaState.Story, // 적절한 MediaState 설정
         fileList: [file],
       };
 

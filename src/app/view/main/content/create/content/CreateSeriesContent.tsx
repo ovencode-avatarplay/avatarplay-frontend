@@ -282,8 +282,8 @@ const CreateSeriesContent: React.FC<CreateSeriesContentProps> = ({urlLinkKey}) =
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
           triggerWarning={triggerWarning}
-          uploadImageType={UploadMediaState.ContentImage}
-          uploadVideoType={UploadMediaState.ContentVideo}
+          uploadImageType={UploadMediaState.Content}
+          uploadVideoType={UploadMediaState.Content}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"

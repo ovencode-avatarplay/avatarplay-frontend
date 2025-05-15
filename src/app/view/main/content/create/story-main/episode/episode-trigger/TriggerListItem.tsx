@@ -387,11 +387,11 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
       // MediaState 설정
       let state = UploadMediaState.None;
       if (mediaType === 'audio') {
-        state = UploadMediaState.TriggerAudio;
+        state = UploadMediaState.Story;
       } else if (mediaType === 'image') {
-        state = UploadMediaState.TriggerImage;
+        state = UploadMediaState.Story;
       } else if (mediaType === 'video') {
-        state = UploadMediaState.TriggerVideo;
+        state = UploadMediaState.Story;
       }
 
       // 업로드 요청 객체 생성
@@ -400,7 +400,7 @@ const TriggerListItem: React.FC<TriggerListItemProps> = ({handleToggle, isSelect
       };
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
-      if (state === UploadMediaState.TriggerImage) {
+      if (state === UploadMediaState.Story) {
         req.fileList = files;
       } else {
         req.fileList = files;
