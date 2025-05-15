@@ -30,6 +30,7 @@ import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
+import {LineArrowDown} from '@ui/Icons';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
