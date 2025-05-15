@@ -104,6 +104,7 @@ import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
 import {sendCheckDMChatLinkKey} from '@/app/NetWork/ChatMessageNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
+import ReportDrawer from '@/components/report/ReportDrawer';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -309,6 +310,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const pathname = usePathname();
   const refDescription = useRef<HTMLDivElement | null>(null);
   const refHeader = useRef<HTMLDivElement | null>(null);
+
+  const [isReportOpen, setIsReportOpen] = useState(false);
+
   const [data, setData] = useState<DataProfileType>({
     pathname: '',
     urlLinkKey: urlLinkKey,
@@ -1304,13 +1308,18 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {
             name: getLocalizedText('common_dropdown_report'),
             onClick: () => {
-              dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
+              setIsReportOpen(true);
             },
           },
         ]}
         selectedIndex={-1}
       />
-
+      <ReportDrawer
+        open={isReportOpen}
+        onClose={() => {
+          setIsReportOpen(false);
+        }}
+      />
       <LoadingOverlay loading={isLoading} />
     </>
   );
