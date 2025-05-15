@@ -190,7 +190,7 @@ const CharacterDashboard: React.FC = () => {
     setLoading(true);
 
     try {
-      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), characterId: id};
+      const req: GetCharacterInfoReq = {languageType: getCurrentLanguage(), profileId: id};
       const response = await sendGetCharacterProfileInfo(req);
 
       if (response.data) {

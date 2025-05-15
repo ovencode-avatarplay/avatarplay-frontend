@@ -70,6 +70,14 @@ import BoldLeave from "./Bold/Leave.svg";
 import BoldReport from "./Bold/Report.svg";
 import BoldUserCircle from "./Bold/UserCircle.svg";
 import BoldSetting from "./Bold/Setting.svg";
+import BoldBookMark from "./Bold/Bookmark.svg";
+import BoldBookMarkWhite from "./Bold/BookmarkWhite.svg";
+import BoldAudio from "./Bold/Audio.svg";
+import BoldFolder from "./Bold/Folder.svg";
+import BoldDelete from "./Bold/Delete.svg";
+import BoldDownload from "./Bold/Download.svg";
+import BoldPlayPrevious from "./Bold/play-previous.svg";
+import BoldPlayNext from "./Bold/play-next.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -132,6 +140,8 @@ import LineFriendList from "./Line/FriendList.svg";
 import LineSearchThin from "./Line/Search_Thin.svg";
 import LineCam from "./Line/Cam.svg";
 import LinePhone from "./Line/Phone.svg";
+import LineBookMark from "./Line/Bookmark.svg";
+import LineList from "./Line/List.svg";
 
 import edit1Pixel from "./Custom/edit1Pixel.svg";
 import editPlusOpacity from "./Custom/editPlusOpacity.svg";
@@ -167,6 +177,7 @@ import EmojiConfused from "./Custom/emoji_confused.svg";
 import EmojiCuriosity from "./Custom/emoji_curiosity.svg";
 import Emoticon from "./Custom/Emoticon.svg";
 import VideoFrame from "./Custom/Video_Frame.svg";
+import AudioWave from "./Custom/wpf_audio-wave.svg";
 
 export {
   editCircle,
@@ -264,6 +275,14 @@ export {
   BoldLeave,
   BoldReport,
   BoldUserCircle,
+  BoldBookMark,
+  BoldBookMarkWhite,
+  BoldAudio,
+  BoldFolder,
+  BoldDownload,
+  BoldDelete,
+  BoldPlayPrevious,
+  BoldPlayNext,
   LineAddButton,
   LineAIImage,
   LineArchive,
@@ -336,4 +355,7 @@ export {
   Emoticon,
   VideoFrame,
   BoldSetting,
+  LineBookMark,
+  LineList,
+  AudioWave,
 };

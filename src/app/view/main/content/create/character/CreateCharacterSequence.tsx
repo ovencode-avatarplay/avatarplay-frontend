@@ -17,8 +17,6 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 
 // Swiper
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
 
 // Components
 import CharacterCreateImageButton from './CreateCharacterImageButton';

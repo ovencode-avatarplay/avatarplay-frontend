@@ -19,7 +19,9 @@
   }
   .horizonSwiper
   {
-      width: calc(var(--full-width) - 16px);
+      width: 100%;
+      padding: 0 16px;
+
   }
   .swiper-wrapper {
     display: flex !important;

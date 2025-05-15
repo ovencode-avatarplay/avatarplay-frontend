@@ -1,25 +1,14 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import StoryDashboardHeader from '../story-main/story-dashboard/StoryDashboardHeader';
-import {getCurrentLanguage, pushLocalizedRoute} from '@/utils/UrlMove';
+import {getCurrentLanguage} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
 import styles from './PostMain.module.css';
-import {BoldPlay, BoldQuestion, CircleClose, LineClose, LineUpload} from '@ui/Icons';
-import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
+import {BoldQuestion, CircleClose, LineUpload} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import TriggerImageGrid from '../story-main/episode/episode-trigger/TriggerImageGrid';
 import ReactPlayer from 'react-player';
-import {stat} from 'fs';
 import PostImageGrid from './PostImageGrid';
-import {
-  FeedInfo,
-  CreateFeedInfo,
-  sendCreateFeed,
-  sendGetFeedList,
-  CreateFeedReq,
-  sendGetFeed,
-} from '@/app/NetWork/ShortsNetwork';
+import {sendCreateFeed, CreateFeedReq, sendGetFeed} from '@/app/NetWork/ShortsNetwork';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
 import CustomInput from '@/components/layout/shared/CustomInput';
@@ -28,10 +17,7 @@ import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDow
 import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import DrawerTagSelect from '../common/DrawerTagSelect';
-import {title} from 'process';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
-import {useSelector} from 'react-redux';
-import {RootState} from '@/redux-store/ReduxStore';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 import useCustomRouter from '@/utils/useCustomRouter';
 import getLocalizedText from '@/utils/getLocalizedText';
@@ -40,6 +26,9 @@ import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import TagsData from 'data/create/tags.json';
 import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import ImageUpload from '@/components/create/ImageUpload';
+import VideoUpload from '@/components/create/VideoUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 interface Props {
   id?: string;
@@ -127,8 +116,8 @@ const PostMain: React.FC<Props> = ({id}) => {
               setTitleValue(existingFeed.title || '');
               setrDescription(existingFeed.description || '');
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
+              setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
               setIsNsfw(existingFeed.isBookmark || false);
-              setSelectedVisibility(existingFeed.visibilityType);
             }
           }
         } catch (error) {
@@ -161,82 +150,82 @@ const PostMain: React.FC<Props> = ({id}) => {
     setText('');
   };
   // 파일 선택 시 처리
-  const handleOnFileSelect = async (files: File[]) => {
-    try {
-      // MediaState 설정
-      let state = UploadMediaState.None;
-      if (mediaType == 'image') state = UploadMediaState.FeedImage;
-      if (mediaType == 'video') state = UploadMediaState.FeedVideo;
+  // const handleOnFileSelect = async (files: File[]) => {
+  //   try {
+  //     // MediaState 설정
+  //     let state = UploadMediaState.None;
+  //     if (mediaType == 'image') state = UploadMediaState.FeedImage;
+  //     if (mediaType == 'video') state = UploadMediaState.FeedVideo;
 
-      // 업로드 요청 객체 생성
-      const req: MediaUploadReq = {
-        mediaState: state, // 적절한 MediaState 설정
-      };
+  //     // 업로드 요청 객체 생성
+  //     const req: MediaUploadReq = {
+  //       mediaState: state, // 적절한 MediaState 설정
+  //     };
 
-      if (state === UploadMediaState.FeedImage) {
-        req.imageList = files;
-      } else {
-        req.file = files[0];
-      }
-      // 파일 업로드 API 호출
-      const response = await sendUpload(req);
+  //     if (state === UploadMediaState.FeedImage) {
+  //       req.imageList = files;
+  //     } else {
+  //       req.file = files[0];
+  //     }
+  //     // 파일 업로드 API 호출
+  //     const response = await sendUpload(req);
 
-      if (response?.data) {
-        const imgUrl: string = response.data.url; // 업로드된 메인 이미지 URL
-        const additionalUrls: string[] = response.data.imageUrlList || []; // 추가 이미지 URL 리스트
+  //     if (response?.data) {
+  //       const imgUrl: string = response.data.url; // 업로드된 메인 이미지 URL
+  //       const additionalUrls: string[] = response.data.imageUrlList || []; // 추가 이미지 URL 리스트
 
-        console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
-        console.log('Additional Image URLs:', additionalUrls); // 추가 이미지 결과 로그 출력
+  //       console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
+  //       console.log('Additional Image URLs:', additionalUrls); // 추가 이미지 결과 로그 출력
 
-        // Redux 상태 업데이트를 위한 URL 리스트 생성
-        const validImageUrls = [imgUrl, ...additionalUrls].filter(url => url !== null);
+  //       // Redux 상태 업데이트를 위한 URL 리스트 생성
+  //       const validImageUrls = [imgUrl, ...additionalUrls].filter(url => url !== null);
 
-        // 상태 업데이트: 새로운 이미지 추가
-        setMediaUrls(prevUrls => {
-          const combinedUrls = [...prevUrls, ...validImageUrls];
-          return combinedUrls.slice(0, 9); // 최대 9장 제한
-        });
+  //       // 상태 업데이트: 새로운 이미지 추가
+  //       setMediaUrls(prevUrls => {
+  //         const combinedUrls = [...prevUrls, ...validImageUrls];
+  //         return combinedUrls.slice(0, 9); // 최대 9장 제한
+  //       });
 
-        console.log('Updated Trigger Info with Media URLs:', validImageUrls);
-      } else {
-        console.error('Failed to upload files:', files.map(file => file.name).join(', '));
-      }
-    } catch (error) {
-      console.error('Error during file upload:', error);
-    }
-  };
+  //       console.log('Updated Trigger Info with Media URLs:', validImageUrls);
+  //     } else {
+  //       console.error('Failed to upload files:', files.map(file => file.name).join(', '));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during file upload:', error);
+  //   }
+  // };
 
   // 이미지 삭제
   const handleMediaRemove = (indexToRemove: number) => {
     setMediaUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToRemove));
   };
 
-  const selectVisibilityItems: SelectDrawerItem[] = [
-    // {
-    //   name: 'Take a photo',
-    //   onClick: () => {
-    //     handleTakePhoto();
-    //   },
-    // },
-    {
-      name: 'Workroom',
-      onClick: () => {
-        handleMediaLibrary();
-      },
-    },
-    {
-      name: 'My device',
-      onClick: () => {
-        handleChooseFile();
-      },
-    },
-  ];
+  // const selectVisibilityItems: SelectDrawerItem[] = [
+  //   // {
+  //   //   name: 'Take a photo',
+  //   //   onClick: () => {
+  //   //     handleTakePhoto();
+  //   //   },
+  //   // },
+  //   {
+  //     name: 'Workroom',
+  //     onClick: () => {
+  //       handleMediaLibrary();
+  //     },
+  //   },
+  //   {
+  //     name: 'My device',
+  //     onClick: () => {
+  //       handleChooseFile();
+  //     },
+  //   },
+  // ];
 
   const mediaVisibilityItems: SelectDrawerItem[] = [
     {
       name: 'Select Image',
       onClick: () => {
-        setMediaUrls([]);
+        // setMediaUrls([]);
         setMediaType('image');
         setIsOpenSelectDrawer(true);
       },
@@ -251,48 +240,48 @@ const PostMain: React.FC<Props> = ({id}) => {
     },
   ];
 
-  const handleMediaLibrary = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = accept; // mediaType에 따라 파일 형식 설정
-    input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
-    input.onchange = event => {
-      const files = Array.from((event.target as HTMLInputElement).files || []);
-      if (files.length > 0) {
-        handleOnFileSelect(mediaType === 'image' ? files.slice(0, 9) : files); // 이미지일 경우 최대 9개 제한
-      }
-    };
-    input.click();
-  };
+  // const handleMediaLibrary = () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = accept; // mediaType에 따라 파일 형식 설정
+  //   input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
+  //   input.onchange = event => {
+  //     const files = Array.from((event.target as HTMLInputElement).files || []);
+  //     if (files.length > 0) {
+  //       handleOnFileSelect(mediaType === 'image' ? files.slice(0, 9) : files); // 이미지일 경우 최대 9개 제한
+  //     }
+  //   };
+  //   input.click();
+  // };
 
-  const handleTakeMedia = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = accept; // mediaType에 따라 파일 형식 설정
-    input.capture = 'environment'; // 후면 카메라 (이미지/비디오)
-    input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
-    input.onchange = event => {
-      const files = Array.from((event.target as HTMLInputElement).files || []);
-      if (files.length > 0) {
-        handleOnFileSelect(mediaType === 'image' ? files.slice(0, 9) : files); // 이미지일 경우 최대 9개 제한
-      }
-    };
-    input.click();
-  };
+  // const handleTakeMedia = () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = accept; // mediaType에 따라 파일 형식 설정
+  //   input.capture = 'environment'; // 후면 카메라 (이미지/비디오)
+  //   input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
+  //   input.onchange = event => {
+  //     const files = Array.from((event.target as HTMLInputElement).files || []);
+  //     if (files.length > 0) {
+  //       handleOnFileSelect(mediaType === 'image' ? files.slice(0, 9) : files); // 이미지일 경우 최대 9개 제한
+  //     }
+  //   };
+  //   input.click();
+  // };
 
-  const handleChooseFile = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = accept; // mediaType에 따라 파일 형식 설정
-    input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
-    input.onchange = event => {
-      const files = Array.from((event.target as HTMLInputElement).files || []);
-      if (files.length > 0) {
-        handleOnFileSelect(mediaType === 'image' ? files.slice(0, 9) : files); // 이미지일 경우 최대 9개 제한
-      }
-    };
-    input.click();
-  };
+  // const handleChooseFile = () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = accept; // mediaType에 따라 파일 형식 설정
+  //   input.multiple = mediaType === 'image'; // 이미지일 경우만 다중 선택 가능
+  //   input.onchange = event => {
+  //     const files = Array.from((event.target as HTMLInputElement).files || []);
+  //     if (files.length > 0) {
+  //       handleOnFileSelect(mediaType === 'image' ? files.slice(0, 9) : files); // 이미지일 경우 최대 9개 제한
+  //     }
+  //   };
+  //   input.click();
+  // };
 
   const [selectedVisibility, setSelectedVisibility] = useState<VisibilityType>(VisibilityType.Private);
   const [visibilityDrawerOpen, setVisibilityDrawerOpen] = useState<boolean>(false);
@@ -520,13 +509,13 @@ const PostMain: React.FC<Props> = ({id}) => {
       </div>
 
       <div style={{position: 'relative'}}>
-        <SelectDrawer
+        {/* <SelectDrawer
           items={selectVisibilityItems}
           isOpen={isOpenSelectDrawer}
           onClose={() => setIsOpenSelectDrawer(false)}
           selectedIndex={0}
           isCheck={false}
-        />
+        /> */}
       </div>
 
       <div style={{position: 'relative'}}>
@@ -577,6 +566,40 @@ const PostMain: React.FC<Props> = ({id}) => {
         selectedTagAlertOn={selectedTagAlertOn}
         setSelectedTagAlertOn={setSelectedTagAlertOn}
       />
+      {mediaType === 'image' && (
+        <ImageUpload
+          isOpen={isOpenSelectDrawer}
+          onClose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          setContentImageUrl={string => {
+            setMediaUrls(prev => [...prev, string]);
+          }}
+          setContentImageUrls={urls => {
+            setMediaUrls(prev => [...prev, ...urls]);
+          }}
+          onChoose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          multiple={true}
+          uploadType={UploadMediaState.FeedImage}
+        />
+      )}
+      {mediaType === 'video' && (
+        <VideoUpload
+          isOpen={isOpenSelectDrawer}
+          onClose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          setContentVideoUrl={string => {
+            setMediaUrls(prev => [...prev, string]);
+          }}
+          onChoose={() => {
+            setIsOpenSelectDrawer(false);
+          }}
+          uploadType={UploadMediaState.FeedVideo}
+        />
+      )}
     </div>
   );
 };

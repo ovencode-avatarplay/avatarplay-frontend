@@ -1,16 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from './VideoContentUpload.module.css';
-import {
-  LineArrowDown,
-  BoldCirclePlus,
-  BoldFolderPlus,
-  BoldQuestion,
-  CircleClose,
-  LineClose,
-  LineDashboard,
-  LineDelete,
-  LineUpload,
-} from '@ui/Icons';
+import {LineArrowDown, CircleClose, LineDelete, LineUpload} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import {MediaUploadReq, sendUpload, sendUploadTempFile, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {
@@ -247,12 +237,12 @@ const VideoContentUpload: React.FC<VideoContentUploadProps> = ({
       if (type === 'subtitle') {
         const req: MediaUploadReq = {
           mediaState: UploadMediaState.ContentEpisodeSubtitle,
-          file: files[0],
+          fileList: files,
         };
         const response = await sendUpload(req);
 
         if (response?.data && index !== undefined) {
-          const {url, fileName} = response.data;
+          const {url, fileName} = response.data.mediaUploadInfoList[0];
 
           setSubtitleFields(prev => prev.map((field, i) => (i === index ? {...field, fileUrl: url, fileName} : field)));
 

@@ -1,0 +1,238 @@
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  
+  .modal {
+    position: relative;
+    background: var(--Neutral-800);
+    width: 100%;
+    max-width: 402px;
+    height: 100%;
+    max-height: 874px; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .headerArea
+  {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+
+    width: 100%;
+    padding: 17px 10px 17px 16px;    
+    align-items: center;
+  }
+
+  .itemName 
+  {
+    display: flex;
+    height: 16px;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1 0 0;
+    
+    color: var(--White, #FFF); 
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px; /* 100% */
+    letter-spacing: -0.4px;
+
+  }
+  
+  .closeButton { 
+    background: transparent;
+    border: none;
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 5.249px 5.248px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0; 
+    cursor: pointer;
+
+    box-sizing: border-box;
+  }
+   
+  .closeButton > img
+  {
+    width: 13.504px;
+    height: 13.502px;
+    flex-shrink: 0;
+  }
+  
+  .emptyStateWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  /* Audio-specific */
+  .audioContainer {
+    width: 100%;
+    height: calc(100% - 58px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .audioElement {
+    width: 100%;
+    max-height: calc(100% - 140px);
+    background: var(--Neutral-800); 
+    object-fit: contain;
+  }
+  
+  .controlArea
+  {
+    display: flex;
+    width: 100%;
+    padding: 20px 0px 10px 0px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sliderArea
+  {
+    width: 100%;
+    padding : 0 32px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .slider {
+    flex: 1;
+    margin: 0 12px;
+    appearance: none;
+    height: 4px;
+    background: linear-gradient(to right, #fff 0%, #999 0%);
+    border-radius: 2px;
+    outline: none;
+    position: relative;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer; 
+    position: relative;
+    z-index: 2;
+  }
+  .slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #333;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+
+  .timer
+  {
+    color: #FFF; 
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 140%; /* 19.6px */
+    letter-spacing: -0.14px; 
+  }
+
+  .buttonArea
+  {
+    display: flex;
+    width: 100%;
+    padding: 20px 110px; 
+    justify-content: space-between;
+    align-items: center;
+  }
+   
+  .playButton
+  {
+    cursor: pointer;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 12px 9.714px 10.857px 13.143px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    
+    border-radius: 80px;
+    background: var(--White, #FFF);
+  }
+  
+  .playButton > img
+  {
+    width: 17.143px;
+    height: 17.143px;
+    flex-shrink: 0;
+    filter: var(--black-icon-filter);
+
+  }
+
+  .controlButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  
+  .controlButton img {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .audioIconArea
+  {
+    width: 100%;
+    max-height: calc(100% - 140px);
+    background: var(--Neutral-800); 
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+
+  .audioThumbnail
+  {
+    width: 100%;
+    object-fit: contain; 
+    display: flex; 
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+
+  }
+
+  .audioIcon
+  {
+    width: 171px;
+    height: 171px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    /* filter: var(--black-icon-filter); */
+  }

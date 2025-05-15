@@ -2,7 +2,6 @@
 
 import React, {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
 import 'swiper/css/scrollbar';
 import ReelsContent from './ReelsContent';
 import {FeedInfo, sendFeedView, sendGetRecommendFeed} from '@/app/NetWork/ShortsNetwork';

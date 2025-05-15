@@ -1,0 +1,178 @@
+.uploadContainer
+{
+    width: 100%;
+    max-width: 1300px !important;
+    margin: 0 auto;
+    background-color: white;
+
+    overflow: hidden;
+}
+
+.categoryArea
+{
+    display:  flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tagButton 
+{
+    cursor: pointer;
+    
+    display: flex;
+    width: calc(100% - 32px);
+    margin: 0px 16px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    
+    border-bottom: 1px solid var(--Neutral-100, #F1F3F4); 
+}
+
+.tagName
+{
+    display: flex;
+    padding: 20px 0px;
+    align-items: center;
+    gap: 4px;
+    flex: 1 0 0;   
+    
+    color: var(--Black, #000);    
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.21px;
+}
+
+.fileArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.rootArea
+{
+    display: flex;
+    padding: 10px 16px;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch;
+    
+    color: var(--Black, #000);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.28px;
+    
+}
+
+.listArea
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    align-self: stretch;
+
+    margin-top: 16px;
+}
+
+
+.gridArea {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  
+    padding: 0px 16px;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 80px;
+}
+
+.gridItem
+{
+    flex-shrink: 1;
+
+}
+
+.buttonArea
+{
+    display: flex;
+    align-items: center;
+    padding-right: 6px;
+    gap: 10px;
+}
+
+.topButton
+{
+    cursor: pointer;
+    
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonIcon
+{
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1; 
+
+    filter: var(--black-icon-filter);
+
+}
+
+
+.searchBar
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 46px;
+    padding: 14px 12px 14px 20px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    flex: 1 0 0;
+    
+    border-radius: 999px;
+    border: 1px solid var(--Neutral-200, #E8EAED);
+    background: var(--White, #FFF); 
+}
+
+.searchBar > .searchIcon
+{
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1/1;
+}
+
+.searchBar > input
+{
+    width: 100%;
+}
+
+.selectingMenuArea
+{
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+

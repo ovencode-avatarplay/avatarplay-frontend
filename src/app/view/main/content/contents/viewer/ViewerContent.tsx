@@ -1,7 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ViewerContent.module.css';
-import 'swiper/css';
-import 'swiper/css/pagination';
 import {
   BoldArchive,
   LineArrowLeft,
