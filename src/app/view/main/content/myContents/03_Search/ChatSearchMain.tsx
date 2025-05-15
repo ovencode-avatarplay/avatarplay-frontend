@@ -278,6 +278,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     }
   };
 
+  useEffect(() => {
+    if (searchText == '') {
+      handleSearchBarSearch(searchText, isAdultRef.current, positiveFiltersRef.current, negativeFiltersRef.current);
+    }
+  }, [searchText]);
+
   // Character Follow 버튼 클릭 핸들러
   const handleFollow = async (character: SearchResultWithFriend) => {
     try {
