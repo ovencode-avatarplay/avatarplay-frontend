@@ -25,27 +25,38 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({
 }) => {
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
+  const [isTouching, setIsTouching] = useState(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    // setStartY(e.touches[0].clientY);
+    e.stopPropagation();
+    console.log('handleTouchStart', e.touches[0].clientY);
+    setStartY(e.touches[0].clientY);
+    setIsTouching(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    // if (startY !== null) {
-    //   const currentY = e.touches[0].clientY;
-    //   const distance = Math.max(currentY - startY, 0); // 음수 방지
-    //   setTranslateY(distance);
-    // }
+    e.stopPropagation();
+    if (startY !== null && isTouching) {
+      const currentY = e.touches[0].clientY;
+      const distance = Math.max(currentY - startY, 0); // 음수 방지
+      setTranslateY(distance);
+    }
   };
 
-  const handleTouchEnd = () => {
-    // const threshold = 100; // 닫히는 기준 거리
-    // if (translateY > threshold) {
-    //   onClose(); // 기준 거리 이상이면 Drawer 닫기
-    // } else {
-    //   setTranslateY(0); // 기준 거리 미만이면 원위치로
-    // }
-    // setStartY(null);
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    if (isTouching) {
+      const threshold = 100; // 닫히는 기준 거리
+      if (translateY > threshold) {
+        onClose(); // 기준 거리 이상이면 Drawer 닫기
+        console.log('close');
+      } else {
+        setTranslateY(0); // 기준 거리 미만이면 원위치로
+      }
+      setStartY(null);
+    }
+    setIsTouching(false);
+    console.log('handleTouchEnd', translateY);
   };
 
   return (
@@ -59,21 +70,21 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({
       PaperProps={{
         className: styles.drawerContainer,
         style: {
+          maxHeight: 'var(--body-height)',
+          ...containerStyle,
           transform: `translateY(${translateY}px)`,
           transition: startY === null ? 'transform 0.3s ease' : 'none',
-          maxHeight: 'var(--body-height))',
-          ...containerStyle,
         },
       }}
       {...rest}
     >
-      <div
-        className={styles.touchArea}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className={styles.handleArea}>
+      <div className={styles.touchArea}>
+        <div
+          className={styles.handleArea}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className={styles.handle} />
         </div>
         {title && title !== '' && <div className={`${styles.titleArea} ${customTitle}`}>{title}</div>}

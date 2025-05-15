@@ -34,9 +34,9 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   const dispatch = useDispatch();
   const [startY, setStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartY(e.touches[0].clientY);
-  };
+  // const handleTouchStart = (e: React.TouchEvent) => {
+  //   setStartY(e.touches[0].clientY);
+  // };
   const [data, setData] = useState<{
     profileList: ProfileSimpleInfo[];
     indexSharedTab: number;
@@ -50,7 +50,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
     const isMyProfile = dataProfile.currentProfile?.operatorAuthorityType == OperatorAuthorityType.None;
     data.indexSharedTab = Number(!isMyProfile);
-    console.log('isMyProfile : ', isMyProfile);
+    // console.log('isMyProfile : ', isMyProfile);
     setData({...data});
     refreshProfileList();
   }, [open]);
@@ -61,24 +61,6 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
     data.profileList = profileList;
     setData({...data});
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (startY !== null) {
-      const currentY = e.touches[0].clientY;
-      const distance = Math.max(currentY - startY, 0);
-      setTranslateY(distance);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    const threshold = 100;
-    if (translateY > threshold) {
-      onClose();
-    } else {
-      setTranslateY(0);
-    }
-    setStartY(null);
   };
 
   const handleClickCharacter = () => {
@@ -108,12 +90,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   */
   return (
     <CustomDrawer open={open} onClose={onClose}>
-      <div
-        className={styles.widgetBox}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <div className={styles.widgetBox}>
         <div className={styles.drawerArea}>
           <div className={styles.drawerTitle}>{getLocalizedText('common_alert_016')}</div>
           <div className={styles.buttonArea}>
@@ -154,7 +131,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
                   localStorage.setItem('jwt', accessToken);
-                  console.log('pathname : ', pathname);
+                  // console.log('pathname : ', pathname);
                   const isProfilePage = /^\/[a-z]{2}\/profile(\/.*)?$/.test(pathname ? pathname : 'empty pathname');
                   if (isProfilePage) {
                     pushLocalizedRoute('/profile/' + resData?.profileSimpleInfo.urlLinkKey + "?from=''", router, false);
@@ -179,7 +156,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                 className={`${styles.drawerButton} ${styles.drawerButtonTop} ${canCreateFeed ? '' : styles.disable}`}
                 onClick={() => {
                   if (!canCreateFeed) return;
-                  console.log('canCreateFeed : ', canCreateFeed);
+                  // console.log('canCreateFeed : ', canCreateFeed);
                   onClose();
                 }}
               >
@@ -296,7 +273,7 @@ export default CreateWidget;
 
 const SelectBoxArrowComponent = () => <></>;
 const SelectBoxValueComponent = (data: any, isOpen?: boolean) => {
-  console.log('data : ', data);
+  // console.log('data : ', data);
   const mappingStrToGlobalTextKey = {
     User: 'common_button_user',
     PD: 'common_filter_pd',
@@ -344,7 +321,7 @@ const SelectBoxOptionComponent = (data: any, isSelected: boolean) => {
 
   const strRole = ProfileType?.[data.profileType] as keyof typeof mappingStrToGlobalTextKey;
 
-  console.log('strRole : ', strRole);
+  // console.log('strRole : ', strRole);
   return (
     <>
       <div className={styles.optionWrap}>
