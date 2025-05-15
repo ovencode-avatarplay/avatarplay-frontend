@@ -74,3 +74,14 @@
   margin-bottom: 16px;
   color: var(--text-color);
 }
+
+.sectionHeaderText {
+  color: var(--Black, #000);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -0.28px;
+  padding: 5px 16px;
+}

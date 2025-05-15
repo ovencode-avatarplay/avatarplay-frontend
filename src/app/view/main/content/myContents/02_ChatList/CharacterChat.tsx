@@ -308,6 +308,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             onClickOption={() => handleRoomSelect(item.chatRoomId)}
           />
         ))}
+        <div style={{marginBottom: '80px'}}></div>
         <div ref={observerRef} style={{height: '1px'}}></div>
       </div>
 

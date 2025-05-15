@@ -197,7 +197,7 @@ export interface GetSearchCharacterRoomListReq {
 export interface SearchCharacterRoomInfo {
   chatRoomId: number;
   profileImageUrl: string;
-  urlLinkKey: string;
+  profileUrlLinkKey: string;
   characterProfileId: number;
   characterId: number;
   characterName: string;

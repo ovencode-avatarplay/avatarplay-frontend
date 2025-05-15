@@ -144,8 +144,7 @@ const MessageProfile: React.FC<Props> = ({
       const response = await sendCheckDMChatLinkKey({profileUrlLinkKey: profileUrlLinkKey || ''});
       setIsLoading(false);
       if (response.resultCode === 0) {
-        if (isDM) pushLocalizedRoute('/DM/' + response.data?.dmChatUrlLinkKey, router);
-        else pushLocalizedRoute('/chat/?v=' + response.data?.dmChatUrlLinkKey, router);
+        pushLocalizedRoute('/DM/' + response.data?.dmChatUrlLinkKey, router);
       } else {
         console.log(`에러 발생: ${response.resultMessage}`);
       }
@@ -167,19 +166,34 @@ const MessageProfile: React.FC<Props> = ({
         {isHighlight && <div className={styles.statusIndicator} />}
       </div>
 
-      <div
-        className={styles.profileInfo}
-        onClick={() => {
-          checkDMLinkKey();
-        }}
-      >
-        {/* 프로필 정보 */}
-        <div className={styles.profileTop}>
-          <span className={styles.profileName}>{profileName}</span>
-          {renderBadge()}
+      {isDM ? (
+        <div
+          className={styles.profileInfo}
+          onClick={() => {
+            checkDMLinkKey();
+          }}
+        >
+          {/* 프로필 정보 */}
+          <div className={styles.profileTop}>
+            <span className={styles.profileName}>{profileName}</span>
+            {renderBadge()}
+          </div>
+          {timestamp && <span className={styles.timestamp}>{timestamp}</span>}
         </div>
-        {timestamp && <span className={styles.timestamp}>{timestamp}</span>}
-      </div>
+      ) : (
+        <Link
+          href={getLocalizedLink(`/chat/?v=${profileUrlLinkKey}` || `?v=`)}
+          className={styles.profileInfo}
+          onClick={() => {}}
+        >
+          {/* 프로필 정보 */}
+          <div className={styles.profileTop}>
+            <span className={styles.profileName}>{profileName}</span>
+            {renderBadge()}
+          </div>
+          {timestamp && <span className={styles.timestamp}>{timestamp}</span>}
+        </Link>
+      )}
 
       {/* 오른쪽 영역 */}
       <div className={styles.rightArea}>

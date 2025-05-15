@@ -417,7 +417,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         <div>
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setFavoriteOpen(!favoriteOpen)}>
-              <span>Favorite ({favoriteList.length})</span>
+              <div className={styles.sectionHeaderText}>Favorite ({favoriteList.length})</div>
               <span className={favoriteOpen ? styles.arrowDown : styles.arrowRight}></span>
             </div>
             {favoriteOpen &&
@@ -438,14 +438,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
                     isDM={selectedTag === 'Friend'}
-                    profileUrlLinkKey={character.urlLinkKey}
+                    profileUrlLinkKey={character.profileUrlLinkKey}
                   />
                 );
               })}
           </div>
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setListOpen(!listOpen)}>
-              <span>{selectedTag}</span>
+              <div className={styles.sectionHeaderText}>{selectedTag}</div>
               <span className={listOpen ? styles.arrowDown : styles.arrowRight}></span>
             </div>
             {listOpen &&
@@ -466,7 +466,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
                     isDM={selectedTag === 'Friend'}
-                    profileUrlLinkKey={character.urlLinkKey}
+                    profileUrlLinkKey={character.profileUrlLinkKey}
                   />
                 );
               })}
@@ -494,7 +494,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
               isOption={false}
               isPin={character.isPinFix}
               isDM={true}
-              profileUrlLinkKey={character.urlLinkKey}
+              profileUrlLinkKey={character.profileUrlLinkKey}
               onClickButton={() => {
                 if (selectedTag === 'People') {
                   handleAddFriendToggle(character);

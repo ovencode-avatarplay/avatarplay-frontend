@@ -151,7 +151,7 @@ const DMChat: React.FC = () => {
 
     try {
       const response = await sendGetDMChatRoomList({
-        isDMChatRoom: true,
+        isDMChatRoom: selectedTag === 'Chatroom' ? true : false,
         search: '',
         interest: selectedTag === 'Chatroom' ? '' : selectedTag,
         sort: 0,
@@ -191,21 +191,20 @@ const DMChat: React.FC = () => {
       }
 
       setOffset(currentOffset + newList.length);
-      setHasMore(newList.length === LIMIT);
     } catch (error) {
       console.error('DM 페이징 오류:', error);
     } finally {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
       const fetchMore = async () => {
         const currentOffset = offset;
         try {
+          setIsLoading(true);
           const response = await sendGetDMChatRoomList({
-            isDMChatRoom: true,
+            isDMChatRoom: selectedTag === 'Chatroom' ? true : false,
             search: '',
             interest: selectedTag === 'Chatroom' ? '' : selectedTag,
             sort: 0,
@@ -237,10 +236,16 @@ const DMChat: React.FC = () => {
             setAlreadyReceivedProfileIds(prev => [...prev, ...newProfileIds]);
             setDmList(prev => [...prev, ...newList]);
             setOffset(currentOffset + newList.length);
-            setHasMore(newList.length === LIMIT);
+            // 서버에서 받아온 데이터가 LIMIT보다 작으면 더 이상 불러올 데이터가 없다는 의미
+            setHasMore(newList.length >= LIMIT);
+          } else {
+            // 데이터가 없으면 더 이상 불러올 데이터가 없다는 의미
+            setHasMore(false);
           }
         } catch (error) {
           console.error('DM 페이징 오류:', error);
+        } finally {
+          setIsLoading(false);
         }
       };
 
@@ -262,7 +267,6 @@ const DMChat: React.FC = () => {
     let isUnmounted = false;
     const poll = async () => {
       try {
-        console.log('dmList', dmList);
         const roomIdList = dmList.map(dm => dm.roomId);
         if (roomIdList.length === 0) return;
         const res = await sendCheckUnreadReddot({
@@ -276,8 +280,6 @@ const DMChat: React.FC = () => {
             map[item.key] = item.value;
           });
           setHighlightMap(map);
-
-          console.log('sortedDmList', sortedDmList);
           // 응답 roomId 순서대로 dmList 재정렬
           if (res.data.dmChatUrlLinkKey.length > 0) {
             setDmList(prevList => {
@@ -331,7 +333,6 @@ const DMChat: React.FC = () => {
       setOpenOption(true);
     }
   };
-  console.log('sortedDmList', sortedDmList);
   return (
     <>
       <SwipeTagList tags={tags} currentTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
@@ -360,6 +361,7 @@ const DMChat: React.FC = () => {
             onClickOption={() => handleRoomSelect(dm.roomId)}
           />
         ))}
+        <div style={{marginBottom: '80px'}}></div>
         <div ref={observerRef} style={{height: '1px'}} />
       </div>
 
