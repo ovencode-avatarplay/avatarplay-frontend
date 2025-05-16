@@ -186,6 +186,10 @@ export enum MediaState {
   Image = 1,
   Video = 2,
   Audio = 3,
+  Document = 4,
+  Subtitle = 5,
+  Folder = 6,
+  Workroom = 7,
 }
 
 export const getProfileInfo = async (urlLinkKey: string) => {
