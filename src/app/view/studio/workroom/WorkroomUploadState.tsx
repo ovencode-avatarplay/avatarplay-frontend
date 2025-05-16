@@ -1,5 +1,6 @@
+import {useState} from 'react';
 import styles from './WorkroomUploadState.module.css';
-import {LineCheck, LineClose, LineRefresh} from '@ui/Icons';
+import {LineArrowDown, LineCheck, LineClose, LineRefresh} from '@ui/Icons';
 
 interface WorkroomUploadStateProps {
   uploadStateList: UploadStateItem[];
@@ -13,6 +14,8 @@ export interface UploadStateItem {
 }
 
 const WorkroomUploadState: React.FC<WorkroomUploadStateProps> = ({uploadStateList, onClose}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleItemCancel = (id: number) => {
     console.log('item cancel' + id);
   };
@@ -60,22 +63,36 @@ const WorkroomUploadState: React.FC<WorkroomUploadStateProps> = ({uploadStateLis
     <div className={styles.uploadStateArea}>
       <div className={styles.uploadStateHeader}>
         <div className={styles.headerText}>Uploading Files {uploadStateList.length}</div>
-        <button
-          className={styles.headerButton}
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <img src={LineClose.src} alt="close" />
-        </button>
+        <div className={styles.headerButtonArea}>
+          <button className={styles.headerButton}>
+            <img
+              src={LineArrowDown.src}
+              alt="close"
+              onClick={() => {
+                setIsOpen(!isOpen);
+              }}
+              style={{transform: isOpen ? 'rotate(0deg)' : 'rotate(180deg)'}}
+            />
+          </button>
+          <button
+            className={styles.headerButton}
+            onClick={() => {
+              onClose();
+            }}
+          >
+            <img src={LineClose.src} alt="close" />
+          </button>
+        </div>
       </div>
-      <ul className={styles.uploadStateItemList}>
-        {uploadStateList
-          .sort((a, b) => b.id - a.id)
-          .map(item => (
-            <li key={item.id}>{renderUploadStateItem(item)}</li>
-          ))}
-      </ul>
+      {isOpen && (
+        <ul className={styles.uploadStateItemList}>
+          {uploadStateList
+            .sort((a, b) => b.id - a.id)
+            .map(item => (
+              <li key={item.id}>{renderUploadStateItem(item)}</li>
+            ))}
+        </ul>
+      )}
     </div>
   );
 };
