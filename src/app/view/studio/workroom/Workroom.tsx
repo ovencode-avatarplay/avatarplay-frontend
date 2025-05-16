@@ -50,7 +50,7 @@ import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {GalleryCategory} from '../characterDashboard/CharacterGalleryData';
 import {CreateFolderReq, MoveFolderReq, SendCreateFolder, SendMoveFolder} from '@/app/NetWork/WorkroomNetwork';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import {MediaUploadReq, sendUpload, sendUploadWorkroomFolder, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import WorkroomUploadState, {UploadStateItem} from './WorkroomUploadState';
 //#endregion
 
@@ -1096,6 +1096,14 @@ const Workroom: React.FC<Props> = ({}) => {
     }
   };
 
+  const handleUploadWorkroomFolder = async (files: FileList) => {
+    const fileArray = Array.from(files);
+    const response = await sendUploadWorkroomFolder(fileArray);
+    if (response.data) {
+      console.log(response.data);
+    }
+  };
+
   const handleUploadClose = () => {
     setUploadStateList([]);
   };
@@ -1895,7 +1903,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
         type: 'file',
         ref: folderInputRef,
         style: {display: 'none'},
-        onChange: e => e.target.files && handleFolderUploadStructured(e.target.files),
+        onChange: e => e.target.files && handleUploadWorkroomFolder(e.target.files),
         webkitdirectory: '',
         directory: '',
       })}

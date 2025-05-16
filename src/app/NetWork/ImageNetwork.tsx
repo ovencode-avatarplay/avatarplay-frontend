@@ -74,6 +74,31 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
   }
 };
 
+export const sendUploadWorkroomFolder = async (files: FileList): Promise<ResponseAPI<{}>> => {
+  try {
+    const formData = new FormData();
+
+    Array.from(files).forEach(file => {
+      formData.append('files', file); // 'files' 라는 key로 append
+    });
+
+    const response = await api.post<ResponseAPI<{}>>('Resource/uploadWorkroomFolder', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`UploadWorkroomFolder Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error uploading workroom folder:', error);
+    throw new Error('Failed to upload workroom folder. Please try again.');
+  }
+};
+
 export interface GenerateParameter {
   name: string;
   value: number;
