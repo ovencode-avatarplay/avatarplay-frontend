@@ -50,6 +50,8 @@ import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {GalleryCategory} from '../characterDashboard/CharacterGalleryData';
 import {CreateFolderReq, MoveFolderReq, SendCreateFolder, SendMoveFolder} from '@/app/NetWork/WorkroomNetwork';
+import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import WorkroomUploadState, {UploadStateItem} from './WorkroomUploadState';
 //#endregion
 
 const Workroom: React.FC<Props> = ({}) => {
@@ -499,6 +501,7 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const showContent = !isLoading && !isDelaying && isMediaLoaded;
 
+  const [uploadStateList, setUploadStateList] = useState<UploadStateItem[]>([]);
   //#endregion
 
   const dropDownMenuItems: DropDownMenuItem[] = [
@@ -903,46 +906,96 @@ const Workroom: React.FC<Props> = ({}) => {
       return history;
     });
   };
-
   // 파일 업로드 처리
-  const handleFileUpload = (files: FileList) => {
-    const uploadedItems: WorkroomItemInfo[] = Array.from(files).map(file => ({
-      id: getMinId(workroomData) - 1,
-      name: file.name,
-      detail: 'Uploaded file',
-      mediaState: getMediaStateByExtension(file.name),
-      imgUrl: URL.createObjectURL(file), // 임시 URL
-      folderLocation: selectedCurrentFolder?.id ? [selectedCurrentFolder.id] : [],
-      /* 캐릭터 갤러리에서 업로드 하는 경우 */
-      generatedInfo: selectedItem?.profileId
-        ? {
-            generatedType:
-              tagStates.variation == 'Portrait'
-                ? GalleryCategory.Portrait
-                : tagStates.variation == 'Pose'
-                ? GalleryCategory.Pose
-                : tagStates.variation == 'Expression'
-                ? GalleryCategory.Expression
-                : tagStates.variation == 'Video'
-                ? GalleryCategory.Video
-                : GalleryCategory.All,
-            generateModel: 'Uploaded file',
-            positivePrompt: '',
-            negativePrompt: '',
-            seed: -1,
-            imageSize: '',
-            isUploaded: true,
-          }
-        : undefined,
-      profileId: selectedItem?.profileId || undefined,
-    }));
+  const handleFileUpload = async (files: FileList, parentFolderId?: number) => {
+    try {
+      const fileArray = Array.from(files);
+      const req: MediaUploadReq = {
+        mediaState: UploadMediaState.WorkRoom,
+        fileList: fileArray,
+      };
 
-    setWorkroomData(prev => [...prev, ...uploadedItems]);
-    setIsSelectCreateOpen(false);
+      const newUploadStateList: UploadStateItem[] = fileArray.map(file => ({
+        id: getMinId(workroomData) - 1,
+        name: file.name,
+        state: 'uploading',
+      }));
+
+      setUploadStateList(prev => [...prev, ...newUploadStateList]);
+
+      const response = await sendUpload(req);
+      const uploadInfos = response?.data?.mediaUploadInfoList;
+      if (uploadInfos && uploadInfos.length > 0) {
+        const uploadResults = uploadInfos.map(info => info.url).filter((url): url is string => !!url);
+
+        const uploadedItems: WorkroomItemInfo[] = Array.from(files).map((file, index) => ({
+          id: getMinId(workroomData) - 1,
+          name: file.name,
+          detail: 'Uploaded file',
+          mediaState: getMediaStateByExtension(file.name),
+          imgUrl: uploadResults[index],
+          folderLocation: parentFolderId
+            ? [parentFolderId]
+            : selectedCurrentFolder?.id
+            ? [selectedCurrentFolder.id]
+            : [],
+          /* 캐릭터 갤러리에서 업로드 하는 경우 */
+          generatedInfo: selectedItem?.profileId
+            ? {
+                generatedType:
+                  tagStates.variation == 'Portrait'
+                    ? GalleryCategory.Portrait
+                    : tagStates.variation == 'Pose'
+                    ? GalleryCategory.Pose
+                    : tagStates.variation == 'Expression'
+                    ? GalleryCategory.Expression
+                    : tagStates.variation == 'Video'
+                    ? GalleryCategory.Video
+                    : GalleryCategory.All,
+                generateModel: 'Uploaded file',
+                positivePrompt: '',
+                negativePrompt: '',
+                seed: -1,
+                imageSize: '',
+                isUploaded: true,
+              }
+            : undefined,
+          profileId: selectedItem?.profileId || undefined,
+        }));
+
+        if (uploadResults.length > 0) {
+          setWorkroomData(prev => [...prev, ...uploadedItems]);
+
+          // 업로드 성공한 아이템들의 상태를 'uploaded'로 변경
+          setUploadStateList(prev =>
+            prev.map(item => {
+              if (uploadedItems.some(uploadedItem => uploadedItem.id === item.id)) {
+                return {...item, state: 'uploaded'};
+              }
+              return item;
+            }),
+          );
+        } else {
+          // URL이 없는 경우 실패 상태로 변경
+          setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+          alert('파일 업로드는 성공했지만 URL이 없습니다.');
+        }
+      } else {
+        // 업로드 실패 시 모든 아이템 상태를 'failed'로 변경
+        setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+        alert('업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      // 에러 발생 시 모든 아이템 상태를 'failed'로 변경
+      setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+      console.error('전체 업로드 실패:', error);
+      alert('파일 업로드 중 오류가 발생했습니다.');
+    } finally {
+    }
   };
 
   // 폴더 업로드 처리
-  const handleFolderUpload = (files: FileList) => {
+  const handleFolderUpload = async (files: FileList) => {
     const newItems: WorkroomItemInfo[] = [];
     const folderMap = new Map<string, number>();
     let idCounter = getMinId(workroomData) - 1;
@@ -994,6 +1047,57 @@ const Workroom: React.FC<Props> = ({}) => {
 
     setWorkroomData(prev => [...prev, ...newItems]);
     setIsSelectCreateOpen(false);
+  };
+
+  const handleFolderUploadStructured = async (files: FileList) => {
+    const folderMap = new Map<string, number>(); // 'folder/a' => folderId
+    const baseId = selectedCurrentFolder?.id ?? 1;
+
+    folderMap.set('', baseId); // 루트 기준
+
+    const allPaths = new Set<string>();
+
+    // 1. 폴더 경로 모으기
+    Array.from(files).forEach(file => {
+      const pathParts = file.webkitRelativePath.split('/');
+      for (let i = 0; i < pathParts.length - 1; i++) {
+        const subPath = pathParts.slice(0, i + 1).join('/');
+        allPaths.add(subPath);
+      }
+    });
+
+    // 2. 정렬 (상위 폴더 먼저 생성되도록)
+    const sortedFolders = Array.from(allPaths).sort((a, b) => a.split('/').length - b.split('/').length);
+
+    // 3. 서버에 폴더 생성
+    for (const path of sortedFolders) {
+      const parentPath = path.substring(0, path.lastIndexOf('/'));
+      const folderName = path.substring(path.lastIndexOf('/') + 1);
+
+      const parentId = folderMap.get(parentPath) ?? baseId;
+
+      const res = await SendCreateFolder({
+        Name: folderName,
+        ParentFolderId: parentId,
+      });
+
+      if (res.data?.folderId) {
+        folderMap.set(path, res.data.folderId);
+      }
+    }
+
+    // 4. 파일 업로드
+    for (const file of Array.from(files)) {
+      const pathParts = file.webkitRelativePath.split('/');
+      const folderPath = pathParts.slice(0, pathParts.length - 1).join('/');
+      const folderId = folderMap.get(folderPath) ?? baseId;
+
+      await handleFileUpload(files, folderId); // 파일 업로드 로직
+    }
+  };
+
+  const handleUploadClose = () => {
+    setUploadStateList([]);
   };
 
   //#endregion
@@ -1779,6 +1883,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
         </>,
         document.body,
       )}
+      {/* 워크룸에서의 파일 업로드는 디바이스에서만 가능*/}
       <input
         type="file"
         multiple
@@ -1790,10 +1895,13 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
         type: 'file',
         ref: folderInputRef,
         style: {display: 'none'},
-        onChange: e => e.target.files && handleFolderUpload(e.target.files),
+        onChange: e => e.target.files && handleFolderUploadStructured(e.target.files),
         webkitdirectory: '',
         directory: '',
       })}
+      {uploadStateList.length > 0 && (
+        <WorkroomUploadState uploadStateList={uploadStateList} onClose={handleUploadClose} />
+      )}
     </div>
   );
 };
