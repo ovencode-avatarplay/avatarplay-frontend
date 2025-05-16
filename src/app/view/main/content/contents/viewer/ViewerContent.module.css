@@ -36,21 +36,26 @@
   bottom: 50px;
   left: 5%;
   width: 90%;
-  height: 5px; /* 기존보다 살짝 키움 */
+  height: 5px;
   background-color: rgba(255, 255, 255, 0.3);
   overflow: hidden;
-  cursor: pointer; /* 드래그 가능하도록 커서 변경 */
+  cursor: pointer;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  opacity: 1;  
-  z-index: 1000; /* 다른 요소가 덮지 않도록 설정 */
-  overflow: visible; /* ✅ 자식 요소가 바깥으로 나가도 보이게 */
+  opacity: 1;
+  z-index: 1000;
+  overflow: visible;
+  pointer-events: auto;
 }
 
 .progressFill {
   height: 100%;
   background-color: #fff;
   position: relative;
-  overflow: visible; /* ✅ 자식 요소가 바깥으로 나가도 보이게 */
+  overflow: visible;
+}
+
+.progressBar.dragging .progressFill {
+  transition: none;
 }
 
 .progressDot {
@@ -68,11 +73,6 @@
   background-color: #FFF;
 }
 
-.progressBar.dragging .progressFill {
-  transition: none; /* 드래그 중에는 애니메이션 제거 */
-  
-}
-
 .playCircleIcon {
   position: absolute;
   width: 70px;
@@ -85,8 +85,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0; /* 기본적으로 숨김 상태 */
+  cursor: pointer;
+  z-index: 1000;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  pointer-events: auto;
+}
+
+.fadeIn {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.fadeOut {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  pointer-events: none;
 }
 
 /* 등장 애니메이션 */
@@ -381,23 +394,37 @@ img.button{
 }
 
 .header {
-  position: absolute;
-  
-  display: flex;  
-  width: var(--full-width);
-  height: 58px;
-  padding-top: 9px;
-  padding-right: auto;
-  padding-bottom : 9px ;
-  padding-left:  0.362px;
-  align-items: center; 
-  flex-shrink: 0;
-  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+  z-index: 1000;
+  pointer-events: auto;
+}
 
-  background: black;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-  opacity: 1;
-  z-index: 12;
+.header button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  pointer-events: auto;
+}
+
+.header h2 {
+  color: white;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .baseArea {
@@ -451,18 +478,44 @@ img.button{
 
 .fadeOutR {
   opacity: 0;
-  transform: translateX(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
-  pointer-events: none; /* 사라질 때 클릭 방지 */
+  transform: translateX(10px);
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
+
+.fadeInR {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
 .fadeOutT {
   opacity: 0;
-  transform: translateY(-10px); /* 약간 아래로 이동하면서 사라지는 효과 */
-  pointer-events: none; /* 사라질 때 클릭 방지 */
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
+
+.fadeInT {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
 .fadeOutB {
   opacity: 0;
-  transform: translateY(10px); /* 약간 아래로 이동하면서 사라지는 효과 */
-  pointer-events: none; /* 사라질 때 클릭 방지 */
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.fadeInB {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
 
 @keyframes scaleUp {
@@ -665,6 +718,7 @@ img.button{
   width: 100%;
   overflow-y: auto;
   height: 100%;
+  touch-action: pan-y;
 }
 .centerAlign {
   justify-content: center;
@@ -688,4 +742,187 @@ img.button{
   width: 100%;
   object-fit: cover;
   pointer-events: none; /* 사용자 클릭 막기 */
+}
+
+.viewerModal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--Neutral-800);
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.contentContainer {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.contentItem {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.videoContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: manipulation;
+}
+
+.webtoonContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  touch-action: pan-y;
+}
+
+.webtoonImage {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sideControls {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  bottom: 70px;
+  right: 13px;
+  z-index: 12;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 1;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+.followButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  pointer-events: auto;
+}
+
+.actionButtons button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.actionButtons button img {
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.actionButtons button span {
+  color: white;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  pointer-events: auto;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--Primary-500);
+  transition: width 0.1s linear;
+}
+
+.timeDisplay {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  color: white;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
+  pointer-events: auto;
+}
+
+/* 애니메이션 클래스 */
+.startAnimation {
+  transform: scale(0.8);
+}
+
+.fullSize {
+  transform: scale(1);
+}
+
+.shrinkAnimation {
+  transform: scale(0.8);
+  opacity: 0;
 }

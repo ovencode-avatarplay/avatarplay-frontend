@@ -41,6 +41,19 @@ import {
   sendCheckContentState,
   sendGetContent,
   sendGetSeasonEpisodes,
+  ContentCategoryType,
+  ContentLanguageType,
+  ContentPlayInfo,
+  GetSeasonEpisodesPopupReq,
+  GetSeasonEpisodesPopupRes,
+  PlayButtonReq,
+  PlayReq,
+  RecordPlayReq,
+  SeasonEpisodeInfo,
+  sendGetSeasonEpisodesPopup,
+  sendPlay,
+  sendPlayButton,
+  sendRecordPlay,
 } from '@/app/NetWork/ContentNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import Link from 'next/link';
@@ -58,6 +71,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
 import formatText from '@/utils/formatText';
 import {setStar} from '@/redux-store/slices/Currency';
+import {ResponseAPI} from '@/app/NetWork/ApiInstance';
 
 type Props = {
   type: ContentType;
@@ -71,6 +85,44 @@ enum eTabType {
 
 const COMMON_GENRE_HEAD = 'common_genre';
 
+interface ContentItem {
+  id: number;
+  type: ContentCategoryType;
+  title: string;
+  profileId: number;
+  profileIconUrl: string;
+  profileUrlLinkKey: string;
+  isProfileFollow: boolean;
+  isMyEpisode: boolean;
+  commonMediaViewInfo: {
+    isLike: boolean;
+    isDisLike: boolean;
+    likeCount: number;
+    commentCount: number;
+    isBookmark: boolean;
+  };
+  episodeVideoInfo?: {
+    videoSourceFileInfo: {
+      videoSourceUrl: string;
+    };
+    mpdTempUrl: string;
+    subTitleFileInfos?: {
+      videoLanguageType: ContentLanguageType;
+      videoSourceUrl: string;
+    }[];
+    dubbingFileInfos?: {
+      videoLanguageType: ContentLanguageType;
+      videoSourceUrl: string;
+    }[];
+  };
+  episodeWebtoonInfo?: {
+    webtoonSourceUrlList: {
+      webtoonLanguageType: ContentLanguageType;
+      webtoonSourceUrls: string[];
+    }[];
+  };
+}
+
 const ContentSeriesDetail = ({id, type}: Props) => {
   const {back} = useCustomRouter();
   const refThumbnailWrap = useRef<HTMLDivElement | null>(null);
@@ -78,6 +130,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const [isPlayButton, setIsPlayButton] = useState(false);
   const [playContentId, setPlayContentId] = useState(0);
   const [playEpisodeId, setPlayEpisodeId] = useState<number>(0);
+  const [playContents, setPlayContents] = useState<ContentItem[]>([]);
+  const [initialPlayIndex, setInitialPlayIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const [data, setData] = useState<{
@@ -276,6 +331,54 @@ const ContentSeriesDetail = ({id, type}: Props) => {
   const urlEdit = data.isSingle ? '/update/content/single' : '/create/content/series';
   console.log('contentID : ', playContentId);
   console.log('onPlay : ', onPlay);
+
+  const handlePlayContent = async (contentId: number, episodeId?: number) => {
+    try {
+      setIsLoading(true);
+      const testEpisodeIds = [112, 194];
+      const contents: ContentItem[] = [];
+
+      for (const testEpisodeId of testEpisodeIds) {
+        const playRequest: PlayReq = {
+          contentId: contentId,
+          episodeId: testEpisodeId,
+        };
+        const response = await sendPlay(playRequest);
+
+        if (response?.data?.recentlyPlayInfo) {
+          const playInfo = response.data.recentlyPlayInfo;
+          contents.push({
+            id: playInfo.contentId,
+            type: playInfo.categoryType,
+            title: playInfo.title,
+            profileId: playInfo.profileId,
+            profileIconUrl: playInfo.profileIconUrl,
+            profileUrlLinkKey: playInfo.profileUrlLinkKey,
+            isProfileFollow: playInfo.isProfileFollow,
+            isMyEpisode: playInfo.isMyEpisode,
+            commonMediaViewInfo: playInfo.commonMediaViewInfo,
+            episodeVideoInfo: playInfo.episodeVideoInfo,
+            episodeWebtoonInfo: playInfo.episodeWebtoonInfo,
+          });
+        }
+      }
+
+      if (contents.length > 0) {
+        setPlayContents(contents);
+        setInitialPlayIndex(0);
+        setOnPlay(true);
+      }
+    } catch (error) {
+      console.error('Play API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePlay = (contentId: number, episodeId?: number) => {
+    handlePlayContent(contentId, episodeId);
+  };
+
   return (
     <>
       <main className={styles.main}>
@@ -320,8 +423,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               setOnPlay(true);
               setIsPlayButton(true);
               console.log('data', data);
-              setPlayContentId(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
-              setEpisodeId(0);
+              handlePlay(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
             }}
           >
             <img src={BoldAudioPlay.src} alt="" />
@@ -469,10 +571,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             if (isFree || !isLock || data.dataMix?.isProfileSubscribe) {
                               //TODO : play처리
                               console.log('data', data, one);
-                              setOnPlay(true);
-                              setIsPlayButton(false);
-                              setPlayContentId(data.dataMix?.id || 0);
-                              setEpisodeId(0);
+                              handlePlay(data.isSingle ? data.dataMix?.id || 0 : data.dataMix?.contentId || 0);
                               return;
                             }
 
@@ -509,10 +608,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                             if (isFree || !isLock || data.dataMix?.isProfileSubscribe) {
                               //TODO : play처리
                               console.log('data', data, one);
-                              setOnPlay(true);
-                              setIsPlayButton(false);
-                              setPlayContentId(data.dataMix?.contentId || 0);
-                              setPlayEpisodeId(one.episodeId);
+                              handlePlay(data.dataMix?.contentId || 0, one.episodeId);
                               return;
                             }
 
@@ -562,17 +658,11 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           }}
           onPurchaseSuccess={(contentId: number, episodeId: number, contentType: ContentType) => {
             if (contentType == ContentType.Series) {
-              setOnPlay(true);
-              setIsPlayButton(false);
-              setPlayContentId(contentId || 0);
-              setPlayEpisodeId(episodeId);
+              handlePlay(contentId || 0);
             }
 
             if (contentType == ContentType.Single) {
-              setOnPlay(true);
-              setIsPlayButton(false);
-              setPlayContentId(contentId || 0);
-              setEpisodeId(0);
+              handlePlay(contentId || 0);
             }
 
             refreshInfo();
@@ -583,10 +673,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         <ViewerContent
           open={onPlay}
           onClose={() => setOnPlay(false)}
-          isPlayButon={isPlayButton}
-          contentId={playContentId}
-          episodeId={playContentId != 0 ? playEpisodeId : undefined}
-        ></ViewerContent>
+          contents={playContents}
+          initialIndex={initialPlayIndex}
+        />
       )}
 
       {data.dataGift.isOpen && (
