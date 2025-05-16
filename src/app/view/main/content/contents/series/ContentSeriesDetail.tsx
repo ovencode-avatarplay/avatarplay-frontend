@@ -58,6 +58,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
 import formatText from '@/utils/formatText';
 import {setStar} from '@/redux-store/slices/Currency';
+import ViewerSeriesContent from '../viewer/ViewerSeriesContent';
 
 type Props = {
   type: ContentType;
@@ -580,13 +581,27 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         />
       )}
       {onPlay && (
-        <ViewerContent
-          open={onPlay}
-          onClose={() => setOnPlay(false)}
-          isPlayButon={isPlayButton}
-          contentId={playContentId}
-          episodeId={playContentId != 0 ? playEpisodeId : undefined}
-        ></ViewerContent>
+        <>
+          {data.isSingle ? (
+            <ViewerContent
+              open={onPlay}
+              onClose={() => setOnPlay(false)}
+              isPlayButon={isPlayButton}
+              contentId={playContentId}
+              episodeId={playContentId != 0 ? playEpisodeId : undefined}
+              seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
+            ></ViewerContent>
+          ) : (
+            <ViewerSeriesContent
+              open={onPlay}
+              onClose={() => setOnPlay(false)}
+              isPlayButon={isPlayButton}
+              contentId={playContentId}
+              episodeId={playContentId != 0 ? playEpisodeId : undefined}
+              seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
+            ></ViewerSeriesContent>
+          )}
+        </>
       )}
 
       {data.dataGift.isOpen && (

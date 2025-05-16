@@ -65,6 +65,10 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {ConstructionOutlined} from '@mui/icons-material';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import {Virtual} from 'swiper/modules';
+import 'swiper/css';
+import {info} from 'console';
 
 interface Props {
   open: boolean;
@@ -76,8 +80,16 @@ interface Props {
   seasonEpisodesData?: GetSeasonEpisodesRes;
 }
 
-const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0, seasonEpisodesData}) => {
+const ViewerSeriesContent: React.FC<Props> = ({
+  isPlayButon,
+  open,
+  onClose,
+  contentId,
+  episodeId = 0,
+  seasonEpisodesData,
+}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
+  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>(seasonEpisodesData);
   const [contentType, setContentType] = useState<ContentType>(0);
   const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
 
@@ -117,9 +129,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
   const handlePlayNew = async () => {
     try {
+      const currentEpisode = seasonInfo?.episodeList[activeIndexRef.current];
+      if (!currentEpisode) return;
+
       const playRequest: PlayReq = {
         contentId: contentId,
-        episodeId: curEpisodeId,
+        episodeId: currentEpisode.episodeId,
       };
       setIsLoading(true);
       const playData = await sendPlay(playRequest);
@@ -127,6 +142,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setContentType(playData.data?.contentType || 0);
       console.log('✅ Play API 응답:', playData.data);
       setInfo(playData.data?.recentlyPlayInfo);
+      setIsLike(playData.data?.recentlyPlayInfo.commonMediaViewInfo.isLike);
+      setIsDisLike(playData.data?.recentlyPlayInfo.commonMediaViewInfo.isDisLike);
+      setLikeCount(playData.data?.recentlyPlayInfo.commonMediaViewInfo.likeCount);
+      setIsBookmarked(playData.data?.recentlyPlayInfo.commonMediaViewInfo.isBookmark);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
     }
@@ -202,19 +221,21 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleTrigger = () => {
     setIsVisible(!isVisible); // 트리거 발생 시 서서히 사라짐
   };
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const playerRef = useRef<any>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const playerRefs = useRef<(any | null)[]>([]);
+  const [videoProgresses, setVideoProgresses] = useState<number[]>([]);
 
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
   const [isLike, setIsLike] = useState(info?.commonMediaViewInfo.isLike);
   const [isDisLike, setIsDisLike] = useState(info?.commonMediaViewInfo.isDisLike);
+  const [likeCount, setLikeCount] = useState(info?.commonMediaViewInfo.likeCount);
+  const [isBookmarked, setIsBookmarked] = useState(info?.commonMediaViewInfo.isBookmark);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
   const [isMute, setIsMute] = useState(true);
-  const [likeCount, setLikeCount] = useState(info?.commonMediaViewInfo.likeCount);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -225,67 +246,44 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     setIsExpanded(!isExpanded);
   };
 
-  const [activeIndex, setActiveIndex] = useState(0); // 현재 슬라이드 인덱스 상태
-  const [videoProgress, setVideoProgress] = useState(0); // 비디오 진행도 상태
-  const [currentProgress, setCurrentProgress] = useState<string | null>(null);
-  const [videoDuration, setVideoDuration] = useState(0); // 비디오 총 길이
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const activeIndexRef = useRef(0);
 
-  const progressBarRef = useRef<HTMLDivElement>(null);
-
-  // 🎯 프로그레스 바 클릭 또는 드래그 시작 시 실행
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log('마우스 다운');
-    setIsDragging(true);
-    updateProgress(e.nativeEvent); // 클릭 위치 반영
-    setIsPlaying(false);
-  };
-
-  // 🎯 마우스를 움직일 때 실행
-  const handleMouseMove = (e: MouseEvent) => {
-    e.stopPropagation();
-    if (!isDragging) return;
-    updateProgress(e);
-  };
-
-  // 🎯 마우스가 놓일 때 실행
-  const handleMouseUp = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      setIsPlaying(false);
-    }
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    if (e.touches.length > 0) {
-      setIsDragging(true);
-      updateProgress(e.touches[0] as Touch); // ✅ 수정된 부분
-      setIsPlaying(false);
-    }
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isDragging) return;
-    updateProgress(e.touches[0]);
-    setIsPlaying(false);
-  };
-
-  const handleTouchEnd = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      setIsPlaying(true);
+  const handleContentChange = (index: number) => {
+    const episode = seasonEpisodesData?.episodeList[index];
+    if (episode && !episode.isLock) {
+      hasRun.current = false;
+      setCurEpisodeId(episode.episodeId);
     }
   };
 
   useEffect(() => {
+    if (seasonEpisodesData) {
+      setSeasonInfo(seasonEpisodesData);
+    }
+  }, [seasonEpisodesData]);
+
+  useEffect(() => {
+    // 에피소드 수만큼 ref 배열과 진행도 배열 초기화
+    if (seasonInfo?.episodeList) {
+      videoRefs.current = new Array(seasonInfo.episodeList.length).fill(null);
+      playerRefs.current = new Array(seasonInfo.episodeList.length).fill(null);
+      setVideoProgresses(new Array(seasonInfo.episodeList.length).fill(0));
+    }
+  }, [seasonInfo?.episodeList]);
+
+  useEffect(() => {
     requestAnimationFrame(async () => {
-      const video = videoRef.current;
-      if (!video || !info?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
+      const currentEpisode = seasonInfo?.episodeList[activeIndexRef.current];
+      const video = videoRefs.current[activeIndexRef.current];
+      console.log('Current Episode:', currentEpisode);
+
+      if (!video || !currentEpisode?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
 
       // 🔥 1. 이전 player 완전 제거
-      if (playerRef.current) {
-        await playerRef.current.destroy();
-        playerRef.current = null;
+      if (playerRefs.current[activeIndexRef.current]) {
+        await playerRefs.current[activeIndexRef.current].destroy();
+        playerRefs.current[activeIndexRef.current] = null;
       }
 
       // 🔥 2. 새로운 player 생성
@@ -293,7 +291,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       player.configure({
         textDisplayFactory: () => new shaka.text.UITextDisplayer(video, video.parentElement),
       });
-      playerRef.current = player;
+      playerRefs.current[activeIndexRef.current] = player;
 
       // 🔎 내부 에러 로그도 잡자
       player.addEventListener('error', (e: any) => {
@@ -301,7 +299,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       });
 
       // 🔗 load 시도
-      const url = `${process.env.NEXT_PUBLIC_CHAT_API_URL}${info.episodeVideoInfo.mpdTempUrl}`;
+      const url = `${process.env.NEXT_PUBLIC_CHAT_API_URL}${currentEpisode.episodeVideoInfo.mpdTempUrl}`;
       console.log('🔗 Try loading:', url);
 
       try {
@@ -322,10 +320,10 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
         video.addEventListener('ended', handleEnded);
 
         // 📺 자막 처리
-        if (info?.episodeVideoInfo?.subTitleFileInfos) {
-          console.log('🔎 자막 URL:', info.episodeVideoInfo.subTitleFileInfos);
+        if (currentEpisode?.episodeVideoInfo?.subTitleFileInfos) {
+          console.log('🔎 자막 URL:', currentEpisode.episodeVideoInfo.subTitleFileInfos);
           await Promise.all(
-            info.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
+            currentEpisode.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
               const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase();
               const url = fileInfo.videoSourceUrl;
               const format = url.toLowerCase().endsWith('.srt') ? 'text/srt' : 'text/vtt';
@@ -348,7 +346,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
         console.error('🚨 Shaka load 실패:', err);
       }
     });
-  }, [info]);
+  }, [seasonInfo, activeIndexRef.current]);
 
   useEffect(() => {
     const checkShakaSubtitle = setInterval(() => {
@@ -365,7 +363,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   }, []);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const video = videoRefs.current[activeIndexRef.current];
     if (!video) return;
 
     if (isPlaying) {
@@ -375,25 +373,25 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   }, [isPlaying]);
   useEffect(() => {
-    const video = videoRef.current;
+    const video = videoRefs.current[activeIndexRef.current];
     if (video) video.muted = isMute;
   }, [isMute]);
   const updateProgress = (e: MouseEvent | Touch) => {
     if (!progressBarRef.current || videoDuration === 0) return;
 
     const rect = progressBarRef.current.getBoundingClientRect();
-
-    // 공통으로 clientX를 뽑아오기
     const clientX = 'clientX' in e ? e.clientX : 0;
-
     const offsetX = clientX - rect.left;
     let newProgress = (offsetX / rect.width) * videoDuration;
-
     newProgress = Math.max(0, Math.min(videoDuration, newProgress));
-    setVideoProgress(newProgress);
 
-    if (videoRef.current) {
-      videoRef.current.currentTime = newProgress;
+    const newProgresses = [...videoProgresses];
+    newProgresses[activeIndexRef.current] = newProgress;
+    setVideoProgresses(newProgresses);
+
+    const video = videoRefs.current[activeIndexRef.current];
+    if (video) {
+      video.currentTime = newProgress;
     }
   };
 
@@ -467,7 +465,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
           contentId: info.contentId,
           episodeId: info.episodeId,
           categoryType: info.categoryType,
-          playTimeSecond: Math.floor(videoProgress),
+          playTimeSecond: Math.floor(videoProgresses[activeIndexRef.current]),
         },
       };
 
@@ -485,7 +483,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       handleRecordPlay();
     }
 
-    setVideoProgress(playedSeconds);
+    const newProgresses = [...videoProgresses];
+    newProgresses[activeIndexRef.current] = playedSeconds;
+    setVideoProgresses(newProgresses);
   };
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
@@ -546,7 +546,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }
   };
 
-  const [isBookmarked, setIsBookmarked] = useState(info?.commonMediaViewInfo.isBookmark);
   const bookmarkFeed = async () => {
     const payload: BookMarkReq = {
       interactionType: episodeId ? InteractionType.Episode : InteractionType.Contents,
@@ -630,9 +629,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleSetDubbing = (value: number) => {
     info?.episodeVideoInfo?.dubbingFileInfos;
     console.log(value);
-    const track = playerRef.current?.getVariantTracks()[value];
+    const track = playerRefs.current[activeIndexRef.current]?.getVariantTracks()[value];
     console.log(track);
-    if (track) playerRef.current?.selectVariantTrack(track, true);
+    if (track) playerRefs.current[activeIndexRef.current]?.selectVariantTrack(track, true);
   };
   //#endregion
 
@@ -642,7 +641,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     {
       name: 'Original', // 자막 없음
       onClick: () => {
-        playerRef.current?.setTextTrackVisibility(false); // 자막 끔
+        playerRefs.current[activeIndexRef.current]?.setTextTrackVisibility(false); // 자막 끔
         setSubtitleLang(ContentLanguageType.Default); // 상태에도 반영
       },
     },
@@ -657,12 +656,12 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const handleSetSubtitle = (value: ContentLanguageType) => {
     const languageCode = ContentLanguageType[value].toLowerCase(); // ex) 'Korean' → 'korean' or 'ko'로 매핑 필요
 
-    const tracks = playerRef.current?.getTextTracks();
+    const tracks = playerRefs.current[activeIndexRef.current]?.getTextTracks();
     const matchedTrack = tracks?.find((track: any) => track.language === languageCode);
 
     if (matchedTrack) {
-      playerRef.current.selectTextTrack(matchedTrack);
-      playerRef.current.setTextTrackVisibility(true);
+      playerRefs.current[activeIndexRef.current].selectTextTrack(matchedTrack);
+      playerRefs.current[activeIndexRef.current].setTextTrackVisibility(true);
       setSubtitleLang(value);
     } else {
       console.warn(`🚨 해당 자막(${value})에 맞는 트랙을 찾지 못했습니다.`);
@@ -683,8 +682,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   }));
 
   const handleSetPlaySpeed = (speedRate: number) => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = speedRate;
+    const currentVideo = videoRefs.current[activeIndexRef.current];
+    if (currentVideo && currentVideo instanceof HTMLVideoElement) {
+      currentVideo.playbackRate = speedRate;
     }
   };
   //#endregion
@@ -847,11 +847,67 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       </>
     );
   };
-  console.log(
-    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
-      item => item.webtoonLanguageType === ContentLanguageType.Source,
-    ),
-  );
+
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const [currentProgress, setCurrentProgress] = useState<string | null>(null);
+
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
+  // 🎯 프로그레스 바 클릭 또는 드래그 시작 시 실행
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log('마우스 다운');
+    setIsDragging(true);
+    updateProgress(e.nativeEvent); // 클릭 위치 반영
+    setIsPlaying(false);
+  };
+
+  // 🎯 마우스를 움직일 때 실행
+  const handleMouseMove = (e: MouseEvent) => {
+    e.stopPropagation();
+    if (!isDragging) return;
+    updateProgress(e);
+  };
+
+  // 🎯 마우스가 놓일 때 실행
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setIsPlaying(false);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (e.touches.length > 0) {
+      setIsDragging(true);
+      updateProgress(e.touches[0] as Touch); // ✅ 수정된 부분
+      setIsPlaying(false);
+    }
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isDragging) return;
+    updateProgress(e.touches[0]);
+    setIsPlaying(false);
+  };
+
+  const handleTouchEnd = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setIsPlaying(true);
+    }
+  };
+
+  const resetAllVideoProgress = () => {
+    videoRefs.current.forEach((video, index) => {
+      if (video) {
+        video.currentTime = 0;
+      }
+    });
+    setVideoProgresses(new Array(videoRefs.current.length).fill(0));
+  };
+
   return (
     <Modal
       open={open}
@@ -894,310 +950,335 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               </div>
             </header>
           </div>
-          <div style={{height: '100%'}} onClick={() => handleTrigger()}>
-            <div className={styles.Image}>
-              {info?.categoryType === ContentCategoryType.Webtoon && (
-                <div
-                  className={`${styles.webtoonContainer} ${
-                    info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
-                      item => item.webtoonLanguageType === ContentLanguageType.Source,
-                    )[0].webtoonSourceUrls.length === 1
-                      ? styles.centerAlign
-                      : ''
-                  }`}
-                >
-                  {(() => {
-                    const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
-                      item => item.webtoonLanguageType === ContentLanguageType.Source,
-                    );
+          <Swiper
+            direction="vertical"
+            modules={[Virtual]}
+            virtual
+            initialSlide={currentIndex}
+            onSlideChange={swiper => {
+              activeIndexRef.current = swiper.activeIndex;
+              setCurrentIndex(swiper.activeIndex);
+              handleContentChange(swiper.activeIndex);
+              handlePlayNew();
+              resetAllVideoProgress();
+            }}
+            style={{height: '100%'}}
+          >
+            {seasonInfo?.episodeList.map((episode, index) => (
+              <SwiperSlide key={episode.episodeId} virtualIndex={index}>
+                <div style={{height: '100%'}} onClick={() => handleTrigger()}>
+                  <div className={styles.Image}>
+                    {seasonInfo?.contentCategoryType === ContentCategoryType.Webtoon && (
+                      <div
+                        className={`${styles.webtoonContainer} ${
+                          episode?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
+                            item => item.webtoonLanguageType === ContentLanguageType.Source,
+                          )[0].webtoonSourceUrls.length === 1
+                            ? styles.centerAlign
+                            : ''
+                        }`}
+                      >
+                        {(() => {
+                          const sourceLayer = episode?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
+                            item => item.webtoonLanguageType === ContentLanguageType.Source,
+                          );
 
-                    const subtitleLayer =
-                      webtoonSubtitleLang !== ContentLanguageType.Default
-                        ? info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
-                            item => item.webtoonLanguageType === webtoonSubtitleLang,
-                          )
-                        : null;
+                          const subtitleLayer =
+                            webtoonSubtitleLang !== ContentLanguageType.Default
+                              ? episode?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
+                                  item => item.webtoonLanguageType === webtoonSubtitleLang,
+                                )
+                              : null;
 
-                    return sourceLayer?.webtoonSourceUrls?.map((url, index) => (
-                      <div key={index} className={styles.webtoonImageWrapper}>
-                        <img src={url} className={styles.webtoonImage} />
-                        {subtitleLayer?.webtoonSourceUrls?.[index] && (
-                          <img
-                            src={subtitleLayer.webtoonSourceUrls[index]}
-                            className={styles.webtoonSubtitleImage}
-                            alt="subtitle"
-                          />
-                        )}
+                          return sourceLayer?.webtoonSourceUrls?.map((url, index) => (
+                            <div key={index} className={styles.webtoonImageWrapper}>
+                              <img src={url} className={styles.webtoonImage} />
+                              {subtitleLayer?.webtoonSourceUrls?.[index] && (
+                                <img
+                                  src={subtitleLayer.webtoonSourceUrls[index]}
+                                  className={styles.webtoonSubtitleImage}
+                                  alt="subtitle"
+                                />
+                              )}
+                            </div>
+                          ));
+                        })()}
                       </div>
-                    ));
-                  })()}
-                </div>
-              )}
+                    )}
 
-              {info && info?.categoryType === ContentCategoryType.Video && (
-                <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                  <video
-                    ref={videoRef}
-                    muted={isMute}
-                    loop={true}
-                    playsInline
-                    style={{
-                      width: '100%',
-                      height: 'calc(100% - 4px)',
-                      borderRadius: '8px',
-                      objectFit: 'contain',
-                    }}
-                    onClick={event => {}}
-                    controls={false} // Shaka Player가 컨트롤합니다.
-                    autoPlay
-                  />
-
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      zIndex: 13,
-                    }}
-                  >
-                    <div
-                      className={`${styles.playCircleIcon} ${isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink}`}
-                      onClick={event => {
-                        event.stopPropagation(); // 부모로 이벤트 전파 방지
-                        if (isVisible) handleClick();
-                        else setIsVisible(true);
-                      }}
-                    >
-                      <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Progress Bar */}
-            {info?.categoryType == ContentCategoryType.Video && (
-              <div
-                ref={progressBarRef}
-                className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''} ${
-                  isDragging ? styles.dragging : ''
-                }`}
-                onMouseDown={handleMouseDown}
-                onTouchStart={handleTouchStart}
-              >
-                <div
-                  className={styles.progressFill}
-                  style={{
-                    width: `${(videoProgress / videoDuration) * 100}%`,
-                    transition: isDragging ? 'none' : 'width 0.1s linear',
-                  }}
-                >
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      right: 0,
-                      transform: 'translate(50%, -50%)',
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: '#fff',
-                      borderRadius: '50%',
-                      boxShadow: '0 0 4px rgba(0, 0, 0, 0.3)',
-                      zIndex: 10,
-                      cursor: 'pointer',
-                    }}
-                    onMouseDown={handleMouseDown}
-                    onTouchStart={handleTouchStart}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className={`${styles.profileBox} ${!isVisible ? styles.fadeOutB : ''}`}>
-              <div className={styles.dim}></div>
-
-              {/* Video Info */}
-              <div className={styles.videoInfo}>
-                {info?.categoryType == ContentCategoryType.Video && (
-                  <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                    <img className={styles.iconVideo} src={BoldVideo.src}></img>
-                    {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
-                  </div>
-                )}
-              </div>
-            </div>
-            {/* CTA Buttons */}
-            <div className={`${styles.ctaButtons} ${!isVisible ? styles.fadeOutR : ''}`}>
-              <div className={styles.textButtons}>
-                <Avatar
-                  src={info?.profileIconUrl || '/images/001.png'}
-                  style={{width: '32px', height: '32px', position: 'relative'}}
-                  onClick={event => {
-                    event.stopPropagation();
-                    pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
-                  }}
-                ></Avatar>
-                {!info?.isProfileFollow && !tempFollow && info?.isMyEpisode == false && (
-                  <div
-                    className={`${curIsFollow ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
-                    onClick={event => {
-                      event.stopPropagation();
-                      handleOnSubscribe();
-                    }}
-                  >
-                    {curIsFollow ? (
-                      <img src={LineCheck.src} alt="Check" className={styles.checkImg} />
-                    ) : (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20.4863 12.0005L3.51577 12.0005L20.4863 12.0005Z" fill="white" />
-                        <path
-                          d="M20.4863 12.0005L3.51577 12.0005"
-                          stroke="white"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                    {episode && seasonInfo?.contentCategoryType === ContentCategoryType.Video && (
+                      <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                        <video
+                          ref={(el: HTMLVideoElement | null) => {
+                            videoRefs.current[index] = el;
+                          }}
+                          muted={isMute}
+                          loop={true}
+                          playsInline
+                          style={{
+                            width: '100%',
+                            height: 'calc(100% - 4px)',
+                            borderRadius: '8px',
+                            objectFit: 'contain',
+                          }}
+                          onClick={event => {}}
+                          controls={false}
+                          autoPlay
                         />
-                        <path d="M12 3.51416V20.4847V3.51416Z" fill="white" />
-                        <path
-                          d="M12 3.51416V20.4847"
-                          stroke="white"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            zIndex: 13,
+                          }}
+                        >
+                          <div
+                            className={`${styles.playCircleIcon} ${
+                              isVisible ? styles.fadeAndGrow : styles.fadeOutAndShrink
+                            }`}
+                            onClick={event => {
+                              event.stopPropagation();
+                              if (isVisible) handleClick();
+                              else setIsVisible(true);
+                            }}
+                          >
+                            <img src={isPlaying ? BoldPause.src : BoldPlay.src} />
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-              {info?.isMyEpisode == false && !info?.isProfileFollow && <div></div>}
-              {info?.isMyEpisode == false && (
-                <div
-                  className={styles.textButtons}
-                  onClick={event => {
-                    event.stopPropagation();
-                    setDonation(true);
-                  }}
-                >
-                  <img src={BoldReward.src} className={styles.button}></img>
+
+                  {/* Progress Bar */}
+                  {seasonInfo?.contentCategoryType == ContentCategoryType.Video && (
+                    <div
+                      ref={progressBarRef}
+                      className={`${styles.progressBar} ${!isVisible ? styles.fadeOutB : ''} ${
+                        isDragging ? styles.dragging : ''
+                      }`}
+                      onMouseDown={handleMouseDown}
+                      onTouchStart={handleTouchStart}
+                    >
+                      <div
+                        className={styles.progressFill}
+                        style={{
+                          width: `${(videoProgresses[activeIndexRef.current] / videoDuration) * 100}%`,
+                          transition: isDragging ? 'none' : 'width 0.1s linear',
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            right: 0,
+                            transform: 'translate(50%, -50%)',
+                            width: '20px',
+                            height: '20px',
+                            backgroundColor: '#fff',
+                            borderRadius: '50%',
+                            boxShadow: '0 0 4px rgba(0, 0, 0, 0.3)',
+                            zIndex: 10,
+                            cursor: 'pointer',
+                          }}
+                          onMouseDown={handleMouseDown}
+                          onTouchStart={handleTouchStart}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={`${styles.profileBox} ${!isVisible ? styles.fadeOutB : ''}`}>
+                    <div className={styles.dim}></div>
+
+                    {/* Video Info */}
+                    <div className={styles.videoInfo}>
+                      {seasonInfo?.contentCategoryType == ContentCategoryType.Video && (
+                        <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
+                          <img className={styles.iconVideo} src={BoldVideo.src}></img>
+                          {currentProgress ? currentProgress : '0:00'}/{formatDuration(videoDuration)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* CTA Buttons */}
+                  <div className={`${styles.ctaButtons} ${!isVisible ? styles.fadeOutR : ''}`}>
+                    <div className={styles.textButtons}>
+                      <Avatar
+                        src={info?.profileIconUrl || '/images/001.png'}
+                        style={{width: '32px', height: '32px', position: 'relative'}}
+                        onClick={event => {
+                          event.stopPropagation();
+                          pushLocalizedRoute('/profile/' + info?.profileUrlLinkKey + '?from=""', router);
+                        }}
+                      ></Avatar>
+                      {!info?.isProfileFollow && !tempFollow && info?.isMyEpisode == false && (
+                        <div
+                          className={`${curIsFollow ? styles.checkCircle : styles.plusCircle} ${animationClass}`}
+                          onClick={event => {
+                            event.stopPropagation();
+                            handleOnSubscribe();
+                          }}
+                        >
+                          {curIsFollow ? (
+                            <img src={LineCheck.src} alt="Check" className={styles.checkImg} />
+                          ) : (
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M20.4863 12.0005L3.51577 12.0005L20.4863 12.0005Z" fill="white" />
+                              <path
+                                d="M20.4863 12.0005L3.51577 12.0005"
+                                stroke="white"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path d="M12 3.51416V20.4847V3.51416Z" fill="white" />
+                              <path
+                                d="M12 3.51416V20.4847"
+                                stroke="white"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {info?.isMyEpisode == false && !info?.isProfileFollow && <div></div>}
+                    {info?.isMyEpisode == false && (
+                      <div
+                        className={styles.textButtons}
+                        onClick={event => {
+                          event.stopPropagation();
+                          setDonation(true);
+                        }}
+                      >
+                        <img src={BoldReward.src} className={styles.button}></img>
+                      </div>
+                    )}
+                    <div
+                      className={styles.textButtons}
+                      onClick={event => {
+                        event.stopPropagation();
+                        let id = contentId;
+                        if (episodeId) id = episodeId;
+                        handleLikeFeed(id, !isLike);
+                      }}
+                    >
+                      <img
+                        src={BoldLike.src}
+                        className={styles.button}
+                        style={{
+                          filter: isLike
+                            ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
+                            : 'none',
+                        }}
+                      />
+                      <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
+                    </div>
+                    <div
+                      className={styles.textButtons}
+                      onClick={event => {
+                        event.stopPropagation();
+                        let id = contentId;
+                        if (episodeId) id = episodeId;
+                        handleDisLikeFeed(id, !isDisLike);
+                      }}
+                    >
+                      <img
+                        src={BoldDislike.src}
+                        className={styles.button}
+                        style={{
+                          filter: isDisLike
+                            ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
+                            : 'none',
+                        }}
+                      />
+                    </div>
+                    <div
+                      className={styles.textButtons}
+                      onClick={event => {
+                        event.stopPropagation();
+                        setCommentIsOpen(true);
+                      }}
+                    >
+                      <img src={BoldComment.src} className={styles.button}></img>
+                      <div className={styles.count}>{commentCount}</div>
+                    </div>
+                    <div
+                      className={styles.noneTextButton}
+                      onClick={async event => {
+                        event.stopPropagation();
+                        handleShare();
+                      }}
+                    >
+                      <img src={BoldShare.src} className={styles.button}></img>
+                    </div>
+                    <div
+                      className={styles.noneTextButton}
+                      onClick={event => {
+                        event.stopPropagation();
+                        bookmarkFeed();
+                      }}
+                    >
+                      {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
+                      {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
+                    </div>
+
+                    {contentType != ContentType.Single && (
+                      <div
+                        className={styles.noneTextButton}
+                        onClick={event => {
+                          event.stopPropagation();
+                          fetchSeasonEpisodesPopup();
+                        }}
+                      >
+                        <img src={BoldContents.src} className={styles.button}></img>
+                      </div>
+                    )}
+                    <div
+                      className={styles.noneTextButton}
+                      onClick={event => {
+                        event.stopPropagation();
+                        setIsOptionModal(true);
+                      }}
+                    >
+                      <img src={BoldMore.src} className={styles.button}></img>
+                    </div>
+                  </div>
+
+                  {info?.categoryType == ContentCategoryType.Video && (
+                    <div
+                      className={`${styles.volumeButton} ${!isVisible ? styles.fadeOutR : ''}`}
+                      onClick={event => {
+                        event.stopPropagation();
+                        if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
+                        else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);
+                      }}
+                    >
+                      {isMute && <div className={styles.volumeCircleIcon}></div>}
+                      {info?.categoryType == ContentCategoryType.Video && isMute && (
+                        <img src={LineVolumeOff.src} className={styles.volumeIcon} />
+                      )}
+                      {info?.categoryType == ContentCategoryType.Video && !isMute && (
+                        <img src={LineVolumeOn.src} className={styles.volumeIcon} />
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
-              <div
-                className={styles.textButtons}
-                onClick={event => {
-                  event.stopPropagation();
-                  let id = contentId;
-                  if (episodeId) id = episodeId;
-                  handleLikeFeed(id, !isLike);
-                }}
-              >
-                <img
-                  src={BoldLike.src}
-                  className={styles.button}
-                  style={{
-                    filter: isLike
-                      ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                      : 'none', // 기본 상태는 필터 없음
-                  }}
-                />
-                <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
-              </div>
-              {/* Dislike Button */}
-              <div
-                className={styles.textButtons}
-                onClick={event => {
-                  event.stopPropagation();
-                  let id = contentId;
-                  if (episodeId) id = episodeId;
-                  handleDisLikeFeed(id, !isDisLike);
-                }}
-              >
-                <img
-                  src={BoldDislike.src}
-                  className={styles.button}
-                  style={{
-                    filter: isDisLike
-                      ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
-                      : 'none', // 기본 상태는 필터 없음
-                  }}
-                />
-              </div>
-              <div
-                className={styles.textButtons}
-                onClick={event => {
-                  event.stopPropagation();
-                  setCommentIsOpen(true);
-                }}
-              >
-                <img src={BoldComment.src} className={styles.button}></img>
-                <div className={styles.count}>{commentCount}</div>
-              </div>
-              <div
-                className={styles.noneTextButton}
-                onClick={async event => {
-                  event.stopPropagation();
-                  handleShare();
-                }}
-              >
-                <img src={BoldShare.src} className={styles.button}></img>
-              </div>
-              <div
-                className={styles.noneTextButton}
-                onClick={event => {
-                  event.stopPropagation();
-                  bookmarkFeed();
-                }}
-              >
-                {isBookmarked && <img src={BoldArchive.src} className={styles.button}></img>}
-                {!isBookmarked && <img src={LineArchive.src} className={styles.button}></img>}
-              </div>
-
-              {contentType != ContentType.Single && (
-                <div
-                  className={styles.noneTextButton}
-                  onClick={event => {
-                    event.stopPropagation();
-                    fetchSeasonEpisodesPopup();
-                  }}
-                >
-                  <img src={BoldContents.src} className={styles.button}></img>
-                </div>
-              )}
-              <div
-                className={styles.noneTextButton}
-                onClick={event => {
-                  event.stopPropagation();
-                  setIsOptionModal(true);
-                }}
-              >
-                <img src={BoldMore.src} className={styles.button}></img>
-              </div>
-            </div>
-            {info?.categoryType == ContentCategoryType.Video && (
-              <div
-                className={`${styles.volumeButton} ${!isVisible ? styles.fadeOutR : ''}`}
-                onClick={event => {
-                  event.stopPropagation();
-                  if (info?.categoryType == ContentCategoryType.Video) setIsMute(!isMute);
-                  else if (info?.categoryType == ContentCategoryType.Webtoon) setIsImageModal(true);
-                }}
-              >
-                {/* 검은색 반투명 배경 */}
-                {isMute && <div className={styles.volumeCircleIcon}></div>}
-
-                {/* 음소거 상태 아이콘 */}
-                {info?.categoryType == ContentCategoryType.Video && isMute && (
-                  <img src={LineVolumeOff.src} className={styles.volumeIcon} />
-                )}
-
-                {/* 볼륨 활성 상태 아이콘 */}
-                {info?.categoryType == ContentCategoryType.Video && !isMute && (
-                  <img src={LineVolumeOn.src} className={styles.volumeIcon} />
-                )}
-              </div>
-            )}
-          </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
           {isCommentOpen && (
             <Comment
               contentId={episodeId ? episodeId : contentId}
@@ -1331,4 +1412,4 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   );
 };
 
-export default ViewerContent;
+export default ViewerSeriesContent;

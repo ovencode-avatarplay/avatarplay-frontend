@@ -314,7 +314,7 @@ export interface GetSeasonEpisodesRes {
   profileName: string;
   thumbnailMediaState: MediaState;
   isProfileSubscribe: boolean;
-  contentCategoryType: number;
+  contentCategoryType: ContentCategoryType;
 }
 
 export const sendGetSeasonEpisodes = async (
