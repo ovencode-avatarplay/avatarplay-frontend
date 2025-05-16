@@ -16,14 +16,14 @@ import {useDispatch} from 'react-redux';
 export const isLogined = async () => {
   1;
   const dispatch = store.dispatch;
-  const jwt = localStorage.getItem('jwt');
+  const jwt = localStorage?.getItem('jwt');
   if (!jwt) {
     return false;
   }
 
   const resAuth = await getAuth();
   if (resAuth?.resultCode != 0) {
-    localStorage.removeItem('jwt');
+    localStorage?.removeItem('jwt');
     await supabase.auth.signOut();
     return false;
   }

@@ -6,7 +6,7 @@ export function addSearch(keyword: string, items: string[], setItems: React.Disp
   if (!keyword.trim()) return;
   const filtered = items.filter(item => item !== keyword);
   const next = [keyword, ...filtered].slice(0, 10);
-  localStorage.setItem('recent_searches', JSON.stringify(next));
+  localStorage?.setItem('recent_searches', JSON.stringify(next));
   setItems([...next]);
 }
 
@@ -24,7 +24,7 @@ const RecentSearchList = forwardRef<any, RecentSearchListProps>(
     const [items, setItems] = useState<string[]>([]);
 
     useEffect(() => {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage?.getItem(STORAGE_KEY);
       if (saved) setItems(JSON.parse(saved));
     }, []);
 
@@ -34,12 +34,12 @@ const RecentSearchList = forwardRef<any, RecentSearchListProps>(
 
     const removeSearch = (keyword: string) => {
       const next = items.filter(item => item !== keyword);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      localStorage?.setItem(STORAGE_KEY, JSON.stringify(next));
       setItems([...next]);
     };
 
     const clearAll = () => {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage?.removeItem(STORAGE_KEY);
       setItems([]);
     };
 

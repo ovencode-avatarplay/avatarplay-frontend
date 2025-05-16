@@ -30,7 +30,7 @@ api.interceptors.request.use(
       return Promise.reject({message: 'Busy processing an existing API request.'});
     }
     // 로컬 스토리지 또는 세션 스토리지에서 JWT 토큰을 가져옴
-    const token = localStorage.getItem('jwt');
+    const token = localStorage?.getItem('jwt');
 
     // 토큰이 존재하면 Authorization 헤더에 Bearer 토큰을 추가
     if (token) {

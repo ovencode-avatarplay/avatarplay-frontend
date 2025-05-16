@@ -4,6 +4,7 @@ import {getLangUrlCode} from '@/configs/i18n';
 import {AxiosResponse} from 'axios';
 import {ProfileSimpleInfo, ProfileType} from './ProfileNetwork';
 import {LanguageType} from './network-interface/CommonEnums';
+import {ESystemError} from './ESystemError';
 
 //##########    sign - 접속시 서버에 나의 브라우저 언어상태를 준다.
 export interface SignInReq {
@@ -73,7 +74,7 @@ export const getAuth = async (token: string | null = null) => {
   try {
     let jwtToken: string | null = '';
     if (token === null) {
-      jwtToken = localStorage.getItem('jwt');
+      jwtToken = localStorage?.getItem('jwt');
     } else {
       jwtToken = token;
     }
@@ -94,12 +95,37 @@ export const getAuth = async (token: string | null = null) => {
       return;
     }
 
-    if (jwtToken) localStorage.setItem('jwt', jwtToken);
+    if (jwtToken) localStorage?.setItem('jwt', jwtToken);
 
     const data: ResponseAPI<GetAuthProfileInfoRes> = await resProfileInfo.json();
     return data;
   } catch (e) {
     //alert('api 에러' + e);
     console.log('api 에러');
+  }
+};
+
+export interface CurrencyInfoReq {}
+export interface GoodsInfo {
+  star: number;
+  ruby: number;
+}
+export interface CurrencyInfoRes {
+  goodsInfo: GoodsInfo;
+}
+
+// Sending Cheat Message
+export const sendCurrencyInfo = async (): Promise<ResponseAPI<CurrencyInfoRes>> => {
+  const currencyInfoReq: CurrencyInfoReq = {};
+  try {
+    const response = await api.post<ResponseAPI<CurrencyInfoRes>>('Auth/getGoodsInfo', currencyInfoReq);
+    if (response.data.resultCode === 0) {
+      return response.data; // Return on success
+    } else {
+      throw new Error(response.data.resultMessage); // Error handling
+    }
+  } catch (error: any) {
+    console.error('Error sendCurrencyInfo :', error);
+    throw new Error(`sendCurrencyInfo Error`); // Error handling
   }
 };

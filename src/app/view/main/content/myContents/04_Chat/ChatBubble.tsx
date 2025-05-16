@@ -46,7 +46,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [localIsDeleted, setLocalIsDeleted] = useState(isDeleted);
   const [localChatState, setLocalChatState] = useState(chatState);
 
-  const jwt = localStorage.getItem('jwt');
+  const jwt = localStorage?.getItem('jwt');
   const {deleteMessage} = useSignalR(jwt || '');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

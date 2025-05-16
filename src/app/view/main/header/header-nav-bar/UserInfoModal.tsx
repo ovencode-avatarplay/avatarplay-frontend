@@ -19,7 +19,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({open, onClose}) => {
     console.log('newUserId', newUserId);
     dispatch(setUserId(newUserId));
     // 로컬 스토리지에 사용자 ID 저장
-    localStorage.setItem('userId', newUserId);
+    localStorage?.setItem('userId', newUserId);
   };
 
   // 사용자 ID 입력창에 포커스를 주기 위한 ref 생성
@@ -36,7 +36,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({open, onClose}) => {
 
   // 페이지가 로드될 때 로컬 스토리지에서 사용자 ID 가져오기
   useEffect(() => {
-    const savedUserId = localStorage.getItem('userId');
+    const savedUserId = localStorage?.getItem('userId');
     if (savedUserId) {
       dispatch(setUserId(savedUserId));
     }

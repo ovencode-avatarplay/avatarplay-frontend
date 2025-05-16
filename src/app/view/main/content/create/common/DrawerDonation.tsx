@@ -8,7 +8,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import {getLocalizedLink, isLogined, pushLocalizedRoute} from '@/utils/UrlMove';
 import {AppRouterInstance} from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
+//import {GiftStarReq, sendGiftStar} from '@/app/NetWork/ShopNetwork';
 import {setStar} from '@/redux-store/slices/Currency';
 import {formatCurrency} from '@/utils/util-1';
 import {useRouter} from 'next/navigation';
@@ -17,6 +17,7 @@ import formatText from '@/utils/formatText';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import {useSignalR} from '@/hooks/useSignalR';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -39,6 +40,8 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
 
   const starInfo = dataCurrencyInfo.star;
   const rubyInfo = dataCurrencyInfo.ruby;
+
+  const {sendGiftStar} = useSignalR(localStorage?.getItem('jwt') || '');
 
   useEffect(() => {
     // starInfo가 숫자라면 그대로 사용, 아니라면 0으로 설정
@@ -67,21 +70,14 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
   // Send 버튼 클릭 시 alert 창에 숫자 출력
   const handleSendClick = async () => {
-    const reqData: GiftStarReq = {
-      giftProfileId: giveToPDId,
-      giftStar: Number(inputValue),
-    };
     if (inputValue !== '') {
       //alert(`입력된 후원 금액: ${inputValue} EA    pdid : ${giveToPDId}`); // 알림창 띄우기
       if (Number(inputValue) > starInfo) {
         // 애러 메시지
         setIsShowStarLowMessage(true);
       } else {
-        const response = await sendGiftStar(reqData);
-        if (typeof response.data?.myStar === 'number') {
-          dispatch(setStar(response.data?.myStar));
-          onClose();
-        }
+        await sendGiftStar(giveToPDId, Number(inputValue));
+        onClose();
       }
     } else {
       dataToast.open(getLocalizedText('common_alert_112'), ToastType.Normal);

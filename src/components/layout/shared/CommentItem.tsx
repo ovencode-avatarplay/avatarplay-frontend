@@ -121,7 +121,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   };
 
   const getEmailFromJwt = (): string | null => {
-    const jwt = localStorage.getItem('jwt'); // localStorage에서 JWT 가져오기
+    const jwt = localStorage?.getItem('jwt'); // localStorage에서 JWT 가져오기
     if (jwt) {
       const payload = decodeJwt(jwt); // 디코드
       return payload?.email || null; // email 반환

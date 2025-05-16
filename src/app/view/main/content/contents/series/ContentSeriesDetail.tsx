@@ -754,7 +754,7 @@ export const PopupPurchase = ({
   });
 
   useLayoutEffect(() => {
-    const hidePopup = parseInt(localStorage.getItem('hidePopupPurchase') || '0');
+    const hidePopup = parseInt(localStorage?.getItem('hidePopupPurchase') || '0');
     data.isOpen = !hidePopup;
     setData({...data});
 
@@ -785,9 +785,9 @@ export const PopupPurchase = ({
     }
     console.log('resBuy : ', resBuy);
 
-    const hidePopup = parseInt(localStorage.getItem('hidePopupPurchase') || '0');
+    const hidePopup = parseInt(localStorage?.getItem('hidePopupPurchase') || '0');
     if (!hidePopup) {
-      localStorage.setItem('hidePopupPurchase', refCheckHide.current?.checked ? '1' : '0');
+      localStorage?.setItem('hidePopupPurchase', refCheckHide.current?.checked ? '1' : '0');
     }
     onClose();
 

@@ -262,7 +262,7 @@ const SearchBoard: React.FC = () => {
     setAdultToggleOn(isAdult);
 
     changeParams('adult', isAdult ? 1 : 0);
-    localStorage.setItem('isAdult', isAdult ? 'true' : 'false');
+    localStorage?.setItem('isAdult', isAdult ? 'true' : 'false');
   };
 
   // Func

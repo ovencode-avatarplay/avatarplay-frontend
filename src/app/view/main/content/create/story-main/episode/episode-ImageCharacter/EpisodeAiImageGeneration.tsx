@@ -30,7 +30,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
   const [generatedImages, setGeneratedImages] = useState<string[]>([]); // 생성된 이미지 URL 저장
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    const savedImages = localStorage.getItem('generatedImages');
+    const savedImages = localStorage?.getItem('generatedImages');
     if (savedImages) {
       setGeneratedImages(JSON.parse(savedImages));
     }
@@ -107,13 +107,13 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
 
   const addToLocalStorage = (newImages: string[]) => {
     // 기존 로컬 스토리지 데이터 가져오기
-    const savedImages = JSON.parse(localStorage.getItem('generatedImages') || '[]');
+    const savedImages = JSON.parse(localStorage?.getItem('generatedImages') || '[]');
 
     // 기존 데이터와 새 데이터를 병합
     const updatedImages = [...savedImages, ...newImages];
 
     // 병합된 데이터를 로컬 스토리지에 저장
-    localStorage.setItem('generatedImages', JSON.stringify(updatedImages));
+    localStorage?.setItem('generatedImages', JSON.stringify(updatedImages));
   };
 
   return (

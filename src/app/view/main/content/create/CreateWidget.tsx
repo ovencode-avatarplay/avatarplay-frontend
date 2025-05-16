@@ -153,7 +153,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
                   dispatch(updateProfile(resData?.profileSimpleInfo));
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
-                  localStorage.setItem('jwt', accessToken);
+                  localStorage?.setItem('jwt', accessToken);
                   console.log('pathname : ', pathname);
                   const isProfilePage = /^\/[a-z]{2}\/profile(\/.*)?$/.test(pathname ? pathname : 'empty pathname');
                   if (isProfilePage) {
