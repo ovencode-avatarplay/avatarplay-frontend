@@ -2,7 +2,7 @@
 {
     position: fixed;
     bottom:  0;
-    right: 16px;
+    right: 4px;
     width: 30%;
     min-width: 300px;
     max-height: 30%;
@@ -28,13 +28,13 @@
     justify-content: space-between;
     align-items: center;
 
-    background-color: #4aa9ff;
+    background-color:black;
     padding: 10px;
 }
 
 .headerText
 {
-
+    color: white;
 } 
 
 .headerButtonArea
@@ -52,7 +52,7 @@
 
 .headerButton img
 {
-  filter: var(--black-icon-filter);
+  /* filter: var(--black-icon-filter); */
 }
 
 .uploadStateItemList
@@ -150,18 +150,18 @@
     position: absolute;
     height: 100%;
     width: 30%;
-    background: linear-gradient(90deg, #4aa9ff, #76caff);
+    background: linear-gradient(90deg, var(--Primary-1), var(--Primary-2));
     animation: gaugeSlide 3s linear infinite;
     border-radius: 4px;
   }
   
   .uploaded {
-    background-color: #4caf50; /* 초록색 */
+    background-color: var(--Primary-1);
     width: 100%;
   }
   
   .failed {
-    background-color: #f44336; /* 빨간색 실패 표시 (옵션) */
+    background-color: var(--Primary-3); 
     width: 100%;
   }
   

@@ -14,7 +14,7 @@ export interface UploadStateItem {
 }
 
 const WorkroomUploadState: React.FC<WorkroomUploadStateProps> = ({uploadStateList, onClose}) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleItemCancel = (id: number) => {
     console.log('item cancel' + id);
