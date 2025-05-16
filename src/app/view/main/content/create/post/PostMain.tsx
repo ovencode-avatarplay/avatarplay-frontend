@@ -29,7 +29,6 @@ import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
 import ImageUpload from '@/components/create/ImageUpload';
 import VideoUpload from '@/components/create/VideoUpload';
 import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
-import {setVisibility} from '@/redux-store/slices/PublishInfo';
 
 interface Props {
   id?: string;
@@ -119,7 +118,7 @@ const PostMain: React.FC<Props> = ({id}) => {
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
               setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
               setIsNsfw(existingFeed.isBookmark || false);
-              setVisibility(existingFeed.visibilityType);
+              setSelectedVisibility(existingFeed.visibilityType);
             }
           }
         } catch (error) {
