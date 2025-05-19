@@ -58,6 +58,7 @@ interface ReelsContentProps {
   setSyncFollow: (id: number, value: boolean) => void;
   isFollow: boolean;
   isGrabbing: boolean;
+  volume: number;
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({
@@ -71,6 +72,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   setSyncFollow,
   isFollow,
   isGrabbing,
+  volume,
 }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -86,7 +88,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const playerRef = useRef<ReactPlayer>(null);
   const swiperRef = useRef<SwiperClass | null>(null);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
-  const [volume, setVolume] = useState(1);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -96,16 +97,13 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   useEffect(() => {
     if (isActive) {
       setIsPlaying(true);
-      if (!isMute) {
-        setVolume(1);
-      }
       if (hasUserInteracted) {
         setIsMute(false);
       }
     } else {
       setIsPlaying(false);
+      playerRef.current?.seekTo(0);
     }
-    playerRef.current?.seekTo(0);
   }, [isActive, hasUserInteracted]);
 
   const formatDuration = (seconds: number): string => {
@@ -133,9 +131,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     setCommentCount(commentCount - 1);
   };
   const handleClick = () => {
-    setIsPlaying(!isPlaying);
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 300); // 애니메이션이 끝난 후 상태 초기화
+    if (isActive) {
+      setIsPlaying(!isPlaying);
+      setIsClicked(true);
+      setTimeout(() => setIsClicked(false), 300);
+    }
   };
   const handleSlideChange = (swiper: SwiperClass) => {
     setActiveIndex(swiper.activeIndex); // Swiper의 activeIndex로 상태 업데이트
@@ -358,7 +358,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
   const handleVolumeChange = (newMute: boolean) => {
     setIsMute(newMute);
-    setVolume(newMute ? 0 : 1);
   };
 
   return (
@@ -388,10 +387,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             )}
             {item.mediaState === 2 && (
               <div
-                onClick={() => {
-                  handleClick();
-                  handleFirstInteraction();
-                }}
+                onClick={handleClick}
                 style={{position: 'relative', width: '100%', height: '100%', background: '#000'}}
               >
                 <ReactPlayer
@@ -636,21 +632,18 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           <div
             className={styles.volumeButton}
             onClick={() => {
-              if (item.mediaState == 2) handleVolumeChange(!isMute);
+              if (item.mediaState == 2) setIsMute(!isMute);
               else if (item.mediaState == 1) setIsImageModal(true);
             }}
           >
             {/* 검은색 반투명 배경 */}
-            {isMute && <div className={styles.volumeCircleIcon}></div>}
+            {volume === 0 && <div className={styles.volumeCircleIcon}></div>}
 
             {/* 음소거 상태 아이콘 */}
-            {item.mediaState == 2 && isMute && <img src={LineVolumeOff.src} className={styles.volumeIcon} />}
+            {item.mediaState == 2 && volume === 0 && <img src={LineVolumeOff.src} className={styles.volumeIcon} />}
 
             {/* 볼륨 활성 상태 아이콘 */}
-            {item.mediaState == 2 && !isMute && <img src={LineVolumeOn.src} className={styles.volumeIcon} />}
-
-            {/* 이미지 확대 아이콘 */}
-            {/* {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />} */}
+            {item.mediaState == 2 && volume > 0 && <img src={LineVolumeOn.src} className={styles.volumeIcon} />}
           </div>
         </SwiperSlide>
         {isShowProfile && (
