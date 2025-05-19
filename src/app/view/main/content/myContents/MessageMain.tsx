@@ -5,7 +5,7 @@ import CharacterChat from './02_ChatList/CharacterChat';
 import DMChat from './02_ChatList/DMChat';
 import FriendsList from './FriendsList';
 
-const tabItems = ['Character Chat', 'DM', 'AI Help'];
+const tabItems = ['Character Chat', 'DM'];
 const MessageMain: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
