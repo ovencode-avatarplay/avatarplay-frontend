@@ -85,6 +85,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     setOffset(0);
     setHasMore(true);
     setAlreadyReceivedProfileIds([]);
+    setChatList([]);
   }, [filterValue, selectedTag, sortValue]);
 
   const handlePinToggle = async (roomId: number, isFix: boolean) => {
