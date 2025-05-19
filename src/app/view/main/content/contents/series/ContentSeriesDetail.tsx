@@ -30,6 +30,7 @@ import {
   buyContentEpisode,
   BuyContentEpisodeReq,
   CheckContentType,
+  ContentCategoryType,
   ContentEpisodeState,
   ContentInfo,
   ContentState,
@@ -596,16 +597,9 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       )}
       {onPlay && (
         <>
-          {data.isSingle ? (
-            <ViewerContent
-              open={onPlay}
-              onClose={() => setOnPlay(false)}
-              isPlayButon={isPlayButton}
-              contentId={playContentId}
-              episodeId={playContentId != 0 ? playEpisodeId : undefined}
-              seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
-            ></ViewerContent>
-          ) : (
+          {!data.isSingle &&
+          (data.dataEpisodes?.contentCategoryType == ContentCategoryType.Video ||
+            data.dataMix?.contentCategoryType == ContentCategoryType.Video) ? (
             <ViewerSeriesContent
               open={onPlay}
               onClose={() => setOnPlay(false)}
@@ -614,6 +608,15 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               episodeId={playContentId != 0 ? playEpisodeId : undefined}
               seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
             ></ViewerSeriesContent>
+          ) : (
+            <ViewerContent
+              open={onPlay}
+              onClose={() => setOnPlay(false)}
+              isPlayButon={isPlayButton}
+              contentId={playContentId}
+              episodeId={playContentId != 0 ? playEpisodeId : undefined}
+              seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
+            ></ViewerContent>
           )}
         </>
       )}
