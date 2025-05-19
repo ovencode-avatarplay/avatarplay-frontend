@@ -17,7 +17,7 @@ import styles from './Workroom.module.css';
 import getLocalizedText from '@/utils/getLocalizedText';
 import {getCurrentLanguage} from '@/utils/UrlMove';
 import {ToastMessageAtom} from '@/app/Root';
-import {MediaState} from '@/app/NetWork/ProfileNetwork';
+import {MediaState, PaginationRequest} from '@/app/NetWork/ProfileNetwork';
 import {GetCharacterInfoReq, sendGetCharacterProfileInfo} from '@/app/NetWork/CharacterNetwork';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 
@@ -448,6 +448,7 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const [isTrash, setIsTrash] = useState<boolean>(false);
 
+  const [fileData, setFileData] = useState<WorkroomItemInfo[]>([]);
   const [folderData, setFolderData] = useState<WorkroomItemInfo[]>([]);
   const [imageData, setImageData] = useState<WorkroomItemInfo[]>([]);
   const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
@@ -499,6 +500,9 @@ const Workroom: React.FC<Props> = ({}) => {
   const [sortDropDownOpen, setSortDropDownOpen] = useState<boolean>(false);
 
   const [searchResultList, setSearchResultList] = useState<WorkroomItemInfo[] | null>(null);
+
+  const [workroomLoading, setWorkroomLoading] = useState(false);
+  const [hasWorkroomResult, setHasWorkroomResult] = useState(true);
 
   const [requestFetch, setRequestFetch] = useState<boolean>(false);
 
@@ -604,7 +608,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleItemImageClick = (item: WorkroomItemInfo) => {
     if (!isSelecting) {
       setSelectedItem(item);
-      if (item.mediaState === MediaState.None) {
+      if (item.mediaState === MediaState.Folder) {
         handleItemClick(item);
       }
     }
@@ -613,7 +617,7 @@ const Workroom: React.FC<Props> = ({}) => {
   const handleItemClick = async (item: WorkroomItemInfo) => {
     if (!isSelecting) {
       setSelectedItem(item);
-      if (item.mediaState === MediaState.None) {
+      if (item.mediaState === MediaState.Folder) {
         if (item.profileId) {
           await getCharacterInfo(item.profileId);
           setSelectedCurrentFolder(item);
@@ -644,7 +648,7 @@ const Workroom: React.FC<Props> = ({}) => {
     if (!selectedItem) return;
 
     // 폴더인 경우 하위 항목들도 복사
-    if (selectedItem.mediaState === MediaState.None) {
+    if (selectedItem.mediaState === MediaState.Folder) {
       const childItems = workroomData.filter(item => item.folderLocation?.includes(selectedItem.id));
 
       const idMap = new Map<number, number>();
@@ -667,7 +671,7 @@ const Workroom: React.FC<Props> = ({}) => {
         ...childItems.map(item => ({
           ...item,
           id: idMap.get(item.id)!,
-          name: item.mediaState === MediaState.None ? `Copy of ${item.name}` : item.name,
+          name: item.mediaState === MediaState.Folder ? `Copy of ${item.name}` : item.name,
           // 생성된 이미지가 복사될때 생성정보제거 (기획)
           generatedInfo: selectedItem.generatedInfo ? undefined : selectedItem.generatedInfo,
           profileId: null,
@@ -818,7 +822,7 @@ const Workroom: React.FC<Props> = ({}) => {
       if (response.data) {
         const newFolder: WorkroomItemInfo = {
           id: response.data.folderId,
-          mediaState: MediaState.None,
+          mediaState: MediaState.Folder,
           imgUrl: '',
           name: newFolderName,
           detail: getLocalizedText('TODO : New folder'),
@@ -1136,17 +1140,25 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   const refreshWorkroomDashBoard = async () => {
+    setHasWorkroomResult(true);
+
     if (selectedTag === 'work') {
-      if (tagStates.work === 'All') {
-        await getWorkroomDashBoard();
-      } else if (tagStates.work === 'Folders') {
-        await getWorkroomFiles(MediaState.Folder);
-      } else if (tagStates.work === 'Image') {
-        await getWorkroomFiles(MediaState.Image);
-      } else if (tagStates.work === 'Video') {
-        await getWorkroomFiles(MediaState.Video);
-      } else if (tagStates.work === 'Audio') {
-        await getWorkroomFiles(MediaState.Audio);
+      switch (tagStates.work) {
+        case 'All':
+          await getWorkroomDashBoard();
+          break;
+        case 'Folders':
+          await getWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10});
+          break;
+        case 'Image':
+          await getWorkroomFiles(MediaState.Image, {offset: 0, limit: 10});
+          break;
+        case 'Video':
+          await getWorkroomFiles(MediaState.Video, {offset: 0, limit: 10});
+          break;
+        case 'Audio':
+          await getWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10});
+          break;
       }
     }
   };
@@ -1165,9 +1177,11 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const getWorkroomDashBoard = async () => {
     try {
+      setHasWorkroomResult(true);
       const response = await sendGetWorkroomDashBoard({});
 
       if (response.data) {
+        setFileData(convertToWorkroomItems(response.data.latestFiles));
         setFolderData(convertToWorkroomItems(response.data.latestFolders));
         setImageData(convertToWorkroomItems(response.data.latestImages));
         setVideoData(convertToWorkroomItems(response.data.latestVideos));
@@ -1178,29 +1192,77 @@ const Workroom: React.FC<Props> = ({}) => {
     }
   };
 
-  const getWorkroomFiles = async (fileType: MediaState) => {
+  const getWorkroomFiles = async (
+    fileType: MediaState,
+    page?: PaginationRequest | undefined,
+    blockRequestMore?: boolean,
+  ) => {
+    if (workroomLoading || !hasWorkroomResult) return;
+    setWorkroomLoading(true);
+
     try {
+      let pagination: PaginationRequest = {
+        offset: 0,
+        limit: 10,
+      };
+
+      if (page) {
+        pagination = page;
+      } else {
+        switch (fileType) {
+          case MediaState.Folder:
+            pagination = {offset: folderData.length, limit: 10};
+            break;
+          case MediaState.Image:
+            pagination = {offset: imageData.length, limit: 10};
+            break;
+          case MediaState.Video:
+            pagination = {offset: videoData.length, limit: 10};
+            break;
+          case MediaState.Audio:
+            pagination = {offset: audioData.length, limit: 10};
+            break;
+          default:
+            pagination = {offset: 0, limit: 10};
+        }
+      }
+
       const response = await sendGetWorkroomFiles({
         fileType,
-        page: {offset: 0, limit: 10},
+        page: pagination,
         sortType: WorkroomSortType.Newest,
       });
 
       if (response.data) {
-        if (fileType === MediaState.Folder) {
-          setFolderData(convertToWorkroomItems(response.data.items));
-        } else if (fileType === MediaState.Image) {
-          setImageData(convertToWorkroomItems(response.data.items));
-        } else if (fileType === MediaState.Video) {
-          setVideoData(convertToWorkroomItems(response.data.items));
-        } else if (fileType === MediaState.Audio) {
-          setAudioData(convertToWorkroomItems(response.data.items));
+        const newItems = convertToWorkroomItems(response.data.items || []);
+
+        switch (fileType) {
+          case MediaState.Folder:
+            setFolderData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+          case MediaState.Image:
+            setImageData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+          case MediaState.Video:
+            setVideoData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+          case MediaState.Audio:
+            setAudioData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+        }
+
+        if (newItems.length === 0 || blockRequestMore) {
+          setHasWorkroomResult(false);
         }
       } else {
-        throw new Error(`No Workroom Files in response : ${fileType}`);
+        throw new Error(`No Workroom Files in response: ${fileType}`);
+        setHasWorkroomResult(false);
       }
     } catch (error) {
       console.error('Error get Workroom Files:', error);
+      setHasWorkroomResult(false);
+    } finally {
+      setWorkroomLoading(false);
     }
   };
 
@@ -1264,8 +1326,21 @@ const Workroom: React.FC<Props> = ({}) => {
   }, [tagStates]);
 
   useEffect(() => {
-    refreshWorkroomDashBoard();
+    setHasWorkroomResult(true);
+    setFileData([]);
+    setFolderData([]);
+    setImageData([]);
+    setVideoData([]);
+    setAudioData([]);
+    setRequestFetch(true);
   }, [selectedTag, tagStates]);
+
+  useEffect(() => {
+    if (requestFetch) {
+      refreshWorkroomDashBoard();
+      setRequestFetch(false);
+    }
+  }, [requestFetch]);
 
   useEffect(() => {
     setSelectedItems([]);
@@ -1329,6 +1404,9 @@ const Workroom: React.FC<Props> = ({}) => {
         handleItemClick={handleItemClick}
         filterWorkroomData={filterWorkroomData}
         handleDeleteItem={handleDeletePopupOpen}
+        getWorkroomFiles={getWorkroomFiles}
+        workroomLoading={workroomLoading}
+        hasWorkroomResult={hasWorkroomResult}
       />
     );
   };
@@ -1373,6 +1451,7 @@ const Workroom: React.FC<Props> = ({}) => {
     return (
       <WorkroomMyWork
         tagStates={tagStates.work}
+        fileData={fileData}
         folderData={folderData}
         imageData={imageData}
         videoData={videoData}
@@ -1725,7 +1804,7 @@ const Workroom: React.FC<Props> = ({}) => {
               open={isFileMoveModalOpen}
               onClose={() => setIsFileMoveModalOpen(false)}
               folders={folderData.filter(
-                item => !item.trash && item.mediaState === MediaState.None && item.id !== selectedItem?.id,
+                item => !item.trash && item.mediaState === MediaState.Folder && item.id !== selectedItem?.id,
               )}
               addFolder={() => {
                 setIsSelectCreateOpen(true);
@@ -1820,7 +1899,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
                   {trash: false},
                 ).length > 0 ||
                 filterWorkroomData(
-                  searchResultData.filter(item => item.mediaState === MediaState.None),
+                  searchResultData.filter(item => item.mediaState === MediaState.Folder),
                   {trash: false},
                 ).length > 0 ? (
                   <>
@@ -1828,9 +1907,9 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
                       'TODO : Folder',
                       'search',
                       'Folders',
-                      searchResultData.filter(item => item.mediaState === MediaState.None),
+                      searchResultData.filter(item => item.mediaState === MediaState.Folder),
                       true,
-                      {filterArea: false, limit: 4, trash: false},
+                      {filterArea: false, limit: 7, trash: false},
                       true,
                     )}
                     {renderCategorySection(
@@ -1839,7 +1918,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
                       'Image',
                       searchResultData.filter(item => item.mediaState === MediaState.Image),
                       detailView,
-                      {filterArea: false, limit: 4},
+                      {filterArea: false, limit: 7},
                       true,
                     )}
                     {renderCategorySection(
@@ -1848,7 +1927,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
                       'Video',
                       searchResultData.filter(item => item.mediaState === MediaState.Video),
                       detailView,
-                      {filterArea: false, limit: 4},
+                      {filterArea: false, limit: 7},
                       true,
                     )}
                     {renderCategorySection(
@@ -1857,7 +1936,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
                       'Audio',
                       searchResultData.filter(item => item.mediaState === MediaState.Audio),
                       true,
-                      {filterArea: false, limit: 4},
+                      {filterArea: false, limit: 7},
                       true,
                     )}
                   </>
@@ -1869,7 +1948,7 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
 
               {tagStates.search === 'Folders' &&
                 renderDataItems(
-                  searchResultData.filter(item => item.mediaState === MediaState.None),
+                  searchResultData.filter(item => item.mediaState === MediaState.Folder),
                   true,
                   {filterArea: true, renderEmpty: true},
                 )}

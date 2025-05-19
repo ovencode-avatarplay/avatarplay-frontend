@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import styles from './Workroom.module.css';
 import {WorkroomItemInfo} from './WorkroomItem';
 import EmptyState from '@/components/search/EmptyState';
@@ -6,6 +6,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 
 interface WorkroomMyWorkProps {
   tagStates: string;
+  fileData: WorkroomItemInfo[];
   folderData: WorkroomItemInfo[];
   imageData: WorkroomItemInfo[];
   videoData: WorkroomItemInfo[];
@@ -22,6 +23,7 @@ interface WorkroomMyWorkProps {
 
 const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
   tagStates,
+  fileData,
   folderData,
   imageData,
   videoData,
@@ -35,11 +37,7 @@ const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
   handleEnd,
   handleDeselectIfOutside,
 }) => {
-  const recentData = filterWorkroomData([...folderData, ...imageData, ...videoData, ...audioData], {
-    limit: 20,
-    renderEmpty: false,
-    trash: false,
-  });
+  const recentData = fileData;
 
   return (
     <div
@@ -116,7 +114,10 @@ const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
         renderDataItems(
           folderData.filter(
             item =>
-              item.folderLocation === null || item.folderLocation === undefined || item.folderLocation.length === 0,
+              item.folderLocation === null ||
+              item.folderLocation === undefined ||
+              item.folderLocation.length === 0 ||
+              item.folderLocation[0] === null,
           ),
           true,
           {filterArea: true, renderEmpty: true},
