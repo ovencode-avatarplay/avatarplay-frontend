@@ -47,11 +47,11 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
       // MediaState 설정
       let state = UploadMediaState.None;
       if (mediaType === 'audio') {
-        state = UploadMediaState.TriggerAudio;
+        state = UploadMediaState.Story;
       } else if (mediaType === 'image') {
-        state = UploadMediaState.TriggerImage;
+        state = UploadMediaState.Story;
       } else if (mediaType === 'video') {
-        state = UploadMediaState.TriggerVideo;
+        state = UploadMediaState.Story;
       }
 
       // 업로드 요청 객체 생성
@@ -60,11 +60,7 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
       };
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
-      if (state === UploadMediaState.TriggerImage) {
-        req.fileList = files;
-      } else {
-        req.fileList = files;
-      }
+      req.fileList = files;
 
       // 파일 업로드 API 호출
       const response = await sendUpload(req);

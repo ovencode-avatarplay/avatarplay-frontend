@@ -23,7 +23,7 @@ const VideoUpload: React.FC<Props> = ({
   onClose,
   onChoose,
   multiple = false,
-  uploadType = UploadMediaState.ContentVideo,
+  uploadType = UploadMediaState.None,
 }) => {
   const [videoUrl, setVideoUrl] = useState(''); // 비디오 업로드가 성공했는지 확인하기위해 비디오 하나를 내부에서 체크
 

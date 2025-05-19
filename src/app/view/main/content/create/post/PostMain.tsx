@@ -583,7 +583,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             setIsOpenSelectDrawer(false);
           }}
           multiple={true}
-          uploadType={UploadMediaState.FeedImage}
+          uploadType={UploadMediaState.Feed}
         />
       )}
       {mediaType === 'video' && (
@@ -598,7 +598,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           onChoose={() => {
             setIsOpenSelectDrawer(false);
           }}
-          uploadType={UploadMediaState.FeedVideo}
+          uploadType={UploadMediaState.Feed}
         />
       )}
     </div>

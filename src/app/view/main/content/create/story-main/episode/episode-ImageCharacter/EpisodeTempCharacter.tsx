@@ -102,7 +102,7 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: UploadMediaState.CharacterImage,
+        mediaState: UploadMediaState.Character,
         fileList: [file],
       };
       const response = await sendUpload(req);

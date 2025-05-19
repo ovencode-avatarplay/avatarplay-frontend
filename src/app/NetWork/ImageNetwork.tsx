@@ -4,60 +4,20 @@ import api, {ResponseAPI} from './ApiInstance';
 export enum UploadMediaState {
   // None
   None = 0,
-  // 캐릭터 이미지
-  CharacterImage = 1,
-  // 갤러리 이미지
-  GalleryImage = 2,
-  // 배경 이미지
-  BackgroundImage = 3,
-  // 스토리 이미지
-  StoryImage = 4,
-  // TTS 보이스
-  TtsVoice = 5,
-  // 트리거 이미지
-  TriggerImage = 6,
-  // 트리거 영상
-  TriggerVideo = 7,
-  // 트리거 음성
-  TriggerAudio = 8,
-  // 피드 영상
-  FeedVideo = 9,
-  // 피드 이미지
-  FeedImage = 10,
-  // 압축 피드 영상
-  CompressFeedVideo = 11,
-  // 압축 피드 이미지
-  CompressFeedImage = 12,
-  // 컨텐츠 에피소드 영상
-  ContentEpisodeVideo = 13,
-  // 컨텐츠 에피소드 자막
-  ContentEpisodeSubtitle = 14,
-  // 컨텐츠 에피소드 더빙
-  ContentEpisodeDubbing = 15,
-  // 컨텐츠 에피소드 웹툰 이미지
-  ContentEpisodeWebtoonImage = 16,
-  // 컨텐츠 에피소드 웹툰 자막 이미지
-  ContentEpisodeWebtoonSubtitle = 17,
-  // 컨텐츠 이미지
-  ContentImage = 18,
-  // 컨텐츠 영상
-  ContentVideo = 19,
-  // DM 채팅 이미지
-  DmChatImage = 20,
-  // DM 채팅 영상
-  DmChatVideo = 21,
-  // DM 채팅 오디오
-  DmChatAudio = 22,
-  // 워크룸 이미지 업로드
-  WorkroomItemImageType = 23,
-  // 워크룸 비디오 업로드
-  WorkroomItemVideoType = 24,
-  // 워크룸 오디오 업로드
-  WorkroomItemAudioType = 25,
-  // 워크룸 문서 업로드
-  WorkroomItemDocumentType = 26,
-  // 프로필 이미지
-  ProfileImage = 27,
+  // 프로필
+  Profile = 1,
+  // 캐릭터
+  Character = 2,
+  // 스토리
+  Story = 3,
+  // 피드
+  Feed = 4,
+  // 컨텐츠
+  Content = 5,
+  // 채팅
+  Chat = 6,
+  // 워크룸
+  WorkRoom = 7,
 }
 
 export interface MediaUploadInfo {
@@ -111,6 +71,31 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
   } catch (error: any) {
     console.error('Error uploading media:', error);
     throw new Error('Failed to upload media.');
+  }
+};
+
+export const sendUploadWorkroomFolder = async (files: FileList): Promise<ResponseAPI<{}>> => {
+  try {
+    const formData = new FormData();
+
+    Array.from(files).forEach(file => {
+      formData.append('files', file); // 'files' 라는 key로 append
+    });
+
+    const response = await api.post<ResponseAPI<{}>>('Resource/uploadWorkroomFolder', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`UploadWorkroomFolder Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error uploading workroom folder:', error);
+    throw new Error('Failed to upload workroom folder. Please try again.');
   }
 };
 

@@ -2,7 +2,7 @@ interface Props {}
 
 //#region Import
 // 1. React 및 주요 라이브러리
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 
 // 2. 타사 라이브러리
@@ -49,7 +49,19 @@ import WorkroomSearchModal from './WorkroomSearchModal';
 import WorkroomSelectingMenu from './WorkroomSelectingMenu';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {GalleryCategory} from '../characterDashboard/CharacterGalleryData';
-import {CreateFolderReq, MoveFolderReq, SendCreateFolder, SendMoveFolder} from '@/app/NetWork/WorkroomNetwork';
+import {
+  CreateFolderReq,
+  MoveFolderReq,
+  SendCreateFolder,
+  sendGetWorkroomDashBoard,
+  SendMoveFolder,
+  sendGetWorkroomFiles,
+  WorkroomSortType,
+  WorkroomFileInfo,
+} from '@/app/NetWork/WorkroomNetwork';
+import {MediaUploadReq, sendUpload, sendUploadWorkroomFolder, UploadMediaState} from '@/app/NetWork/ImageNetwork';
+import WorkroomUploadState, {UploadStateItem} from './WorkroomUploadState';
+import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
 //#endregion
 
 const Workroom: React.FC<Props> = ({}) => {
@@ -432,22 +444,19 @@ const Workroom: React.FC<Props> = ({}) => {
     search: 'All',
   });
 
+  const [selectedTag, setSelectedTag] = useState<keyof typeof tagStates>('work');
+
   const [isTrash, setIsTrash] = useState<boolean>(false);
 
-  const folderData = workroomData.filter(item => item.mediaState === MediaState.None);
-  const imageData = workroomData.filter(
-    item =>
-      item.mediaState === MediaState.Image &&
-      (!item.generatedInfo || (item.generatedInfo && item.generatedInfo.isUploaded === true)),
-  );
-  const videoData = workroomData.filter(item => item.mediaState === MediaState.Video);
-  const audioData = workroomData.filter(item => item.mediaState === MediaState.Audio);
-  const aiHistoryData = workroomData.filter(
-    item => item.mediaState === MediaState.Image && item.generatedInfo && item.generatedInfo.isUploaded !== true,
-  );
+  const [folderData, setFolderData] = useState<WorkroomItemInfo[]>([]);
+  const [imageData, setImageData] = useState<WorkroomItemInfo[]>([]);
+  const [galleryData, setGalleryData] = useState<WorkroomItemInfo[]>([]);
+  const [videoData, setVideoData] = useState<WorkroomItemInfo[]>([]);
+  const [audioData, setAudioData] = useState<WorkroomItemInfo[]>([]);
+
+  const [aiHistoryData, setAiHistoryData] = useState<WorkroomItemInfo[]>([]);
   const [searchResultData, setSearchResultData] = useState<WorkroomItemInfo[]>([]);
 
-  const galleryData = workroomData.filter(item => item.mediaState === MediaState.None && item.profileId);
   const [currentSelectedCharacter, setCurrentSelectedCharacter] = useState<CharacterInfo | null>(null);
 
   const [detailView, setDetailView] = useState<boolean>(false);
@@ -499,6 +508,7 @@ const Workroom: React.FC<Props> = ({}) => {
 
   const showContent = !isLoading && !isDelaying && isMediaLoaded;
 
+  const [uploadStateList, setUploadStateList] = useState<UploadStateItem[]>([]);
   //#endregion
 
   const dropDownMenuItems: DropDownMenuItem[] = [
@@ -568,12 +578,22 @@ const Workroom: React.FC<Props> = ({}) => {
     setSelectedItems(prev => (checked ? [...prev, id] : prev.filter(itemId => itemId !== id)));
   };
 
-  const toggleFavorite = (id: number) => {
-    const updateDataFavorite = (data: WorkroomItemInfo[]) =>
-      data.map(item => (item.id === id ? {...item, favorite: !item.favorite} : item));
+  const toggleFavorite = async (id: number, isBookMark: boolean) => {
+    try {
+      const req: BookMarkReq = {
+        interactionType: InteractionType.Workroom,
+        isBookMark: !isBookMark,
+        typeValueId: id,
+      };
 
-    // 모든 데이터 세트에 대해 업데이트 (임시 구조이므로 모두 수정)
-    setWorkroomData(prev => updateDataFavorite(prev));
+      const response = await bookmark(req);
+
+      if (response?.data) {
+        refreshWorkroomDashBoard();
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
   };
 
   const handleMenuClick = (item: WorkroomItemInfo) => {
@@ -905,95 +925,113 @@ const Workroom: React.FC<Props> = ({}) => {
   };
 
   // 파일 업로드 처리
-  const handleFileUpload = (files: FileList) => {
-    const uploadedItems: WorkroomItemInfo[] = Array.from(files).map(file => ({
-      id: getMinId(workroomData) - 1,
-      name: file.name,
-      detail: 'Uploaded file',
-      mediaState: getMediaStateByExtension(file.name),
-      imgUrl: URL.createObjectURL(file), // 임시 URL
-      folderLocation: selectedCurrentFolder?.id ? [selectedCurrentFolder.id] : [],
-      /* 캐릭터 갤러리에서 업로드 하는 경우 */
-      generatedInfo: selectedItem?.profileId
-        ? {
-            generatedType:
-              tagStates.variation == 'Portrait'
-                ? GalleryCategory.Portrait
-                : tagStates.variation == 'Pose'
-                ? GalleryCategory.Pose
-                : tagStates.variation == 'Expression'
-                ? GalleryCategory.Expression
-                : tagStates.variation == 'Video'
-                ? GalleryCategory.Video
-                : GalleryCategory.All,
-            generateModel: 'Uploaded file',
-            positivePrompt: '',
-            negativePrompt: '',
-            seed: -1,
-            imageSize: '',
-            isUploaded: true,
-          }
-        : undefined,
-      profileId: selectedItem?.profileId || undefined,
-    }));
+  const handleFileUpload = async (files: FileList, parentFolderId?: number) => {
+    try {
+      const fileArray = Array.from(files);
+      const req: MediaUploadReq = {
+        mediaState: UploadMediaState.WorkRoom,
+        fileList: fileArray,
+      };
 
-    setWorkroomData(prev => [...prev, ...uploadedItems]);
-    setIsSelectCreateOpen(false);
+      const newUploadStateList: UploadStateItem[] = fileArray.map(file => ({
+        id: getMinId(workroomData) - 1,
+        name: file.name,
+        state: 'uploading',
+      }));
+
+      setUploadStateList(prev => [...prev, ...newUploadStateList]);
+
+      const response = await sendUpload(req);
+      const uploadInfos = response?.data?.mediaUploadInfoList;
+      if (uploadInfos && uploadInfos.length > 0) {
+        const uploadResults = uploadInfos.map(info => info.url).filter((url): url is string => !!url);
+
+        const uploadedItems: WorkroomItemInfo[] = Array.from(files).map((file, index) => ({
+          id: getMinId(workroomData) - 1,
+          name: file.name,
+          detail: 'Uploaded file',
+          mediaState: getMediaStateByExtension(file.name),
+          imgUrl: uploadResults[index],
+          folderLocation: parentFolderId
+            ? [parentFolderId]
+            : selectedCurrentFolder?.id
+            ? [selectedCurrentFolder.id]
+            : [],
+          /* 캐릭터 갤러리에서 업로드 하는 경우 */
+          generatedInfo: selectedItem?.profileId
+            ? {
+                generatedType:
+                  tagStates.variation == 'Portrait'
+                    ? GalleryCategory.Portrait
+                    : tagStates.variation == 'Pose'
+                    ? GalleryCategory.Pose
+                    : tagStates.variation == 'Expression'
+                    ? GalleryCategory.Expression
+                    : tagStates.variation == 'Video'
+                    ? GalleryCategory.Video
+                    : GalleryCategory.All,
+                generateModel: 'Uploaded file',
+                positivePrompt: '',
+                negativePrompt: '',
+                seed: -1,
+                imageSize: '',
+                isUploaded: true,
+              }
+            : undefined,
+          profileId: selectedItem?.profileId || undefined,
+        }));
+
+        if (uploadResults.length > 0) {
+          setWorkroomData(prev => [...prev, ...uploadedItems]);
+
+          // 업로드 성공한 아이템들의 상태를 'uploaded'로 변경
+          setUploadStateList(prev =>
+            prev.map(item => {
+              if (uploadedItems.some(uploadedItem => uploadedItem.id === item.id)) {
+                return {...item, state: 'uploaded'};
+              }
+              return item;
+            }),
+          );
+          refreshWorkroomDashBoard();
+        } else {
+          // URL이 없는 경우 실패 상태로 변경
+          setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+          alert('파일 업로드는 성공했지만 URL이 없습니다.');
+        }
+      } else {
+        setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+        alert('업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+      console.error('전체 업로드 실패:', error);
+      alert('파일 업로드 중 오류가 발생했습니다.');
+    } finally {
+    }
   };
 
-  // 폴더 업로드 처리
-  const handleFolderUpload = (files: FileList) => {
-    const newItems: WorkroomItemInfo[] = [];
-    const folderMap = new Map<string, number>();
-    let idCounter = getMinId(workroomData) - 1;
-
-    const forbiddenExtensions = ['exe', 'bat', 'sh', 'com', 'msi', 'apk'];
-
-    Array.from(files).forEach(file => {
-      const extension = file.name.split('.').pop()?.toLowerCase();
-
-      if (extension && forbiddenExtensions.includes(extension)) {
-        console.warn(`Blocked file: ${file.name}`);
-        return; // 이 파일은 건너뜀
+  const handleUploadWorkroomFolder = async (files: FileList, name: string) => {
+    try {
+      setUploadStateList(prev => [...prev, {id: getMinId(workroomData) - 1, name: name, state: 'uploading'}]);
+      const response = await sendUploadWorkroomFolder(files);
+      if (response.resultCode === 0) {
+        setUploadStateList(prev => prev.map(item => ({...item, state: 'uploaded'})));
+        refreshWorkroomDashBoard();
+      } else {
+        setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+        alert('업로드에 실패했습니다.');
       }
+    } catch (error) {
+      setUploadStateList(prev => prev.map(item => ({...item, state: 'failed'})));
+      console.error('업로드 실패:', error);
+      alert('업로드에 실패했습니다.');
+    } finally {
+    }
+  };
 
-      const fullPath = file.webkitRelativePath;
-      const parts = fullPath.split('/');
-      let currentPath = '';
-      let folderLocation: number[] = [selectedCurrentFolder?.id ?? 0];
-
-      for (let i = 0; i < parts.length - 1; i++) {
-        currentPath += (i > 0 ? '/' : '') + parts[i];
-
-        if (!folderMap.has(currentPath)) {
-          const folderId = idCounter--;
-          folderMap.set(currentPath, folderId);
-          newItems.push({
-            id: folderId,
-            name: parts[i],
-            detail: 'Uploaded folder',
-            mediaState: MediaState.None,
-            imgUrl: '/images/folder-icon.png',
-            folderLocation: [...folderLocation],
-          });
-        }
-
-        folderLocation.push(folderMap.get(currentPath)!);
-      }
-
-      const fileId = idCounter--;
-      newItems.push({
-        id: fileId,
-        name: file.name,
-        detail: 'Uploaded file',
-        mediaState: getMediaStateByExtension(file.name),
-        imgUrl: URL.createObjectURL(file),
-        folderLocation: [...folderLocation],
-      });
-    });
-
-    setWorkroomData(prev => [...prev, ...newItems]);
-    setIsSelectCreateOpen(false);
+  const handleUploadClose = () => {
+    setUploadStateList([]);
   };
 
   //#endregion
@@ -1097,6 +1135,75 @@ const Workroom: React.FC<Props> = ({}) => {
     return forbiddenPattern.test(name);
   };
 
+  const refreshWorkroomDashBoard = async () => {
+    if (selectedTag === 'work') {
+      if (tagStates.work === 'All') {
+        await getWorkroomDashBoard();
+      } else if (tagStates.work === 'Folders') {
+        await getWorkroomFiles(MediaState.Folder);
+      } else if (tagStates.work === 'Image') {
+        await getWorkroomFiles(MediaState.Image);
+      } else if (tagStates.work === 'Video') {
+        await getWorkroomFiles(MediaState.Video);
+      } else if (tagStates.work === 'Audio') {
+        await getWorkroomFiles(MediaState.Audio);
+      }
+    }
+  };
+
+  const convertToWorkroomItems = (list: WorkroomFileInfo[] = []): WorkroomItemInfo[] =>
+    list.map(item => ({
+      id: item.id,
+      name: item.name,
+      detail: '',
+      mediaState: item.fileType,
+      folderLocation: [item.parentFolderId],
+      imgUrl: item.url,
+      updateAt: item.createdAt.toString(), // ISO 형식으로 오는 경우 그대로 사용
+      favorite: item.isBookmark || false,
+    }));
+
+  const getWorkroomDashBoard = async () => {
+    try {
+      const response = await sendGetWorkroomDashBoard({});
+
+      if (response.data) {
+        setFolderData(convertToWorkroomItems(response.data.latestFolders));
+        setImageData(convertToWorkroomItems(response.data.latestImages));
+        setVideoData(convertToWorkroomItems(response.data.latestVideos));
+        setAudioData(convertToWorkroomItems(response.data.latestAudios));
+      }
+    } catch (error) {
+      console.error('Error get Workroom DashBoard:', error);
+    }
+  };
+
+  const getWorkroomFiles = async (fileType: MediaState) => {
+    try {
+      const response = await sendGetWorkroomFiles({
+        fileType,
+        page: {offset: 0, limit: 10},
+        sortType: WorkroomSortType.Newest,
+      });
+
+      if (response.data) {
+        if (fileType === MediaState.Folder) {
+          setFolderData(convertToWorkroomItems(response.data.items));
+        } else if (fileType === MediaState.Image) {
+          setImageData(convertToWorkroomItems(response.data.items));
+        } else if (fileType === MediaState.Video) {
+          setVideoData(convertToWorkroomItems(response.data.items));
+        } else if (fileType === MediaState.Audio) {
+          setAudioData(convertToWorkroomItems(response.data.items));
+        }
+      } else {
+        throw new Error(`No Workroom Files in response : ${fileType}`);
+      }
+    } catch (error) {
+      console.error('Error get Workroom Files:', error);
+    }
+  };
+
   //#endregion
 
   //#region Hook
@@ -1157,6 +1264,10 @@ const Workroom: React.FC<Props> = ({}) => {
   }, [tagStates]);
 
   useEffect(() => {
+    refreshWorkroomDashBoard();
+  }, [selectedTag, tagStates]);
+
+  useEffect(() => {
     setSelectedItems([]);
   }, [isSelecting]);
 
@@ -1181,7 +1292,7 @@ const Workroom: React.FC<Props> = ({}) => {
                 isSelecting={isSelecting}
                 isSelected={selectedItems.includes(item.id)}
                 onSelect={checked => toggleSelectItem(item.id, checked)}
-                onClickFavorite={() => toggleFavorite(item.id)}
+                onClickFavorite={() => toggleFavorite(item.id, item.favorite || false)}
                 onClickMenu={() => handleMenuClick(item)}
                 onClickPreview={() => handleItemImageClick(item)}
                 onClickItem={() => handleItemClick(item)}
@@ -1493,6 +1604,18 @@ const Workroom: React.FC<Props> = ({}) => {
           splitters={splitData}
           headerStyle={{padding: '0 16px'}}
           onSelectSplitButton={(index: number) => {
+            const tag =
+              index === 0
+                ? 'work'
+                : index === 1
+                ? 'favorite'
+                : index === 2
+                ? 'aiHistory'
+                : index === 3
+                ? 'gallery'
+                : 'trash';
+
+            setSelectedTag(tag);
             setIsSelecting(false);
             if (index === 4) {
               setIsTrash(true);
@@ -1779,21 +1902,25 @@ They'll be moved to the trash and will be permanently deleted after 30days.`,
         </>,
         document.body,
       )}
+      {/* 워크룸에서의 파일 업로드는 디바이스에서만 가능*/}
       <input
         type="file"
         multiple
         ref={fileInputRef}
         style={{display: 'none'}}
-        onChange={e => e.target.files && handleFileUpload(e.target.files)}
+        onChange={e => e.target.files && handleUploadWorkroomFolder(e.target.files, e.target.name)}
       />
       {React.createElement('input', {
         type: 'file',
         ref: folderInputRef,
         style: {display: 'none'},
-        onChange: e => e.target.files && handleFolderUpload(e.target.files),
+        onChange: e => e.target.files && handleUploadWorkroomFolder(e.target.files, e.target.name),
         webkitdirectory: '',
         directory: '',
       })}
+      {uploadStateList.length > 0 && (
+        <WorkroomUploadState uploadStateList={uploadStateList} onClose={handleUploadClose} />
+      )}
     </div>
   );
 };

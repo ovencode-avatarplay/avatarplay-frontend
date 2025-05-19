@@ -26,7 +26,7 @@ const ImageUpload: React.FC<Props> = ({
   onChoose,
   onGalleryChoose,
   multiple = false,
-  uploadType = UploadMediaState.ContentImage,
+  uploadType = UploadMediaState.Content,
 }) => {
   const [imageUrl, setImageUrl] = useState(''); // 이미지 업로드가 성공했는지 확인하기위해 이미지 하나를 내부에서 체크
   const [loading, setLoading] = useState(false);

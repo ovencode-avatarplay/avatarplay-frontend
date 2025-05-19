@@ -1,4 +1,70 @@
 import api, {ResponseAPI} from './ApiInstance';
+import {MediaState, PaginationRequest} from './ProfileNetwork';
+
+export enum WorkroomSortType {
+  Newest = 0,
+  Name = 1,
+  Size = 2,
+}
+
+export interface WorkroomFileInfo {
+  id: number;
+  name: string;
+  fileType: MediaState;
+  parentFolderId: number;
+  url: string;
+  isBookmark: boolean;
+  createdAt: Date;
+}
+export interface GetWorkroomDashBoardReq {}
+
+export interface GetWorkroomDashBoardRes {
+  latestFiles: WorkroomFileInfo[];
+  latestFolders: WorkroomFileInfo[];
+  latestImages: WorkroomFileInfo[];
+  latestVideos: WorkroomFileInfo[];
+  latestAudios: WorkroomFileInfo[];
+}
+
+export const sendGetWorkroomDashBoard = async (
+  req: GetWorkroomDashBoardReq,
+): Promise<ResponseAPI<GetWorkroomDashBoardRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetWorkroomDashBoardRes>>('/WorkRoom/getWorkroomDashBoard', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetWorkroomDashBoardRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error getting workroom dashboard:', error);
+    throw new Error('Failed to get workroom dashboard. Please try again.');
+  }
+};
+
+export interface GetWorkroomFilesReq {
+  fileType: MediaState;
+  page: PaginationRequest;
+  sortType: WorkroomSortType;
+}
+
+export interface GetWorkroomFilesRes {
+  items: WorkroomFileInfo[];
+}
+
+export const sendGetWorkroomFiles = async (req: GetWorkroomFilesReq): Promise<ResponseAPI<GetWorkroomFilesRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetWorkroomFilesRes>>('/WorkRoom/getWorkroomFilesByType', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetWorkroomFilesRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error getting workroom files:', error);
+    throw new Error('Failed to get workroom files. Please try again.');
+  }
+};
 
 export interface CreateFolderReq {
   Name: string;
@@ -14,7 +80,7 @@ export interface CreateFolderRes {
 
 export const SendCreateFolder = async (req: CreateFolderReq): Promise<ResponseAPI<CreateFolderRes>> => {
   try {
-    const response = await api.post<ResponseAPI<CreateFolderRes>>('/workroom/createFolder', req);
+    const response = await api.post<ResponseAPI<CreateFolderRes>>('/WorkRoom/createFolder', req);
     if (response.data.resultCode === 0) {
       return response.data;
     } else {
@@ -44,7 +110,7 @@ export interface MoveFolderRes {
 
 export const SendMoveFolder = async (req: MoveFolderReq): Promise<ResponseAPI<MoveFolderRes>> => {
   try {
-    const response = await api.post<ResponseAPI<MoveFolderRes>>('/workroom/moveFolder', req);
+    const response = await api.post<ResponseAPI<MoveFolderRes>>('/WorkRoom/moveFolder', req);
     if (response.data.resultCode === 0) {
       return response.data;
     } else {

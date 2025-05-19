@@ -14,7 +14,7 @@ interface WorkroomDataItemsProps {
   selectedItems: number[];
   renderFilter: (detailViewButton: boolean, detailView: boolean) => React.ReactNode;
   toggleSelectItem: (id: number, checked: boolean) => void;
-  toggleFavorite: (id: number) => void;
+  toggleFavorite: (id: number, isBookMark: boolean) => void;
   handleMenuClick: (item: WorkroomItemInfo) => void;
   handleItemImageClick: (item: WorkroomItemInfo) => void;
   handleItemClick: (item: WorkroomItemInfo) => void;
@@ -54,7 +54,7 @@ const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
                 isSelecting={isSelecting}
                 isSelected={selectedItems.includes(item.id)}
                 onSelect={checked => toggleSelectItem(item.id, checked)}
-                onClickFavorite={() => toggleFavorite(item.id)}
+                onClickFavorite={() => toggleFavorite(item.id, item.favorite || false)}
                 onClickMenu={() => handleMenuClick(item)}
                 onClickPreview={() => handleItemImageClick(item)}
                 onClickItem={() => handleItemClick(item)}
