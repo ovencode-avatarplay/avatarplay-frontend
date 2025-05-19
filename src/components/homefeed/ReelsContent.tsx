@@ -83,8 +83,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isImageModal, setIsImageModal] = useState(false);
   const [isReportModal, setIsRefortModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
-  const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+  const playerRef = useRef<ReactPlayer>(null);
   const swiperRef = useRef<SwiperClass | null>(null);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [volume, setVolume] = useState(1);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -93,13 +95,18 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   }, [item]);
   useEffect(() => {
     if (isActive) {
-      setIsPlaying(true); // 활성화된 경우 자동 재생
+      setIsPlaying(true);
+      if (!isMute) {
+        setVolume(1);
+      }
+      if (hasUserInteracted) {
+        setIsMute(false);
+      }
     } else {
-      setIsPlaying(false); // 비활성화된 경우 재생 중지
+      setIsPlaying(false);
     }
-    playerRef.current?.seekTo(0); // 재생 위치를 0으로 설정
-    console.log(item);
-  }, [isActive]);
+    playerRef.current?.seekTo(0);
+  }, [isActive, hasUserInteracted]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -330,8 +337,32 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     }
   }, [item.profileVisibilityType]);
 
+  const handleFirstInteraction = () => {
+    if (!hasUserInteracted) {
+      setHasUserInteracted(true);
+      setIsMute(false);
+    }
+  };
+
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => {
+        setIsPlaying(true);
+        handleFirstInteraction();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        setIsPlaying(false);
+      });
+    }
+  }, []);
+
+  const handleVolumeChange = (newMute: boolean) => {
+    setIsMute(newMute);
+    setVolume(newMute ? 0 : 1);
+  };
+
   return (
-    <div className={styles.reelsContainer}>
+    <div className={styles.reelsContainer} onClick={handleFirstInteraction}>
       <Swiper
         onSwiper={(swiper: SwiperClass) => {
           swiperRef.current = swiper;
@@ -339,12 +370,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         direction="horizontal"
         slidesPerView={1}
         centeredSlides={true}
-        // scrollbar={{draggable: true}}
         onSlideChange={handleSlideChangeProfile}
         className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
         resistanceRatio={0}
-        touchReleaseOnEdges={true} // ✅ 끝에서 터치 이벤트 해제 (빈 공간 방지)
-        preventClicks={true} // ✅ 클릭 시 이벤트가 Swiper 내부에서만 처리되도록 함
+        touchReleaseOnEdges={true}
+        preventClicks={true}
       >
         <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
@@ -358,14 +388,18 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             )}
             {item.mediaState === 2 && (
               <div
-                onClick={handleClick}
+                onClick={() => {
+                  handleClick();
+                  handleFirstInteraction();
+                }}
                 style={{position: 'relative', width: '100%', height: '100%', background: '#000'}}
               >
                 <ReactPlayer
-                  ref={playerRef} // ReactPlayer 참조 연결
-                  muted={isMute}
-                  url={item.mediaUrlList[0]} // 첫 번째 URL 사용
-                  playing={isPlaying} // 재생 상태
+                  ref={playerRef}
+                  url={item.mediaUrlList[0]}
+                  playing={isPlaying}
+                  volume={volume}
+                  muted={false}
                   loop={true}
                   width="100%"
                   playsinline={true}
@@ -387,22 +421,18 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                       },
                     },
                   }}
-                  progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
+                  progressInterval={100}
                   onProgress={({playedSeconds}) => {
                     videoProgressRef.current = playedSeconds;
-
                     const progressRatio = videoDuration > 0 ? (playedSeconds / videoDuration) * 100 : 0;
-
                     if (progressBarRef.current) {
                       progressBarRef.current.style.width = `${progressRatio}%`;
                     }
-
-                    // 기존 setCurrentProgress 등은 유지 (필요 시만)
                     setCurrentProgress(formatDuration(playedSeconds));
                   }}
                   onDuration={(duration: number) => {
                     setVideoDuration(duration);
-                  }} // 영상 길이 설정
+                  }}
                 />
 
                 <div
@@ -606,7 +636,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           <div
             className={styles.volumeButton}
             onClick={() => {
-              if (item.mediaState == 2) setIsMute(!isMute);
+              if (item.mediaState == 2) handleVolumeChange(!isMute);
               else if (item.mediaState == 1) setIsImageModal(true);
             }}
           >
