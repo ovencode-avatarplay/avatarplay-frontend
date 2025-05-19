@@ -121,3 +121,91 @@ export const SendMoveFolder = async (req: MoveFolderReq): Promise<ResponseAPI<Mo
     throw new Error('Failed to send move folder data. Please try again.');
   }
 };
+
+export interface GetFavoriteWorkroomDashboardReq {}
+
+export interface GetFavoriteWorkroomDashboardRes {
+  latestFiles: WorkroomFileInfo[];
+  latestFolders: WorkroomFileInfo[];
+  latestImages: WorkroomFileInfo[];
+  latestVideos: WorkroomFileInfo[];
+  latestAudios: WorkroomFileInfo[];
+}
+
+export const sendGetFavoriteWorkroomDashboard = async (
+  req: GetFavoriteWorkroomDashboardReq,
+): Promise<ResponseAPI<GetFavoriteWorkroomDashboardRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetFavoriteWorkroomDashboardRes>>(
+      '/WorkRoom/getFavoriteWorkroomDashboard',
+      req,
+    );
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetFavoriteWorkroomDashboardRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error getting favorite workroom dashboard:', error);
+    throw new Error('Failed to get favorite workroom dashboard. Please try again.');
+  }
+};
+
+export interface GetFavoriteWorkroomFilesReq {
+  fileType: MediaState;
+  page: PaginationRequest;
+}
+
+export interface GetFavoriteWorkroomFilesRes {
+  items: WorkroomFileInfo[];
+}
+
+export const sendGetFavoriteWorkroomFiles = async (
+  req: GetFavoriteWorkroomFilesReq,
+): Promise<ResponseAPI<GetFavoriteWorkroomFilesRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetFavoriteWorkroomFilesRes>>(
+      '/WorkRoom/getFavoriteWorkroomFilesByType',
+      req,
+    );
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetFavoriteWorkroomFilesRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error getting favorite workroom files:', error);
+    throw new Error('Failed to get favorite workroom files. Please try again.');
+  }
+};
+
+export interface AiImageInfo {
+  characterId: number;
+  imageUrl: string;
+  imageUrllNoBackground: string;
+  createAt: Date;
+}
+
+export interface GetMyCharacterAiImagesReq {
+  page: PaginationRequest;
+}
+
+export interface GetMyCharacterAiImagesRes {
+  characterAiImageList: AiImageInfo[];
+}
+
+export const sendGetMyCharacterAiImages = async (
+  req: GetMyCharacterAiImagesReq,
+): Promise<ResponseAPI<GetMyCharacterAiImagesRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetMyCharacterAiImagesRes>>('/WorkRoom/getMyCharacterAiImages', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetMyCharacterAiImagesRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error getting my character ai images:', error);
+    throw new Error('Failed to get my character ai images. Please try again.');
+  }
+};
