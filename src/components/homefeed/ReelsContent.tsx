@@ -50,7 +50,6 @@ import {RootState} from '@/redux-store/ReduxStore';
 interface ReelsContentProps {
   item: FeedInfo;
   isActive: boolean; // 현재 슬라이드인지 확인
-  isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
   recommendState: RecommendState;
@@ -64,7 +63,6 @@ interface ReelsContentProps {
 const ReelsContent: React.FC<ReelsContentProps> = ({
   item,
   isActive,
-  isMute,
   setIsMute,
   setIsProfile,
   isShowProfile = true,
@@ -75,7 +73,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   volume,
 }) => {
   const router = useRouter();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(isActive);
   const [isClicked, setIsClicked] = useState(false);
   const [isDonation, setDonation] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
@@ -88,6 +86,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const playerRef = useRef<ReactPlayer>(null);
   const swiperRef = useRef<SwiperClass | null>(null);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [isInitiallyMuted, setIsInitiallyMuted] = useState(true);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -99,6 +98,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       setIsPlaying(true);
       if (hasUserInteracted) {
         setIsMute(false);
+        setIsInitiallyMuted(false);
       }
     } else {
       setIsPlaying(false);
@@ -288,8 +288,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     setCommentCount(item.commentCount);
   }, [item]);
 
-  React.useEffect(() => {}, [isMute]);
-
   const imageMediaData: MediaData = {
     mediaType: TriggerMediaState.TriggerImage, // 기본값 (TriggerMediaState의 기본 상태)
     mediaUrlList: item.mediaUrlList, // 빈 배열
@@ -341,6 +339,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     if (!hasUserInteracted) {
       setHasUserInteracted(true);
       setIsMute(false);
+      setIsInitiallyMuted(false);
     }
   };
 
@@ -395,7 +394,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   url={item.mediaUrlList[0]}
                   playing={isPlaying}
                   volume={volume}
-                  muted={false}
                   loop={true}
                   width="100%"
                   playsinline={true}
@@ -632,7 +630,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           <div
             className={styles.volumeButton}
             onClick={() => {
-              if (item.mediaState == 2) setIsMute(!isMute);
+              if (item.mediaState == 2) setIsMute(volume > 0);
               else if (item.mediaState == 1) setIsImageModal(true);
             }}
           >
