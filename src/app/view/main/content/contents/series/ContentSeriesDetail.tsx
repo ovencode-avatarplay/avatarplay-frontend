@@ -59,6 +59,8 @@ import {formatCurrency} from '@/utils/util-1';
 import formatText from '@/utils/formatText';
 import {setStar} from '@/redux-store/slices/Currency';
 import ViewerSeriesContent from '../viewer/ViewerSeriesContent';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 type Props = {
   type: ContentType;
@@ -271,6 +273,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       setData({...data});
     }
   };
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
 
   const onEdit = () => {};
   console.log('asdadsa', data.dataMix?.categoryType);
@@ -515,6 +518,15 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               setPlayContentId(data.dataMix?.contentId || 0);
                               setPlayEpisodeId(one.episodeId);
                               return;
+                            }
+
+                            if (isLock) {
+                              const firstlockedIndex = data.dataEpisodes?.episodeList.findIndex(ep => ep.isLock);
+                              // 현재 선택한 에피소드의 인덱스가 첫 번째 언락된 에피소드보다 크면 토스트 메시지를 표시합니다
+                              if (index != firstlockedIndex) {
+                                dataToast.open('이 전 에피소드를 구매해주세요.', ToastType.Normal);
+                                return;
+                              }
                             }
 
                             //TODO 플레이 할수 없으면 구매처리
