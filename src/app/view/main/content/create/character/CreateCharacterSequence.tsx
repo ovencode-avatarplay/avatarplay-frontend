@@ -458,7 +458,11 @@ const CharacterCreateSequence: React.FC<Props> = ({
       const response = await sendGenerateImageReq(req);
       if (response?.data) {
         const newImages = (response.data.imageUrl || []).filter((url: string) => url.startsWith('https://'));
-        setGeneratedOptions({...response.data, imageUrl: newImages});
+
+        setGeneratedOptions(prev => ({
+          debugParameter: response.data?.debugParameter || '',
+          imageUrl: [...(prev?.imageUrl || []), ...newImages], // 이전 이미지 배열에 새로운 이미지 배열을 추가
+        }));
       } else {
         throw new Error('No response for file');
       }
@@ -951,14 +955,28 @@ const CharacterCreateSequence: React.FC<Props> = ({
               <CustomButton
                 size="Medium"
                 type="Tertiary"
-                state="IconLeft"
-                onClick={subStep}
+                state={steps[curStep] === CreateCharacterStep.Result ? 'Normal' : 'IconLeft'}
+                onClick={
+                  steps[curStep] === CreateCharacterStep.Result
+                    ? () => {
+                        handleGenerate();
+                      }
+                    : subStep
+                }
                 isDisabled={curStep === 0}
-                icon={LineArrowLeft.src}
+                icon={steps[curStep] === CreateCharacterStep.Result ? null : LineArrowLeft.src}
                 iconClass="blackIcon"
                 customClassName={[styles.stepButton]}
               >
-                {getLocalizedText(Common, 'common_button_previous')}
+                {steps[curStep] === CreateCharacterStep.Result ? (
+                  <>
+                    {getLocalizedText('common_button_reGenerate')}
+                    <img className={styles.rubyIcon} src={BoldRuby.src} />
+                    50 {/* TODO 재화 연결 */}
+                  </>
+                ) : (
+                  getLocalizedText('common_button_previous')
+                )}
               </CustomButton>
               <CustomButton
                 size="Medium"
