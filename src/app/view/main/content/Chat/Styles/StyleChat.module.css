@@ -113,6 +113,8 @@
   left: 0;
   right: 0;
   bottom: 0;
+
+  height: 100vh;
   background-size: auto;
   background-repeat: no-repeat;
   background-position: bottom;
@@ -146,9 +148,10 @@
   top:58px;
   left: 0;
   right: 0; 
+  bottom: 20px;
   padding-left: 16px;
   padding-right: 16px;
-  z-index: 5; 
+  z-index: 5;  
 }
 .messageBubbleArea.blur{
   /* overflow-y: unset; */
