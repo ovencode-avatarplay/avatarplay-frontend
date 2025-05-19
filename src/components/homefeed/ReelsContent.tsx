@@ -96,15 +96,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   useEffect(() => {
     if (isActive) {
       setIsPlaying(true);
-      if (hasUserInteracted) {
-        setIsMute(false);
-        setIsInitiallyMuted(false);
-      }
     } else {
       setIsPlaying(false);
       playerRef.current?.seekTo(0);
     }
-  }, [isActive, hasUserInteracted]);
+  }, [isActive]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -338,8 +334,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const handleFirstInteraction = () => {
     if (!hasUserInteracted) {
       setHasUserInteracted(true);
-      setIsMute(false);
-      setIsInitiallyMuted(false);
     }
   };
 
@@ -426,6 +420,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   }}
                   onDuration={(duration: number) => {
                     setVideoDuration(duration);
+                  }}
+                  onError={error => {
+                    console.error('Video error:', error);
+                    if (error.toString().includes('NotAllowedError')) {
+                      setIsMute(true);
+                      setIsPlaying(false);
+                      setTimeout(() => {
+                        setIsPlaying(true);
+                      }, 100);
+                    }
                   }}
                 />
 
@@ -553,7 +557,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             {item.isMyFeed == false && (
               <div
                 className={styles.textButtons}
-                onClick={() => {
+                onClick={e => {
+                  e.stopPropagation();
                   handleDonation();
                 }}
               >
@@ -563,7 +568,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
             <div
               className={styles.textButtons}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 handleLikeFeed(item.id, !isLike);
               }}
             >
@@ -573,16 +579,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 style={{
                   filter: isLike
                     ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                    : 'none', // 기본 상태는 필터 없음
+                    : 'none',
                 }}
               />
               <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
             </div>
 
-            {/* Dislike Button */}
             <div
               className={styles.textButtons}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 handleDisLikeFeed(item.id, !isDisLike);
               }}
             >
@@ -592,17 +598,24 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 style={{
                   filter: isDisLike
                     ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
-                    : 'none', // 기본 상태는 필터 없음
+                    : 'none',
                 }}
               />
             </div>
-            <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
+            <div
+              className={styles.textButtons}
+              onClick={e => {
+                e.stopPropagation();
+                setCommentIsOpen(true);
+              }}
+            >
               <img src={BoldComment.src} className={styles.button}></img>
               <div className={styles.count}>{commentCount}</div>
             </div>
             <div
               className={styles.noneTextButton}
-              onClick={async () => {
+              onClick={e => {
+                e.stopPropagation();
                 handleShare();
               }}
             >
@@ -611,7 +624,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
             <div
               className={styles.noneTextButton}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 bookmarkFeed();
               }}
             >
@@ -620,7 +634,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             </div>
             <div
               className={styles.noneTextButton}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 setIsRefortModal(true);
               }}
             >
