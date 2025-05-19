@@ -257,7 +257,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   useEffect(() => {
     const currentItem = allFeeds[currentSlideIndex];
-    setIsMute(true);
     // ✅ URL 변경 (딜레이 적용)
     if (currentItem && currentItem.urlLinkKey) {
       if (urlUpdateTimeoutRef.current) {
