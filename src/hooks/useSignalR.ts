@@ -10,107 +10,94 @@ type NotificationCallback = (payload: any) => void;
 type DeleteMessageCallback = (payload: any) => void;
 type DMErrorCallback = (error: {code: string; message: string}) => void;
 
-type SignalREventCallbacks = {
-  onMessage?: MessageCallback;
-  onSenderGiftStar?: GiftCallback;
-  onReceiverGiftStar?: GiftCallback;
-  onNotification?: NotificationCallback;
-  onMessageDeleted?: DeleteMessageCallback;
-};
-
 let globalConnection: HubConnection | null = null;
 
-export function useSignalR(token: string, callbacks?: SignalREventCallbacks) {
+export function useSignalR(token: string) {
   const connectionRef = useRef<HubConnection | null>(null);
 
   useEffect(() => {
     if (!token) return;
 
-    // 재사용 가능 연결이 있으면 할당
+    // 이미 연결이 있다면 재사용
     if (globalConnection) {
       connectionRef.current = globalConnection;
-    } else {
-      const connection = new HubConnectionBuilder()
-        .withUrl(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/Realtime`, {
-          accessTokenFactory: () => token,
-        })
-        .withAutomaticReconnect()
-        .configureLogging(LogLevel.Information)
-        .build();
-
-      connectionRef.current = connection;
-      globalConnection = connection;
-
-      connection
-        .start()
-        .then(() => console.log('✅ SignalR connected'))
-        .catch(err => console.error('❌ SignalR connection error', err));
+      return;
     }
 
-    const conn = connectionRef.current;
+    // 새로운 연결 생성
+    const connection = new HubConnectionBuilder()
+      .withUrl(`${process.env.NEXT_PUBLIC_CHAT_API_URL}/Realtime`, {
+        accessTokenFactory: () => token,
+      })
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Information)
+      .build();
 
-    if (!conn) return;
+    connectionRef.current = connection;
+    globalConnection = connection;
 
-    // 이벤트 리스너 등록 (중복 방지 위해 off 먼저 호출)
-    if (callbacks?.onSenderGiftStar) {
-      conn.off('SenderGiftStar');
-      conn.on('SenderGiftStar', callbacks.onSenderGiftStar);
-    }
+    connection
+      .start()
+      .then(() => console.log('✅ SignalR connected'))
+      .catch(err => console.error('❌ SignalR connection error', err));
 
-    if (callbacks?.onReceiverGiftStar) {
-      conn.off('ReceiverGiftStar');
-      conn.on('ReceiverGiftStar', callbacks.onReceiverGiftStar);
-    }
+    return () => {
+      // 컴포넌트가 언마운트될 때 연결을 닫지 않음
+      // 대신 앱이 종료될 때 한 번만 닫도록 함
+    };
+  }, [token]);
 
-    if (callbacks?.onMessage) {
-      conn.off('ReceiveDMMessage');
-      conn.on('ReceiveDMMessage', callbacks.onMessage);
-    }
+  const onMessage = useCallback((callback: MessageCallback) => {
+    connectionRef.current?.on('ReceiveDMMessage', callback);
+  }, []);
 
-    if (callbacks?.onNotification) {
-      conn.off('ReceiveNotification');
-      conn.on('ReceiveNotification', callbacks.onNotification);
-    }
+  const onGift = useCallback((callback: GiftCallback) => {
+    connectionRef.current?.on('ReceiveGiftRuby', callback);
+  }, []);
 
-    if (callbacks?.onMessageDeleted) {
-      conn.off('ReceiveDMMessageDeleted');
-      conn.on('ReceiveDMMessageDeleted', callbacks.onMessageDeleted);
-    }
-  }, [token, callbacks]);
+  const onNotification = useCallback((callback: NotificationCallback) => {
+    connectionRef.current?.on('ReceiveNotification', callback);
+  }, []);
 
-  // 외부에서 직접 사용 가능한 메서드
-  const joinRoom = async (urlLinkKey: string) => {
-    await connectionRef.current?.invoke('JoinRoom', urlLinkKey);
-  };
+  const onMessageDeleted = useCallback((callback: DeleteMessageCallback) => {
+    connectionRef.current?.on('ReceiveDMMessageDeleted', callback);
+  }, []);
 
-  const leaveRoom = async (urlLinkKey: string) => {
-    await connectionRef.current?.invoke('LeaveRoom', urlLinkKey);
-  };
-
-  const sendMessage = async (
-    urlLinkKey: string,
-    message: string,
-    emoticonId: number = 0,
-    mediaState: MediaState = MediaState.None,
-    mediaUrl: string = '',
-  ) => {
-    await connectionRef.current?.invoke('SendDMMessage', urlLinkKey, message, emoticonId, mediaState, mediaUrl);
-  };
-
-  const deleteMessage = async (messageId: number) => {
-    await connectionRef.current?.invoke('DeleteDMMessage', messageId);
-  };
-
-  const sendGiftStar = async (giftProfileId: number, giftStar: number) => {
-    await connectionRef.current?.invoke('SendGiftStar', giftProfileId, giftStar);
-  };
+  const onDMError = useCallback((callback: DMErrorCallback) => {
+    connectionRef.current?.on('ReceiveDMError', callback);
+  }, []);
 
   return {
     connection: connectionRef.current,
-    joinRoom,
-    leaveRoom,
-    sendMessage,
-    deleteMessage,
-    sendGiftStar,
+    joinRoom: async (urlLinkKey: string) => {
+      await connectionRef.current?.invoke('JoinRoom', urlLinkKey);
+    },
+    leaveRoom: async (urlLinkKey: string) => {
+      await connectionRef.current?.invoke('LeaveRoom', urlLinkKey);
+    },
+    sendMessage: async (
+      urlLinkKey: string,
+      message: string,
+      emoticonId?: number,
+      mediaState?: MediaState,
+      mediaUrl?: string,
+    ) => {
+      await connectionRef.current?.invoke(
+        'SendDMMessage',
+        urlLinkKey,
+        message,
+        (emoticonId = 0),
+        (mediaState = mediaState || MediaState.None),
+        (mediaUrl = mediaUrl || ''),
+      );
+    },
+    deleteMessage: async (messageId: number) => {
+      await connectionRef.current?.invoke('DeleteDMMessage', messageId);
+    },
+    onMessage,
+    onGift,
+    onNotification,
+    onMessageDeleted,
+    onDMError,
   };
 }
