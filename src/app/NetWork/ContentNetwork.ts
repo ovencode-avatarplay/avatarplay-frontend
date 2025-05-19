@@ -525,7 +525,10 @@ export const sendPlayButton = async (payload: PlayButtonReq): Promise<ResponseAP
 export const sendPlay = async (payload: PlayButtonReq): Promise<ResponseAPI<PlayButtonRes>> => {
   try {
     const response = await api.post<ResponseAPI<PlayButtonRes>>('/Content/play', payload);
-    if (response.data.resultCode === 0) return response.data;
+    if (response.data.resultCode === 0) {
+      console.log('🚨 PlayRes:', response.data);
+      return response.data;
+    }
     throw new Error(`PlayRes Error: ${response.data.resultCode}`);
   } catch (error) {
     console.error('Error calling play API:', error);

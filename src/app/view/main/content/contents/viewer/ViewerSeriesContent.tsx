@@ -69,6 +69,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import {Virtual} from 'swiper/modules';
 import 'swiper/css';
 import {info} from 'console';
+import {InView} from 'react-intersection-observer';
 
 interface Props {
   open: boolean;
@@ -89,7 +90,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
   seasonEpisodesData,
 }) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
-  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>(seasonEpisodesData);
+  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>();
   const [contentType, setContentType] = useState<ContentType>(0);
   const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
 
@@ -119,7 +120,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
       setIsLoading(false);
       setContentType(playResponse.data?.contentType || 0);
-      console.log('✅ PlayButton API 응답:', playResponse.data);
       setInfo(playResponse.data?.recentlyPlayInfo);
       setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
     } catch (error) {
@@ -131,7 +131,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
     try {
       const currentEpisode = seasonInfo?.episodeList[activeIndexRef.current];
       if (!currentEpisode) return;
-
       const playRequest: PlayReq = {
         contentId: contentId,
         episodeId: currentEpisode.episodeId,
@@ -140,7 +139,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
       const playData = await sendPlay(playRequest);
       setIsLoading(false);
       setContentType(playData.data?.contentType || 0);
-      console.log('✅ Play API 응답:', playData.data);
       setInfo(playData.data?.recentlyPlayInfo);
       setIsLike(playData.data?.recentlyPlayInfo.commonMediaViewInfo.isLike);
       setIsDisLike(playData.data?.recentlyPlayInfo.commonMediaViewInfo.isDisLike);
@@ -153,7 +151,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
   useEffect(() => {
     if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
-    console.log('ass');
   }, [info]);
 
   const hasRun = useRef(false);
@@ -164,15 +161,12 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
     if (onEpisodeListDrawer) {
       handlePlayNew();
-      console.log('playnew');
       return;
     }
     if (isPlayButon) {
       handlePlayRecent();
-      console.log('playrecent');
     } else {
       handlePlayNew();
-      console.log('playnew');
     }
   }, [curEpisodeId]);
 
@@ -248,6 +242,8 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const activeIndexRef = useRef(0);
+  const swiperRef = useRef<any>(null);
+  const [shouldSlideToNewEpisode, setShouldSlideToNewEpisode] = useState(false);
 
   const handleContentChange = (index: number) => {
     const episode = seasonEpisodesData?.episodeList[index];
@@ -259,7 +255,11 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
   useEffect(() => {
     if (seasonEpisodesData) {
-      setSeasonInfo(seasonEpisodesData);
+      const filteredEpisodes = {
+        ...seasonEpisodesData,
+        episodeList: seasonEpisodesData.episodeList.filter(episode => !episode.isLock),
+      };
+      setSeasonInfo(filteredEpisodes);
     }
   }, [seasonEpisodesData]);
 
@@ -276,7 +276,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
     requestAnimationFrame(async () => {
       const currentEpisode = seasonInfo?.episodeList[activeIndexRef.current];
       const video = videoRefs.current[activeIndexRef.current];
-      console.log('Current Episode:', currentEpisode);
 
       if (!video || !currentEpisode?.episodeVideoInfo?.videoSourceFileInfo.videoSourceUrl) return;
 
@@ -300,11 +299,9 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
       // 🔗 load 시도
       const url = `${process.env.NEXT_PUBLIC_CHAT_API_URL}${currentEpisode.episodeVideoInfo.mpdTempUrl}`;
-      console.log('🔗 Try loading:', url);
 
       try {
         await player.load(url);
-        console.log('✅ Shaka Player video loaded');
 
         setVideoDuration(video.duration);
 
@@ -321,7 +318,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
         // 📺 자막 처리
         if (currentEpisode?.episodeVideoInfo?.subTitleFileInfos) {
-          console.log('🔎 자막 URL:', currentEpisode.episodeVideoInfo.subTitleFileInfos);
           await Promise.all(
             currentEpisode.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
               const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase();
@@ -331,7 +327,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
             }),
           );
           player.setTextTrackVisibility(true);
-          console.log('✅ 자막 추가 완료!');
         } else {
           console.warn('🚨 자막 URL이 없습니다.');
         }
@@ -352,10 +347,9 @@ const ViewerSeriesContent: React.FC<Props> = ({
     const checkShakaSubtitle = setInterval(() => {
       const el = document.querySelector('.shaka-text-container');
       if (el) {
-        console.log('✅ 자막 DOM 발견됨:', el);
         clearInterval(checkShakaSubtitle);
       } else {
-        console.log('❌ 아직 자막 DOM 없음');
+        console.log('🚨 자막 없음');
       }
     }, 500);
 
@@ -425,7 +419,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
     }
   };
   const handleOnSubscribe = async () => {
-    console.log('Subscribe');
     if (info) handleFollow(info?.profileId, !curIsFollow);
     setCurIsFollow(true);
     // 클릭하면 애니메이션 시작
@@ -495,7 +488,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
       const response = await sendLike(episodeId ? InteractionType.Episode : InteractionType.Contents, feedId, isLike);
 
       if (response.resultCode === 0) {
-        console.log(`content ${feedId} has been ${isLike ? 'liked' : 'unliked'} successfully!`);
         if (response.data) setLikeCount(response.data?.likeCount);
         setIsLike(isLike);
       } else {
@@ -517,7 +509,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
       );
 
       if (response.resultCode === 0) {
-        console.log(`content ${feedId} has been ${isDisLike ? 'liked' : 'unliked'} successfully!`);
         setIsDisLike(isDisLike);
       } else {
         console.error(`Failed to like/unlike content: ${response.resultMessage}`);
@@ -628,9 +619,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
   const [dubbingLang, setDubbingLang] = useState<ContentLanguageType>(ContentLanguageType.Korean);
   const handleSetDubbing = (value: number) => {
     info?.episodeVideoInfo?.dubbingFileInfos;
-    console.log(value);
     const track = playerRefs.current[activeIndexRef.current]?.getVariantTracks()[value];
-    console.log(track);
     if (track) playerRefs.current[activeIndexRef.current]?.selectVariantTrack(track, true);
   };
   //#endregion
@@ -854,9 +843,10 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
   const progressBarRef = useRef<HTMLDivElement>(null);
 
+  const touchStartY = useRef<number>(0);
+
   // 🎯 프로그레스 바 클릭 또는 드래그 시작 시 실행
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log('마우스 다운');
     setIsDragging(true);
     updateProgress(e.nativeEvent); // 클릭 위치 반영
     setIsPlaying(false);
@@ -908,6 +898,52 @@ const ViewerSeriesContent: React.FC<Props> = ({
     setVideoProgresses(new Array(videoRefs.current.length).fill(0));
   };
 
+  useEffect(() => {
+    if (shouldSlideToNewEpisode && swiperRef.current?.swiper && seasonInfo) {
+      const playRequest: PlayReq = {
+        contentId: contentId,
+        episodeId: seasonInfo.episodeList[seasonInfo.episodeList.length - 1].episodeId,
+      };
+
+      sendPlay(playRequest)
+        .then(playData => {
+          if (playData.data?.recentlyPlayInfo) {
+            const purchasedEpisode = seasonInfo.episodeList[seasonInfo.episodeList.length - 1];
+            if (purchasedEpisode) {
+              if (
+                seasonInfo.contentCategoryType === ContentCategoryType.Video &&
+                playData.data.recentlyPlayInfo.episodeVideoInfo
+              ) {
+                purchasedEpisode.episodeVideoInfo = {
+                  ...purchasedEpisode.episodeVideoInfo,
+                  ...playData.data.recentlyPlayInfo.episodeVideoInfo,
+                };
+              } else if (playData.data.recentlyPlayInfo.episodeWebtoonInfo) {
+                purchasedEpisode.episodeWebtoonInfo = {
+                  ...purchasedEpisode.episodeWebtoonInfo,
+                  ...playData.data.recentlyPlayInfo.episodeWebtoonInfo,
+                };
+              }
+            }
+
+            // seasonInfo 업데이트
+            setSeasonInfo({
+              ...seasonInfo,
+              episodeList: [...seasonInfo.episodeList],
+            });
+
+            // 슬라이드 이동 및 재생
+            swiperRef.current.swiper.slideTo(seasonInfo.episodeList.length - 1);
+            handlePlayNew();
+            setShouldSlideToNewEpisode(false);
+          }
+        })
+        .catch(error => {
+          console.error('🚨 Play API 호출 오류:', error);
+        });
+    }
+  }, [seasonInfo, shouldSlideToNewEpisode]);
+
   return (
     <Modal
       open={open}
@@ -951,6 +987,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
             </header>
           </div>
           <Swiper
+            ref={swiperRef}
             direction="vertical"
             modules={[Virtual]}
             virtual
@@ -965,7 +1002,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
             style={{height: '100%'}}
           >
             {seasonInfo?.episodeList.map((episode, index) => (
-              <SwiperSlide key={episode.episodeId} virtualIndex={index}>
+              <SwiperSlide key={episode.episodeId} virtualIndex={index} style={{height: '100%'}}>
                 <div style={{height: '100%'}} onClick={() => handleTrigger()}>
                   <div className={styles.Image}>
                     {seasonInfo?.contentCategoryType === ContentCategoryType.Webtoon && (
@@ -1276,6 +1313,40 @@ const ViewerSeriesContent: React.FC<Props> = ({
                     </div>
                   )}
                 </div>
+
+                <InView
+                  onChange={(inView, entry) => {
+                    console.log(inView, index, activeIndexRef.current);
+                    if (inView) {
+                      console.log('index', index);
+                    }
+                    if (
+                      inView &&
+                      index == activeIndexRef.current &&
+                      seasonEpisodesData?.episodeList[activeIndexRef.current + 1]?.isLock
+                    ) {
+                      const nextEpisode = seasonEpisodesData?.episodeList[activeIndexRef.current + 1];
+                      if (nextEpisode?.isLock) {
+                        setPurchaseData(nextEpisode);
+                        setOnPurchasePopup(true);
+                        const swiperElement = document.querySelector('.swiper') as any;
+                        if (swiperElement?.swiper) {
+                          swiperElement.swiper.slideTo(activeIndexRef.current);
+                        }
+                      }
+                    }
+                  }}
+                  threshold={1}
+                  style={{
+                    position: 'absolute',
+                    bottom: -5,
+
+                    width: '100%',
+                    height: '1px',
+                    pointerEvents: 'none',
+                    backgroundColor: 'red',
+                  }}
+                ></InView>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -1360,8 +1431,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
                           setPurchaseData(episode);
                           setOnPurchasePopup(true);
                         } else {
-                          console.log('episode.episodeId', episode.episodeId);
-
                           hasRun.current = false;
                           setCurEpisodeId(episode.episodeId);
                           setOnEpisodeListDrawer(false);
@@ -1397,9 +1466,26 @@ const ViewerSeriesContent: React.FC<Props> = ({
               onClose={() => {
                 setOnPurchasePopup(false);
               }}
-              onPurchaseSuccess={() => {
+              onPurchaseSuccess={async () => {
                 setOnPurchasePopup(false);
-                fetchSeasonEpisodesPopup();
+                if (seasonInfo && purchaseData) {
+                  // 구매한 에피소드를 seasonInfo에 추가
+                  const updatedEpisodeList = [...seasonInfo.episodeList];
+                  const purchasedEpisode = seasonEpisodesData?.episodeList.find(
+                    ep => ep.episodeId === purchaseData.episodeId,
+                  );
+                  if (purchasedEpisode) {
+                    purchasedEpisode.isLock = false;
+                    updatedEpisodeList.push(purchasedEpisode);
+                  }
+
+                  // seasonInfo 업데이트
+                  setSeasonInfo({
+                    ...seasonInfo,
+                    episodeList: updatedEpisodeList,
+                  });
+                  setShouldSlideToNewEpisode(true);
+                }
               }}
             ></PopupPurchase>
           )}
