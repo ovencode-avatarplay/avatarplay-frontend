@@ -34,6 +34,8 @@ import {
   LineShare,
   BoldVerifiedLabel,
   LineReward,
+  BoldFolder,
+  BoldFolderContent,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
@@ -3089,10 +3091,12 @@ export const ContentComponent = ({
               <div className={styles.value}>{itemInfo?.dislikeCount}</div>
             </div>
           )}
-          <div className={styles.viewWrap}>
-            <img src={BoldVideo.src} alt="" />
-            <div className={styles.value}>{itemInfo?.mediaCount}</div>
-          </div>
+          {itemInfo?.contentType != ContentType.Single && (
+            <div className={styles.viewWrap}>
+              <img src={BoldFolderContent.src} alt="" />
+              <div className={styles.value}>{itemInfo?.mediaCount}</div>
+            </div>
+          )}
         </div>
         <div className={styles.titleWrap}>
           <div className={styles.left}>

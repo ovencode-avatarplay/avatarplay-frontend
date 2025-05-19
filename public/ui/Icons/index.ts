@@ -78,6 +78,7 @@ import BoldDelete from "./Bold/Delete.svg";
 import BoldDownload from "./Bold/Download.svg";
 import BoldPlayPrevious from "./Bold/play-previous.svg";
 import BoldPlayNext from "./Bold/play-next.svg";
+import BoldFolderContent from "./Bold/Folder_Content.svg";
 
 import LineAddButton from "./Line/Add_Button.svg";
 import LineAIImage from "./Line/AI_Image.svg";
@@ -283,6 +284,7 @@ export {
   BoldDelete,
   BoldPlayPrevious,
   BoldPlayNext,
+  BoldFolderContent,
   LineAddButton,
   LineAIImage,
   LineArchive,
