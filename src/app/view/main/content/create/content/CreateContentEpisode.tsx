@@ -204,7 +204,7 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
       id: editContentInfo?.id ?? 0,
       contentId: contentInfo?.id ?? 0, // 이 부분도 동일하게 처리
       seasonNo: curSeason, // 필수: 시즌 번호
-      episodeNo: curEpisodeCount + 1, // 필수: 에피소드 번호
+      episodeNo: editContentInfo?.episodeNo ?? curEpisodeCount + 1, // 필수: 에피소드 번호
       thumbnailUrl: mediaUrls[0], // 필수: 썸네일
       name: nameValue, // 필수: 이름
       description: descValue, // 필수: 설명
