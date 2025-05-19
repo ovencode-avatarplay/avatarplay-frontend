@@ -110,13 +110,13 @@ const ImageUpload: React.FC<Props> = ({
         handleChooseFile();
       },
     },
-    {
-      name: 'Workroom',
-      blockAutoClose: true,
-      onClick: () => {
-        setWorkroomOpen(true);
-      },
-    },
+    // {
+    //   name: 'Workroom',
+    //   blockAutoClose: true,
+    //   onClick: () => {
+    //     setWorkroomOpen(true);
+    //   },
+    // },
   ];
 
   return (
@@ -135,7 +135,7 @@ const ImageUpload: React.FC<Props> = ({
         }}
         selectedIndex={0}
       />
-      {ReactDOM.createPortal(
+      {/* {ReactDOM.createPortal(
         <UploadFromWorkroom
           open={workroomOpen}
           onClose={() => setWorkroomOpen(false)}
@@ -145,7 +145,7 @@ const ImageUpload: React.FC<Props> = ({
           mediaStateFilter={MediaState.Image}
         />,
         document.body,
-      )}
+      )} */}
       <LoadingOverlay loading={loading} />
     </div>
   );
