@@ -26,6 +26,7 @@ export interface ChatRoomInfo {
   isPinFix: boolean;
   isUnreadDot: boolean;
   updatedAt: string;
+  isBookMark: boolean;
 }
 
 export interface GetCharacterChatRoomListRes {

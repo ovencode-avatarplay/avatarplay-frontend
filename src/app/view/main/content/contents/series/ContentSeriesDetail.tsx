@@ -48,7 +48,7 @@ import Link from 'next/link';
 import {Dialog} from '@mui/material';
 import {Category, TurnedIn} from '@mui/icons-material';
 import {bookmark, BookMarkReq, InteractionType} from '@/app/NetWork/CommonNetwork';
-// import ViewerContent from '../viewer/ViewerContent';
+import ViewerContent from '../viewer/ViewerContent';
 import {setEpisodeId} from '@/redux-store/slices/Chatting';
 import useCustomRouter from '@/utils/useCustomRouter';
 import DrawerDonation from '../../create/common/DrawerDonation';
@@ -59,7 +59,7 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
 import formatText from '@/utils/formatText';
 import {setStar} from '@/redux-store/slices/Currency';
-// import ViewerSeriesContent from '../viewer/ViewerSeriesContent';
+import ViewerSeriesContent from '../viewer/ViewerSeriesContent';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 
@@ -597,7 +597,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       )}
       {onPlay && (
         <>
-          {/* {!data.isSingle &&
+          {!data.isSingle &&
           (data.dataEpisodes?.contentCategoryType == ContentCategoryType.Video ||
             data.dataMix?.contentCategoryType == ContentCategoryType.Video) ? (
             <ViewerSeriesContent
@@ -617,7 +617,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               episodeId={playContentId != 0 ? playEpisodeId : undefined}
               seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
             ></ViewerContent>
-          )} */}
+          )}
         </>
       )}
 
