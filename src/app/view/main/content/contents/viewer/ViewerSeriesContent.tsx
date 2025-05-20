@@ -66,7 +66,7 @@ import {ConstructionOutlined} from '@mui/icons-material';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Virtual} from 'swiper/modules';
+import {Virtual, Mousewheel} from 'swiper/modules';
 import 'swiper/css';
 import {info} from 'console';
 import {InView} from 'react-intersection-observer';
@@ -1008,8 +1008,14 @@ const ViewerSeriesContent: React.FC<Props> = ({
           <Swiper
             ref={swiperRef}
             direction="vertical"
-            modules={[Virtual]}
-            virtual
+            modules={[Virtual, Mousewheel]}
+            virtual={{
+              slides: Array((seasonInfo?.episodeList?.length || 0) + 1)
+                .fill(null)
+                .map((_, i) => i),
+              addSlidesBefore: 1,
+              addSlidesAfter: 1,
+            }}
             initialSlide={currentIndex}
             onSlideChange={swiper => {
               activeIndexRef.current = swiper.activeIndex;
@@ -1019,6 +1025,17 @@ const ViewerSeriesContent: React.FC<Props> = ({
               resetAllVideoProgress();
             }}
             style={{height: '100%'}}
+            allowTouchMove={true}
+            resistance={true}
+            resistanceRatio={0.85}
+            watchSlidesProgress={true}
+            observer={true}
+            observeParents={true}
+            mousewheel={{
+              forceToAxis: true,
+              sensitivity: 1,
+              releaseOnEdges: true,
+            }}
           >
             {seasonInfo?.episodeList.map((episode, index) => (
               <SwiperSlide key={episode.episodeId} virtualIndex={index} style={{height: '100%'}}>
@@ -1373,6 +1390,11 @@ const ViewerSeriesContent: React.FC<Props> = ({
                 ></InView>
               </SwiperSlide>
             ))}
+            {seasonInfo?.episodeList.length == 1 && (
+              <SwiperSlide virtualIndex={seasonInfo?.episodeList.length} style={{height: '10%'}}>
+                <div style={{height: '10%', backgroundColor: 'transparent'}} />
+              </SwiperSlide>
+            )}
           </Swiper>
           {isCommentOpen && (
             <Comment
