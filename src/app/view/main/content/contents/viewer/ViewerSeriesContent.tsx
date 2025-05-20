@@ -69,6 +69,7 @@ import {Virtual, Mousewheel} from 'swiper/modules';
 import 'swiper/css';
 import {info} from 'console';
 import {InView} from 'react-intersection-observer';
+import DrawerDonation from '../../create/common/DrawerDonation';
 
 interface Props {
   open: boolean;
@@ -89,7 +90,15 @@ const ViewerSeriesContent: React.FC<Props> = ({
   seasonEpisodesData,
 }) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
-  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>();
+  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>(() => {
+    if (seasonEpisodesData) {
+      return {
+        ...seasonEpisodesData,
+        episodeList: seasonEpisodesData.episodeList.filter(episode => !episode.isLock),
+      };
+    }
+    return undefined;
+  });
   const [contentType, setContentType] = useState<ContentType>(0);
   const [isRecent, setIsRecent] = useState(isPlayButon);
   const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
@@ -97,7 +106,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
     number: number;
     isLocked: boolean;
   }
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [episodeListData, setEpisodeListData] = useState<GetSeasonEpisodesPopupRes>();
@@ -182,6 +190,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
   const [isMute, setIsMute] = useState(true);
+  const [isFirst, setIsFirst] = useState(true);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -192,8 +201,14 @@ const ViewerSeriesContent: React.FC<Props> = ({
     setIsExpanded(!isExpanded);
   };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const activeIndexRef = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    if (episodeId !== 0 && seasonEpisodesData?.episodeList) {
+      const index = seasonEpisodesData.episodeList.findIndex(ep => ep.episodeId === episodeId);
+      return index !== -1 ? index : 0;
+    }
+    return 0;
+  });
+  const activeIndexRef = useRef(currentIndex);
   const swiperRef = useRef<any>(null);
   const [shouldSlideToNewEpisode, setShouldSlideToNewEpisode] = useState(false);
 
@@ -225,7 +240,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
             episode => episode.episodeId === playResponse.data?.recentlyPlayInfo.episodeId,
           );
           if (targetIndex !== -1 && swiperRef.current?.swiper) {
-            swiperRef.current.swiper.slideTo(targetIndex);
+            swiperRef.current.swiper.slideTo(targetIndex, 0);
             activeIndexRef.current = targetIndex;
           }
         }
@@ -237,24 +252,42 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
   const handlePlayNew = async () => {
     try {
-      const currentEpisode = seasonInfo
-        ? seasonInfo?.episodeList[activeIndexRef.current]
-        : seasonEpisodesData?.episodeList[activeIndexRef.current];
+      let currentEpisode = seasonInfo
+        ? seasonInfo?.episodeList[activeIndexRef.current].episodeId
+        : seasonEpisodesData?.episodeList[activeIndexRef.current].episodeId;
+
+      if (isFirst) {
+        currentEpisode = episodeId;
+        setIsFirst(false);
+      }
       if (!currentEpisode) return;
       const playRequest: PlayReq = {
         contentId: contentId,
-        episodeId: currentEpisode.episodeId,
+        episodeId: currentEpisode,
       };
       setIsLoading(true);
       const playData = await sendPlay(playRequest);
       setIsLoading(false);
       setContentType(playData.data?.contentType || 0);
       setInfo(playData.data?.recentlyPlayInfo);
+      if (playData.data?.recentlyPlayInfo) {
+        const episodeList = seasonInfo?.episodeList || seasonEpisodesData?.episodeList;
+        if (episodeList) {
+          const targetIndex = episodeList.findIndex(
+            episode => episode.episodeId === playData.data?.recentlyPlayInfo.episodeId,
+          );
+          if (targetIndex !== -1 && swiperRef.current?.swiper) {
+            swiperRef.current.swiper.slideTo(targetIndex, 0);
+            activeIndexRef.current = targetIndex;
+          }
+        }
+      }
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
       setIsLoading(false);
     }
   };
+  console.log('🚨 currentIndex', activeIndexRef.current);
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
@@ -270,16 +303,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
       handlePlayNew();
     }
   }, [seasonInfo, activeIndexRef.current]);
-
-  useEffect(() => {
-    if (seasonEpisodesData) {
-      const filteredEpisodes = {
-        ...seasonEpisodesData,
-        episodeList: seasonEpisodesData.episodeList.filter(episode => !episode.isLock),
-      };
-      setSeasonInfo(filteredEpisodes);
-    }
-  }, [seasonEpisodesData]);
 
   useEffect(() => {
     // 에피소드 수만큼 ref 배열과 진행도 배열 초기화
