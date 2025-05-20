@@ -78,7 +78,7 @@ const DMChat: React.FC = () => {
 
   const optionItems: SelectDrawerArrowItem[] = [
     {
-      name: 'Favorites /Unfavorites',
+      name: selectedRoom?.isBookmark ? 'Unfavorites' : 'Favorites',
       arrowName: '',
       onClick: async () => {
         if (selectedRoom) {
@@ -86,11 +86,16 @@ const DMChat: React.FC = () => {
             const response = await bookmark({
               interactionType: InteractionType.Friend,
               typeValueId: selectedRoom.roomId,
-              isBookMark: true,
+              isBookMark: !selectedRoom.isBookmark,
             });
 
             if (response?.data) {
-              // UI 업데이트 로직이 필요한 경우 여기에 추가
+              // UI 업데이트
+              setDmList(prevList =>
+                prevList.map(room =>
+                  room.roomId === selectedRoom.roomId ? {...room, isBookmark: !room.isBookmark} : room,
+                ),
+              );
             }
             setOpenOption(false);
           } catch (e) {
@@ -100,7 +105,7 @@ const DMChat: React.FC = () => {
       },
     },
     {
-      name: 'Pin to Top / Unpin ',
+      name: selectedRoom?.isPinFix ? 'Unpin' : 'Pin to Top',
       arrowName: '',
       onClick: () => {
         if (selectedRoomId) {

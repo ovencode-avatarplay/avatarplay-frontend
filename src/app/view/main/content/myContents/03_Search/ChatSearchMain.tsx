@@ -578,6 +578,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           onKeyDown={handleSearchBarKeyDown}
           value={searchText}
           onChange={setSearchText}
+          selectTag={selectedTag}
         />
         <div className={styles.content}>
           <SwipeTagList tags={tags} currentTag={selectedTag} onTagChange={setSelectedTag} />

@@ -22,6 +22,7 @@ interface Props {
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   value: string;
   onChange: (value: string) => void;
+  selectTag: string;
 }
 
 const SearchBar: React.FC<Props> = ({
@@ -33,6 +34,7 @@ const SearchBar: React.FC<Props> = ({
   onKeyDown,
   value,
   onChange,
+  selectTag,
 }) => {
   const [isAdult, setIsAdult] = useState(true);
   const [filterDialogOn, setFilterDialogOn] = useState(false);
@@ -154,47 +156,52 @@ const SearchBar: React.FC<Props> = ({
                 <img src={LinePlus.src} alt="clear" className={styles.clearIcon} />
               </button>
             )}
-            <div className={styles.adultToggle}>
-              <CustomToggleButton
-                isToggled={isAdult}
-                onToggle={() => {
-                  setIsAdult(prev => {
-                    const next = !prev;
-                    if (onSearch) {
-                      onSearch(value.trim(), next, positiveFilters, negativeFilters);
-                    }
-                    return next;
-                  });
-                }}
-                size="sm"
-                state="default"
-                theme="dark"
-              />
-              <span className={`${styles.adultLabel} ${isAdult ? styles.toggleOn : ''}`}>Adult</span>
-            </div>
+            {(selectTag == 'Following' || selectTag == 'Character') && (
+              <div className={styles.adultToggle}>
+                <CustomToggleButton
+                  isToggled={isAdult}
+                  onToggle={() => {
+                    setIsAdult(prev => {
+                      const next = !prev;
+                      if (onSearch) {
+                        onSearch(value.trim(), next, positiveFilters, negativeFilters);
+                      }
+                      return next;
+                    });
+                  }}
+                  size="sm"
+                  state="default"
+                  theme="dark"
+                />
+                <span className={`${styles.adultLabel} ${isAdult ? styles.toggleOn : ''}`}>Adult</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* 필터 아이콘 */}
-      <div
-        className={styles.filterIconWrap}
-        onClick={() => {
-          setFilterDialogOn(true);
-        }}
-      >
-        {positiveFilters.length > 0 || negativeFilters.length > 0 ? (
-          <img src={BoldFilterOn.src} alt="filter" className={styles.filterIcon} />
-        ) : (
-          <img src={BoldFilter.src} alt="filter" className={styles.filterIcon} />
-        )}
-      </div>
-      <FilterSelector
-        filterData={filterItem}
-        onSave={handleSave}
-        open={filterDialogOn}
-        onClose={() => setFilterDialogOn(false)}
-      />
+      {(selectTag == 'Following' || selectTag == 'Character') && (
+        <>
+          {/* 필터 아이콘 */}
+          <div
+            className={styles.filterIconWrap}
+            onClick={() => {
+              setFilterDialogOn(true);
+            }}
+          >
+            {positiveFilters.length > 0 || negativeFilters.length > 0 ? (
+              <img src={BoldFilterOn.src} alt="filter" className={styles.filterIcon} />
+            ) : (
+              <img src={BoldFilter.src} alt="filter" className={styles.filterIcon} />
+            )}
+          </div>
+          <FilterSelector
+            filterData={filterItem}
+            onSave={handleSave}
+            open={filterDialogOn}
+            onClose={() => setFilterDialogOn(false)}
+          />
+        </>
+      )}
     </div>
   );
 };
