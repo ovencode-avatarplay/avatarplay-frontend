@@ -54,7 +54,6 @@ import {
   sendReport,
 } from '@/app/NetWork/CommonNetwork';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
-import DrawerDonation from '../../create/common/DrawerDonation';
 import {PopupPurchase} from '../series/ContentSeriesDetail';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
@@ -454,15 +453,35 @@ const ViewerSeriesContent: React.FC<Props> = ({
     }, 475); // (3프레임 + 17프레임) 약 350ms 후 축소 시작
   };
 
-  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount);
+  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount || 0);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
+    if (info) {
+      setCommentCount(commentCount + 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount + 1,
+        },
+      });
+    }
   };
+
   const handleSubCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
+    if (info) {
+      setCommentCount(commentCount - 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount - 1,
+        },
+      });
+    }
   };
+
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -590,7 +609,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
-    setCommentCount(info?.commonMediaViewInfo.commentCount);
+    setCommentCount(info?.commonMediaViewInfo.commentCount || 0);
     setCurIsFollow(info?.isProfileFollow);
     if (info) setTempFollow(info?.isProfileFollow);
   }, [info]);
