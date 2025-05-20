@@ -54,6 +54,7 @@ justify-items: center;
     line-height: 150%;
     color: var(--Black);
     word-break: break-all;
+    white-space: pre-wrap; 
   }
   
   .actions {
