@@ -175,6 +175,7 @@ export const ToastMessage = ({isOpen, message, onClose, type}: ToastMessageType)
         onClose={() => onClose()}
         sx={{
           bottom: '20px',
+          margin: '0 auto',
           width: 'calc(var(--full-width-percent) - 32px)',
           zIndex: 10002,
           '& .MuiPaper-root': {

@@ -986,16 +986,18 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             isRemainContent={true}
           />
 
-          <CustomButton
-            size="Medium"
-            state="Normal"
-            type="Primary"
-            buttonType="submit"
-            customClassName={[styles.submitBtn]}
-          >
-            {getLocalizedText('common_button_submit')}
-            {/* {isUpdate ? 'Submit' : 'Publish'} */}
-          </CustomButton>
+          <div className={styles.submitBtnWrap}>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Primary"
+              buttonType="submit"
+              customClassName={[styles.submitBtn]}
+            >
+              {getLocalizedText('common_button_submit')}
+              {/* {isUpdate ? 'Submit' : 'Publish'} */}
+            </CustomButton>
+          </div>
         </form>
       </main>
       <footer></footer>
