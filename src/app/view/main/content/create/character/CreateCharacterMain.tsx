@@ -30,9 +30,7 @@ import {
   GetStarType,
   sendCreateCharacter2,
 } from '@/app/NetWork/CharacterNetwork';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import {CharacterInfo, ConversationInfo} from '@/redux-store/slices/StoryInfo';
-import CharacterCreateViewImage from './CharacterCreateViewImage';
 import {MediaState, ProfileSimpleInfo} from '@/app/NetWork/ProfileNetwork';
 import {Bar, CardData} from '../story-main/episode/episode-conversationtemplate/ConversationCard';
 import {MembershipSetting, Subscription} from '@/app/NetWork/network-interface/CommonEnums';
@@ -43,6 +41,7 @@ import {replaceChipsWithKeywords} from '@/app/view/studio/promptDashboard/FuncPr
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import ImageUpload from '@/components/create/ImageUpload';
+import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import VideoUpload from '@/components/create/VideoUpload';
 import {profile} from 'console';
@@ -50,6 +49,7 @@ import CharacterGalleryModal from '@/app/view/studio/characterDashboard/Characte
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 const Header = 'CreateCharacter';
 const Common = 'Common';
@@ -288,30 +288,6 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
     }
     setSelectImageTypeOpen(false);
   };
-  //#region File Upload
-
-  const handleFileSelection = async (file: File) => {
-    try {
-      const req: MediaUploadReq = {
-        mediaState: UploadMediaState.CharacterImage,
-        file: file,
-      };
-      const response = await sendUpload(req);
-      if (response?.data) {
-        const imgUrl: string = response.data.url;
-
-        handlerSetImage(imgUrl);
-      } else {
-        throw new Error('Unexpected API response: No data');
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    } finally {
-      // 빈블럭
-    }
-  };
-
-  //#endregion
 
   const handleOnClickThumbnail = () => {
     setSelectImageTypeOpen(true);
@@ -357,7 +333,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
       triggerType === CharacterEventTriggerType.ChangeBackgroundByEmotion ||
       triggerType === CharacterEventTriggerType.SendMediaByEmotion
     ) {
-      newItem.emotionType = EmotionState.Normal;
+      newItem.emotionType = EmotionState.Happy;
       newItem.probability = 100;
     } else if (
       triggerType === CharacterEventTriggerType.SendMediaByElapsedTime ||
@@ -753,9 +729,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                   console.log(i);
                   setSelectedGalleryIndex(i ?? 0);
                   console.log(character.portraitGalleryImageUrl[selectedGalleryIndex]);
-                  if(category === GalleryCategory.Portrait)
+                  if (category === GalleryCategory.Portrait)
                     handlerSetImage(character.portraitGalleryImageUrl[selectedGalleryIndex].imageUrl);
-                  else if(category === GalleryCategory.Pose)
+                  else if (category === GalleryCategory.Pose)
                     handlerSetImage(character.poseGalleryImageUrl[selectedGalleryIndex].imageUrl);
                   setGalleryOpen(false);
                 }}
@@ -925,9 +901,10 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               onChoose={() => {
                 setSelectImageTypeOpen(false);
               }}
-              onGalleryChoose={() => {
-                setGalleryOpen(true);
-              }}
+              // onGalleryChoose={() => {
+              //   setGalleryOpen(true);
+              // }}
+              uploadType={UploadMediaState.Character}
             />
           )}
         </div>
@@ -1093,7 +1070,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
         {selectImageTypeOpen && <>{renderSelectImageType()}</>}
       </div>
       {imgUploadSelectModalOpen && <>{renderUploadSelectModal()}</>}
-      {imageViewOpen && <CharacterCreateViewImage imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
+      {imageViewOpen && <ImagePreViewer imageUrl={imageViewUrl} onClose={() => setImageViewOpen(false)} />}
+      {/* 이벤트 트리거 미디어 업로드 */}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
         <ImageUpload
           isOpen={imgUploadOpen}
@@ -1102,9 +1080,13 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadOpen(false);
           }}
           setContentImageUrl={handlerSetImage}
-          onGalleryChoose={() => {
-            setGalleryOpen(true);
+          // onGalleryChoose={() => {
+          //   setGalleryOpen(true);
+          // }}
+          onChoose={() => {
+            setSelectImageTypeOpen(false);
           }}
+          uploadType={UploadMediaState.Character}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
@@ -1114,7 +1096,8 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setImgUploadType(null);
             setVideoUploadOpen(false);
           }}
-          setVideoUrl={handlerSetVideo}
+          setContentVideoUrl={handlerSetVideo}
+          uploadType={UploadMediaState.Character}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && mediaUploadOpen && (
@@ -1132,17 +1115,9 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
                 setVideoUploadOpen(true);
               },
             },
-            {
-              name: 'Gallery',
-              onClick: () => {
-                setGalleryOpen(true);
-              },
-            },
           ]}
           isOpen={mediaUploadOpen}
-          onClose={() => {
-            setMediaUploadOpen(false);
-          }}
+          onClose={() => {}}
         />
       )}
     </>

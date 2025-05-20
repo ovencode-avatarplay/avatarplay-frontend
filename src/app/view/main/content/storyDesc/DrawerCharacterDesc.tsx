@@ -123,7 +123,6 @@ const DrawerCharacterDesc = () => {
       storyId: Number(characterId),
       episodeId: Number(episodeId),
       StoryUrl: contentUrl,
-      levelInfo: currentChattingState.levelInfo || null,
     };
     // dispatch(setStateChatting(chattingState));
   }, [episodeId]);

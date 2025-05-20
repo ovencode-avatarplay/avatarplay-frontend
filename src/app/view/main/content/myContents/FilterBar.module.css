@@ -1,0 +1,104 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 10px;
+    width: 100%;
+    height: 48px;
+  }
+  
+  /* 왼쪽 아이콘 버튼 */
+  .iconButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 38px;
+    height: 32px;
+    background: #f1f3f4;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .active {
+    background: #fd55d3;
+  }
+  
+  .galleryIcon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* 가운데 필터 버튼 */
+  .filterButtons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .filterButton {
+    padding: 0px 10px;
+    height: 32px;
+    background: #f1f3f4;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #bdc1c6;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .selected {
+    background: #fd55d3;
+    color: white;
+  }
+  
+  /* 오른쪽 정렬 버튼 */
+/* ... 기존 스타일 유지 ... */
+
+.sortDropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 32px;
+    margin-left: auto;
+    cursor: pointer;
+  }
+  
+  .sortLabel {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0c0c0c;
+  }
+  
+  .sortIcon {
+    width: 12px;
+    height: 12px;
+    filter: brightness(0) saturate(100%)
+  }
+  
+  /* 드롭다운 메뉴 */
+  .sortMenu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 100px;
+  }
+  
+  .sortOption {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .sortOption:hover {
+    background-color: #f1f3f4;
+  }
+  

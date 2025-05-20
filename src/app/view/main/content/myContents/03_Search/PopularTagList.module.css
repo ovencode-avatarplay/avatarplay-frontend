@@ -1,0 +1,45 @@
+.container {
+    display: flex;
+    flex-direction: column;    
+    width: 100%;    
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    height: 37px;
+  }
+  
+  .title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: -0.02em;
+  }
+  
+  .tagList {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 0 16px;
+  }
+  
+  .hashtag {
+    padding: 10px 18px;
+    background: #ffffff;
+    border: 1px solid #eaecf0;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2c3131;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .active {
+    background: #f0f4fa;
+    border-radius: 6px;
+  }
+  

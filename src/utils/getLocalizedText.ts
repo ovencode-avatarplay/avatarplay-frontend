@@ -48,12 +48,13 @@ const getLocalizedText = (...args: [string] | [string, string] | [string, string
     [head, key, language] = args;
   }
 
+  // console.log(key);
   const effectiveLanguage = language || getLanguageFromURL();
   const lowerKey = key?.toLowerCase();
   const localizedItem = localizationSources[lowerKey];
 
   if (!localizedItem) {
-    console.warn(`로컬라이징 작업 필요: ${key}`);
+    // console.warn(`로컬라이징 작업 필요: ${key}`);
     return `${key}`;
   }
 

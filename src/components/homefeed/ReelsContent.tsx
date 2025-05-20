@@ -1,9 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ReelsContent.module.scss';
 import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import {Pagination} from 'swiper/modules';
 import {FeedInfo, sendFeedShare} from '@/app/NetWork/ShortsNetwork';
 import ReactPlayer from 'react-player';
 import {
@@ -21,7 +18,6 @@ import {
   LineVolumeOff,
   LineVolumeOn,
   LineArchive,
-  LineScaleUp,
 } from '@ui/Icons';
 import {Avatar} from '@mui/material';
 import Comment from '../layout/shared/Comment';
@@ -45,7 +41,6 @@ import {
 import getLocalizedText from '@/utils/getLocalizedText';
 import {RecommendState} from './ReelsLayout';
 import SelectDrawer, {SelectDrawerItem} from '../create/SelectDrawer';
-import {ConstructionOutlined} from '@mui/icons-material';
 import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
@@ -55,7 +50,6 @@ import {RootState} from '@/redux-store/ReduxStore';
 interface ReelsContentProps {
   item: FeedInfo;
   isActive: boolean; // 현재 슬라이드인지 확인
-  isMute: boolean;
   setIsMute: (mute: boolean) => void; // boolean 매개변수 추가
   setIsProfile: (profile: boolean) => void; // boolean 매개변수 추가
   recommendState: RecommendState;
@@ -63,12 +57,12 @@ interface ReelsContentProps {
   setSyncFollow: (id: number, value: boolean) => void;
   isFollow: boolean;
   isGrabbing: boolean;
+  volume: number;
 }
 
 const ReelsContent: React.FC<ReelsContentProps> = ({
   item,
   isActive,
-  isMute,
   setIsMute,
   setIsProfile,
   isShowProfile = true,
@@ -76,9 +70,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   setSyncFollow,
   isFollow,
   isGrabbing,
+  volume,
 }) => {
   const router = useRouter();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(isActive);
   const [isClicked, setIsClicked] = useState(false);
   const [isDonation, setDonation] = useState(false);
   const [isLike, setIsLike] = useState(item.isLike);
@@ -88,8 +83,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isImageModal, setIsImageModal] = useState(false);
   const [isReportModal, setIsRefortModal] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
-  const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
+  const playerRef = useRef<ReactPlayer>(null);
   const swiperRef = useRef<SwiperClass | null>(null);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [isInitiallyMuted, setIsInitiallyMuted] = useState(true);
 
   const Header = 'Home';
   const Common = 'Common';
@@ -98,12 +95,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   }, [item]);
   useEffect(() => {
     if (isActive) {
-      setIsPlaying(true); // 활성화된 경우 자동 재생
+      setIsPlaying(true);
     } else {
-      setIsPlaying(false); // 비활성화된 경우 재생 중지
+      setIsPlaying(false);
+      playerRef.current?.seekTo(0);
     }
-    playerRef.current?.seekTo(0); // 재생 위치를 0으로 설정
-    console.log(item);
   }, [isActive]);
 
   const formatDuration = (seconds: number): string => {
@@ -131,9 +127,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     setCommentCount(commentCount - 1);
   };
   const handleClick = () => {
-    setIsPlaying(!isPlaying);
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 300); // 애니메이션이 끝난 후 상태 초기화
+    if (isActive) {
+      setIsPlaying(!isPlaying);
+      setIsClicked(true);
+      setTimeout(() => setIsClicked(false), 300);
+    }
   };
   const handleSlideChange = (swiper: SwiperClass) => {
     setActiveIndex(swiper.activeIndex); // Swiper의 activeIndex로 상태 업데이트
@@ -286,8 +284,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     setCommentCount(item.commentCount);
   }, [item]);
 
-  React.useEffect(() => {}, [isMute]);
-
   const imageMediaData: MediaData = {
     mediaType: TriggerMediaState.TriggerImage, // 기본값 (TriggerMediaState의 기본 상태)
     mediaUrlList: item.mediaUrlList, // 빈 배열
@@ -335,8 +331,30 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     }
   }, [item.profileVisibilityType]);
 
+  const handleFirstInteraction = () => {
+    if (!hasUserInteracted) {
+      setHasUserInteracted(true);
+    }
+  };
+
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => {
+        setIsPlaying(true);
+        handleFirstInteraction();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        setIsPlaying(false);
+      });
+    }
+  }, []);
+
+  const handleVolumeChange = (newMute: boolean) => {
+    setIsMute(newMute);
+  };
+
   return (
-    <div className={styles.reelsContainer}>
+    <div className={styles.reelsContainer} onClick={handleFirstInteraction}>
       <Swiper
         onSwiper={(swiper: SwiperClass) => {
           swiperRef.current = swiper;
@@ -344,12 +362,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         direction="horizontal"
         slidesPerView={1}
         centeredSlides={true}
-        // scrollbar={{draggable: true}}
         onSlideChange={handleSlideChangeProfile}
         className={`${styles.mainContent}  ${!isMobile && styles.limitWidth}`}
         resistanceRatio={0}
-        touchReleaseOnEdges={true} // ✅ 끝에서 터치 이벤트 해제 (빈 공간 방지)
-        preventClicks={true} // ✅ 클릭 시 이벤트가 Swiper 내부에서만 처리되도록 함
+        touchReleaseOnEdges={true}
+        preventClicks={true}
       >
         <SwiperSlide style={{height: '100%'}}>
           <div className={styles.Image}>
@@ -367,10 +384,10 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 style={{position: 'relative', width: '100%', height: '100%', background: '#000'}}
               >
                 <ReactPlayer
-                  ref={playerRef} // ReactPlayer 참조 연결
-                  muted={isMute}
-                  url={item.mediaUrlList[0]} // 첫 번째 URL 사용
-                  playing={isPlaying} // 재생 상태
+                  ref={playerRef}
+                  url={item.mediaUrlList[0]}
+                  playing={isPlaying}
+                  volume={volume}
                   loop={true}
                   width="100%"
                   playsinline={true}
@@ -392,22 +409,28 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                       },
                     },
                   }}
-                  progressInterval={100} // 0.1초(100ms) 단위로 진행 상황 업데이트
+                  progressInterval={100}
                   onProgress={({playedSeconds}) => {
                     videoProgressRef.current = playedSeconds;
-
                     const progressRatio = videoDuration > 0 ? (playedSeconds / videoDuration) * 100 : 0;
-
                     if (progressBarRef.current) {
                       progressBarRef.current.style.width = `${progressRatio}%`;
                     }
-
-                    // 기존 setCurrentProgress 등은 유지 (필요 시만)
                     setCurrentProgress(formatDuration(playedSeconds));
                   }}
                   onDuration={(duration: number) => {
                     setVideoDuration(duration);
-                  }} // 영상 길이 설정
+                  }}
+                  onError={error => {
+                    console.error('Video error:', error);
+                    if (error.toString().includes('NotAllowedError')) {
+                      setIsMute(true);
+                      setIsPlaying(false);
+                      setTimeout(() => {
+                        setIsPlaying(true);
+                      }, 100);
+                    }
+                  }}
                 />
 
                 <div
@@ -455,7 +478,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                   borderRadius: item.profileType === ProfileType.Channel ? '10px' : '50%',
                 }}
                 onClick={() => {
-                  if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
+                  if (item.profileVisibilityType === VisibilityType.Public) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
                     dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
@@ -466,7 +489,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
               <div
                 className={styles.profileDetails}
                 onClick={() => {
-                  if (item.profileVisibilityType === VisibilityType.Public || item.isMyFeed) {
+                  if (item.profileVisibilityType === VisibilityType.Public) {
                     pushLocalizedRoute('/profile/' + item?.profileUrlLinkKey + '?from=""', router);
                   } else {
                     dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
@@ -534,7 +557,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             {item.isMyFeed == false && (
               <div
                 className={styles.textButtons}
-                onClick={() => {
+                onClick={e => {
+                  e.stopPropagation();
                   handleDonation();
                 }}
               >
@@ -544,7 +568,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
             <div
               className={styles.textButtons}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 handleLikeFeed(item.id, !isLike);
               }}
             >
@@ -554,16 +579,16 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 style={{
                   filter: isLike
                     ? 'brightness(0) saturate(100%) invert(47%) sepia(57%) saturate(1806%) hue-rotate(287deg) brightness(102%) contrast(98%)'
-                    : 'none', // 기본 상태는 필터 없음
+                    : 'none',
                 }}
               />
               <div className={styles.count}>{likeCount && likeCount >= 0 ? likeCount : 0}</div>
             </div>
 
-            {/* Dislike Button */}
             <div
               className={styles.textButtons}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 handleDisLikeFeed(item.id, !isDisLike);
               }}
             >
@@ -573,17 +598,24 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
                 style={{
                   filter: isDisLike
                     ? 'brightness(0) saturate(100%) invert(69%) sepia(59%) saturate(1244%) hue-rotate(153deg) brightness(102%) contrast(101%)'
-                    : 'none', // 기본 상태는 필터 없음
+                    : 'none',
                 }}
               />
             </div>
-            <div className={styles.textButtons} onClick={() => setCommentIsOpen(true)}>
+            <div
+              className={styles.textButtons}
+              onClick={e => {
+                e.stopPropagation();
+                setCommentIsOpen(true);
+              }}
+            >
               <img src={BoldComment.src} className={styles.button}></img>
               <div className={styles.count}>{commentCount}</div>
             </div>
             <div
               className={styles.noneTextButton}
-              onClick={async () => {
+              onClick={e => {
+                e.stopPropagation();
                 handleShare();
               }}
             >
@@ -592,7 +624,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
 
             <div
               className={styles.noneTextButton}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 bookmarkFeed();
               }}
             >
@@ -601,7 +634,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             </div>
             <div
               className={styles.noneTextButton}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 setIsRefortModal(true);
               }}
             >
@@ -611,21 +645,18 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           <div
             className={styles.volumeButton}
             onClick={() => {
-              if (item.mediaState == 2) setIsMute(!isMute);
+              if (item.mediaState == 2) setIsMute(volume > 0);
               else if (item.mediaState == 1) setIsImageModal(true);
             }}
           >
             {/* 검은색 반투명 배경 */}
-            {isMute && <div className={styles.volumeCircleIcon}></div>}
+            {volume === 0 && <div className={styles.volumeCircleIcon}></div>}
 
             {/* 음소거 상태 아이콘 */}
-            {item.mediaState == 2 && isMute && <img src={LineVolumeOff.src} className={styles.volumeIcon} />}
+            {item.mediaState == 2 && volume === 0 && <img src={LineVolumeOff.src} className={styles.volumeIcon} />}
 
             {/* 볼륨 활성 상태 아이콘 */}
-            {item.mediaState == 2 && !isMute && <img src={LineVolumeOn.src} className={styles.volumeIcon} />}
-
-            {/* 이미지 확대 아이콘 */}
-            {/* {item.mediaState == 1 && <img src={LineScaleUp.src} className={styles.volumeIcon} />} */}
+            {item.mediaState == 2 && volume > 0 && <img src={LineVolumeOn.src} className={styles.volumeIcon} />}
           </div>
         </SwiperSlide>
         {isShowProfile && (

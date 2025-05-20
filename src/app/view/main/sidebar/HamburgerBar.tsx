@@ -73,7 +73,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   };
 
   const routeProfile = async () => {
-    const jwtToken = localStorage.getItem('jwt');
+    const jwtToken = localStorage?.getItem('jwt');
     console.log('jwtToken : ', jwtToken);
     if (!jwtToken) {
       pushLocalizedRoute('/auth', router);
@@ -98,13 +98,17 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
     }
   };
 
+  const routeWorkroom = () => {
+    pushLocalizedRoute('/studio/workroom', router);
+  };
+
   const handleUserLogout = async () => {
     try {
       // Sign out from the app
       //await signOut({callbackUrl: process.env.NEXT_PUBLIC_APP_URL});
       await supabase.auth.signOut();
       setAuth(null);
-      localStorage.removeItem('jwt');
+      localStorage?.removeItem('jwt');
       dispatch(updateProfile(null));
       setUserMetaData(null);
       setIsLogin(false);
@@ -139,7 +143,13 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
 
   console.log('profile info : ', dataProfile.currentProfile);
   return (
-    <Drawer open={open} onClose={onClose} anchor={isLeft ? 'left' : 'right'} classes={{paper: styles.drawerPaper}}>
+    <Drawer
+      open={open}
+      onClose={onClose}
+      anchor={isLeft ? 'left' : 'right'}
+      classes={{paper: styles.drawerPaper}}
+      sx={{zIndex: 3002}}
+    >
       <div className={styles.drawerContent}>
         {/* 프로필 섹션 */}
         <div className={styles.profileSection} onClick={routeProfile}>
@@ -234,6 +244,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Story (tmp)', routeStory)}
           {renderMenuItem('', 'Character (tmp)', routeCharacter)}
           {renderMenuItem('', 'Prompt (tmp)', routePrompt)}
+          {/* {renderMenuItem('', 'Workroom', routeWorkroom)} */}
           {/*
           {renderMenuItem('', getLocalizedText('common_button_supportandabout'), () => {
             setSupportOpen(!supportOpen);

@@ -3,10 +3,8 @@ import styles from './TriggerCreateMedia.module.css';
 import {AudioFile, BoldPlay, CircleClose, LineUpload, LineVoicePlay} from '@ui/Icons';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import TriggerImageGrid from './TriggerImageGrid';
-import {Box, IconButton, Typography} from '@mui/material';
 import ReactPlayer from 'react-player';
 
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 interface TriggerCreateMediaProps {
   mediaType: 'image' | 'video' | 'audio'; // 미디어 타입
@@ -49,11 +47,11 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
       // MediaState 설정
       let state = UploadMediaState.None;
       if (mediaType === 'audio') {
-        state = UploadMediaState.TriggerAudio;
+        state = UploadMediaState.Story;
       } else if (mediaType === 'image') {
-        state = UploadMediaState.TriggerImage;
+        state = UploadMediaState.Story;
       } else if (mediaType === 'video') {
-        state = UploadMediaState.TriggerVideo;
+        state = UploadMediaState.Story;
       }
 
       // 업로드 요청 객체 생성
@@ -62,18 +60,14 @@ const TriggerCreateMedia: React.FC<TriggerCreateMediaProps> = ({mediaType, onMed
       };
 
       // 이미지일 경우 다중 파일 처리, 그 외 단일 파일 처리
-      if (state === UploadMediaState.TriggerImage) {
-        req.imageList = files;
-      } else {
-        req.file = files[0];
-      }
+      req.fileList = files;
 
       // 파일 업로드 API 호출
       const response = await sendUpload(req);
 
       if (response?.data) {
-        const imgUrl: string = response.data.url; // 업로드된 메인 이미지 URL
-        const additionalUrls: string[] = response.data.imageUrlList || []; // 추가 이미지 URL 리스트
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url; // 업로드된 메인 이미지 URL
+        const additionalUrls: string[] = response.data.mediaUploadInfoList.slice(1).map(info => info.url) || []; // 추가 이미지 URL 리스트
 
         console.log('Uploaded Image URL:', imgUrl); // 업로드 결과 로그 출력
         console.log('Additional Image URLs:', additionalUrls); // 추가 이미지 결과 로그 출력

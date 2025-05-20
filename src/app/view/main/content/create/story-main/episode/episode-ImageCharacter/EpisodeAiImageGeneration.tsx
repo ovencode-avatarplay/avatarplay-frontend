@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import styles from './EpisodeAiImageGeneration.module.css'; // CSS Module import
 import {Dialog, DialogTitle, Button, Box, Typography, TextField} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {Swiper, SwiperSlide} from 'swiper/react'; // Swiper components import
-import 'swiper/css'; // 기본 Swiper 스타일 가져오기
+import {Swiper, SwiperSlide} from 'swiper/react'; // Swiper components import // 기본 Swiper 스타일 가져오기
+import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import loRaStyles from '@/data/stable-diffusion/episode-temporary-character-lora.json'; // JSON 데이터 가져오기
 import DiamondIcon from '@mui/icons-material/Diamond';
@@ -15,11 +15,8 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 // Import Swiper React components
 
 // Import Swiper styles
-import 'swiper/css';
 import 'swiper/css/grid';
-import 'swiper/css/pagination';
 
-import {Grid, Pagination} from 'swiper/modules';
 interface EpisodeAiImageGenerationProps {
   open: boolean; // 모달 열림 상태
   closeModal: () => void; // 모달 닫기 함수
@@ -33,7 +30,7 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
   const [generatedImages, setGeneratedImages] = useState<string[]>([]); // 생성된 이미지 URL 저장
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    const savedImages = localStorage.getItem('generatedImages');
+    const savedImages = localStorage?.getItem('generatedImages');
     if (savedImages) {
       setGeneratedImages(JSON.parse(savedImages));
     }
@@ -110,13 +107,13 @@ const EpisodeAiImageGeneration: React.FC<EpisodeAiImageGenerationProps> = ({open
 
   const addToLocalStorage = (newImages: string[]) => {
     // 기존 로컬 스토리지 데이터 가져오기
-    const savedImages = JSON.parse(localStorage.getItem('generatedImages') || '[]');
+    const savedImages = JSON.parse(localStorage?.getItem('generatedImages') || '[]');
 
     // 기존 데이터와 새 데이터를 병합
     const updatedImages = [...savedImages, ...newImages];
 
     // 병합된 데이터를 로컬 스토리지에 저장
-    localStorage.setItem('generatedImages', JSON.stringify(updatedImages));
+    localStorage?.setItem('generatedImages', JSON.stringify(updatedImages));
   };
 
   return (

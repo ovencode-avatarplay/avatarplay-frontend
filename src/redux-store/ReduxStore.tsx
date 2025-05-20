@@ -25,7 +25,7 @@ import currencySlice from './slices/Currency';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['sample', 'chat', 'chatting', 'chattingEnter', 'content', 'user', 'contentselection', 'starInfo'],
+  whitelist: ['sample', 'chat', 'chatting', 'chattingEnter', 'content', 'user', 'contentselection', 'currencyInfo'],
 };
 
 const reducers = combineReducers({

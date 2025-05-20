@@ -66,7 +66,7 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({filterData, onSave, open
   }, [filterData]);
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} style={{zIndex: '3001'}}>
       <Box className={styles.modalBox}>
         <div className={styles.filterSelectorContainer}>
           <h1 className={styles.filterTitle}>{getLocalizedText('common_alert_029')}</h1>

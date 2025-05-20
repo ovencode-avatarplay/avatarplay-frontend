@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box} from '@mui/material';
 import styles from '@chats/Styles/StyleChat.module.css';
 import ChatMessageBubble from './ChatMessageBubble';
-import {ChatLevelInfo, Message, MessageGroup, SenderType} from './ChatTypes';
+import {Message, MessageGroup, SenderType} from './ChatTypes';
 import ChatTtsPlayer from './ChatTtsPlayer';
 import {GenerateTtsUrl} from './GenerateTtsUrl';
 import {useGesture} from '@use-gesture/react';
@@ -30,7 +30,6 @@ interface ChatAreaProps {
   send: (reqSendChatMessage: SendChatMessageReq) => void;
   lastMessage: Message;
   retrySend: () => void;
-  levelInfo: ChatLevelInfo | null;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -48,7 +47,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   lastMessage,
   retrySend,
   characterUrl,
-  levelInfo,
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -61,8 +59,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   const isModifyingQuestion = useSelector((state: RootState) => state.modifyQuestion.isRegeneratingQuestion);
 
   const [loading, setloading] = useState(false);
-  const [eventGuageOn, setEventGuageOn] = useState(false);
-  const eventGuageHeight = 36;
 
   const handleBubbleClick = (index: number) => {
     if (selectedBubbleIndex === null) {
@@ -303,9 +299,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             className={`${styles.messageBubbleArea} ${isBlur && styles.blur}`}
             ref={scrollRef}
             sx={{
-              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 8 : 0}vh - ${aiChatHeight}px - ${
-                eventGuageOn ? eventGuageHeight : 0
-              }px)`,
+              height: `calc(100% - 20px - 50px - ${aiChatHeight}px)`,
             }}
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
@@ -337,7 +331,6 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                       lastMessage={lastMessage}
                       createDate={msg.createDateString}
                       prevSenderType={index === 0 ? SenderType.IntroPrompt : messages.Messages[index - 1].sender}
-                      levelInfo={levelInfo}
                     />
                   )}
                   {/* Retry 버튼 조건부 렌더링 */}

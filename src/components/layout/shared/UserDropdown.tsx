@@ -38,7 +38,7 @@ import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
 import {getCookiesLanguageType, getLanguageFromURL, getLanguageTypeFromText} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
-import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
+import {getAuth, sendCurrencyInfo, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
@@ -121,7 +121,7 @@ const UserDropdown = () => {
   }
 
   const routeProfile = async () => {
-    const jwtToken = localStorage.getItem('jwt');
+    const jwtToken = localStorage?.getItem('jwt');
     console.log('jwtToken : ', jwtToken);
     if (!jwtToken) {
       pushLocalizedRoute('/auth', router);
@@ -190,7 +190,7 @@ const UserDropdown = () => {
       dispatch(setStar(data.data.sessionInfo.star));
       dispatch(setRuby(data.data.sessionInfo.ruby));
       console.log('response login : ', data);
-      localStorage.setItem('jwt', data.data.sessionInfo.accessToken);
+      localStorage?.setItem('jwt', data.data.sessionInfo.accessToken);
       Cookies.remove('SESSION');
       setTimeout(() => {
         fetchLanguage(true, router);
@@ -207,7 +207,7 @@ const UserDropdown = () => {
       if (event === 'SIGNED_IN') {
         setAuth(session);
 
-        const jwt = localStorage.getItem('jwt');
+        const jwt = localStorage?.getItem('jwt');
         if (jwt) {
           console.log('토큰이 같아서 인증 갱신 필요없음. 하지만 expire 추후 처리 필요');
           return;
@@ -227,6 +227,7 @@ const UserDropdown = () => {
         const isLogin = await isLogined();
 
         if (isLogin) {
+          console.log('로그인 됨');
           const navType = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
           if (navType.type === 'navigate') {
             // 주소창 입력으로 들어옴 -> 주소창 언어코드로 동기화
@@ -240,6 +241,11 @@ const UserDropdown = () => {
               const _language = getLanguageTypeFromText(resultUrlLang);
               _language ? _language : LanguageType.English;
               serverChangeLanguage(_language ?? LanguageType.English, dispatch, router);
+            }
+            const currencyRes = await sendCurrencyInfo();
+            if (currencyRes.resultCode === 0) {
+              dispatch(setStar(currencyRes.data?.goodsInfo?.star || 0));
+              dispatch(setRuby(currencyRes.data?.goodsInfo?.ruby || 0));
             }
             return;
           } else {
@@ -291,7 +297,7 @@ const UserDropdown = () => {
       await supabase.auth.signOut();
       setOpen(false);
       setAuth(null);
-      localStorage.removeItem('jwt');
+      localStorage?.removeItem('jwt');
       dispatch(updateProfile(null));
     } catch (error) {
       console.error(error);

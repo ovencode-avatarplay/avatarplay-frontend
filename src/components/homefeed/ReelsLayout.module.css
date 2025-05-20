@@ -50,6 +50,7 @@
 
   -ms-overflow-style: none;      /* IE, Edge */
   scrollbar-width: none;         /* Firefox */
+  background-color: black;
 
   /* iOS & Safari (WebKit 기반 브라우저) */
 }

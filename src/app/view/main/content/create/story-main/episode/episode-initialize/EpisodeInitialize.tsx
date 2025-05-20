@@ -356,13 +356,13 @@ const EpisodeInitialize: React.FC<Props> = ({
 
   const addToLocalStorage = (newImages: string[]) => {
     // 기존 로컬 스토리지 데이터 가져오기
-    const savedImages = JSON.parse(localStorage.getItem('generatedImages') || '[]');
+    const savedImages = JSON.parse(localStorage?.getItem('generatedImages') || '[]');
 
     // 기존 데이터와 새 데이터를 병합
     const updatedImages = [...savedImages, ...newImages];
 
     // 병합된 데이터를 로컬 스토리지에 저장
-    localStorage.setItem('generatedImages', JSON.stringify(updatedImages));
+    localStorage?.setItem('generatedImages', JSON.stringify(updatedImages));
   };
 
   //#endregion
@@ -527,12 +527,12 @@ const EpisodeInitialize: React.FC<Props> = ({
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: UploadMediaState.CharacterImage,
-        file: file,
+        mediaState: UploadMediaState.Character,
+        fileList: [file],
       };
       const response = await sendUpload(req);
       if (response?.data) {
-        const imgUrl: string = response.data.url;
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url;
 
         setCurEpisodeCharacterImage(imgUrl);
 

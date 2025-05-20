@@ -4,7 +4,6 @@ import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from 'reac
 import styles from './CreateChannel.module.scss';
 import {BoldRadioButton, BoldRadioButtonSelected, LineDelete, LineUpload, LineArrowLeft} from '@ui/Icons';
 import {FieldErrors, useForm} from 'react-hook-form';
-import {MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import {
   mapOperatorAuthorityType,
   MediaState,
@@ -45,6 +44,8 @@ import {DrawerSelect} from './ChannelDrawerSelector';
 import {DrawerMultipleTags} from './ChannelMultiTags';
 import {DrawerCharacterSearch, DrawerCharacterSearchType} from './ChannelMemberSet';
 import Splitters from '@/components/layout/shared/CustomSplitter';
+import ImageUpload from '@/components/create/ImageUpload';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 type Props = {
   id: number;
@@ -210,6 +211,8 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     },
   });
 
+  const [imgUploadOpen, setImgUploadOpen] = useState(false);
+
   useEffect(() => {
     if (!isUpdate) return;
     if (id <= 0) return;
@@ -282,100 +285,102 @@ const CreateChannel = ({id, isUpdate}: Props) => {
     setData({...data});
   };
 
-  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+  //#region File Drop
+  // const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
 
-    if (data.dragStatus >= DragStatusType.InnerClick) {
-      data.dragStatus = DragStatusType.OuterClick;
-      return;
-    }
+  //   if (data.dragStatus >= DragStatusType.InnerClick) {
+  //     data.dragStatus = DragStatusType.OuterClick;
+  //     return;
+  //   }
 
-    DropOuter(e);
-    data.dragStatus = DragStatusType.OuterClick;
-    setData({...data});
-  };
+  //   DropOuter(e);
+  //   data.dragStatus = DragStatusType.OuterClick;
+  //   setData({...data});
+  // };
 
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
+  // const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  // };
 
-  const extractFileExtension = (fileName: string) => {
-    let fileLength = fileName.length;
-    let fileDot = fileName.lastIndexOf('.');
-    let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
-    return fileExtension;
-  };
+  // const extractFileExtension = (fileName: string) => {
+  //   let fileLength = fileName.length;
+  //   let fileDot = fileName.lastIndexOf('.');
+  //   let fileExtension = fileName.substring(fileDot + 1, fileLength)?.toLowerCase();
+  //   return fileExtension;
+  // };
 
-  const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.items) {
-      let index = 0;
-      Array.from(e.dataTransfer.items).forEach(async (item, i) => {
-        if (item.kind === 'file') {
-          const file = item.getAsFile();
-          if (file == null) return;
-          const fileExtension = extractFileExtension(file.name);
-          if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-            const fileName = file.name.replace(/\.[^/.]+$/, '');
-            data.thumbnail = {
-              fileName: fileName,
-              index: 0,
-              fileBlob: file,
-              file: URL.createObjectURL(file),
-            };
-            setData({...data});
-          }
-        }
-      });
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      Array.from(e.dataTransfer.items).forEach((file, i) => {});
-    }
-  };
+  // const DropOuter = (e: React.DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  //   if (e.dataTransfer.items) {
+  //     let index = 0;
+  //     Array.from(e.dataTransfer.items).forEach(async (item, i) => {
+  //       if (item.kind === 'file') {
+  //         const file = item.getAsFile();
+  //         if (file == null) return;
+  //         const fileExtension = extractFileExtension(file.name);
+  //         if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+  //           const fileName = file.name.replace(/\.[^/.]+$/, '');
+  //           data.thumbnail = {
+  //             fileName: fileName,
+  //             index: 0,
+  //             fileBlob: file,
+  //             file: URL.createObjectURL(file),
+  //           };
+  //           setData({...data});
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     // Use DataTransfer interface to access the file(s)
+  //     Array.from(e.dataTransfer.items).forEach((file, i) => {});
+  //   }
+  // };
 
-  const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
-    data.dragStatus = DragStatusType.InnerClick;
-    // e.preventDefault();
-  };
+  // const onDragStartInner = (e: React.DragEvent<HTMLDivElement>) => {
+  //   data.dragStatus = DragStatusType.InnerClick;
+  //   // e.preventDefault();
+  // };
+  //#endregion
 
-  const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
-    let files = e.target.files;
-    let index = 0;
-    if (!files?.length) {
-      return;
-    }
+  // const onUploadClicked = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   let files = e.target.files;
+  //   let index = 0;
+  //   if (!files?.length) {
+  //     return;
+  //   }
 
-    for (let i = 0; i < files?.length; i++) {
-      const file = files[i];
-      const fileExtension = extractFileExtension(file.name);
-      if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-        index++;
-        const fileName = file.name.replace(/\.[^/.]+$/, '');
-        data.thumbnail = {
-          fileName: fileName,
-          index: 0,
-          fileBlob: file,
-          file: URL.createObjectURL(file),
-        };
+  //   for (let i = 0; i < files?.length; i++) {
+  //     const file = files[i];
+  //     const fileExtension = extractFileExtension(file.name);
+  //     if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+  //       index++;
+  //       const fileName = file.name.replace(/\.[^/.]+$/, '');
+  //       data.thumbnail = {
+  //         fileName: fileName,
+  //         index: 0,
+  //         fileBlob: file,
+  //         file: URL.createObjectURL(file),
+  //       };
 
-        const dataUpload: MediaUploadReq = {
-          mediaState: MediaState.Image,
-          file: file,
-          imageList: [],
-        };
-        const resUpload = await sendUpload(dataUpload);
+  //       const dataUpload: MediaUploadReq = {
+  //         mediaState: MediaState.Image,
+  //         file: file,
+  //         imageList: [],
+  //       };
+  //       const resUpload = await sendUpload(dataUpload);
 
-        data.thumbnail = {
-          fileName: fileName,
-          index: 0,
-          fileBlob: file,
-          file: resUpload.data?.url || '',
-        };
-        setValue('mediaUrl', data.thumbnail.file);
-        setData({...data});
-      }
-    }
-  };
+  //       data.thumbnail = {
+  //         fileName: fileName,
+  //         index: 0,
+  //         fileBlob: file,
+  //         file: resUpload.data?.url || '',
+  //       };
+  //       setValue('mediaUrl', data.thumbnail.file);
+  //       setData({...data});
+  //     }
+  //   }
+  // };
 
   const routerBack = () => {
     back('/main/homefeed');
@@ -464,38 +469,60 @@ const CreateChannel = ({id, isUpdate}: Props) => {
 
   const renderThumbnail = () => {
     return (
-      <label className={styles.uploadBtn} htmlFor="file-upload">
-        <input className={styles.hide} readOnly autoComplete="off" {...register('mediaUrl', {required: true})} />
-        <input
-          className={styles.hidden}
-          id="file-upload"
-          type="file"
-          accept="image/png, image/jpeg, image/jpg, image/gif"
-          onChange={onUploadClicked}
-        />
-        {!data.thumbnail?.file && (
-          <div
-            className={cx(styles.uploadWrap, errors.mediaUrl && styles.error)}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onDragStart={onDragStartInner}
-          >
-            <img src={LineUpload.src} alt="" />
-            <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
-          </div>
-        )}
+      // <label className={styles.uploadBtn} htmlFor="file-upload">
+      //   <input className={styles.hide} readOnly autoComplete="off" {...register('mediaUrl', {required: true})} />
+      //   <input
+      //     className={styles.hidden}
+      //     id="file-upload"
+      //     type="file"
+      //     accept="image/png, image/jpeg, image/jpg, image/gif"
+      //     onChange={onUploadClicked}
+      //   />
+      //   {!data.thumbnail?.file && (
+      //     <div
+      //       className={cx(styles.uploadWrap, errors.mediaUrl && styles.error)}
+      //       onDrop={onDrop}
+      //       onDragOver={onDragOver}
+      //       onDragStart={onDragStartInner}
+      //     >
+      //       <img src={LineUpload.src} alt="" />
+      //       <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
+      //     </div>
+      //   )}
 
-        {data.thumbnail?.file && (
-          <div className={styles.thumbnailContainer}>
-            <div className={styles.thumbnailWrap}>
-              <img className={styles.thumbnail} src={data.thumbnail?.file} alt="" />
-              <div className={styles.iconEditWrap}>
-                <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+      //   {data.thumbnail?.file && (
+      //     <div className={styles.thumbnailContainer}>
+      //       <div className={styles.thumbnailWrap}>
+      //         <img className={styles.thumbnail} src={data.thumbnail?.file} alt="" />
+      //         <div className={styles.iconEditWrap}>
+      //           <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+      //         </div>
+      //       </div>
+      //     </div>
+      //   )}
+      // </label>
+      <section className={styles.uploadThumbnailSection}>
+        <div className={cx(styles.uploadBtn, errors.mediaUrl && styles.error)} onClick={() => setImgUploadOpen(true)}>
+          {!data.thumbnail?.file ? (
+            <div className={styles.uploadWrap}>
+              <img src={LineUpload.src} alt="" />
+              <div className={styles.text}>{getLocalizedText('common_button_upload')}</div>
+            </div>
+          ) : (
+            <div className={styles.thumbnailContainer}>
+              <div className={styles.thumbnailWrap}>
+                <img className={styles.thumbnail} src={data.thumbnail.file} alt="" />
+                <div className={styles.iconEditWrap}>
+                  <img src="/ui/profile/update/icon_thumbnail_edit.svg" alt="" className={styles.iconEdit} />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </label>
+          )}
+        </div>
+
+        {/* react-hook-form 연동용 hidden input */}
+        <input className={styles.hide} readOnly autoComplete="off" {...register('mediaUrl', {required: true})} />
+      </section>
     );
   };
 
@@ -706,36 +733,46 @@ const CreateChannel = ({id, isUpdate}: Props) => {
                     })}
                   />
 
-                  {data.dataCountry.tagList.map((one, index) => {
-                    const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
-                    // const countryStr = keys[Number(one)];
-                    const countryStr = getLangKey(Number(one));
-
-                    return (
-                      <div className={styles.tag} key={index}>
-                        <div className={styles.value}>
-                          {/* <input
-                  value={one}
-                  className={styles.hide}
-                  autoComplete="off"
-                  {...register(`postCountry.${index}`, {required: true})}
-                /> */}
-                          {getLocalizedText(countryStr)}
-                        </div>
-                        <div
-                          className={styles.btnRemoveWrap}
-                          onClick={e => {
-                            const postCountryList = data.dataCountry.tagList.filter(v => v != one);
-                            data.dataCountry.tagList = postCountryList;
-                            setValue('postCountry', postCountryList);
-                            setData({...data});
-                          }}
-                        >
-                          <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
-                        </div>
+                  {data.dataCountry.tagList.length ===
+                  Object.values(LanguageType).filter(value => typeof value === 'number').length ? (
+                    <div className={styles.tag}>
+                      <div className={styles.value}>{getLocalizedText('shared017_label_002')}</div>
+                      <div
+                        className={styles.btnRemoveWrap}
+                        onClick={e => {
+                          setValue('postCountry', []);
+                          data.dataCountry.tagList = [];
+                          data.dataCountry.isAll = false;
+                          setData({...data});
+                        }}
+                      >
+                        <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
                       </div>
-                    );
-                  })}
+                    </div>
+                  ) : (
+                    data.dataCountry.tagList.map((one, index) => {
+                      const keys = Object.keys(LanguageType).filter(key => isNaN(Number(key)));
+                      // const countryStr = keys[Number(one)];
+                      const countryStr = getLangKey(Number(one));
+
+                      return (
+                        <div className={styles.tag} key={index}>
+                          <div className={styles.value}>{getLocalizedText(countryStr)}</div>
+                          <div
+                            className={styles.btnRemoveWrap}
+                            onClick={e => {
+                              const postCountryList = data.dataCountry.tagList.filter(v => v != one);
+                              data.dataCountry.tagList = postCountryList;
+                              setValue('postCountry', postCountryList);
+                              setData({...data});
+                            }}
+                          >
+                            <img src={'/ui/profile/update/icon_remove.svg'} alt="" />
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               }
               containerStyle={{width: '100%'}}
@@ -1066,6 +1103,24 @@ const CreateChannel = ({id, isUpdate}: Props) => {
           setValue('memberProfileIdList', profileList);
           setData({...data});
         }}
+      />
+      <ImageUpload
+        isOpen={imgUploadOpen}
+        onClose={() => setImgUploadOpen(false)}
+        setContentImageUrl={(url: string) => {
+          data.thumbnail = {
+            fileName: data.thumbnail?.fileName,
+            index: data.thumbnail?.index,
+            fileBlob: data.thumbnail?.fileBlob,
+            file: url,
+          };
+          setValue('mediaUrl', data.thumbnail.file);
+          setData({...data});
+        }}
+        onChoose={() => {
+          setImgUploadOpen(false);
+        }}
+        uploadType={UploadMediaState.Profile} // 채널이미지는 프로필 이미지 처럼 사용되니까 프로필 사용
       />
 
       {data.dataPopupRemove.isOpen && (

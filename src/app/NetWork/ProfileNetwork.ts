@@ -186,6 +186,10 @@ export enum MediaState {
   Image = 1,
   Video = 2,
   Audio = 3,
+  Document = 4,
+  Subtitle = 5,
+  Folder = 6,
+  Workroom = 7,
 }
 
 export const getProfileInfo = async (urlLinkKey: string) => {
@@ -420,7 +424,10 @@ export const followProfile = async (profileId: number, isFollow: boolean) => {
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/follow`,
       data,
     );
-
+    if (res.data.resultCode != 0) {
+      console.error('Follow API 응답 오류:', res);
+      return res.data.resultCode;
+    }
     if (res.status !== 200) {
       console.error('Follow API 응답 오류:', res);
       return null;

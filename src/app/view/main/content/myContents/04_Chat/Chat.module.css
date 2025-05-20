@@ -1,0 +1,22 @@
+
+  .modalBox {
+    width: var(--full-width);
+    height: 100dvh;
+    background-color: white;
+    border-radius: 10px;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 50px; /* BottomBar 높이만큼 여유 공간 줘야 함 */
+  }
+  
+
+  

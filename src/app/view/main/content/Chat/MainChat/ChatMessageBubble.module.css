@@ -62,12 +62,6 @@ filter: blur(10px);
   margin-bottom: 4px;
 }
 
-.rewardBorderWrapper
-{
-    align-items: center;
-    justify-content: center;
-}
-
 .AvatarIcon {
     width: 32px;
     height: 32px;

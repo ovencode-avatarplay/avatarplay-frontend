@@ -183,7 +183,7 @@
       cursor: pointer;
       width: 100px;
       height: 100px;
-      border-radius: 50%;
+      border-radius: 10px;
       overflow: hidden;
       background: black;
 
@@ -512,6 +512,7 @@
   }
 
   .policySection {
+
     .tagWrap {
       margin-top: 8px;
       display: flex;
@@ -1328,6 +1329,10 @@
             overflow: hidden;
             display: -webkit-box;
             -webkit-box-orient: vertical;
+ 
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
           }
 
 

@@ -3,6 +3,7 @@ import '@/app/globals.css';
 import '@/app/reset.css';
 import {Suspense} from 'react';
 import GlobalPopupRenderer from './NetWork/networkPopup/GlobalPopupRenderer';
+import 'swiper/css';
 
 export default async function Layout({children}: {children: React.ReactNode}) {
   return (

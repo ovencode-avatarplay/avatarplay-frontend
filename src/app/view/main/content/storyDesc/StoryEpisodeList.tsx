@@ -1,7 +1,5 @@
 import React from 'react';
 import styles from './DrawerStoryDesc.module.css';
-import 'swiper/css';
-import 'swiper/css/pagination';
 
 import ContentEpisodeItem from './StoryEpisodeItem'; // 아이템 컴포넌트 임포트
 import {EpisodeCardProps} from './StoryDescType';

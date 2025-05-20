@@ -2,39 +2,37 @@
 
 import api, {ResponseAPI} from './ApiInstance';
 export enum UploadMediaState {
+  // None
   None = 0,
-  CharacterImage = 1,
-  GalleryImage = 2,
-  BackgroundImage = 3,
-  StoryImage = 4,
-  TtsVoice = 5,
-  TriggerImage = 6,
-  TriggerVideo = 7,
-  TriggerAudio = 8,
-  FeedVideo = 9,
-  FeedImage = 10,
-  CompressFeedVideo = 11,
-  CompressFeedImage = 12,
-  ContentEpisodeVideo = 13,
-  ContentEpisodeSubtitle = 14,
-  ContentEpisodeDubbing = 15,
-  ContentEpisodeWebtoonImage = 16,
-  ContentEpisodeWebtoonSubtitle = 17,
-  ContentImage = 18,
-  ContentVideo = 19,
+  // 프로필
+  Profile = 1,
+  // 캐릭터
+  Character = 2,
+  // 스토리
+  Story = 3,
+  // 피드
+  Feed = 4,
+  // 컨텐츠
+  Content = 5,
+  // 채팅
+  Chat = 6,
+  // 워크룸
+  WorkRoom = 7,
 }
+
+export interface MediaUploadInfo {
+  fileName: string;
+  url: string;
+  playTime: string;
+}
+
 export interface MediaUploadReq {
-  mediaState: number; // Enum 타입
-  file?: File; // 업로드할 파일
-  imageList?: File[]; // 추가 이미지 파일 리스트 (선택적)
+  mediaState: UploadMediaState; // Enum 타입
+  fileList?: File[]; // 추가 이미지 파일 리스트 (선택적)
 }
 
 export interface MediaUploadRes {
-  url: string; // 메인 URL
-  imageUrlList: string[]; // 추가 이미지 URL 리스트
-  imageNameList: string[]; // 추가 이미지 URL 리스트
-  playTime: string;
-  fileName: string;
+  mediaUploadInfoList: MediaUploadInfo[];
 }
 
 export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<MediaUploadRes>> => {
@@ -43,18 +41,12 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
 
     formData.append('MediaState', payload.mediaState.toString()); // Enum 값 추가
 
-    if (payload.file) {
-      formData.append('File', payload.file);
-    } else {
-      formData.append('File', new Blob()); // 빈 Blob 추가
-    }
-
-    if (Array.isArray(payload.imageList) && payload.imageList.length > 0) {
-      payload.imageList.forEach(file => {
-        formData.append('ImageList', file);
+    if (Array.isArray(payload.fileList) && payload.fileList.length > 0) {
+      payload.fileList.forEach(file => {
+        formData.append('fileList', file);
       });
     } else {
-      formData.append('ImageList', new Blob([])); // 빈 Blob 추가
+      formData.append('fileList', new Blob([])); // 빈 Blob 추가
     }
 
     const response = await api.post<ResponseAPI<MediaUploadRes>>('Resource/upload', formData, {
@@ -79,6 +71,31 @@ export const sendUpload = async (payload: MediaUploadReq): Promise<ResponseAPI<M
   } catch (error: any) {
     console.error('Error uploading media:', error);
     throw new Error('Failed to upload media.');
+  }
+};
+
+export const sendUploadWorkroomFolder = async (files: FileList): Promise<ResponseAPI<{}>> => {
+  try {
+    const formData = new FormData();
+
+    Array.from(files).forEach(file => {
+      formData.append('files', file); // 'files' 라는 key로 append
+    });
+
+    const response = await api.post<ResponseAPI<{}>>('Resource/uploadWorkroomFolder', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`UploadWorkroomFolder Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error uploading workroom folder:', error);
+    throw new Error('Failed to upload workroom folder. Please try again.');
   }
 };
 

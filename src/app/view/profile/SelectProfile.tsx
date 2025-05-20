@@ -2,6 +2,7 @@ import {
   getProfileList,
   OperatorAuthorityType,
   ProfileSimpleInfo,
+  ProfileTabType,
   ProfileType,
   selectProfile,
 } from '@/app/NetWork/ProfileNetwork';
@@ -109,13 +110,13 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                 key={profile.profileId}
                 onClick={async () => {
                   handleCloseDrawer();
-                  const resData = await selectProfile(profile.profileId);
+                  const resData = await selectProfile(profile.profileId, profile.profileTabType);
                   if (!resData?.profileSimpleInfo) return;
 
                   dispatch(updateProfile(resData?.profileSimpleInfo));
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
-                  localStorage.setItem('jwt', accessToken);
+                  localStorage?.setItem('jwt', accessToken);
 
                   console.log('pathname : ', pathname);
                   if (pathname.includes('/profile/')) {

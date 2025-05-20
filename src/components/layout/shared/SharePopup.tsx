@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
 import {
   FacebookShareButton,
   FacebookIcon,

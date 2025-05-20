@@ -1,7 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './PreviewViewer.module.css';
-import 'swiper/css';
-import 'swiper/css/pagination';
 
 import ReactPlayer from 'react-player';
 import {

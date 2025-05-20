@@ -9,7 +9,7 @@ import CustomDropDownSelectDrawer from '@/components/layout/shared/CustomDropDow
 import DrawerTagSelect from '../common/DrawerTagSelect';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import DrawerPostCountry from '../common/DrawerPostCountry';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import {getLangKey, LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
@@ -36,6 +36,8 @@ import TagsData from 'data/create/tags.json';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {profile} from 'console';
+import CustomChipSelector from '@/components/layout/shared/CustomChipSelector';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 enum CategoryTypes {
   Webtoon = 0,
@@ -344,6 +346,8 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
           setContentMediaUrls={setMediaUrls}
           defaultImage={defaultImage ? defaultImage : undefined}
           triggerWarning={triggerWarning}
+          uploadImageType={UploadMediaState.Content}
+          uploadVideoType={UploadMediaState.Content}
         ></MediaUpload>
         <CustomInput
           inputType="Basic"
@@ -421,52 +425,72 @@ const CreateSingleContent: React.FC<CreateSingleContentProps> = ({urlLinkKey}) =
         </div>
 
         <div className={styles.tagContainer}>
-          <CustomDropDownSelectDrawer
-            title={getLocalizedText('common_label_002')}
-            selectedItem={selectedTags.length > 0 ? selectedTags.map(v => getLocalizedText(v)).join(', ') : ''}
+          <CustomChipSelector
+            label={getLocalizedText('common_label_002')}
             onClick={() => {
               setTagList(themeGroup?.tags || []);
               setTagOpen(true);
             }}
-            error={triggerWarning}
-          ></CustomDropDownSelectDrawer>
-          <div className={styles.blackTagContainer}>
-            {selectedTags.map((tag, index) => (
-              <div key={index} className={styles.blackTag}>
-                {getLocalizedText(tag)}
-                <img
-                  src={LineClose.src}
-                  className={styles.lineClose}
-                  onClick={() => handleTagRemove(tag)} // 클릭하면 해당 태그 삭제
-                />
-              </div>
-            ))}
-          </div>
+            tagType="tags"
+            tags={selectedTags}
+            handleTagSelect={handleTagSelect}
+          />
+          <DrawerTagSelect
+            title={getLocalizedText('common_label_002')}
+            isOpen={tagOpen}
+            onClose={() => setTagOpen(false)}
+            tagList={tagList}
+            selectedTags={selectedTags}
+            onTagSelect={handleTagSelect}
+            onRefreshTags={() => setSelectedTags([])}
+            maxTagCount={maxTagCount}
+            selectedTagAlertOn={selectedTagAlertOn}
+            setSelectedTagAlertOn={setSelectedTagAlertOn}
+          />
         </div>
 
         <div className={styles.tagContainer}>
-          <CustomDropDownSelectDrawer
-            title={getLocalizedText('common_label_003')}
-            selectedItem={
-              positionCountryList.map(country => LanguageType[country]).length > 0
-                ? positionCountryList.map(country => LanguageType[country]).join(', ')
-                : ''
-            }
-            onClick={() => setIsPositionCountryOpen(true)}
-            error={triggerWarning}
-          ></CustomDropDownSelectDrawer>
-          <div className={styles.blackTagContainer}>
-            {positionCountryList.map((tag, index) => (
-              <div key={index} className={styles.blackTag}>
-                {LanguageType[tag]}
-                <img
-                  src={LineClose.src}
-                  className={styles.lineClose}
-                  onClick={() => handlePositionCountryRemove(tag)} // 클릭하면 해당 태그 삭제
-                />
+          <CustomChipSelector
+            label={
+              <div className={styles.title2}>
+                {getLocalizedText('common_label_003')}
+                <div className={styles.titleAstrisk}>*</div>
               </div>
-            ))}
-          </div>
+            }
+            onClick={() => {
+              setIsPositionCountryOpen(true);
+            }}
+            tagType="node"
+            reactNode={
+              <div className={styles.blackTagContainer}>
+                {positionCountryList.length ===
+                Object.values(LanguageType).filter(value => typeof value === 'number').length ? (
+                  <div className={styles.blackTag}>
+                    {getLocalizedText('shared017_label_002')}
+                    <img
+                      src={LineClose.src}
+                      className={styles.lineClose}
+                      onClick={() => {
+                        setIsAll(false);
+                        setPositionCountryList([]);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  positionCountryList.map((tag, index) => (
+                    <div key={index} className={styles.blackTag}>
+                      {getLocalizedText(getLangKey(tag))}
+                      <img
+                        src={LineClose.src}
+                        className={styles.lineClose}
+                        onClick={() => handlePositionCountryRemove(tag)}
+                      />
+                    </div>
+                  ))
+                )}
+              </div>
+            }
+          />
         </div>
         <CustomDropDownSelectDrawer
           title={getLocalizedText('common_label_001')}

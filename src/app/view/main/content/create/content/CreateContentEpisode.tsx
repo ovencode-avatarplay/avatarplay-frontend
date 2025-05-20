@@ -3,14 +3,12 @@ import styles from './CreateContentEpisode.module.css';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
-import {LineArrowDown, BoldQuestion, BoldStar, LineClose, LineDashboard, LineDelete, LineUpload} from '@ui/Icons';
+import {BoldQuestion, BoldStar, LineDashboard} from '@ui/Icons';
 import MediaUpload from './MediaUpload/MediaUpload';
 import CustomInput from '@/components/layout/shared/CustomInput';
 import MaxTextInput, {displayType} from '@/components/create/MaxTextInput';
-import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
-import {LanguageType} from '@/app/NetWork/network-interface/CommonEnums';
+import SelectDrawer from '@/components/create/SelectDrawer';
 import CustomRadioButton from '@/components/layout/shared/CustomRadioButton';
-import {MediaUploadReq, sendUpload, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import VideoContentUpload from './MediaUpload/VideoContentUpload';
 import WebtoonContentUpload from './MediaUpload/WebtoonContentUpload';
 import {
@@ -33,6 +31,7 @@ import {useRouter} from 'next/navigation';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import CustomButton from '@/components/layout/shared/CustomButton';
+import {UploadMediaState} from '@/app/NetWork/ImageNetwork';
 
 export interface CreateContentEpisodeProps {
   contentId?: string;
@@ -270,6 +269,8 @@ const CreateContentEpisode: React.FC<CreateContentEpisodeProps> = ({
             setContentMediaUrls={setMediaUrls}
             defaultImage={defaultImage ? defaultImage : undefined}
             triggerWarning={triggerWarning}
+            uploadImageType={UploadMediaState.Content}
+            uploadVideoType={UploadMediaState.Content}
           ></MediaUpload>
         </div>
         <CustomInput

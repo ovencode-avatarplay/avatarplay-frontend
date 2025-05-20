@@ -5,30 +5,35 @@ import Image from 'next/image';
 import styles from './Login.module.css';
 import {AppleLogo, FacebookLogo, GoogleLogo, KakatalkLogo, LineClose} from '@ui/Icons';
 import {useRouter} from 'next/navigation';
-import {sendSignIn} from '@/app/NetWork/AuthNetwork';
 import {getBrowserLanguage} from '@/utils/browserInfo';
 import {getLangUrlCode} from '@/configs/i18n';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
 import useCustomRouter from '@/utils/useCustomRouter';
+import logoTalkain from '@ui/logo_talkain.png';
 
 const Login = () => {
   const {back} = useCustomRouter();
   const Header = 'Login';
   const Common = 'Common';
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'facebook' | 'apple') => {
+    const langCode = getLangUrlCode(getBrowserLanguage());
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_FRONT_URL,
+        redirectTo: `${process.env.NEXT_PUBLIC_FRONT_URL}/${langCode}/auth/login-callback?from=oauth`,
       },
     });
-    const language = getLangUrlCode(getBrowserLanguage());
+
+    //이부분에 signalIR 연결
   };
   const router = useRouter();
 
   return (
     <div className={styles.loginContainer}>
+      <div className={styles.logoWrapper}>
+        <Image src={logoTalkain} width={110} height={26.28} alt="Talkain Logo" />
+      </div>
       <button
         className={styles.closeBtn}
         onClick={() => {
@@ -74,8 +79,12 @@ const Login = () => {
       </div>
 
       <div className={styles.policy}>
-        <span>{getLocalizedText('login001_label_004')}</span>
-        <span>{getLocalizedText('login001_label_005')}</span>
+        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+          {getLocalizedText('login001_label_004')}
+        </a>
+        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer">
+          {getLocalizedText('login001_label_005')}
+        </a>
       </div>
     </div>
   );

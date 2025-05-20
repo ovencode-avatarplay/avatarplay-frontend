@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
 import styles from './CharacterGalleryViewer.module.css';
 import {CharacterInfo} from '@/redux-store/slices/StoryInfo';
 import {GalleryCategory} from './CharacterGalleryData';

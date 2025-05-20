@@ -102,12 +102,12 @@ const EpisodeTempCharacter: React.FC<Props> = ({open, closeModal, isTrigger, set
     setLoading(true);
     try {
       const req: MediaUploadReq = {
-        mediaState: UploadMediaState.CharacterImage,
-        file: file,
+        mediaState: UploadMediaState.Character,
+        fileList: [file],
       };
       const response = await sendUpload(req);
       if (response?.data) {
-        const imgUrl: string = response.data.url;
+        const imgUrl: string = response.data.mediaUploadInfoList[0].url;
         const reader = new FileReader();
         reader.onload = event => {
           if (event.target && typeof event.target.result === 'string') {
