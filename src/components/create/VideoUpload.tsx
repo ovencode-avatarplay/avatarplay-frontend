@@ -106,13 +106,13 @@ const VideoUpload: React.FC<Props> = ({
         handleChooseFile();
       },
     },
-    {
-      name: 'Workroom',
-      blockAutoClose: true,
-      onClick: () => {
-        setWorkroomOpen(true);
-      },
-    },
+    // {
+    //   name: 'Workroom',
+    //   blockAutoClose: true,
+    //   onClick: () => {
+    //     setWorkroomOpen(true);
+    //   },
+    // },
   ];
 
   return (
@@ -131,14 +131,14 @@ const VideoUpload: React.FC<Props> = ({
         }}
         selectedIndex={0}
       />
-      <UploadFromWorkroom
+      {/* <UploadFromWorkroom
         open={workroomOpen}
         onClose={() => setWorkroomOpen(false)}
         onSelect={handleOnWorkroomItemSelect}
         multiple={multiple}
         onSelectMultiple={handleOnWorkroomItemSelectMultiple}
         mediaStateFilter={MediaState.Video}
-      />
+      /> */}
       <LoadingOverlay loading={loading} />
     </div>
   );

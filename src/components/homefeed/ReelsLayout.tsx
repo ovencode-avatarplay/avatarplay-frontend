@@ -56,7 +56,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const [allFeeds, setAllFeeds] = useState<FeedInfo[]>([]); // 전체 데이터 저장
   const [info, setInfo] = useState<FeedInfo[]>([]); // 현재 렌더링된 데이터
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0); // 현재 슬라이드 인덱스
-  const [isMute, setIsMute] = useState(true); // 현재 슬라이드 인덱스
+  const [volume, setVolume] = useState(1); // volume 상태 추가
   const containerRef = useRef<HTMLDivElement>(null);
   const reelsWrapperRef = useRef<HTMLDivElement>(null);
   const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
@@ -256,7 +256,6 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   useEffect(() => {
     const currentItem = allFeeds[currentSlideIndex];
-    setIsMute(true);
     // ✅ URL 변경 (딜레이 적용)
     if (currentItem && currentItem.urlLinkKey) {
       if (urlUpdateTimeoutRef.current) {
@@ -439,6 +438,11 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     };
   }, []);
 
+  // volume 변경 핸들러 추가
+  const handleVolumeChange = (newMute: boolean) => {
+    setVolume(newMute ? 0 : 1);
+  };
+
   return (
     <div ref={containerRef} className={styles.reelsContainer}>
       {/* <Head>
@@ -482,14 +486,14 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
               <ReelsContent
                 item={item}
                 isActive={index === currentSlideIndex}
-                isMute={isMute}
-                setIsMute={setIsMute}
+                setIsMute={handleVolumeChange}
                 setIsProfile={setIsProfile}
                 isShowProfile={!isSpecificProfile}
                 recommendState={selectedTab}
                 setSyncFollow={handleFollow}
                 isFollow={item.isFollowing}
                 isGrabbing={isGrabbing}
+                volume={volume}
               />
             </div>
           );
