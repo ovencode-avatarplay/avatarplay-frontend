@@ -45,8 +45,9 @@ const ExploreFeaturedHeader: React.FC<ExploreFeaturedHeaderProps> = ({items}) =>
         pagination={{
           el: `.${styles.customPagination}`,
           clickable: true,
-          renderBullet: (index, className) =>
-            `<span class="${className} ${styles.paginationBullet} ${index > -1 ? styles.selected : ''}"></span>`,
+          // bulletClass: styles.paginationBullet,
+          bulletActiveClass: styles.paginationBulletActive,
+          renderBullet: (index, className) => `<span class="${className} ${styles.paginationBullet}  "></span>`,
         }}
         modules={[Pagination]}
         style={{width: '100%'}}
