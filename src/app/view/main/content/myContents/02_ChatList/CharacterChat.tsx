@@ -105,7 +105,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   const optionItems: SelectDrawerArrowItem[] = [
     {
-      name: selectedRoom?.isBookMark ? 'Unfavorites' : 'Favorites',
+      name: selectedRoom?.isBookmark ? 'Unfavorites' : 'Favorites',
       arrowName: '',
       onClick: async () => {
         if (selectedRoom) {
@@ -113,14 +113,14 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             const response = await bookmark({
               interactionType: InteractionType.Character,
               typeValueId: selectedRoom.characterProfileId,
-              isBookMark: !selectedRoom.isBookMark,
+              isBookMark: !selectedRoom.isBookmark,
             });
 
             if (response?.data) {
               // UI 업데이트 로직이 필요한 경우 여기에 추가
               setChatList(prevList =>
                 prevList.map(room =>
-                  room.chatRoomId === selectedRoom.chatRoomId ? {...room, isBookMark: !room.isBookMark} : room,
+                  room.chatRoomId === selectedRoom.chatRoomId ? {...room, isBookmark: !room.isBookmark} : room,
                 ),
               );
             }

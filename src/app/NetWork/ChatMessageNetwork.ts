@@ -26,7 +26,7 @@ export interface ChatRoomInfo {
   isPinFix: boolean;
   isUnreadDot: boolean;
   updatedAt: string;
-  isBookMark: boolean;
+  isBookmark: boolean;
 }
 
 export interface GetCharacterChatRoomListRes {
@@ -136,6 +136,7 @@ export interface DMChatRoomInfo {
   lastMessage: string;
   lastMessageAt: string;
   isPinFix: boolean;
+  isBookmark: boolean;
 }
 
 // 응답 타입
