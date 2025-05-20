@@ -6,6 +6,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import {searchOptionList} from '../../searchboard/SearchBoard';
 import TagsData from 'data/create/tags.json';
 import useCustomRouter from '@/utils/useCustomRouter';
+import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 
 interface Props {
   onBack?: () => void;
@@ -81,7 +82,7 @@ const SearchBar: React.FC<Props> = ({
       }),
     );
     handlerFilterSaved(filters.positive, filters.negative);
-    if (onSearch && value.trim()) {
+    if (onSearch) {
       onSearch(value.trim(), isAdult, filters.positive, filters.negative);
     }
   };
@@ -130,23 +131,23 @@ const SearchBar: React.FC<Props> = ({
                 <img src={LinePlus.src} alt="clear" className={styles.clearIcon} />
               </button>
             )}
-
-            <div
-              className={styles.adultToggle}
-              onClick={() => {
-                setIsAdult(prev => {
-                  const next = !prev;
-                  if (onSearch && value.trim()) {
-                    onSearch(value.trim(), next, positiveFilters, negativeFilters);
-                  }
-                  return next;
-                });
-              }}
-            >
-              <div className={styles.toggleBase}>
-                <div className={`${styles.toggleButton} ${isAdult ? styles.on : ''}`} />
-              </div>
-              <span className={styles.adultLabel}>Adult</span>
+            <div className={styles.adultToggle}>
+              <CustomToggleButton
+                isToggled={isAdult}
+                onToggle={() => {
+                  setIsAdult(prev => {
+                    const next = !prev;
+                    if (onSearch) {
+                      onSearch(value.trim(), next, positiveFilters, negativeFilters);
+                    }
+                    return next;
+                  });
+                }}
+                size="sm"
+                state="default"
+                theme="dark"
+              />
+              <span className={`${styles.adultLabel} ${isAdult ? styles.toggleOn : ''}`}>Adult</span>
             </div>
           </div>
         </div>
