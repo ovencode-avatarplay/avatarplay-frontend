@@ -98,7 +98,6 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
       setIsPlaying(false); // 비활성화된 경우 재생 중지
     }
     playerRef.current?.seekTo(0); // 재생 위치를 0으로 설정
-    console.log(item);
   }, [isActive]);
 
   const formatDuration = (seconds: number): string => {

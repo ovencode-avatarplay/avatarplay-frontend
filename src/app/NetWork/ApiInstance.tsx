@@ -53,7 +53,6 @@ api.interceptors.response.use(
   async response => {
     document.body.style.pointerEvents = 'auto';
     const requestKey = response.config.url ?? '';
-    console.log('request packet delete: ' + requestKey);
     pendingRequests.delete(requestKey);
 
     // 정상 응답인 경우 그대로 반환
@@ -76,7 +75,6 @@ api.interceptors.response.use(
       window.location.href = getLocalizedLink('/auth');
     }
     const requestKey = error?.config?.url ?? '';
-    console.log('request packet delete: ' + requestKey);
     pendingRequests.delete(requestKey);
     return Promise.reject(error);
   },
