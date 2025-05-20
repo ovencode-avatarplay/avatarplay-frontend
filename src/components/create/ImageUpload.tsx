@@ -4,7 +4,7 @@ import styles from './ImageUpload.module.css';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
+// import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {

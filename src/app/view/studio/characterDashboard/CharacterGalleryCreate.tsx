@@ -15,7 +15,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CharacterCreateImageButton from '../../main/content/create/character/CreateCharacterImageButton';
 import MaxTextInput from '@/components/create/MaxTextInput';
 import getLocalizedText from '@/utils/getLocalizedText';
-import WorkroomSelectingMenu from '../workroom/WorkroomSelectingMenu';
+// import WorkroomSelectingMenu from '../workroom/WorkroomSelectingMenu';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom} from '@/app/Root';
 
@@ -489,7 +489,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
 
           {selectedGeneratedItems.length > 0 && (
             <div className={styles.selectingMenuContainer}>
-              <WorkroomSelectingMenu
+              {/* <WorkroomSelectingMenu
                 selectedCount={selectedGeneratedItems.length}
                 onDownload={handleDownloadSelectedItems}
                 onMoveToFolder={handleMoveToFolder}
@@ -497,7 +497,7 @@ const CharacterGalleryCreate: React.FC<CategoryCreateProps> = ({
                 onExitSelecting={() => {
                   setSelectedGeneratedItems([]);
                 }}
-              />
+              /> */}
             </div>
           )}
         </div>
