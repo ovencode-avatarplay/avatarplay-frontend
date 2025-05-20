@@ -433,7 +433,7 @@ export const followProfile = async (profileId: number, isFollow: boolean) => {
       return null;
     }
 
-    return res.data?.data;
+    return res.data.resultCode;
   } catch (e) {
     console.error('Follow API 요청 실패:', e);
     return null;

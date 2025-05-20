@@ -400,6 +400,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
             if (result == 0) {
               // Following/Friend 목록에서만 제거
               if (selectedTag === 'Following' || selectedTag === 'Friend') {
+                console.log('selectedRoomnormalList', selectedRoom, normalList);
+
                 setNormalList(prev => prev.filter(item => item.characterProfileId !== selectedRoom.characterProfileId));
               }
             } else if (result != 0) {
@@ -443,7 +445,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
                 return (
                   <MessageProfile
-                    key={character.chatRoomId}
+                    key={character.characterProfileId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
                     badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
@@ -471,7 +473,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
                 return (
                   <MessageProfile
-                    key={character.chatRoomId}
+                    key={character.characterProfileId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
                     badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
@@ -500,7 +502,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
           return (
             <MessageProfile
-              key={character.chatRoomId}
+              key={character.characterProfileId}
               profileImage={character.profileImageUrl}
               profileName={character.characterName}
               badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
