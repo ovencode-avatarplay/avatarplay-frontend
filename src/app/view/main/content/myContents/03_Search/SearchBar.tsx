@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import styles from './SearchBar.module.css';
 import {BoldFilter, BoldFilterOn, LineArrowLeft, LineDelete, LinePlus} from '@ui/Icons';
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
@@ -37,6 +37,7 @@ const SearchBar: React.FC<Props> = ({
   const [isAdult, setIsAdult] = useState(true);
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Filter State
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
@@ -94,14 +95,36 @@ const SearchBar: React.FC<Props> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
-    onSearchTextChange?.(e.target.value); // 부모에게 전달
+    onSearchTextChange?.(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && value.trim()) {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
       onSearch?.(value.trim(), isAdult, positiveFilters, negativeFilters);
     }
   };
+
+  useEffect(() => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    if (value.trim() !== '') {
+      const timeout = setTimeout(() => {
+        if (onSearch) {
+          onSearch(value.trim(), isAdult, positiveFilters, negativeFilters);
+        }
+      }, 1000);
+      setSearchTimeout(timeout);
+    }
+
+    return () => {
+      if (searchTimeout) clearTimeout(searchTimeout);
+    };
+  }, [value]);
 
   return (
     <div className={styles.container}>
