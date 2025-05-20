@@ -77,13 +77,19 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
   // 탭 변경 시 페이징 상태 초기화 및 첫 페이지 fetch
   useEffect(() => {
-    if (isOpen == false) return;
-    setOffset(0);
-    setHasMore(true);
+    if (isOpen === false) return;
+    // 1. 리스트를 먼저 비움
     setFavoriteList([]);
     setNormalList([]);
+    setOffset(0);
+    setHasMore(true);
     setFavoriteOpen(false);
-    fetchMore(true);
+    setListOpen(true);
+
+    // 2. fetchMore는 다음 tick에서 실행 (비동기적으로)
+    setTimeout(() => {
+      fetchMore(true);
+    }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTag, isOpen]);
 
@@ -527,7 +533,9 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     }
     return (
       <div className={styles.searchResults}>
-        {renderCharacterList(favoriteList.concat(normalList))}
+        {renderCharacterList(
+          selectedTag === 'Following' || selectedTag === 'Friend' ? [...favoriteList, ...normalList] : normalList,
+        )}
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
         {isPagingLoading && (
