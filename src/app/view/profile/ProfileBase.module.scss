@@ -575,12 +575,15 @@
 
     .tabContent {
       padding: 10px 0px 0;
+      min-height: calc(100vh - 96px - 64px);
+      position: relative;
 
       .emptyWrap {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         gap: 24px;
         margin-top: 30px;
 
