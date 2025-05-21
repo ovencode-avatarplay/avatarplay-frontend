@@ -21,8 +21,6 @@ const HeaderNavBar = () => {
 
   const [openSearch, setOpenSearch] = useState(false);
 
-  const dataStarInfo = useSelector((state: RootState) => state.starInfo);
-
   return (
     <header className={styles.navbar}>
       <div className={styles.logoArea}>
