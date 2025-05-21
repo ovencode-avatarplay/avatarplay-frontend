@@ -255,6 +255,11 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     setFavoriteList([]);
     setNormalList([]);
+
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
     setIsInputFocused(false);
     setSearchText(keyword);
     fetchMore(true);
