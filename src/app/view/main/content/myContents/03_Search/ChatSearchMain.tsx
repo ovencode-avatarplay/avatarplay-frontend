@@ -498,7 +498,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           let badgeType = BadgeType.None;
           if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
           else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-          let followState = selectedTag === 'People' ? FollowState.AddFriend : FollowState.Follow;
+          let followState =
+            selectedTag === 'People' ? character.followState || FollowState.AddFriend : FollowState.Follow;
 
           return (
             <MessageProfile

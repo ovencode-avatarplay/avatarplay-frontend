@@ -36,9 +36,11 @@ export interface GetNotificationListReq {
 export interface NotificationInfo {
   id: number;
   senderProfileUrlLinkKey: string;
-  systemType: NotificationSystemType; // enum 적용
-  contentType: NotificationContentType; // enum 적용
-  message: string;
+  senderProfileIconUrl: string;
+  systemType: NotificationSystemType;
+  contentType: NotificationContentType;
+  messageKey: string;
+  messageValueList: string[];
   isRead: boolean;
   createdAt: string;
 }

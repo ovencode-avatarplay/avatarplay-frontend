@@ -17,7 +17,7 @@ import formatText from '@/utils/formatText';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
-import {useSignalR} from '@/hooks/useSignalR';
+import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
 
 interface DrawerDonationProps {
   isOpen: boolean;
@@ -41,7 +41,8 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
   const starInfo = dataCurrencyInfo.star;
   const rubyInfo = dataCurrencyInfo.ruby;
 
-  const {sendGiftStar} = useSignalR(localStorage?.getItem('jwt') || '');
+  const signalR = useSignalRContext();
+  const {sendGiftStar} = signalR || {};
 
   useEffect(() => {
     // starInfo가 숫자라면 그대로 사용, 아니라면 0으로 설정
@@ -76,7 +77,10 @@ const DrawerDonation: React.FC<DrawerDonationProps> = React.memo(({isOpen, spons
         // 애러 메시지
         setIsShowStarLowMessage(true);
       } else {
-        await sendGiftStar(giveToPDId, Number(inputValue));
+        if (sendGiftStar) {
+          console.log('sendGiftStar');
+          await sendGiftStar(giveToPDId, Number(inputValue));
+        }
         onClose();
       }
     } else {

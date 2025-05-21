@@ -51,7 +51,7 @@ const ChatArea: React.FC<Props> = ({messages}) => {
         const gapClass = isNewMinute ? styles.gapLarge : styles.gapSmall;
 
         return (
-          <div key={msg.id} className={gapClass}>
+          <div key={`${msg.id}-${idx}`} className={gapClass}>
             <ChatBubble
               sender={msg.dmChatType === DMChatType.MyChat ? 'me' : 'other'}
               content={msg.message}

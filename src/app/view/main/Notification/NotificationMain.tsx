@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import styles from './NotificationMain.module.css';
@@ -7,6 +7,8 @@ import Notice from './Notice';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {Settings} from '@mui/icons-material';
+import {useDispatch} from 'react-redux';
+import {setUnread} from '@/redux-store/slices/Notification';
 
 interface NotificationMainProps {
   open: boolean;
@@ -47,6 +49,13 @@ const tags = ['All', 'Request', 'Notice', 'System'];
 
 export default function NotificationMain({open, onClose}: NotificationMainProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (open) {
+      dispatch(setUnread(false));
+    }
+  }, [open, dispatch]);
 
   return (
     <Modal open={open} onClose={onClose}>
