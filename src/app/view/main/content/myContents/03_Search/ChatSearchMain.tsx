@@ -125,15 +125,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     onClose();
   };
 
-  useEffect(() => {
-    setFollowingProfileIds([]);
-    setCharacterProfileIds([]);
-    setFriendProfileIds([]);
-    setPeopleProfileIds([]);
-  }, [searchText]);
-
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
-  const fetchMore = async (isRefreshAll = false) => {
+  const fetchMore = async (isRefreshAll = false, isSearchTextChange = false) => {
     setIsPagingLoading(true);
     setIsLoading(true);
     setError(null);
@@ -143,7 +136,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     const keyword = searchText;
 
     try {
-      if (isRefreshAll) {
+      if (isRefreshAll || isSearchTextChange) {
         // 모든 상태 초기화를 한 곳에서 처리
         setFavoriteList([]);
         setNormalList([]);
@@ -269,7 +262,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setPeopleProfileIds([]);
     setIsInputFocused(false);
     setSearchText(keyword);
-    fetchMore(true);
+    fetchMore(true, true);
   };
 
   // 최근 검색어 선택 시
