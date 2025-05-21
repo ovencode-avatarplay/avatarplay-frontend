@@ -67,7 +67,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const [characterProfileIds, setCharacterProfileIds] = useState<number[]>([]);
   const [friendProfileIds, setFriendProfileIds] = useState<number[]>([]);
   const [peopleProfileIds, setPeopleProfileIds] = useState<number[]>([]);
-  const LIMIT = 10;
+  const LIMIT = 20;
   const {ref: observerRef, inView} = useInView();
   const [recentSearchVersion, setRecentSearchVersion] = useState(0);
   const [recentSearchItems, setRecentSearchItems] = useState<string[]>([]);
@@ -544,6 +544,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         {renderCharacterList(
           selectedTag === 'Following' || selectedTag === 'Friend' ? [...favoriteList, ...normalList] : normalList,
         )}
+
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
         {isPagingLoading && (
