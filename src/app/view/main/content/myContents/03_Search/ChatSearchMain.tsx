@@ -124,7 +124,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     onClose();
   };
-
+  useEffect(() => {
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+  }, [searchText]);
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
   const fetchMore = async (isRefreshAll = false, isSearchTextChange = false) => {
     setIsPagingLoading(true);
@@ -156,7 +161,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: followingProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : followingProfileIds,
         });
         if (response.data) {
           newFavoriteList = response.data.favoriteCharacterList || [];
@@ -170,7 +175,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: characterProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : characterProfileIds,
         });
         if (response.data) {
           newNormalList = response.data.recommendCharacterList || [];
@@ -179,7 +184,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         const response = await sendGetSearchFriendList({
           search: keyword,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: friendProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : friendProfileIds,
         });
         if (response.data) {
           newFavoriteList = response.data.favoriteFriendList || [];
@@ -189,7 +194,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         const response = await sendGetSearchPeopleList({
           search: keyword,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: peopleProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : peopleProfileIds,
         });
         if (response.data) {
           newNormalList = response.data.recommendPeopleList || [];
