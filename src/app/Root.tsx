@@ -88,14 +88,14 @@ const Root = ({children}: {children: ReactNode}) => {
   const {back} = useCustomRouter();
   const paddingRef = useRef();
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const jwt = localStorage.getItem('jwt');
-      if (jwt) {
-        setToken(jwt);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     const jwt = localStorage.getItem('jwt');
+  //     if (jwt) {
+  //       setToken(jwt);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     dataToast.open = openToastMessage;
@@ -123,23 +123,12 @@ const Root = ({children}: {children: ReactNode}) => {
       setHasRun(true);
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const jwt = localStorage.getItem('jwt');
-      if (jwt && token !== jwt) {
-        setToken(jwt);
-      }
-    }, 500); // 0.5초마다 체크
-    return () => clearInterval(interval);
-  }, [token]);
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <CssBaseline>
-            {token ? <SignalREventInjector token={token}>{children}</SignalREventInjector> : children}
+            <SignalREventInjector>{children}</SignalREventInjector>
             <ToastMessage
               isOpen={dataToast.isOpen}
               message={dataToast.message}
