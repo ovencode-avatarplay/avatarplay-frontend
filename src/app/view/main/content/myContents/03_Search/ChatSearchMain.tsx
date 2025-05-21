@@ -67,7 +67,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   const [characterProfileIds, setCharacterProfileIds] = useState<number[]>([]);
   const [friendProfileIds, setFriendProfileIds] = useState<number[]>([]);
   const [peopleProfileIds, setPeopleProfileIds] = useState<number[]>([]);
-  const LIMIT = 20;
+  const LIMIT = 10;
   const {ref: observerRef, inView} = useInView();
   const [recentSearchVersion, setRecentSearchVersion] = useState(0);
   const [recentSearchItems, setRecentSearchItems] = useState<string[]>([]);
@@ -81,6 +81,10 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     // 1. 리스트를 먼저 비움
     setFavoriteList([]);
     setNormalList([]);
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
     setOffset(0);
     setHasMore(true);
     setFavoriteOpen(false);
@@ -112,6 +116,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setSearchText('');
     setIsInputFocused(false);
     setFavoriteOpen(false);
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+    setOffset(0);
+    setHasMore(true);
     onClose();
   };
 
@@ -127,20 +137,15 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
     try {
       if (isRefreshAll) {
-        switch (selectedTag) {
-          case 'Following':
-            setFollowingProfileIds([]);
-            break;
-          case 'Character':
-            setCharacterProfileIds([]);
-            break;
-          case 'Friend':
-            setFriendProfileIds([]);
-            break;
-          case 'People':
-            setPeopleProfileIds([]);
-            break;
-        }
+        // 모든 상태 초기화를 한 곳에서 처리
+        setFavoriteList([]);
+        setNormalList([]);
+        setOffset(0);
+        setHasMore(true);
+        setFollowingProfileIds([]);
+        setCharacterProfileIds([]);
+        setFriendProfileIds([]);
+        setPeopleProfileIds([]);
       }
 
       if (selectedTag === 'Following') {
