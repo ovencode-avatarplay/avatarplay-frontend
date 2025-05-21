@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, KeyboardEvent} from 'react';
+import React, {useState, useRef, useEffect, KeyboardEvent, use} from 'react';
 import styles from './ChatSearchMain.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {Drawer} from '@mui/material';
@@ -124,6 +124,13 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     onClose();
   };
+
+  useEffect(() => {
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+  }, [searchText]);
 
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
   const fetchMore = async (isRefreshAll = false) => {
