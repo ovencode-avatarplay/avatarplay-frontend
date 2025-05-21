@@ -438,6 +438,7 @@ const TabContentComponent = ({
                   urlLinkKey: one.urlLinkKey,
                   isMyFeed: false,
                   profileVisibilityType: VisibilityType.Private,
+                  visibilityType: VisibilityType.Private,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}

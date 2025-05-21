@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import styles from './SearchBar.module.css';
 import {BoldFilter, BoldFilterOn, LineArrowLeft, LineDelete, LinePlus} from '@ui/Icons';
 import FilterSelector, {FilterDataItem} from '@/components/search/FilterSelector';
@@ -6,6 +6,7 @@ import getLocalizedText from '@/utils/getLocalizedText';
 import {searchOptionList} from '../../searchboard/SearchBoard';
 import TagsData from 'data/create/tags.json';
 import useCustomRouter from '@/utils/useCustomRouter';
+import CustomToggleButton from '@/components/layout/shared/CustomToggleButton';
 
 interface Props {
   onBack?: () => void;
@@ -21,6 +22,7 @@ interface Props {
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   value: string;
   onChange: (value: string) => void;
+  selectTag: string;
 }
 
 const SearchBar: React.FC<Props> = ({
@@ -32,10 +34,12 @@ const SearchBar: React.FC<Props> = ({
   onKeyDown,
   value,
   onChange,
+  selectTag,
 }) => {
   const [isAdult, setIsAdult] = useState(true);
   const [filterDialogOn, setFilterDialogOn] = useState(false);
   const [filterItem, setFilterItem] = useState<FilterDataItem[]>([]);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Filter State
   const [positiveFilters, setPositiveFilters] = useState<FilterDataItem[]>([]);
@@ -81,7 +85,7 @@ const SearchBar: React.FC<Props> = ({
       }),
     );
     handlerFilterSaved(filters.positive, filters.negative);
-    if (onSearch && value.trim()) {
+    if (onSearch) {
       onSearch(value.trim(), isAdult, filters.positive, filters.negative);
     }
   };
@@ -93,14 +97,36 @@ const SearchBar: React.FC<Props> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
-    onSearchTextChange?.(e.target.value); // 부모에게 전달
+    onSearchTextChange?.(e.target.value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && value.trim()) {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
       onSearch?.(value.trim(), isAdult, positiveFilters, negativeFilters);
     }
   };
+
+  useEffect(() => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    if (value.trim() !== '') {
+      const timeout = setTimeout(() => {
+        if (onSearch) {
+          onSearch(value.trim(), isAdult, positiveFilters, negativeFilters);
+        }
+      }, 1000);
+      setSearchTimeout(timeout);
+    }
+
+    return () => {
+      if (searchTimeout) clearTimeout(searchTimeout);
+    };
+  }, [value]);
 
   return (
     <div className={styles.container}>
@@ -130,47 +156,52 @@ const SearchBar: React.FC<Props> = ({
                 <img src={LinePlus.src} alt="clear" className={styles.clearIcon} />
               </button>
             )}
-
-            <div
-              className={styles.adultToggle}
-              onClick={() => {
-                setIsAdult(prev => {
-                  const next = !prev;
-                  if (onSearch && value.trim()) {
-                    onSearch(value.trim(), next, positiveFilters, negativeFilters);
-                  }
-                  return next;
-                });
-              }}
-            >
-              <div className={styles.toggleBase}>
-                <div className={`${styles.toggleButton} ${isAdult ? styles.on : ''}`} />
+            {(selectTag == 'Following' || selectTag == 'Character') && (
+              <div className={styles.adultToggle}>
+                <CustomToggleButton
+                  isToggled={isAdult}
+                  onToggle={() => {
+                    setIsAdult(prev => {
+                      const next = !prev;
+                      if (onSearch) {
+                        onSearch(value.trim(), next, positiveFilters, negativeFilters);
+                      }
+                      return next;
+                    });
+                  }}
+                  size="sm"
+                  state="default"
+                  theme="dark"
+                />
+                <span className={`${styles.adultLabel} ${isAdult ? styles.toggleOn : ''}`}>Adult</span>
               </div>
-              <span className={styles.adultLabel}>Adult</span>
-            </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* 필터 아이콘 */}
-      <div
-        className={styles.filterIconWrap}
-        onClick={() => {
-          setFilterDialogOn(true);
-        }}
-      >
-        {positiveFilters.length > 0 || negativeFilters.length > 0 ? (
-          <img src={BoldFilterOn.src} alt="filter" className={styles.filterIcon} />
-        ) : (
-          <img src={BoldFilter.src} alt="filter" className={styles.filterIcon} />
-        )}
-      </div>
-      <FilterSelector
-        filterData={filterItem}
-        onSave={handleSave}
-        open={filterDialogOn}
-        onClose={() => setFilterDialogOn(false)}
-      />
+      {(selectTag == 'Following' || selectTag == 'Character') && (
+        <>
+          {/* 필터 아이콘 */}
+          <div
+            className={styles.filterIconWrap}
+            onClick={() => {
+              setFilterDialogOn(true);
+            }}
+          >
+            {positiveFilters.length > 0 || negativeFilters.length > 0 ? (
+              <img src={BoldFilterOn.src} alt="filter" className={styles.filterIcon} />
+            ) : (
+              <img src={BoldFilter.src} alt="filter" className={styles.filterIcon} />
+            )}
+          </div>
+          <FilterSelector
+            filterData={filterItem}
+            onSave={handleSave}
+            open={filterDialogOn}
+            onClose={() => setFilterDialogOn(false)}
+          />
+        </>
+      )}
     </div>
   );
 };

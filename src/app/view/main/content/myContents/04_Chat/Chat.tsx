@@ -8,7 +8,7 @@ import {useAtom} from 'jotai';
 import {isOpenEditAtom} from './ChatAtom';
 import ChatEditDrawer from './ChatEditDrawer';
 import zIndex from '@mui/material/styles/zIndex';
-import {useSignalR} from '@/hooks/useSignalR';
+import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
 import {
   DMChatType,
   MediaState,
@@ -33,7 +33,7 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
   const [chatRoomKey, setChatRoomKey] = useState(urlLinkKey);
   const handleSend = (text: string, mediaState: MediaState, mediaUrl: string) => {
     const newMessage: DMChatMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       dmChatType: DMChatType.MyChat,
       profileUrlLinkKey: '', // 현재 사용자의 profileUrlLinkKey
       profileImageUrl: '', // 현재 사용자의 profileImageUrl
@@ -46,24 +46,28 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
       createAt: new Date().toISOString(),
     };
 
-    sendMessage(chatRoomKey, newMessage.message, 0, mediaState, mediaUrl);
+    if (sendMessage) {
+      sendMessage(chatRoomKey, newMessage.message, 0, mediaState, mediaUrl);
+    }
   };
 
   const [isOpenEdit, setOpenEdit] = useAtom(isOpenEditAtom);
   console.log(messages);
 
-  const jwt = localStorage.getItem('jwt');
-  const {joinRoom, leaveRoom, onMessage, sendMessage, onDMError} = useSignalR(jwt || '');
+  const signalR = useSignalRContext();
+  const {joinRoom, leaveRoom, onMessage, sendMessage, onDMError} = signalR || {};
 
   useEffect(() => {
     // ReceiveDMError 이벤트 수신
-    onDMError(error => {
-      console.warn(`[DM 에러] ${error.code}: ${error.message}`);
-      dataToast.open('팔로우 상대가 아니라 메시지 전송이 제한됩니다.', ToastType.Error);
-    });
+    if (onDMError) {
+      onDMError(error => {
+        console.warn(`[DM 에러] ${error.code}: ${error.message}`);
+        dataToast.open('팔로우 상대가 아니라 메시지 전송이 제한됩니다.', ToastType.Error);
+      });
+    }
     onDM();
     return () => {
-      if (chatRoomKey) {
+      if (chatRoomKey && leaveRoom) {
         leaveRoom(chatRoomKey).catch(error => {
           console.log('채팅방 퇴장 중 에러:', error);
         });
@@ -94,17 +98,19 @@ const Chat: React.FC<Props> = ({urlLinkKey}) => {
 
         setMessages(prevMessageInfoList);
         setChatRoomKey(chatRoomKey);
-        joinRoom(chatRoomKey);
+        if (joinRoom) joinRoom(chatRoomKey);
 
         // ✅ 새 메시지 수신 핸들러
-        onMessage(payload => {
-          setMessages(prev => [...prev, payload]);
+        if (onMessage) {
+          onMessage(payload => {
+            setMessages(prev => [...prev, payload]);
 
-          // 상대방이 보낸 메시지일 경우에만 읽음 처리
-          if (payload.dmChatType === DMChatType.AnotherChat) {
-            sendReadChatRoom({roomId: roomId}).catch(error => console.error('채팅방 읽음 처리 실패:', error));
-          }
-        });
+            // 상대방이 보낸 메시지일 경우에만 읽음 처리
+            if (payload.dmChatType === DMChatType.AnotherChat) {
+              sendReadChatRoom({roomId: roomId}).catch(error => console.error('채팅방 읽음 처리 실패:', error));
+            }
+          });
+        }
 
         return;
       } else {

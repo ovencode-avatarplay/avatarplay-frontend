@@ -466,15 +466,35 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }, 475); // (3프레임 + 17프레임) 약 350ms 후 축소 시작
   };
 
-  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount);
+  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount || 0);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
+    if (info) {
+      setCommentCount(commentCount + 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount + 1,
+        },
+      });
+    }
   };
+
   const handleSubCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
+    if (info) {
+      setCommentCount(commentCount - 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount - 1,
+        },
+      });
+    }
   };
+
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -603,7 +623,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
 
   React.useEffect(() => {
-    setCommentCount(info?.commonMediaViewInfo.commentCount);
+    setCommentCount(info?.commonMediaViewInfo.commentCount || 0 );
     setCurIsFollow(info?.isProfileFollow);
     if (info) setTempFollow(info?.isProfileFollow);
   }, [info]);

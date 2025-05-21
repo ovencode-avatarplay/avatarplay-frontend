@@ -54,7 +54,6 @@ import {
   sendReport,
 } from '@/app/NetWork/CommonNetwork';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
-import DrawerDonation from '../../create/common/DrawerDonation';
 import {PopupPurchase} from '../series/ContentSeriesDetail';
 import getLocalizedText from '@/utils/getLocalizedText';
 import formatText from '@/utils/formatText';
@@ -66,10 +65,11 @@ import {ConstructionOutlined} from '@mui/icons-material';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Virtual} from 'swiper/modules';
+import {Virtual, Mousewheel} from 'swiper/modules';
 import 'swiper/css';
 import {info} from 'console';
 import {InView} from 'react-intersection-observer';
+import DrawerDonation from '../../create/common/DrawerDonation';
 
 interface Props {
   open: boolean;
@@ -90,7 +90,15 @@ const ViewerSeriesContent: React.FC<Props> = ({
   seasonEpisodesData,
 }) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
-  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>();
+  const [seasonInfo, setSeasonInfo] = useState<GetSeasonEpisodesRes | undefined>(() => {
+    if (seasonEpisodesData) {
+      return {
+        ...seasonEpisodesData,
+        episodeList: seasonEpisodesData.episodeList.filter(episode => !episode.isLock),
+      };
+    }
+    return undefined;
+  });
   const [contentType, setContentType] = useState<ContentType>(0);
   const [isRecent, setIsRecent] = useState(isPlayButon);
   const [onEpisodeListDrawer, setOnEpisodeListDrawer] = useState(false);
@@ -98,7 +106,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
     number: number;
     isLocked: boolean;
   }
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [episodeListData, setEpisodeListData] = useState<GetSeasonEpisodesPopupRes>();
@@ -183,6 +190,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
   const [isMute, setIsMute] = useState(true);
+  const [isFirst, setIsFirst] = useState(true);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -193,8 +201,14 @@ const ViewerSeriesContent: React.FC<Props> = ({
     setIsExpanded(!isExpanded);
   };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const activeIndexRef = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    if (episodeId !== 0 && seasonEpisodesData?.episodeList) {
+      const index = seasonEpisodesData.episodeList.findIndex(ep => ep.episodeId === episodeId);
+      return index !== -1 ? index : 0;
+    }
+    return 0;
+  });
+  const activeIndexRef = useRef(currentIndex);
   const swiperRef = useRef<any>(null);
   const [shouldSlideToNewEpisode, setShouldSlideToNewEpisode] = useState(false);
 
@@ -226,7 +240,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
             episode => episode.episodeId === playResponse.data?.recentlyPlayInfo.episodeId,
           );
           if (targetIndex !== -1 && swiperRef.current?.swiper) {
-            swiperRef.current.swiper.slideTo(targetIndex);
+            swiperRef.current.swiper.slideTo(targetIndex, 0);
             activeIndexRef.current = targetIndex;
           }
         }
@@ -238,24 +252,42 @@ const ViewerSeriesContent: React.FC<Props> = ({
 
   const handlePlayNew = async () => {
     try {
-      const currentEpisode = seasonInfo
-        ? seasonInfo?.episodeList[activeIndexRef.current]
-        : seasonEpisodesData?.episodeList[activeIndexRef.current];
+      let currentEpisode = seasonInfo
+        ? seasonInfo?.episodeList[activeIndexRef.current].episodeId
+        : seasonEpisodesData?.episodeList[activeIndexRef.current].episodeId;
+
+      if (isFirst) {
+        currentEpisode = episodeId;
+        setIsFirst(false);
+      }
       if (!currentEpisode) return;
       const playRequest: PlayReq = {
         contentId: contentId,
-        episodeId: currentEpisode.episodeId,
+        episodeId: currentEpisode,
       };
       setIsLoading(true);
       const playData = await sendPlay(playRequest);
       setIsLoading(false);
       setContentType(playData.data?.contentType || 0);
       setInfo(playData.data?.recentlyPlayInfo);
+      if (playData.data?.recentlyPlayInfo) {
+        const episodeList = seasonInfo?.episodeList || seasonEpisodesData?.episodeList;
+        if (episodeList) {
+          const targetIndex = episodeList.findIndex(
+            episode => episode.episodeId === playData.data?.recentlyPlayInfo.episodeId,
+          );
+          if (targetIndex !== -1 && swiperRef.current?.swiper) {
+            swiperRef.current.swiper.slideTo(targetIndex, 0);
+            activeIndexRef.current = targetIndex;
+          }
+        }
+      }
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
       setIsLoading(false);
     }
   };
+  console.log('🚨 currentIndex', activeIndexRef.current);
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
@@ -271,16 +303,6 @@ const ViewerSeriesContent: React.FC<Props> = ({
       handlePlayNew();
     }
   }, [seasonInfo, activeIndexRef.current]);
-
-  useEffect(() => {
-    if (seasonEpisodesData) {
-      const filteredEpisodes = {
-        ...seasonEpisodesData,
-        episodeList: seasonEpisodesData.episodeList.filter(episode => !episode.isLock),
-      };
-      setSeasonInfo(filteredEpisodes);
-    }
-  }, [seasonEpisodesData]);
 
   useEffect(() => {
     // 에피소드 수만큼 ref 배열과 진행도 배열 초기화
@@ -454,15 +476,35 @@ const ViewerSeriesContent: React.FC<Props> = ({
     }, 475); // (3프레임 + 17프레임) 약 350ms 후 축소 시작
   };
 
-  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount);
+  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount || 0);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
+    if (info) {
+      setCommentCount(commentCount + 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount + 1,
+        },
+      });
+    }
   };
+
   const handleSubCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
+    if (info) {
+      setCommentCount(commentCount - 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount - 1,
+        },
+      });
+    }
   };
+
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -590,7 +632,7 @@ const ViewerSeriesContent: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
-    setCommentCount(info?.commonMediaViewInfo.commentCount);
+    setCommentCount(info?.commonMediaViewInfo.commentCount || 0);
     setCurIsFollow(info?.isProfileFollow);
     if (info) setTempFollow(info?.isProfileFollow);
   }, [info]);
@@ -1008,8 +1050,14 @@ const ViewerSeriesContent: React.FC<Props> = ({
           <Swiper
             ref={swiperRef}
             direction="vertical"
-            modules={[Virtual]}
-            virtual
+            modules={[Virtual, Mousewheel]}
+            virtual={{
+              slides: Array((seasonInfo?.episodeList?.length || 0) + 1)
+                .fill(null)
+                .map((_, i) => i),
+              addSlidesBefore: 1,
+              addSlidesAfter: 1,
+            }}
             initialSlide={currentIndex}
             onSlideChange={swiper => {
               activeIndexRef.current = swiper.activeIndex;
@@ -1019,6 +1067,17 @@ const ViewerSeriesContent: React.FC<Props> = ({
               resetAllVideoProgress();
             }}
             style={{height: '100%'}}
+            allowTouchMove={true}
+            resistance={true}
+            resistanceRatio={0.85}
+            watchSlidesProgress={true}
+            observer={true}
+            observeParents={true}
+            mousewheel={{
+              forceToAxis: true,
+              sensitivity: 1,
+              releaseOnEdges: true,
+            }}
           >
             {seasonInfo?.episodeList.map((episode, index) => (
               <SwiperSlide key={episode.episodeId} virtualIndex={index} style={{height: '100%'}}>
@@ -1373,6 +1432,11 @@ const ViewerSeriesContent: React.FC<Props> = ({
                 ></InView>
               </SwiperSlide>
             ))}
+            {seasonInfo?.episodeList.length == 1 && (
+              <SwiperSlide virtualIndex={seasonInfo?.episodeList.length} style={{height: '10%'}}>
+                <div style={{height: '10%', backgroundColor: 'transparent'}} />
+              </SwiperSlide>
+            )}
           </Swiper>
           {isCommentOpen && (
             <Comment

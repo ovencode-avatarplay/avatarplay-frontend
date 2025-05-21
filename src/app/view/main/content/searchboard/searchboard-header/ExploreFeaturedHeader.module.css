@@ -1,4 +1,6 @@
 .swiperContainer {
+  position: relative;
+  
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
@@ -79,16 +81,16 @@
     display: inline-flex;
   }
   
-  .swiper-pagination-bullet {
+  .paginationBullet {
     background: #ddd;
     opacity: 0.8;
     width: 6px;
     height: 6px;
   }
   
-  .paginationBullet.selected {
-    opacity: 1;
-    background: #333;
+  .paginationBulletActive {
+    background: #333 !important;
+    opacity: 1 !important;
   }
   
   /* 텍스트 영역 */

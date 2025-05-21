@@ -605,7 +605,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
               onClose={() => setOnPlay(false)}
               isPlayButon={isPlayButton}
               contentId={playContentId}
-              episodeId={playContentId != 0 ? playEpisodeId : undefined}
+              episodeId={playEpisodeId != 0 ? playEpisodeId : undefined}
               seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
             ></ViewerSeriesContent>
           ) : (

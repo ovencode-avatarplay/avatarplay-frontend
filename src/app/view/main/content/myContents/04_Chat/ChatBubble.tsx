@@ -9,7 +9,7 @@ import {BoldTranslator, LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePrevi
 import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {useSignalR} from '@/hooks/useSignalR';
+import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
 import {ChatState} from '@/app/NetWork/ChatNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 
@@ -47,7 +47,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [localChatState, setLocalChatState] = useState(chatState);
 
   const jwt = localStorage?.getItem('jwt');
-  const {deleteMessage} = useSignalR(jwt || '');
+  const signalR = useSignalRContext();
+  const {deleteMessage} = signalR || {};
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
@@ -59,12 +60,14 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
     }
 
     try {
-      await deleteMessage(id);
-      setLocalIsDeleted(true);
-      setLocalChatState(ChatState.Delete);
-      setIsMenuOpen(false);
-      setBlurMode(false);
-      setSelectedBubbleId(null);
+      if (deleteMessage) {
+        await deleteMessage(id);
+        setLocalIsDeleted(true);
+        setLocalChatState(ChatState.Delete);
+        setIsMenuOpen(false);
+        setBlurMode(false);
+        setSelectedBubbleId(null);
+      }
     } catch (error) {
       console.error('메시지 삭제 실패:', error);
     }

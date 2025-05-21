@@ -1,27 +1,13 @@
 'use client';
-import {useDispatch} from 'react-redux';
-import {setStar} from '@/redux-store/slices/Currency';
+
 import {useSignalR} from '@/hooks/useSignalR';
+import React, {createContext, useContext} from 'react';
 
-export function SignalREventInjector({token}: {token: string}) {
-  const dispatch = useDispatch();
+export const SignalRContext = createContext<ReturnType<typeof useSignalR> | null>(null);
 
-  useSignalR(token, {
-    onSenderGiftStar: payload => {
-      console.log('💫 SenderGiftStar 수신:', payload); // ✅ 디버깅 로그
-      const amount = typeof payload === 'number' ? payload : payload?.amountStar ?? payload?.amount;
-      if (typeof amount === 'number') {
-        dispatch(setStar(amount));
-      }
-    },
-    onReceiverGiftStar: payload => {
-      console.log('📦 ReceiverGiftStar 수신:', payload); // ✅ 디버깅 로그
-      const amount = typeof payload === 'number' ? payload : payload?.amountStar ?? payload?.amount;
-      if (typeof amount === 'number') {
-        dispatch(setStar(amount));
-      }
-    },
-  });
-
-  return null;
+export function SignalREventInjector({token, children}: {token: string; children: React.ReactNode}) {
+  const signalR = useSignalR(token);
+  return <SignalRContext.Provider value={signalR}>{children}</SignalRContext.Provider>;
 }
+
+export const useSignalRContext = () => useContext(SignalRContext);

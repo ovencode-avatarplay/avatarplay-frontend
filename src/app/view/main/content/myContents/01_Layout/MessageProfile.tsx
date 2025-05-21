@@ -207,7 +207,7 @@ const MessageProfile: React.FC<Props> = ({
               if (onClickOption) onClickOption();
             }}
           >
-            {isPin && <img src={BoldPin.src} alt="pin" className={styles.pinIcon} />}
+            {/* {isPin && <img src={BoldPin.src} alt="pin" className={styles.pinIcon} />} */}
             <img src={BoldMore.src} alt="more" className={styles.moreIcon} />
           </button>
         )}

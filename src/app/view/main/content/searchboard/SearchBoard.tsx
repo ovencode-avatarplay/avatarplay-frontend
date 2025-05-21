@@ -428,6 +428,7 @@ const SearchBoard: React.FC = () => {
   // Hooks
   useLayoutEffect(() => {
     const search = getParam('search');
+    const text = getParam('text');
     const indexTab = getParam('indexTab');
     const filters = getParam('filter');
     const adult = getParam('adult');
@@ -470,6 +471,9 @@ const SearchBoard: React.FC = () => {
     if (adult) {
       setAdultToggleOn(adult === '1' ? true : false || false);
     }
+    if (text) {
+      setSearchValue(text);
+    }
   }, []);
 
   useEffect(() => {
@@ -484,6 +488,7 @@ const SearchBoard: React.FC = () => {
     }
 
     prevSearchValueRef.current = searchValue;
+    changeParams('text', searchValue);
   }, [searchValue]);
 
   useEffect(() => {

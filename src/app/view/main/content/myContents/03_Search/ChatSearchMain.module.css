@@ -26,11 +26,12 @@
 
 .content
 {
-    margin-top: 38px;
-    justify-content: center;
-    
-    align-items: center;
-    align-content: center;          
+    margin-top: 20px;
+    min-height: calc(100vh - 60px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .noFoundSearch
 {

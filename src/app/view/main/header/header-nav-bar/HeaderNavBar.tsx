@@ -28,6 +28,7 @@ const HeaderNavBar = () => {
   const [showNotification, setShowNotification] = useState(false);
 
   const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
+  const unread = useSelector((state: RootState) => state.notification.unread);
 
   return (
     <header className={styles.navbar}>
@@ -76,7 +77,7 @@ const HeaderNavBar = () => {
             </Link>
             <button className={styles.notification} onClick={() => setShowNotification(true)}>
               <img className={styles.notificationIcon} src={BoldNotification.src} />
-              <div className={styles.redDot}></div>
+              {unread && <div className={styles.redDot}></div>}
             </button>
           </div>
         </div>

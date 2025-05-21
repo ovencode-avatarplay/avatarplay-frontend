@@ -95,9 +95,17 @@
   }
   
   .adultLabel {
+    color: var(--Neutral-400, #BDC1C6);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: Lato;
     font-size: 11px;
+    font-style: normal;
     font-weight: 600;
-    color: #fd55d3;
+    line-height: 11px;
+  }
+  
+  .adultLabel.toggleOn {
+    color: var(--Primary-1, #FD55D3);
   }
   
   /* 필터 버튼 */
