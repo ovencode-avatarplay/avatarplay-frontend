@@ -26,8 +26,8 @@ api.interceptors.request.use(
     const requestKey = config.url ?? '';
 
     if (pendingRequests.has(requestKey)) {
-      console.warn('Busy processing an existing API request.');
-      return Promise.reject({message: 'Busy processing an existing API request.'});
+      console.warn(requestKey + 'Busy processing an existing API request.');
+      return Promise.reject({message: requestKey + 'Busy processing an existing API request.'});
     }
     // 로컬 스토리지 또는 세션 스토리지에서 JWT 토큰을 가져옴
     const token = localStorage?.getItem('jwt');
