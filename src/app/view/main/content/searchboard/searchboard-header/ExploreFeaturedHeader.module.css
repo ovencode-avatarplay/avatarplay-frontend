@@ -45,7 +45,7 @@
     }
   }
   
-  @media (max-width: 0px) {
+  @media (max-width: 370px) {
     .swiperItem {
       width: 100%;
     }
@@ -56,7 +56,7 @@
     }
   
     .backImage {
-      padding-top: 35%; /* 모바일에서는 조금 더 높게 */
+      padding-top: 80%; /* 모바일에서는 조금 더 높게 */
     }
   }
   
