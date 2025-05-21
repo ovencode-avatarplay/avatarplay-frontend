@@ -114,18 +114,18 @@ export interface CurrencyInfoRes {
   goodsInfo: GoodsInfo;
 }
 
-// Sending Cheat Message
-export const sendCurrencyInfo = async (): Promise<ResponseAPI<CurrencyInfoRes>> => {
-  const currencyInfoReq: CurrencyInfoReq = {};
-  try {
-    const response = await api.post<ResponseAPI<CurrencyInfoRes>>('Auth/getGoodsInfo', currencyInfoReq);
-    if (response.data.resultCode === 0) {
-      return response.data; // Return on success
-    } else {
-      throw new Error(response.data.resultMessage); // Error handling
-    }
-  } catch (error: any) {
-    console.error('Error sendCurrencyInfo :', error);
-    throw new Error(`sendCurrencyInfo Error`); // Error handling
-  }
-};
+// // Sending Cheat Message
+// export const sendCurrencyInfo = async (): Promise<ResponseAPI<CurrencyInfoRes>> => {
+//   const currencyInfoReq: CurrencyInfoReq = {};
+//   try {
+//     const response = await api.post<ResponseAPI<CurrencyInfoRes>>('Auth/getGoodsInfo', currencyInfoReq);
+//     if (response.data.resultCode === 0) {
+//       return response.data; // Return on success
+//     } else {
+//       throw new Error(response.data.resultMessage); // Error handling
+//     }
+//   } catch (error: any) {
+//     console.error('Error sendCurrencyInfo :', error);
+//     throw new Error(`sendCurrencyInfo Error`); // Error handling
+//   }
+// };

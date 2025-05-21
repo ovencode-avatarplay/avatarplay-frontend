@@ -38,7 +38,7 @@ import {getLangUrlCode} from '@/configs/i18n';
 import Cookies from 'js-cookie';
 import {getCookiesLanguageType, getLanguageFromURL, getLanguageTypeFromText} from '@/utils/browserInfo';
 import {atom, useAtom} from 'jotai';
-import {getAuth, sendCurrencyInfo, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
+import {getAuth, sendGetLanguage, SignInRes} from '@/app/NetWork/AuthNetwork';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
 import {updateProfile} from '@/redux-store/slices/Profile';
@@ -241,11 +241,6 @@ const UserDropdown = () => {
               const _language = getLanguageTypeFromText(resultUrlLang);
               _language ? _language : LanguageType.English;
               serverChangeLanguage(_language ?? LanguageType.English, dispatch, router);
-            }
-            const currencyRes = await sendCurrencyInfo();
-            if (currencyRes.resultCode === 0) {
-              dispatch(setStar(currencyRes.data?.goodsInfo?.star || 0));
-              dispatch(setRuby(currencyRes.data?.goodsInfo?.ruby || 0));
             }
             return;
           } else {

@@ -21,11 +21,22 @@ import {persistStore, persistReducer} from 'redux-persist';
 import chattingEnterSlice from './slices/ChattingEnter';
 // slice currency
 import currencySlice from './slices/Currency';
+import notificationReducer from './slices/Notification';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['sample', 'chat', 'chatting', 'chattingEnter', 'content', 'user', 'contentselection', 'currencyInfo'],
+  whitelist: [
+    'sample',
+    'chat',
+    'chatting',
+    'chattingEnter',
+    'content',
+    'user',
+    'contentselection',
+    'currencyInfo',
+    'notification',
+  ],
 };
 
 const reducers = combineReducers({
@@ -55,6 +66,7 @@ const reducers = combineReducers({
   modifyQuestion: modifyQuestionSlice,
   //#endregion
   currencyInfo: currencySlice,
+  notification: notificationReducer,
 });
 
 // persistReducer로 reducers 감싸기

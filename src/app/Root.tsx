@@ -124,13 +124,22 @@ const Root = ({children}: {children: ReactNode}) => {
     }
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const jwt = localStorage.getItem('jwt');
+      if (jwt && token !== jwt) {
+        setToken(jwt);
+      }
+    }, 500); // 0.5초마다 체크
+    return () => clearInterval(interval);
+  }, [token]);
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <CssBaseline>
-            {token && <SignalREventInjector token={token} />}
-            {children}
+            {token ? <SignalREventInjector token={token}>{children}</SignalREventInjector> : children}
             <ToastMessage
               isOpen={dataToast.isOpen}
               message={dataToast.message}
