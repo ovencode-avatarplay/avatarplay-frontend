@@ -639,6 +639,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const refreshProfileInfo = async (urlLink: string) => {
     let resProfileInfo = await getProfileInfo(urlLink);
+    if (resProfileInfo?.resultCode == 999) return;
     if (resProfileInfo?.resultCode != 0) {
       dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
       replace('/main/homefeed');
