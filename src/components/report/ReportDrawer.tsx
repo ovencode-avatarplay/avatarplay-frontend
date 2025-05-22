@@ -65,7 +65,7 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
           getLocalizedText('TODO : Your report has been successfully received and will be reviewed shortly.'),
           ToastType.Normal,
         );
-        onClose();
+        handleOnClose();
       }
     } catch (error) {
       console.error('🚨 신고 API 호출 오류:', error);
@@ -89,6 +89,13 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
       getLocalizedText('TODO : Your report has been successfully received and will be reviewed shortly.'),
       ToastType.Normal,
     );
+    handleOnClose();
+  };
+
+  const handleOnClose = () => {
+    setSelectedValue(0);
+    setInput(['', '', '', '', '']);
+    setAgreement(false);
     onClose();
   };
 
@@ -144,7 +151,7 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
   };
 
   return (
-    <CustomDrawer open={isOpen} onClose={onClose}>
+    <CustomDrawer open={isOpen} onClose={handleOnClose}>
       <div className={styles.reportDrawer}>
         <h1 className={styles.reportDrawerTitle}>{getLocalizedText('TODO : Report')}</h1>
         <p className={styles.reportDrawerDesc}>{getLocalizedText('TODO : Please Select a reason for the report')}</p>
@@ -195,8 +202,11 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
             },
             onClickButton: () => {
               // TODO : Copy right Report는 Google Form으로 이동
-              window.open('https://forms.gle/123425', '_blank');
-              onClose();
+              window.open(
+                'https://docs.google.com/forms/d/e/1FAIpQLSeqtRsU_5jnVCMY_OXGCqHRfAQMW4aLwpPvzKwdAhpTH7-3yQ/viewform?usp=sharing&ouid=101134622780875976894',
+                '_blank',
+              );
+              handleOnClose();
             },
           })}
           {renderReportItem({
@@ -244,7 +254,7 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
           size="Medium"
           type="Tertiary"
           state="Normal"
-          onClick={onClose}
+          onClick={handleOnClose}
           customClassName={[styles.reportDrawerButton]}
         >
           {getLocalizedText('TODO : Cancel')}
