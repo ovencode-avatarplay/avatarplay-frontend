@@ -720,7 +720,7 @@ const SearchBoard: React.FC = () => {
         initialActiveSplitter={data.indexTab}
         splitters={splitterData}
         splitterStyle={{
-          height: 'var(--header-removed-height)',
+          //height: 'var(--header-removed-height)',
           paddingTop: '58px',
         }}
         headerStyle={{

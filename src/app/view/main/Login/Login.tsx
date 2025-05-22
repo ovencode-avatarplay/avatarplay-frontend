@@ -21,7 +21,7 @@ const Login = () => {
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_FRONT_URL}/${langCode}/auth/login-callback?from=oauth`,
+        redirectTo: `${langCode}/auth/login-callback?from=oauth`,
       },
     });
 

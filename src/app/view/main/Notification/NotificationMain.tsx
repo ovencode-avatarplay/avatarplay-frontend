@@ -9,53 +9,61 @@ import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {Settings} from '@mui/icons-material';
 import {useDispatch} from 'react-redux';
 import {setUnread} from '@/redux-store/slices/Notification';
+import {sendGetNotificationList, NotificationInfo, NotificationSystemType} from '@/app/NetWork/NotificationNetwork';
 
 interface NotificationMainProps {
   open: boolean;
   onClose: () => void;
 }
 
-const notifications = [
-  {
-    id: 1,
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    title: 'Notification text',
-    text: '',
-    time: '2m',
-    type: 'action',
-    unread: true,
-  },
-  {
-    id: 2,
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    title: 'Notification text',
-    text: 'Notification text',
-    time: '2m',
-    type: 'normal',
-    unread: false,
-  },
-  {
-    id: 3,
-    avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
-    title: 'Notification text',
-    text: 'Notification text',
-    time: '2m',
-    type: 'normal',
-    unread: false,
-  },
-];
-
 const tags = ['All', 'Request', 'Notice', 'System'];
 
 export default function NotificationMain({open, onClose}: NotificationMainProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [notifications, setNotifications] = useState<NotificationInfo[]>([]);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const response = await sendGetNotificationList({
+        page: {
+          offset: 0,
+          limit: 20,
+        },
+      });
+      if (response.data) {
+        setNotifications(response.data.notificationList);
+      }
+    } catch (error) {
+      console.error('알림 목록을 불러오는데 실패했습니다:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (open) {
       dispatch(setUnread(false));
+      fetchNotifications();
     }
   }, [open, dispatch]);
+
+  const filteredNotifications = notifications.filter(notification => {
+    switch (activeIndex) {
+      case 0: // All
+        return true;
+      case 1: // Request
+        return notification.systemType === NotificationSystemType.Request;
+      case 2: // Notice
+        return notification.systemType === NotificationSystemType.Notice;
+      case 3: // System
+        return notification.systemType === NotificationSystemType.System;
+      default:
+        return true;
+    }
+  });
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -74,10 +82,11 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
             onTagChange={tag => setActiveIndex(tags.indexOf(tag))}
           />
         </div>
-        {activeIndex === 0 && <Notice />}
-        {activeIndex === 1 && <Notice />}
-        {activeIndex === 2 && <Notice />}
-        {activeIndex === 3 && <Notice />}
+        {loading ? (
+          <div className={styles.loading}>로딩 중...</div>
+        ) : (
+          filteredNotifications.map(notification => <Notice key={notification.id} notification={notification} />)
+        )}
       </div>
     </Modal>
   );

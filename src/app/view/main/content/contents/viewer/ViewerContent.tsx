@@ -107,7 +107,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       };
 
       setIsLoading(true);
+      console.log('🔄 PlayButton API 호출 중...');
       const playResponse = await sendPlayButton(playRequest);
+      console.log('✅ PlayButton API 응답:', playResponse.data);
       setIsLoading(false);
       setContentType(playResponse.data?.contentType || 0);
       console.log('✅ PlayButton API 응답:', playResponse.data);
@@ -115,6 +117,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,6 +137,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -151,6 +157,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setCurEpisodeId(playData.data?.recentlyPlayInfo.episodeId || 0);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -1003,13 +1011,30 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                         : null;
                     return sourceLayer?.webtoonSourceUrls?.map((url, idx) => (
                       <div key={idx} className={styles.webtoonImageWrapper}>
-                        <img src={url} className={styles.webtoonImage} />
-                        {subtitleLayer?.webtoonSourceUrls?.[idx] && (
+                        <div className={styles.webtoonImageContainer}>
                           <img
-                            src={subtitleLayer.webtoonSourceUrls[idx]}
-                            className={styles.webtoonSubtitleImage}
-                            alt="subtitle"
+                            src={url}
+                            className={styles.webtoonImage}
+                            loading="lazy"
+                            onLoad={e => {
+                              const img = e.target as HTMLImageElement;
+                              img.style.opacity = '1';
+                            }}
                           />
+                        </div>
+                        {subtitleLayer?.webtoonSourceUrls?.[idx] && (
+                          <div className={styles.webtoonSubtitleContainer}>
+                            <img
+                              src={subtitleLayer.webtoonSourceUrls[idx]}
+                              className={styles.webtoonSubtitleImage}
+                              alt="subtitle"
+                              loading="lazy"
+                              onLoad={e => {
+                                const img = e.target as HTMLImageElement;
+                                img.style.opacity = '1';
+                              }}
+                            />
+                          </div>
                         )}
                         {idx === sourceLayer.webtoonSourceUrls.length - 1 && (
                           <InView
