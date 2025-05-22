@@ -1,0 +1,113 @@
+.reportDrawer
+{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.reportDrawerTitle
+{
+    text-align: center;
+
+}
+
+.reportDrawerDesc
+{
+    text-align: center;
+}
+ 
+.reportDrawerItemArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+}
+
+.reportDrawerAlert
+{
+
+}
+
+.agreementArea
+{
+    display: flex;
+    flex-direction: row;
+
+}
+
+.agreementTextArea
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.agreementTitle 
+{
+
+}
+
+.agreementDescArea
+{
+    display: flex;
+    flex-direction: row;
+}
+
+.agreementDesc
+{
+
+}
+
+.agreementLink
+{
+
+}
+
+.reportDrawerButtonArea
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+}
+
+.reportDrawerButton
+{
+    flex: 1;
+}
+
+
+
+
+.reportItem
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reportTopArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.reportTextArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reportTitle
+{
+
+}
+
+.reportDesc
+{
+
+}
+
+

@@ -105,8 +105,9 @@ import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
 import {sendCheckDMChatLinkKey} from '@/app/NetWork/ChatMessageNetwork';
-import LoadingOverlay from '@/components/create/LoadingOverlay';
+import LoadingOverlay from '@/components/create/LoadingOverlay'; 
 import CustomPopup from '@/components/layout/shared/CustomPopup';
+import ReportDrawer from '@/components/report/ReportDrawer'; 
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -313,6 +314,9 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
   const pathname = usePathname();
   const refDescription = useRef<HTMLDivElement | null>(null);
   const refHeader = useRef<HTMLDivElement | null>(null);
+
+  const [isReportOpen, setIsReportOpen] = useState(false);
+
   const [data, setData] = useState<DataProfileType>({
     pathname: '',
     urlLinkKey: urlLinkKey,
@@ -1309,13 +1313,23 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           {
             name: getLocalizedText('common_dropdown_report'),
             onClick: () => {
-              dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
+              setIsReportOpen(true);
             },
           },
         ]}
         selectedIndex={-1}
       />
-
+      <ReportDrawer
+        open={isReportOpen}
+        onClose={() => {
+          setIsReportOpen(false);
+        }}
+        reportData={{
+          reportType: 0,
+          reportContentId: data.profileId,
+          reportContentUrl: data.urlLinkKey,
+        }}
+      />
       <LoadingOverlay loading={isLoading} />
     </>
   );
@@ -2359,6 +2373,7 @@ export const TabContentComponentWrap = ({
   const {isPD, isCharacter, isMyPD, isMyCharacter, isOtherPD, isOtherCharacter, isChannel, isOtherChannel} =
     getUserType(isMine, profileType);
   const router = useRouter();
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [data, setData] = useState<{
     tabContentMenu: TabContentMenuType;
     isShareOpened: boolean;
@@ -2513,7 +2528,7 @@ export const TabContentComponentWrap = ({
           alert('hide api 연동 필요');
         }}
         onReport={() => {
-          alert('report api 연동 필요');
+          setIsReportOpen(true);
         }}
       />
       <SharePopup
@@ -2523,7 +2538,18 @@ export const TabContentComponentWrap = ({
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
         }}
-      ></SharePopup>
+      ></SharePopup> 
+      <ReportDrawer
+        open={isReportOpen}
+        onClose={() => {
+          setIsReportOpen(false);
+        }}
+        reportData={{
+          reportType: 0,
+          reportContentId: profileId,
+          reportContentUrl: profileUrlLinkKey,
+        }}
+      /> 
       {isDeletePopupOpen &&
         ReactDOM.createPortal(
           <CustomPopup
@@ -2545,7 +2571,7 @@ export const TabContentComponentWrap = ({
             ]}
           />,
           document.body,
-        )}
+        )} 
     </>
   );
 };
