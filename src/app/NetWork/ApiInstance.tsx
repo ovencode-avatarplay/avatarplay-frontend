@@ -1,7 +1,7 @@
 // src/app/Network/ApiInstance.tsx
 
 import {getLocalizedLink} from '@/utils/UrlMove';
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, InternalAxiosRequestConfig} from 'axios';
 import {showPopup} from './networkPopup/popupManager';
 import getLocalizedText from '@/utils/getLocalizedText';
 
@@ -19,12 +19,19 @@ const api: AxiosInstance = axios.create({
   }),
 });
 
+export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  allowMouseEvent?: boolean;
+}
+
 // Axios 인터셉터로 Bearer JWT 토큰 자동 추가
 api.interceptors.request.use(
-  config => {
-    document.body.style.pointerEvents = 'none';
-    const requestKey = config.url ?? '';
+  (config: CustomAxiosRequestConfig) => {
+    const isPreventMouseEvent = !config?.allowMouseEvent;
 
+    if (isPreventMouseEvent) {
+      document.body.style.pointerEvents = 'none';
+    }
+    const requestKey = config.url ?? '';
     if (pendingRequests.has(requestKey)) {
       console.warn(requestKey + ' : Busy processing an existing API request.');
       return Promise.reject({resultCode: 999, message: requestKey + ' : Busy processing an existing API request.'});

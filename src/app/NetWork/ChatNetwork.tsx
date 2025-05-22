@@ -1,6 +1,6 @@
 // src/app/Network/ChatNetwork.tsx
 
-import api, {ResponseAPI} from './ApiInstance';
+import api, {CustomAxiosRequestConfig, ResponseAPI} from './ApiInstance';
 import {ESystemError} from './ESystemError';
 
 // 채팅 Send ##########################################
@@ -296,7 +296,9 @@ export interface TriggerMediaInfo {
 // ChattingResult API 호출 함수 ##########################################
 export const sendChattingResult = async (req: ChattingResultReq): Promise<ChattingResultRes> => {
   try {
-    const response = await api.post<ChattingResultRes>('/Chatting/result', req);
+    const response = await api.post<ChattingResultRes>('/Chatting/result', req, {
+      allowMouseEvent: true, // ✅ 커스텀 옵션
+    } as CustomAxiosRequestConfig);
     console.log('Chatting result request:', req, response);
 
     if (response.data.resultCode === 0) {
