@@ -222,6 +222,15 @@ export enum InteractionType {
   Friend = 6,
   Workroom = 7,
 }
+
+export enum ReportType {
+  InappropriateContent = 0, // 부적절한 콘텐츠
+  NSFW = 1, //성인 콘텐츠
+  StoryViolation = 2, //스토리 위반
+  CopyrightViolation = 3, //저작권 위반
+  Other = 4, //기타
+}
+
 // Feed Like API 호출 함수
 export const sendLike = async (
   interactionType: InteractionType,
@@ -398,9 +407,10 @@ export const pinFix = async (payload: PinFixReq): Promise<ResponseAPI<PinFixRes>
 };
 
 export interface ReportReq {
-  interactionType: number; // 예: 댓글, 피드, 에피소드 등
+  interactionType: InteractionType; // 예: 댓글, 피드, 에피소드 등
   typeValueId: number; // 신고 대상 ID
-  isReport: boolean; // true: 신고, false: 신고 취소
+  reportType: ReportType; // 신고 유형
+  reportContent: string; // 신고 내용
 }
 
 export interface ReportRes {

@@ -49,6 +49,7 @@ import {
   BookMarkReq,
   CommentContentType,
   InteractionType,
+  ReportType,
   sendDisLike,
   sendLike,
   sendReport,
@@ -106,7 +107,9 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       };
 
       setIsLoading(true);
+      console.log('🔄 PlayButton API 호출 중...');
       const playResponse = await sendPlayButton(playRequest);
+      console.log('✅ PlayButton API 응답:', playResponse.data);
       setIsLoading(false);
       setContentType(playResponse.data?.contentType || 0);
       console.log('✅ PlayButton API 응답:', playResponse.data);
@@ -114,6 +117,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setCurEpisodeId(playResponse.data?.recentlyPlayInfo.episodeId || 0);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -132,6 +137,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -150,6 +157,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setCurEpisodeId(playData.data?.recentlyPlayInfo.episodeId || 0);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -789,7 +798,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       const response = await sendReport({
         interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
         typeValueId: info?.contentId, // 신고 대상 ID
-        isReport: true, // true = 신고, false = 취소
+        reportType: ReportType.Other, // 신고 유형
+        reportContent: '', // 신고 내용
       });
     } catch (error) {
       console.error('🚨 신고 API 호출 오류:', error);

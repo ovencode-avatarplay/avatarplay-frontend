@@ -22,6 +22,7 @@ import chattingEnterSlice from './slices/ChattingEnter';
 // slice currency
 import currencySlice from './slices/Currency';
 import notificationReducer from './slices/Notification';
+import commonReduxSlice from './slices/CommonRedux';
 
 const persistConfig = {
   key: 'root',
@@ -36,6 +37,7 @@ const persistConfig = {
     'contentselection',
     'currencyInfo',
     'notification',
+    'commonRedux',
   ],
 };
 
@@ -67,6 +69,8 @@ const reducers = combineReducers({
   //#endregion
   currencyInfo: currencySlice,
   notification: notificationReducer,
+
+  commonRedux: commonReduxSlice,
 });
 
 // persistReducer로 reducers 감싸기

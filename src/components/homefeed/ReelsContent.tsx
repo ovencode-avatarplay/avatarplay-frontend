@@ -672,7 +672,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
           setIsReportOpen(false);
         }}
         reportData={{
-          reportType: 0,
+          reportType: InteractionType.Feed,
           reportContentId: item.id,
           reportContentUrl: item.urlLinkKey,
         }}

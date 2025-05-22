@@ -197,6 +197,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
           const newState = res.data?.checkContentItemList.find(item => item.id === data.dataMix!.id)?.state;
 
           if (newState !== undefined && newState !== ContentEpisodeState.Upload) {
+            await refreshInfo();
             data.dataMix!.state = newState;
             setData({...data});
             clearInterval(interval);
@@ -220,7 +221,11 @@ const ContentSeriesDetail = ({id, type}: Props) => {
 
           const ids = uploadingEpisodes.map(ep => ep.episodeId!);
           const res = await sendCheckContentState({checkContentType: CheckContentType.Episode, checkIdList: ids});
-
+          const hasStateChanged = res.data?.checkContentItemList.some(item => {
+            const currentEpisode = data.dataEpisodes?.episodeList.find(ep => ep.episodeId === item.id);
+            return currentEpisode && item.state !== currentEpisode.episodeState;
+          });
+          if (hasStateChanged) await refreshInfo();
           const updatedList = data.dataEpisodes?.episodeList.map(ep => {
             const updated = res.data?.checkContentItemList.find(item => item.id === ep.episodeId);
             return updated ? {...ep, episodeState: updated.state} : ep;

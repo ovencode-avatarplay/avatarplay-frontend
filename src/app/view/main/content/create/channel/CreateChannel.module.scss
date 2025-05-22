@@ -706,9 +706,11 @@
 }
 
 .submitBtnWrap {
+  outline: none;
   position: fixed;
   bottom: 0;
   width: calc(100% - 16px * 2);
+  max-width: 1300px;
   height: 50px;
 
   background: white;
