@@ -9,13 +9,30 @@ interface NoticeProps {
 
 const Notice: React.FC<NoticeProps> = ({notification}) => {
   const getActions = (notification: NotificationInfo): NotificationAction[] | undefined => {
-    if (notification.contentType === NotificationContentType.AddFriend) {
-      return [
-        {label: '수락', onClick: () => {}, type: 'primary'},
-        {label: '거절', onClick: () => {}, type: 'secondary'},
-      ];
+    switch (notification.contentType) {
+      case NotificationContentType.AddFriend:
+        return [
+          {label: '수락', onClick: () => {}, type: 'primary'},
+          {label: '거절', onClick: () => {}, type: 'secondary'},
+        ];
+      case NotificationContentType.AddFriendAccept:
+        return [{label: '프로필 보기', onClick: () => {}, type: 'primary'}];
+      case NotificationContentType.AddFriendReject:
+        return [{label: '다시 요청', onClick: () => {}, type: 'primary'}];
+      default:
+        return undefined;
     }
-    return undefined;
+  };
+
+  const getNotificationType = (notification: NotificationInfo): 'normal' | 'action' | 'system' => {
+    switch (notification.contentType) {
+      case NotificationContentType.AddFriend:
+      case NotificationContentType.AddFriendAccept:
+      case NotificationContentType.AddFriendReject:
+        return 'action';
+      default:
+        return notification.systemType === 2 ? 'system' : 'normal';
+    }
   };
 
   return (
@@ -28,7 +45,7 @@ const Notice: React.FC<NoticeProps> = ({notification}) => {
         time={notification.createdAt}
         unread={!notification.isRead}
         actions={getActions(notification)}
-        type={notification.systemType === 0 ? 'action' : 'normal'}
+        type={getNotificationType(notification)}
         isSystem={notification.systemType === 2}
       />
     </div>

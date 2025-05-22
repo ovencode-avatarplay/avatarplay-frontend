@@ -51,8 +51,18 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
   }, [open, dispatch]);
 
   const filteredNotifications = notifications.filter(notification => {
-    if (activeIndex === 0) return true; // All
-    return notification.systemType === activeIndex - 1;
+    switch (activeIndex) {
+      case 0: // All
+        return true;
+      case 1: // Request
+        return notification.systemType === NotificationSystemType.Request;
+      case 2: // Notice
+        return notification.systemType === NotificationSystemType.Notice;
+      case 3: // System
+        return notification.systemType === NotificationSystemType.System;
+      default:
+        return true;
+    }
   });
 
   return (
