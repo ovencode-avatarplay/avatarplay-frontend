@@ -22,8 +22,7 @@ interface Props {
   isDM?: boolean;
   onClickOption?: () => void;
   onClickButton?: () => void;
-  urlLinkKey: string;
-  profileUrlLinkKey?: string;
+  profileUrlLinkKey: string;
 }
 
 export enum BadgeType {
@@ -61,7 +60,6 @@ const MessageProfile: React.FC<Props> = ({
   isDM = false,
   onClickOption,
   onClickButton,
-  urlLinkKey,
   profileUrlLinkKey,
 }) => {
   const router = useRouter();
@@ -160,7 +158,10 @@ const MessageProfile: React.FC<Props> = ({
       {checkType === CheckType.Left && renderCheck()}
 
       {/* 프로필 이미지 */}
-      <div className={styles.profileContainer} onClick={() => pushLocalizedRoute('/profile/' + roomid, router)}>
+      <div
+        className={styles.profileContainer}
+        onClick={() => pushLocalizedRoute('/profile/' + profileUrlLinkKey, router)}
+      >
         <img src={profileImage} alt="Profile" className={styles.profileImage} />
         {isHighlight && <div className={styles.statusIndicator} />}
       </div>
@@ -169,8 +170,7 @@ const MessageProfile: React.FC<Props> = ({
         <div
           className={styles.profileInfo}
           onClick={() => {
-            if (urlLinkKey == '') checkDMLinkKey();
-            else pushLocalizedRoute('/DM/' + urlLinkKey, router);
+            checkDMLinkKey();
           }}
         >
           {/* 프로필 정보 */}
@@ -182,7 +182,7 @@ const MessageProfile: React.FC<Props> = ({
         </div>
       ) : (
         <Link
-          href={getLocalizedLink(`/chat/?v=${urlLinkKey}` || `?v=`)}
+          href={getLocalizedLink(`/chat/?v=${profileUrlLinkKey}` || `?v=`)}
           className={styles.profileInfo}
           onClick={() => {}}
         >
@@ -207,7 +207,7 @@ const MessageProfile: React.FC<Props> = ({
               if (onClickOption) onClickOption();
             }}
           >
-            {isPin && <img src={BoldPin.src} alt="pin" className={styles.pinIcon} />}
+            {/* {isPin && <img src={BoldPin.src} alt="pin" className={styles.pinIcon} />} */}
             <img src={BoldMore.src} alt="more" className={styles.moreIcon} />
           </button>
         )}

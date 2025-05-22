@@ -34,6 +34,8 @@ import {
   LineShare,
   BoldVerifiedLabel,
   LineReward,
+  BoldFolder,
+  BoldFolderContent,
 } from '@ui/Icons';
 import styles from './ProfileBase.module.scss';
 import cx from 'classnames';
@@ -103,8 +105,9 @@ import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
 import {sendCheckDMChatLinkKey} from '@/app/NetWork/ChatMessageNetwork';
-import LoadingOverlay from '@/components/create/LoadingOverlay';
-import ReportDrawer from '@/components/report/ReportDrawer';
+import LoadingOverlay from '@/components/create/LoadingOverlay'; 
+import CustomPopup from '@/components/layout/shared/CustomPopup';
+import ReportDrawer from '@/components/report/ReportDrawer'; 
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -114,6 +117,7 @@ const mappingStrToGlobalTextKey = {
   Shared: 'common_label_shared',
   Contents: 'common_label_contents',
   Game: 'common_label_game',
+  Role: 'common_label_role',
 };
 
 export enum eTabFavoritesType {
@@ -151,7 +155,7 @@ export enum eTabCharacterType {
   Info = 90,
   Contents = 1,
   Channel,
-  Character,
+  Role,
 }
 
 export enum eTabCharacterOtherType {
@@ -159,7 +163,7 @@ export enum eTabCharacterOtherType {
   Info = 90,
   Contents = 1,
   Channel,
-  Character,
+  Role,
   Game,
 }
 export enum eTabChannelType {
@@ -481,7 +485,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         count = data.profileTabInfo[indexTab]?.channelInfoList?.length;
       } else if (indexTab == eTabCharacterType.Contents) {
         count = data.profileTabInfo[indexTab]?.contentInfoList?.length;
-      } else if (indexTab == eTabCharacterType.Character) {
+      } else if (indexTab == eTabCharacterType.Role) {
         count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
       } else count = 0;
     } else if (isChannel) {
@@ -489,7 +493,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         count = data.profileTabInfo[indexTab]?.feedInfoList?.length;
       } else if (indexTab == eTabChannelType.Contents) {
         count = data.profileTabInfo[indexTab]?.contentInfoList?.length;
-      } else if (indexTab == eTabCharacterType.Character) {
+      } else if (indexTab == eTabCharacterType.Role) {
         count = data.profileTabInfo[indexTab]?.characterInfoList?.length;
       } else count = 0;
     } else {
@@ -639,6 +643,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
 
   const refreshProfileInfo = async (urlLink: string) => {
     let resProfileInfo = await getProfileInfo(urlLink);
+    if (resProfileInfo?.resultCode == 999) return;
     if (resProfileInfo?.resultCode != 0) {
       dataToast.open(getLocalizedText('common_alert_111'), ToastType.Normal);
       replace('/main/homefeed');
@@ -726,7 +731,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.channelInfoList?.length;
       } else if (data.indexTab == eTabCharacterOtherType.Info) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfo;
-      } else if (data.indexTab == eTabCharacterType.Character) {
+      } else if (data.indexTab == eTabCharacterType.Role) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList.length;
       } else {
         isEmptyTab = true;
@@ -805,7 +810,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
             }}
             customClassName={[styles.button]}
           >
-            {getLocalizedText('Common', 'common_button_subscribe')}
+            {getLocalizedText('Common', 'common_button_subscribers')}
           </CustomButton>
           <CustomButton
             size="Small"
@@ -1917,7 +1922,7 @@ export const TabFilterComponent = ({profileType, isMine, tabIndex, filterCluster
 
   if (
     (isPD && [eTabPDType.Character].includes(tabIndex)) ||
-    (isCharacter && [eTabCharacterType.Character].includes(tabIndex)) ||
+    (isCharacter && [eTabCharacterType.Role].includes(tabIndex)) ||
     (isChannel && [eTabChannelType.Character].includes(tabIndex)) ||
     (isFavorites && [eTabFavoritesType.Character].includes(tabIndex)) ||
     (isPlayList && [eTabPlayListType.Character].includes(tabIndex))
@@ -2385,6 +2390,9 @@ export const TabContentComponentWrap = ({
 
     isOpenPreview: false,
   });
+
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+
   const handleShare = async (url: string = window.location.href, title: string = '') => {
     const shareData = {
       title: title,
@@ -2407,6 +2415,38 @@ export const TabContentComponentWrap = ({
   const onOpenContentMenu = (dataContentMenu: TabContentMenuType) => {
     data.tabContentMenu = dataContentMenu;
     setData({...data});
+  };
+
+  const handleDelete = async () => {
+    if (
+      (isPD && tabIndex == eTabPDType.Character) ||
+      (isCharacter && tabIndex == eTabCharacterType.Role) ||
+      (isChannel && tabIndex == eTabChannelType.Character)
+    ) {
+      await deleteProfile({profileId: Number(data.tabContentMenu.id)});
+    }
+
+    if (
+      (isPD && tabIndex == eTabPDType.Feed) ||
+      (isCharacter && tabIndex == eTabCharacterType.Feed) ||
+      (isChannel && tabIndex == eTabChannelType.Feed)
+    ) {
+      await deleteFeed({feedId: Number(data.tabContentMenu.id)});
+    }
+
+    if (
+      (isCharacter && tabIndex == eTabCharacterType.Contents) ||
+      (isChannel && tabIndex == eTabChannelType.Contents)
+    ) {
+      await sendDeleteContent({contentId: Number(data.tabContentMenu.id)});
+    }
+
+    if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
+      await deleteProfile({profileId: Number(data.tabContentMenu.id)});
+    }
+
+    setIsDeletePopupOpen(false);
+    onRefreshTab(true);
   };
 
   return (
@@ -2441,38 +2481,13 @@ export const TabContentComponentWrap = ({
           handleShare(url, title);
         }}
         onDelete={async () => {
-          if (
-            (isPD && tabIndex == eTabPDType.Character) ||
-            (isCharacter && tabIndex == eTabCharacterType.Character) ||
-            (isChannel && tabIndex == eTabChannelType.Character)
-          ) {
-            await deleteProfile({profileId: Number(data.tabContentMenu.id)});
-          }
-
-          if (
-            (isPD && tabIndex == eTabPDType.Feed) ||
-            (isCharacter && tabIndex == eTabCharacterType.Feed) ||
-            (isChannel && tabIndex == eTabChannelType.Feed)
-          ) {
-            await deleteFeed({feedId: Number(data.tabContentMenu.id)});
-          }
-
-          if (
-            (isCharacter && tabIndex == eTabCharacterType.Contents) ||
-            (isChannel && tabIndex == eTabChannelType.Contents)
-          ) {
-            await sendDeleteContent({contentId: Number(data.tabContentMenu.id)});
-          }
-
-          if ((isPD && tabIndex == eTabPDOtherType.Channel) || (isCharacter && tabIndex == eTabCharacterType.Channel)) {
-            await deleteProfile({profileId: Number(data.tabContentMenu.id)});
-          }
-          onRefreshTab(true);
+          console.log('delete');
+          setIsDeletePopupOpen(true);
         }}
         onEdit={() => {
           if (
             (isPD && tabIndex == eTabPDType.Character) ||
-            (isCharacter && tabIndex == eTabCharacterType.Character) ||
+            (isCharacter && tabIndex == eTabCharacterType.Role) ||
             (isChannel && tabIndex == eTabChannelType.Character)
           ) {
             router.push(getLocalizedLink(`/update/character/` + data.tabContentMenu.id));
@@ -2523,7 +2538,7 @@ export const TabContentComponentWrap = ({
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
         }}
-      ></SharePopup>
+      ></SharePopup> 
       <ReportDrawer
         open={isReportOpen}
         onClose={() => {
@@ -2534,7 +2549,29 @@ export const TabContentComponentWrap = ({
           reportContentId: profileId,
           reportContentUrl: profileUrlLinkKey,
         }}
-      />
+      /> 
+      {isDeletePopupOpen &&
+        ReactDOM.createPortal(
+          <CustomPopup
+            type="alert"
+            title={getLocalizedText('TODO : Are you sure?')}
+            description={getLocalizedText('TODO : Are you sure you want to delete this item?')}
+            buttons={[
+              {
+                label: getLocalizedText('common_button_cancel'),
+                onClick: () => {
+                  setIsDeletePopupOpen(false);
+                },
+              },
+              {
+                label: getLocalizedText('common_button_delete'),
+                isPrimary: true,
+                onClick: handleDelete,
+              },
+            ]}
+          />,
+          document.body,
+        )} 
     </>
   );
 };
@@ -2611,7 +2648,7 @@ const TabContentComponent = ({
   }
   if (
     (isPD && tabIndex == eTabPDType.Character) ||
-    (isCharacter && tabIndex == eTabCharacterType.Character) ||
+    (isCharacter && tabIndex == eTabCharacterType.Role) ||
     (isChannel && tabIndex == eTabChannelType.Character)
   ) {
     return (
@@ -3115,10 +3152,12 @@ export const ContentComponent = ({
               <div className={styles.value}>{itemInfo?.dislikeCount}</div>
             </div>
           )}
-          <div className={styles.viewWrap}>
-            <img src={BoldVideo.src} alt="" />
-            <div className={styles.value}>{itemInfo?.mediaCount}</div>
-          </div>
+          {itemInfo?.contentType != ContentType.Single && (
+            <div className={styles.viewWrap}>
+              <img src={BoldFolderContent.src} alt="" />
+              <div className={styles.value}>{itemInfo?.mediaCount}</div>
+            </div>
+          )}
         </div>
         <div className={styles.titleWrap}>
           <div className={styles.left}>

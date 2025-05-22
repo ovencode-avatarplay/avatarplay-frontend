@@ -473,12 +473,12 @@ const WebtoonContentUpload: React.FC<WebtoonContentUploadProps> = ({
           setIsUploadOpen(false);
         }}
         multiple={true}
-        setContentImageUrl={() => {}}
-        uploadType={
-          selectedIndex !== null && selectedIndex >= 0
-            ? UploadMediaState.ContentEpisodeWebtoonSubtitle
-            : UploadMediaState.ContentEpisodeWebtoonImage
-        }
+        setContentImageUrl={(url: string) => {
+          setImageFiles(prev => [...prev, url]);
+          setImageNames(prev => [...prev, url]);
+          setIsUploadOpen(false);
+        }}
+        uploadType={UploadMediaState.Content}
       />
       <LoadingOverlay loading={isLoading} />
     </>

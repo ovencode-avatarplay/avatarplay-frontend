@@ -11,6 +11,7 @@ import {
   sendLeaveChatRoom,
   ChatRoomType,
   SearchCharacterRoomInfo,
+  sendCheckUnreadReddot,
 } from '@/app/NetWork/ChatMessageNetwork';
 import {useInView} from 'react-intersection-observer';
 import {CharacterIP} from '@/app/NetWork/CharacterNetwork';
@@ -31,6 +32,7 @@ const tags = [
   'common_tag_sports',
   'common_tag_star',
   'common_tag_brand',
+  'common_filterinterest_dating',
 ];
 
 // API 응답 타입 정의
@@ -55,6 +57,7 @@ const DMChat: React.FC = () => {
   const LIMIT = 10;
   const [isPinOpen, setIsPinOpen] = useState(true);
   const [isChatOpen, setIsChatOpen] = useState(true);
+  const [highlightMap, setHighlightMap] = useState<Record<number, boolean>>({});
 
   const {ref: observerRef, inView} = useInView();
 
@@ -75,7 +78,7 @@ const DMChat: React.FC = () => {
 
   const optionItems: SelectDrawerArrowItem[] = [
     {
-      name: 'Favorites /Unfavorites',
+      name: selectedRoom?.isBookmark ? 'Unfavorites' : 'Favorites',
       arrowName: '',
       onClick: async () => {
         if (selectedRoom) {
@@ -83,11 +86,16 @@ const DMChat: React.FC = () => {
             const response = await bookmark({
               interactionType: InteractionType.Friend,
               typeValueId: selectedRoom.roomId,
-              isBookMark: true,
+              isBookMark: !selectedRoom.isBookmark,
             });
 
             if (response?.data) {
-              // UI 업데이트 로직이 필요한 경우 여기에 추가
+              // UI 업데이트
+              setDmList(prevList =>
+                prevList.map(room =>
+                  room.roomId === selectedRoom.roomId ? {...room, isBookmark: !room.isBookmark} : room,
+                ),
+              );
             }
             setOpenOption(false);
           } catch (e) {
@@ -97,7 +105,7 @@ const DMChat: React.FC = () => {
       },
     },
     {
-      name: 'Pin to Top / Unpin ',
+      name: selectedRoom?.isPinFix ? 'Unpin' : 'Pin to Top',
       arrowName: '',
       onClick: () => {
         if (selectedRoomId) {
@@ -148,7 +156,7 @@ const DMChat: React.FC = () => {
 
     try {
       const response = await sendGetDMChatRoomList({
-        isDMChatRoom: true,
+        isDMChatRoom: selectedTag === 'Chatroom' ? true : false,
         search: '',
         interest: selectedTag === 'Chatroom' ? '' : selectedTag,
         sort: 0,
@@ -157,16 +165,13 @@ const DMChat: React.FC = () => {
       });
 
       // 태그에 따라 다른 리스트 사용
-      let newList =
-        selectedTag === 'Chatroom'
-          ? response.data?.dmChatRoomList ?? []
-          : response.data?.dmChatRecommendProfileList ?? [];
+      let newList = response.data?.dmChatRoomList ?? [];
 
       // 필터 처리 (CharacterIP는 서버에서 따로 안 주므로 테스트용 로직)
-      const filter = filterValue === 'Original' ? '1' : filterValue === 'Fan' ? '2' : '0';
+      const filter = CharacterIP.None.toString();
       newList = newList.filter((_, i) => {
         const characterIP = i % 2 === 0 ? '1' : '2';
-        return filter === '0' || filter === characterIP;
+        return filter === '0';
       });
 
       // 정렬
@@ -191,13 +196,67 @@ const DMChat: React.FC = () => {
       }
 
       setOffset(currentOffset + newList.length);
-      setHasMore(newList.length === LIMIT);
     } catch (error) {
       console.error('DM 페이징 오류:', error);
     } finally {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    if (inView && hasMore && !isLoading) {
+      const fetchMore = async () => {
+        const currentOffset = offset;
+        try {
+          setIsLoading(true);
+          const response = await sendGetDMChatRoomList({
+            isDMChatRoom: selectedTag === 'Chatroom' ? true : false,
+            search: '',
+            interest: selectedTag === 'Chatroom' ? '' : selectedTag,
+            sort: 0,
+            page: {offset: currentOffset, limit: LIMIT},
+            alreadyReceivedProfileIds: alreadyReceivedProfileIds,
+          });
+
+          let newList = response.data?.dmChatRoomList ?? [];
+
+          // 필터 처리
+          const filter = CharacterIP.None.toString();
+          newList = newList.filter((_, i) => {
+            const characterIP = i % 2 === 0 ? '1' : '2';
+            return filter === '0';
+          });
+
+          // 정렬
+          newList.sort((a, b) => {
+            if (sortValue === 'Newest') {
+              return new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime();
+            } else if (sortValue === 'Oldest') {
+              return new Date(a.lastMessageAt).getTime() - new Date(b.lastMessageAt).getTime();
+            }
+            return 0;
+          });
+
+          if (newList.length > 0) {
+            const newProfileIds = newList.map(item => item.roomId);
+            setAlreadyReceivedProfileIds(prev => [...prev, ...newProfileIds]);
+            setDmList(prev => [...prev, ...newList]);
+            setOffset(currentOffset + newList.length);
+            // 서버에서 받아온 데이터가 LIMIT보다 작으면 더 이상 불러올 데이터가 없다는 의미
+            setHasMore(newList.length >= LIMIT);
+          } else {
+            // 데이터가 없으면 더 이상 불러올 데이터가 없다는 의미
+            setHasMore(false);
+          }
+        } catch (error) {
+          console.error('DM 페이징 오류:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchMore();
+    }
+  }, [inView]);
 
   useEffect(() => {
     setOffset(0);
@@ -206,11 +265,45 @@ const DMChat: React.FC = () => {
     fetchDMChatRooms(true);
   }, [filterValue, sortValue, selectedTag]);
 
+  // 폴링으로 레드닷 상태 체크
   useEffect(() => {
-    if (inView && hasMore && !isLoading) {
-      fetchDMChatRooms(false);
-    }
-  }, [inView]);
+    if (dmList.length === 0) return;
+    let timer: NodeJS.Timeout;
+    let isUnmounted = false;
+    const poll = async () => {
+      try {
+        const roomIdList = dmList.map(dm => dm.roomId);
+        if (roomIdList.length === 0) return;
+        const res = await sendCheckUnreadReddot({
+          checkRoomIdList: roomIdList,
+          isNewest: sortValue === 'Newest',
+        });
+        if (!isUnmounted && res.data && res.data.dmChatUrlLinkKey) {
+          // 하이라이트 맵 생성
+          const map: Record<number, boolean> = {};
+          res.data.dmChatUrlLinkKey.forEach((item: {key: number; value: boolean}) => {
+            map[item.key] = item.value;
+          });
+          setHighlightMap(map);
+          // 응답 roomId 순서대로 dmList 재정렬
+          if (res.data.dmChatUrlLinkKey.length > 0) {
+            setDmList(prevList => {
+              const roomMap = new Map(prevList.map(room => [room.roomId, room]));
+              return res.data!.dmChatUrlLinkKey.map(item => roomMap.get(item.key)).filter(Boolean) as typeof prevList;
+            });
+          }
+        }
+      } catch (e) {
+        // 에러 무시
+      }
+    };
+    poll();
+    timer = setInterval(poll, 2000);
+    return () => {
+      isUnmounted = true;
+      clearInterval(timer);
+    };
+  }, [dmList.length]);
 
   const pinnedRooms = dmList.filter(dm => dm.isPinFix);
   const unpinnedRooms = dmList.filter(dm => !dm.isPinFix);
@@ -245,7 +338,6 @@ const DMChat: React.FC = () => {
       setOpenOption(true);
     }
   };
-
   return (
     <>
       <SwipeTagList tags={tags} currentTag="Chatroom" onTagChange={tag => setSelectedTag(tag)} isBorder={false} />
@@ -254,6 +346,7 @@ const DMChat: React.FC = () => {
         sortOptions={['Newest', 'Oldest']}
         onFilterChange={filter => setFilterValue(filter)}
         onSortChange={sort => setSortValue(sort)}
+        filterOnly="0"
       />
       <div className={styles.scrollArea}>
         {sortedDmList.map((dm, index) => (
@@ -262,17 +355,18 @@ const DMChat: React.FC = () => {
             profileImage={dm.profileIconUrl}
             profileName={dm.profileName}
             timestamp={formatTimestamp(dm.lastMessageAt)}
-            badgeType={index % 2 === 0 ? BadgeType.Original : BadgeType.Fan}
+            badgeType={BadgeType.None}
             followState={FollowState.None}
-            isHighlight={false}
+            isHighlight={highlightMap[dm.roomId] === true}
             isDM={true}
             isOption={true}
             isPin={dm.isPinFix}
             roomid={dm.roomId.toString()}
-            urlLinkKey={dm.urlLinkKey}
+            profileUrlLinkKey={dm.profileUrlLinkKey}
             onClickOption={() => handleRoomSelect(dm.roomId)}
           />
         ))}
+        <div style={{marginBottom: '80px'}}></div>
         <div ref={observerRef} style={{height: '1px'}} />
       </div>
 

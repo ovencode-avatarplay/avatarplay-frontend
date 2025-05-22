@@ -4,7 +4,7 @@ import styles from './ImageUpload.module.css';
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
+// import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
@@ -26,7 +26,7 @@ const ImageUpload: React.FC<Props> = ({
   onChoose,
   onGalleryChoose,
   multiple = false,
-  uploadType = UploadMediaState.ContentImage,
+  uploadType = UploadMediaState.Content,
 }) => {
   const [imageUrl, setImageUrl] = useState(''); // 이미지 업로드가 성공했는지 확인하기위해 이미지 하나를 내부에서 체크
   const [loading, setLoading] = useState(false);
@@ -110,13 +110,13 @@ const ImageUpload: React.FC<Props> = ({
         handleChooseFile();
       },
     },
-    {
-      name: 'Workroom',
-      blockAutoClose: true,
-      onClick: () => {
-        setWorkroomOpen(true);
-      },
-    },
+    // {
+    //   name: 'Workroom',
+    //   blockAutoClose: true,
+    //   onClick: () => {
+    //     setWorkroomOpen(true);
+    //   },
+    // },
   ];
 
   return (
@@ -135,7 +135,7 @@ const ImageUpload: React.FC<Props> = ({
         }}
         selectedIndex={0}
       />
-      {ReactDOM.createPortal(
+      {/* {ReactDOM.createPortal(
         <UploadFromWorkroom
           open={workroomOpen}
           onClose={() => setWorkroomOpen(false)}
@@ -145,7 +145,7 @@ const ImageUpload: React.FC<Props> = ({
           mediaStateFilter={MediaState.Image}
         />,
         document.body,
-      )}
+      )} */}
       <LoadingOverlay loading={loading} />
     </div>
   );

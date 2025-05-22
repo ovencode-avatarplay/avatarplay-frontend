@@ -689,3 +689,28 @@ img.button{
   object-fit: cover;
   pointer-events: none; /* 사용자 클릭 막기 */
 }
+
+.nextToast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.nextButton {
+  border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.829);
+  backdrop-filter: blur(50px);
+  color: #fff;  
+  border-radius: 999px;
+  padding: 12px 32px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  pointer-events: auto;
+}

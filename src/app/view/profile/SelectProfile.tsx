@@ -116,7 +116,7 @@ export const SelectProfile = ({open, handleCloseDrawer}: SelectProfileType) => {
                   dispatch(updateProfile(resData?.profileSimpleInfo));
 
                   const accessToken: string = resData?.sessionInfo?.accessToken || '';
-                  localStorage.setItem('jwt', accessToken);
+                  localStorage?.setItem('jwt', accessToken);
 
                   console.log('pathname : ', pathname);
                   if (pathname.includes('/profile/')) {

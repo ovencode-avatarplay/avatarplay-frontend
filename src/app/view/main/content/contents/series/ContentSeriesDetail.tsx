@@ -30,6 +30,7 @@ import {
   buyContentEpisode,
   BuyContentEpisodeReq,
   CheckContentType,
+  ContentCategoryType,
   ContentEpisodeState,
   ContentInfo,
   ContentState,
@@ -58,6 +59,9 @@ import {RootState} from '@/redux-store/ReduxStore';
 import {formatCurrency} from '@/utils/util-1';
 import formatText from '@/utils/formatText';
 import {setStar} from '@/redux-store/slices/Currency';
+import ViewerSeriesContent from '../viewer/ViewerSeriesContent';
+import {ToastMessageAtom, ToastType} from '@/app/Root';
+import {useAtom} from 'jotai';
 
 type Props = {
   type: ContentType;
@@ -270,6 +274,7 @@ const ContentSeriesDetail = ({id, type}: Props) => {
       setData({...data});
     }
   };
+  const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
 
   const onEdit = () => {};
   console.log('asdadsa', data.dataMix?.categoryType);
@@ -330,59 +335,61 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         )}
 
         <section className={styles.infoHeaderSection}>
-          <ul className={styles.iconsWrap}>
-            <div
-              className={styles.iconWrap}
-              onClick={async () => {
-                const dataReq: BookMarkReq = {
-                  interactionType: type == ContentType.Series ? InteractionType.Contents : InteractionType.Episode,
-                  isBookMark: !data.dataMix?.isBookMark,
-                  typeValueId: data.dataMix?.contentId || 0,
-                };
-                const response = await bookmark(dataReq);
-                await refreshInfo();
-                console.log('response : ', response);
-                //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
-              }}
-            >
-              <div className={styles.iconArea}>
-                {data.dataMix?.isBookMark && <img src={BoldArchive.src} alt="" />}
-                {!data.dataMix?.isBookMark && <img src={LineArchive.src} alt="" />}
+          {type == ContentType.Series && (
+            <ul className={styles.iconsWrap}>
+              <div
+                className={styles.iconWrap}
+                onClick={async () => {
+                  const dataReq: BookMarkReq = {
+                    interactionType: type == ContentType.Series ? InteractionType.Contents : InteractionType.Episode,
+                    isBookMark: !data.dataMix?.isBookMark,
+                    typeValueId: data.dataMix?.contentId || 0,
+                  };
+                  const response = await bookmark(dataReq);
+                  await refreshInfo();
+                  console.log('response : ', response);
+                  //TODO : 북마크 이후 리프레쉬로 북마크 여부 갱신해야함
+                }}
+              >
+                <div className={styles.iconArea}>
+                  {data.dataMix?.isBookMark && <img src={BoldArchive.src} alt="" />}
+                  {!data.dataMix?.isBookMark && <img src={LineArchive.src} alt="" />}
+                </div>
+                <div className={styles.label}>{getLocalizedText('common_label_favorite')}</div>
               </div>
-              <div className={styles.label}>{getLocalizedText('common_label_favorite')}</div>
-            </div>
-            <div className={styles.lineVertical}></div>
-            <div
-              className={styles.iconWrap}
-              onClick={() => {
-                handleShare();
-              }}
-            >
-              <img src={BoldShare.src} alt="" />
-              <div className={styles.label}>{getLocalizedText('common_button_share')}</div>
-            </div>
-            <div className={styles.lineVertical}></div>
+              <div className={styles.lineVertical}></div>
+              <div
+                className={styles.iconWrap}
+                onClick={() => {
+                  handleShare();
+                }}
+              >
+                <img src={BoldShare.src} alt="" />
+                <div className={styles.label}>{getLocalizedText('common_button_share')}</div>
+              </div>
+              {/* <div className={styles.lineVertical}></div>
 
             <div className={styles.iconWrap}>
               <img src={LineDownload.src} alt="" />
               <div className={styles.label}>{getLocalizedText('common_button_download')}</div>
-            </div>
-            {!data.dataMix?.isMyContent && (
-              <>
-                <div className={styles.lineVertical}></div>
-                <div
-                  className={styles.iconWrap}
-                  onClick={() => {
-                    data.dataGift.isOpen = true;
-                    setData({...data});
-                  }}
-                >
-                  <img src={BoldReward.src} alt="" />
-                  <div className={styles.label}>{getLocalizedText('common_button_gift')}</div>
-                </div>
-              </>
-            )}
-          </ul>
+            </div> */}
+              {!data.dataMix?.isMyContent && (
+                <>
+                  <div className={styles.lineVertical}></div>
+                  <div
+                    className={styles.iconWrap}
+                    onClick={() => {
+                      data.dataGift.isOpen = true;
+                      setData({...data});
+                    }}
+                  >
+                    <img src={BoldReward.src} alt="" />
+                    <div className={styles.label}>{getLocalizedText('common_button_gift')}</div>
+                  </div>
+                </>
+              )}
+            </ul>
+          )}
           <div className={styles.genreWrap}> {parse(genreStr)}</div>
 
           <ul
@@ -516,6 +523,15 @@ const ContentSeriesDetail = ({id, type}: Props) => {
                               return;
                             }
 
+                            if (isLock) {
+                              const firstlockedIndex = data.dataEpisodes?.episodeList.findIndex(ep => ep.isLock);
+                              // 현재 선택한 에피소드의 인덱스가 첫 번째 언락된 에피소드보다 크면 토스트 메시지를 표시합니다
+                              if (index != firstlockedIndex) {
+                                dataToast.open('이 전 에피소드를 구매해주세요.', ToastType.Normal);
+                                return;
+                              }
+                            }
+
                             //TODO 플레이 할수 없으면 구매처리
                             data.dataPurchase.isOpenPopupPurchase = true;
                             data.dataPurchase.contentId = data.dataMix?.contentId || 0;
@@ -580,13 +596,29 @@ const ContentSeriesDetail = ({id, type}: Props) => {
         />
       )}
       {onPlay && (
-        <ViewerContent
-          open={onPlay}
-          onClose={() => setOnPlay(false)}
-          isPlayButon={isPlayButton}
-          contentId={playContentId}
-          episodeId={playContentId != 0 ? playEpisodeId : undefined}
-        ></ViewerContent>
+        <>
+          {!data.isSingle &&
+          (data.dataEpisodes?.contentCategoryType == ContentCategoryType.Video ||
+            data.dataMix?.contentCategoryType == ContentCategoryType.Video) ? (
+            <ViewerSeriesContent
+              open={onPlay}
+              onClose={() => setOnPlay(false)}
+              isPlayButon={isPlayButton}
+              contentId={playContentId}
+              episodeId={playEpisodeId != 0 ? playEpisodeId : undefined}
+              seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
+            ></ViewerSeriesContent>
+          ) : (
+            <ViewerContent
+              open={onPlay}
+              onClose={() => setOnPlay(false)}
+              isPlayButon={isPlayButton}
+              contentId={playContentId}
+              episodeId={playContentId != 0 ? playEpisodeId : undefined}
+              seasonEpisodesData={!data.isSingle ? data.dataEpisodes || undefined : undefined}
+            ></ViewerContent>
+          )}
+        </>
       )}
 
       {data.dataGift.isOpen && (
@@ -739,7 +771,7 @@ export const PopupPurchase = ({
   });
 
   useLayoutEffect(() => {
-    const hidePopup = parseInt(localStorage.getItem('hidePopupPurchase') || '0');
+    const hidePopup = parseInt(localStorage?.getItem('hidePopupPurchase') || '0');
     data.isOpen = !hidePopup;
     setData({...data});
 
@@ -770,9 +802,9 @@ export const PopupPurchase = ({
     }
     console.log('resBuy : ', resBuy);
 
-    const hidePopup = parseInt(localStorage.getItem('hidePopupPurchase') || '0');
+    const hidePopup = parseInt(localStorage?.getItem('hidePopupPurchase') || '0');
     if (!hidePopup) {
-      localStorage.setItem('hidePopupPurchase', refCheckHide.current?.checked ? '1' : '0');
+      localStorage?.setItem('hidePopupPurchase', refCheckHide.current?.checked ? '1' : '0');
     }
     onClose();
 

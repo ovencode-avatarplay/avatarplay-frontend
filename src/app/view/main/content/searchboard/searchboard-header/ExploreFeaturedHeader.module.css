@@ -1,129 +1,134 @@
-.swiperContainer
-{
+.swiperContainer {
+  position: relative;
+  
     width: 100%;
-    margin-top: 12px; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 12px 0px 0px 0px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  
+  .swiperItem {
+    width: 74%;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
     position: relative;
-    align-self: stretch;
-
-}
-
-.swiperItem
-{
-    justify-content: center; 
-    align-items: center; 
-    
-    width: calc(100% - 32px);
-    max-width: 416px;  /* 최대화면 기준 416px */ 
-    height: 110px;    
-    color: red;
-
-    @media (max-width: 431px) {
-        height: 100px;       
+  }
+  
+  /* 배경 이미지 영역 (이미지 비율 유지: 30%) */
+  .backImage {
+    width: 100%;
+    padding-top: 28%; /* 비율 유지 */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: var(--radius-md, 10px);
+    position: relative;
+  }
+  
+  /* Swiper가 자동으로 붙이는 클래스들 */
+  .swiper-slide-prev,
+  .swiper-slide-next {
+    width: 12%;
+    opacity: 0.6;
+  }
+  
+  /* 반응형 */
+  @media (max-width: 768px) {
+    .swiperItem {
+      width: 74%;
     }
-}
-
-.swiper-pagination {
+  
+    .swiper-slide-prev,
+    .swiper-slide-next {
+      width: 12%;
+      opacity: 0.3;
+    }
+  }
+  
+  @media (max-width: 0px) {
+    .swiperItem {
+      width: 100%;
+    }
+  
+    .swiper-slide-prev,
+    .swiper-slide-next {
+      display: none;
+    }
+  
+    .backImage {
+      padding-top: 35%; /* 모바일에서는 조금 더 높게 */
+    }
+  }
+  
+  /* 페이지네이션 관련 */
+  .swiper-pagination {
     background-color: #333;
     padding: 2px;
   }
-
-.customSwiper {
+  
+  .customSwiper {
     position: relative;
   }
-
-.customPagination {
+  
+  .customPagination {
     position: absolute;
     bottom: 15px !important;
     left: 50% !important;
     translate: -50%;
     width: auto !important;
-    display: inline-flex;  
-}
-
-
-.backImage
-{ 
-    width: 100%;  
-    height: 100%;
-    min-height: 110px;
-    flex-shrink: 0;
-    
-    /* margin: 0 auto; */
-    border-radius: var(--radius-md, 10px);
-    background: lightgray 0px -335.272px / 100% 100% no-repeat contain center;
-
-    @media (max-width: 431px) {
-        min-height: 100px;    
-    }
-}
-
- .paginationBullet
- {
+    display: inline-flex;
+  }
+  
+  .paginationBullet {
+    background: #ddd;
+    opacity: 0.8;
     width: 6px;
     height: 6px;
-    background: #ddd; 
- }
-
- /* .paginationBullet.notSelected
- {
-    opacity: 0.8 !important;
- }
- .paginationBullet.selected
- { 
+  }
+  
+  .paginationBulletActive {
+    background: #333 !important;
     opacity: 1 !important;
- } */
-
-
-.swiper-pagination-bullet {
-  background: #ddd;
-  opacity: 0.8;
-}
-
-.textArea
-{    
-    justify-items: center;    
-    align-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-.text
-{
-    color: var(--White, #FFF);
-    font-feature-settings: 'liga' off, 'clig' off;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.40);
-    font-family: Lato;
+  }
+  
+  /* 텍스트 영역 */
+  .textArea {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    width: calc(100% - 32px);
+    color: white;
+  }
+  
+  .text {
+    font-family: Lato, sans-serif;
     font-size: 18px;
-    font-style: normal;
-    line-height: 28px; /* 155.556% */
+    line-height: 28px;
     letter-spacing: -0.4px;
-}
-.text.type1
-{
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  }
+  
+  .text.type1 {
     font-weight: 700;
-
-}
-
-.text.type2
-{
+  }
+  
+  .text.type2 {
     font-weight: 500;
-}
-
-.curFirstImage {
+    margin-top: 4px;
+  }
+  
+  /* 우측 첫 이미지가 잘리는 효과 */
+  .curFirstImage {
     position: absolute;
     right: -6px;
     width: 10px;
     height: 140px;
-    overflow: hidden;
-
     background-repeat: no-repeat;
-    background-size: auto 100%;        
-    background-position: left center;   
-  
-    flex-shrink: 0;
+    background-size: auto 100%;
+    background-position: left center;
     border-top-left-radius: var(--radius-md, 10px);
     border-bottom-left-radius: var(--radius-md, 10px);
   }
+  

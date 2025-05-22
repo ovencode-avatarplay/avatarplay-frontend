@@ -52,7 +52,7 @@ const ModalLanguageSelect: React.FC<FullScreenModalProps> = ({isOpen, onClose}) 
     onClose();
   };
   return (
-    <Dialog open={isOpen} fullScreen onClose={onClose}>
+    <Dialog open={isOpen} fullScreen onClose={onClose} sx={{zIndex: 3005}}>
       <div className={styles.backgroundArea}>
         <div className={styles.titleArea}>
           <div className={styles.leftPrevArea} onClick={() => onClose()}>

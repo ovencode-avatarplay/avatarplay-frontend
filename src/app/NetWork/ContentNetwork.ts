@@ -314,7 +314,7 @@ export interface GetSeasonEpisodesRes {
   profileName: string;
   thumbnailMediaState: MediaState;
   isProfileSubscribe: boolean;
-  contentCategoryType: number;
+  contentCategoryType: ContentCategoryType;
 }
 
 export const sendGetSeasonEpisodes = async (
@@ -522,10 +522,14 @@ export const sendPlayButton = async (payload: PlayButtonReq): Promise<ResponseAP
     throw new Error('Failed to execute playButton. Please try again.');
   }
 };
-export const sendPlay = async (payload: PlayButtonReq): Promise<ResponseAPI<PlayButtonRes>> => {
+export const sendPlay = async (payload: PlayReq): Promise<ResponseAPI<PlayButtonRes>> => {
   try {
     const response = await api.post<ResponseAPI<PlayButtonRes>>('/Content/play', payload);
-    if (response.data.resultCode === 0) return response.data;
+
+    if (response.data.resultCode === 0) {
+      console.log('🚨 PlayRes:', response.data);
+      return response.data;
+    }
     throw new Error(`PlayRes Error: ${response.data.resultCode}`);
   } catch (error) {
     console.error('Error calling play API:', error);

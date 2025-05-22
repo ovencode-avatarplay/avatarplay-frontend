@@ -33,6 +33,7 @@ import {
   ContentType,
   GetSeasonEpisodesPopupReq,
   GetSeasonEpisodesPopupRes,
+  GetSeasonEpisodesRes,
   PlayButtonReq,
   PlayReq,
   RecordPlayReq,
@@ -64,6 +65,7 @@ import LoadingOverlay from '@/components/create/LoadingOverlay';
 import {ConstructionOutlined} from '@mui/icons-material';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
+import {InView} from 'react-intersection-observer';
 
 interface Props {
   open: boolean;
@@ -72,9 +74,10 @@ interface Props {
   isPlayButon: boolean;
   contentId: number;
   episodeId?: number;
+  seasonEpisodesData?: GetSeasonEpisodesRes;
 }
 
-const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0}) => {
+const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, episodeId = 0, seasonEpisodesData}) => {
   const [info, setInfo] = useState<ContentPlayInfo>();
   const [contentType, setContentType] = useState<ContentType>(0);
   const [curEpisodeId, setCurEpisodeId] = useState(episodeId);
@@ -94,6 +97,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   const [onPurchasePopup, setOnPurchasePopup] = useState(false);
   const [purchaseData, setPurchaseData] = useState<SeasonEpisodeInfo>();
 
+  const [showToast, setShowToast] = useState(false);
+
   const handlePlayRecent = async () => {
     try {
       const playRequest: PlayButtonReq = {
@@ -102,7 +107,6 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
 
       setIsLoading(true);
       const playResponse = await sendPlayButton(playRequest);
-
       setIsLoading(false);
       setContentType(playResponse.data?.contentType || 0);
       console.log('✅ PlayButton API 응답:', playResponse.data);
@@ -124,16 +128,36 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       setIsLoading(false);
       setContentType(playData.data?.contentType || 0);
       console.log('✅ Play API 응답:', playData.data);
+      setCurEpisodeId(playData.data?.recentlyPlayInfo.episodeId || 0);
       setInfo(playData.data?.recentlyPlayInfo);
     } catch (error) {
       console.error('🚨 Play 관련 API 호출 오류:', error);
     }
   };
 
+  const handlePlayNext = async (nextEpId: number) => {
+    try {
+      const playRequest: PlayReq = {
+        contentId: contentId,
+        episodeId: nextEpId,
+      };
+      setIsLoading(true);
+      const playData = await sendPlay(playRequest);
+      setIsLoading(false);
+      setContentType(playData.data?.contentType || 0);
+      console.log('✅ Play API 응답:', playData.data);
+      setInfo(playData.data?.recentlyPlayInfo);
+      setCurEpisodeId(playData.data?.recentlyPlayInfo.episodeId || 0);
+    } catch (error) {
+      console.error('🚨 Play 관련 API 호출 오류:', error);
+    }
+  };
+
   useEffect(() => {
-    if (info?.categoryType == ContentCategoryType.Webtoon) handleRecordPlay();
-    console.log('ass');
-  }, [info]);
+    if (info?.categoryType === ContentCategoryType.Webtoon && webtoonContainerRef.current) {
+      webtoonContainerRef.current.scrollTop = 0;
+    }
+  }, [info, curEpisodeId]);
 
   const hasRun = useRef(false);
 
@@ -326,7 +350,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             info.episodeVideoInfo.subTitleFileInfos.map(async fileInfo => {
               const lang = ContentLanguageType[fileInfo.videoLanguageType].toLowerCase();
               const url = fileInfo.videoSourceUrl;
-              await player.addTextTrackAsync(url, lang, 'subtitles', 'text/vtt');
+              const format = url.toLowerCase().endsWith('.srt') ? 'text/srt' : 'text/vtt';
+              await player.addTextTrackAsync(url, lang, 'subtitles', format);
             }),
           );
           player.setTextTrackVisibility(true);
@@ -441,15 +466,35 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
     }, 475); // (3프레임 + 17프레임) 약 350ms 후 축소 시작
   };
 
-  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount);
+  const [commentCount, setCommentCount] = useState(info?.commonMediaViewInfo.commentCount || 0);
 
   const [isCommentOpen, setCommentIsOpen] = useState(false);
   const handleAddCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount + 1);
+    if (info) {
+      setCommentCount(commentCount + 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount + 1,
+        },
+      });
+    }
   };
+
   const handleSubCommentCount = () => {
-    if (info) setCommentCount(info?.commonMediaViewInfo.commentCount - 1);
+    if (info) {
+      setCommentCount(commentCount - 1);
+      setInfo({
+        ...info,
+        commonMediaViewInfo: {
+          ...info.commonMediaViewInfo,
+          commentCount: info.commonMediaViewInfo.commentCount - 1,
+        },
+      });
+    }
   };
+
   const handleClick = () => {
     setIsPlaying(!isPlaying);
     setIsClicked(true);
@@ -578,7 +623,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
   };
 
   React.useEffect(() => {
-    setCommentCount(info?.commonMediaViewInfo.commentCount);
+    setCommentCount(info?.commonMediaViewInfo.commentCount || 0 );
     setCurIsFollow(info?.isProfileFollow);
     if (info) setTempFollow(info?.isProfileFollow);
   }, [info]);
@@ -849,6 +894,46 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
       item => item.webtoonLanguageType === ContentLanguageType.Source,
     ),
   );
+
+  // Next Episode 버튼 렌더링 변수로 분리
+  let nextEpisodeButton = null;
+  if (showToast) {
+    const list = seasonEpisodesData?.episodeList ?? [];
+    const curIdx = list.findIndex(v => v.episodeId === curEpisodeId);
+    const isLast = curIdx === list.length - 1;
+    const nextEp = !isLast ? list[curIdx + 1] : null;
+    const isNextLocked = nextEp?.isLock;
+
+    nextEpisodeButton = (
+      <div className={styles.nextToast}>
+        <button
+          className={styles.nextButton}
+          disabled={isLast}
+          onClick={() => {
+            if (isLast) return;
+            if (!nextEp) return;
+            if (isNextLocked) {
+              setPurchaseData(nextEp);
+              setOnPurchasePopup(true);
+              return;
+            }
+            handlePlayNext(nextEp.episodeId);
+          }}
+          style={isLast ? {opacity: 0.5, cursor: 'default'} : {}}
+        >
+          {isLast ? 'Last Episode' : 'Next Episode'} <span style={{marginLeft: 8}}>{isLast ? '' : '→'}</span>
+        </button>
+      </div>
+    );
+  }
+
+  const webtoonContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (info?.categoryType === ContentCategoryType.Webtoon && webtoonContainerRef.current) {
+      webtoonContainerRef.current.scrollTop = 0;
+    }
+  }, [info, curEpisodeId]);
+
   return (
     <Modal
       open={open}
@@ -895,6 +980,7 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
             <div className={styles.Image}>
               {info?.categoryType === ContentCategoryType.Webtoon && (
                 <div
+                  ref={webtoonContainerRef}
                   className={`${styles.webtoonContainer} ${
                     info?.episodeWebtoonInfo?.webtoonSourceUrlList?.filter(
                       item => item.webtoonLanguageType === ContentLanguageType.Source,
@@ -907,22 +993,32 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                     const sourceLayer = info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
                       item => item.webtoonLanguageType === ContentLanguageType.Source,
                     );
-
                     const subtitleLayer =
                       webtoonSubtitleLang !== ContentLanguageType.Default
                         ? info?.episodeWebtoonInfo?.webtoonSourceUrlList?.find(
                             item => item.webtoonLanguageType === webtoonSubtitleLang,
                           )
                         : null;
-
-                    return sourceLayer?.webtoonSourceUrls?.map((url, index) => (
-                      <div key={index} className={styles.webtoonImageWrapper}>
+                    return sourceLayer?.webtoonSourceUrls?.map((url, idx) => (
+                      <div key={idx} className={styles.webtoonImageWrapper}>
                         <img src={url} className={styles.webtoonImage} />
-                        {subtitleLayer?.webtoonSourceUrls?.[index] && (
+                        {subtitleLayer?.webtoonSourceUrls?.[idx] && (
                           <img
-                            src={subtitleLayer.webtoonSourceUrls[index]}
+                            src={subtitleLayer.webtoonSourceUrls[idx]}
                             className={styles.webtoonSubtitleImage}
                             alt="subtitle"
+                          />
+                        )}
+                        {idx === sourceLayer.webtoonSourceUrls.length - 1 && (
+                          <InView
+                            as="div"
+                            onChange={inView => setShowToast(inView)}
+                            threshold={0.7}
+                            style={{
+                              height: '1px',
+                              background: 'transparent',
+                              pointerEvents: 'none',
+                            }}
                           />
                         )}
                       </div>
@@ -1279,7 +1375,8 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
                           console.log('episode.episodeId', episode.episodeId);
 
                           hasRun.current = false;
-                          setCurEpisodeId(episode.episodeId);
+
+                          handlePlayNext(episode.episodeId);
                           setOnEpisodeListDrawer(false);
                         }
                       }}
@@ -1315,13 +1412,15 @@ const ViewerContent: React.FC<Props> = ({isPlayButon, open, onClose, contentId, 
               }}
               onPurchaseSuccess={() => {
                 setOnPurchasePopup(false);
-                fetchSeasonEpisodesPopup();
+                // fetchSeasonEpisodesPopup();
+                handlePlayNext(purchaseData.episodeId);
               }}
             ></PopupPurchase>
           )}
           {renderSelectDrawer()}
 
           <LoadingOverlay loading={isLoading} />
+          {nextEpisodeButton}
         </div>
       </Box>
     </Modal>

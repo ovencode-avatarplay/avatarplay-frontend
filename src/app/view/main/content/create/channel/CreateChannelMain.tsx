@@ -986,16 +986,18 @@ const CreateChannel = ({id, isUpdate}: Props) => {
             isRemainContent={true}
           />
 
-          <CustomButton
-            size="Medium"
-            state="Normal"
-            type="Primary"
-            buttonType="submit"
-            customClassName={[styles.submitBtn]}
-          >
-            {getLocalizedText('common_button_submit')}
-            {/* {isUpdate ? 'Submit' : 'Publish'} */}
-          </CustomButton>
+          <div className={styles.submitBtnWrap}>
+            <CustomButton
+              size="Medium"
+              state="Normal"
+              type="Primary"
+              buttonType="submit"
+              customClassName={[styles.submitBtn]}
+            >
+              {getLocalizedText('common_button_submit')}
+              {/* {isUpdate ? 'Submit' : 'Publish'} */}
+            </CustomButton>
+          </div>
         </form>
       </main>
       <footer></footer>
@@ -1120,7 +1122,7 @@ const CreateChannel = ({id, isUpdate}: Props) => {
         onChoose={() => {
           setImgUploadOpen(false);
         }}
-        uploadType={UploadMediaState.ProfileImage} // 채널이미지는 프로필 이미지 처럼 사용되니까 프로필이미지 사용
+        uploadType={UploadMediaState.Profile} // 채널이미지는 프로필 이미지 처럼 사용되니까 프로필 사용
       />
 
       {data.dataPopupRemove.isOpen && (

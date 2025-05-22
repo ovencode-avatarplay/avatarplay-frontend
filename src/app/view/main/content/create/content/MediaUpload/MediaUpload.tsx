@@ -37,8 +37,8 @@ const MediaUpload: React.FC<Props> = ({
   setContentMediaUrls,
   defaultImage,
   triggerWarning = false,
-  uploadImageType = UploadMediaState.ContentImage,
-  uploadVideoType = UploadMediaState.ContentVideo,
+  uploadImageType = UploadMediaState.None,
+  uploadVideoType = UploadMediaState.None,
   imageMultiple = false,
   videoMultiple = false,
 }) => {

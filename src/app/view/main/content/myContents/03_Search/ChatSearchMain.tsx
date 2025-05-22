@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, KeyboardEvent} from 'react';
+import React, {useState, useRef, useEffect, KeyboardEvent, use} from 'react';
 import styles from './ChatSearchMain.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {Drawer} from '@mui/material';
@@ -30,6 +30,7 @@ import {bookmark, InteractionType} from '@/app/NetWork/CommonNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useAtom} from 'jotai';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
+import {LineArrowDown} from '@ui/Icons';
 
 const tags = ['Following', 'Character', 'Friend', 'People'];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
@@ -76,13 +77,23 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
   // 탭 변경 시 페이징 상태 초기화 및 첫 페이지 fetch
   useEffect(() => {
-    if (isOpen == false) return;
-    setOffset(0);
-    setHasMore(true);
+    if (isOpen === false) return;
+    // 1. 리스트를 먼저 비움
     setFavoriteList([]);
     setNormalList([]);
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+    setOffset(0);
+    setHasMore(true);
     setFavoriteOpen(false);
-    fetchMore(true);
+    setListOpen(true);
+
+    // 2. fetchMore는 다음 tick에서 실행 (비동기적으로)
+    setTimeout(() => {
+      fetchMore(true);
+    }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTag, isOpen]);
 
@@ -105,13 +116,24 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setSearchText('');
     setIsInputFocused(false);
     setFavoriteOpen(false);
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+    setOffset(0);
+    setHasMore(true);
     onClose();
   };
-
+  useEffect(() => {
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+  }, [searchText]);
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
-  const fetchMore = async (isRefreshAll = false) => {
+  const fetchMore = async (isRefreshAll = false, isSearchTextChange = false) => {
     setIsPagingLoading(true);
-    setIsLoading(true); // API 호출 시작 시 로딩 상태로 설정
+    setIsLoading(true);
     setError(null);
     let newFavoriteList: SearchResultWithFriend[] = [];
     let newNormalList: SearchResultWithFriend[] = [];
@@ -119,28 +141,19 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     const keyword = searchText;
 
     try {
-      if (isRefreshAll) {
-        switch (selectedTag) {
-          case 'Following':
-            setFollowingProfileIds([]);
-            break;
-          case 'Character':
-            setCharacterProfileIds([]);
-            break;
-          case 'Friend':
-            setFriendProfileIds([]);
-            break;
-          case 'People':
-            setPeopleProfileIds([]);
-            break;
-        }
+      if (isRefreshAll || isSearchTextChange) {
+        // 모든 상태 초기화를 한 곳에서 처리
+        setFavoriteList([]);
+        setNormalList([]);
+        setOffset(0);
+        setHasMore(true);
+        setFollowingProfileIds([]);
+        setCharacterProfileIds([]);
+        setFriendProfileIds([]);
+        setPeopleProfileIds([]);
       }
 
       if (selectedTag === 'Following') {
-        console.log(
-          'positiveFiltersRef.current.map(f => f.key)',
-          positiveFiltersRef.current.map(f => f.key),
-        );
         const response = await sendGetSearchFollowingList({
           characterIP: 0,
           search: keyword,
@@ -148,7 +161,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: followingProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : followingProfileIds,
         });
         if (response.data) {
           newFavoriteList = response.data.favoriteCharacterList || [];
@@ -162,7 +175,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: characterProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : characterProfileIds,
         });
         if (response.data) {
           newNormalList = response.data.recommendCharacterList || [];
@@ -171,7 +184,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         const response = await sendGetSearchFriendList({
           search: keyword,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: friendProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : friendProfileIds,
         });
         if (response.data) {
           newFavoriteList = response.data.favoriteFriendList || [];
@@ -181,7 +194,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         const response = await sendGetSearchPeopleList({
           search: keyword,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: peopleProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : peopleProfileIds,
         });
         if (response.data) {
           newNormalList = response.data.recommendPeopleList || [];
@@ -214,7 +227,13 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           setNormalList(prev => [...prev, ...newNormalList]);
         }
         setOffset(currentOffset + LIMIT);
-        setHasMore(newFavoriteList.length + newNormalList.length === LIMIT);
+
+        // Following 태그일 때는 favoriteList와 normalList를 각각 확인
+        if (selectedTag === 'Following') {
+          setHasMore(newFavoriteList.length === LIMIT || newNormalList.length === LIMIT);
+        } else {
+          setHasMore(newNormalList.length === LIMIT);
+        }
       } else {
         setHasMore(false);
       }
@@ -222,7 +241,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       setError('검색 중 오류가 발생했습니다.');
     } finally {
       setIsPagingLoading(false);
-      setIsLoading(false); // API 호출 완료 후 로딩 상태 해제
+      setIsLoading(false);
     }
   };
 
@@ -241,9 +260,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     setFavoriteList([]);
     setNormalList([]);
+
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
     setIsInputFocused(false);
     setSearchText(keyword);
-    fetchMore(true);
+    fetchMore(true, true);
   };
 
   // 최근 검색어 선택 시
@@ -274,6 +298,12 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (searchText == '') {
+      handleSearchBarSearch(searchText, isAdultRef.current, positiveFiltersRef.current, negativeFiltersRef.current);
+    }
+  }, [searchText]);
 
   // Character Follow 버튼 클릭 핸들러
   const handleFollow = async (character: SearchResultWithFriend) => {
@@ -385,6 +415,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
             if (result == 0) {
               // Following/Friend 목록에서만 제거
               if (selectedTag === 'Following' || selectedTag === 'Friend') {
+                console.log('selectedRoomnormalList', selectedRoom, normalList);
+
                 setNormalList(prev => prev.filter(item => item.characterProfileId !== selectedRoom.characterProfileId));
               }
             } else if (result != 0) {
@@ -417,8 +449,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         <div>
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setFavoriteOpen(!favoriteOpen)}>
-              <span>Favorite ({favoriteList.length})</span>
-              <span className={favoriteOpen ? styles.arrowDown : styles.arrowRight}></span>
+              <div className={styles.sectionHeaderText}>Favorite ({favoriteList.length})</div>
+              <img src={LineArrowDown.src} alt="arrow" style={{transform: `rotate(${favoriteOpen ? 180 : 0}deg)`}} />
             </div>
             {favoriteOpen &&
               favoriteList.map(character => {
@@ -428,24 +460,25 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
                 return (
                   <MessageProfile
-                    key={character.chatRoomId}
+                    key={character.characterProfileId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
-                    badgeType={badgeType}
+                    badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
-                    urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
                     isOption={true}
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
+                    isDM={selectedTag === 'Friend'}
+                    profileUrlLinkKey={character.profileUrlLinkKey}
                   />
                 );
               })}
           </div>
           <div className={styles.section}>
             <div className={styles.sectionHeader} onClick={() => setListOpen(!listOpen)}>
-              <span>{selectedTag}</span>
-              <span className={listOpen ? styles.arrowDown : styles.arrowRight}></span>
+              <div className={styles.sectionHeaderText}>{selectedTag}</div>
+              <img src={LineArrowDown.src} alt="arrow" style={{transform: `rotate(${listOpen ? 180 : 0}deg)`}} />
             </div>
             {listOpen &&
               normalList.map(character => {
@@ -455,16 +488,17 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
 
                 return (
                   <MessageProfile
-                    key={character.chatRoomId}
+                    key={character.characterProfileId}
                     profileImage={character.profileImageUrl}
                     profileName={character.characterName}
-                    badgeType={badgeType}
+                    badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
                     followState={FollowState.None}
-                    urlLinkKey={character.urlLinkKey}
                     roomid={String(character.chatRoomId)}
                     isOption={true}
                     isPin={character.isPinFix}
                     onClickOption={() => handleRoomSelect(character)}
+                    isDM={selectedTag === 'Friend'}
+                    profileUrlLinkKey={character.profileUrlLinkKey}
                   />
                 );
               })}
@@ -479,22 +513,28 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           let badgeType = BadgeType.None;
           if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
           else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-          let followState = character.followState ?? FollowState.AddFriend;
+          let followState =
+            selectedTag === 'People' ? character.followState || FollowState.AddFriend : FollowState.Follow;
 
           return (
             <MessageProfile
-              key={character.chatRoomId}
+              key={character.characterProfileId}
               profileImage={character.profileImageUrl}
               profileName={character.characterName}
-              badgeType={badgeType}
+              badgeType={selectedTag == tags[2] || selectedTag == tags[3] ? BadgeType.None : badgeType}
               followState={followState}
-              urlLinkKey={''}
               roomid={String(character.chatRoomId)}
               isOption={false}
               isPin={character.isPinFix}
               isDM={true}
-              profileUrlLinkKey={character.urlLinkKey}
-              onClickButton={() => handleAddFriendToggle(character)}
+              profileUrlLinkKey={character.profileUrlLinkKey}
+              onClickButton={() => {
+                if (selectedTag === 'People') {
+                  handleAddFriendToggle(character);
+                } else {
+                  handleFollow(character);
+                }
+              }}
             />
           );
         })}
@@ -503,9 +543,6 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
   };
 
   const renderSearchResults = () => {
-    if (isLoading) {
-      return <div className={styles.loading}></div>;
-    }
     if (error) {
       return <div className={styles.error}>{error}</div>;
     }
@@ -514,10 +551,17 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     }
     return (
       <div className={styles.searchResults}>
-        {renderCharacterList(favoriteList.concat(normalList))}
+        {renderCharacterList(
+          selectedTag === 'Following' || selectedTag === 'Friend' ? [...favoriteList, ...normalList] : normalList,
+        )}
+
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
-        {isPagingLoading && <div className={styles.loading}>불러오는 중...</div>}
+        {isPagingLoading && (
+          <div className={styles.loading} style={{position: 'absolute', bottom: 0, width: '100%'}}>
+            불러오는 중...
+          </div>
+        )}
       </div>
     );
   };
@@ -551,6 +595,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           onKeyDown={handleSearchBarKeyDown}
           value={searchText}
           onChange={setSearchText}
+          selectTag={selectedTag}
         />
         <div className={styles.content}>
           <SwipeTagList tags={tags} currentTag={selectedTag} onTagChange={setSelectedTag} />

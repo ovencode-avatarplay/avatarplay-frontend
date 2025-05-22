@@ -26,11 +26,11 @@ api.interceptors.request.use(
     const requestKey = config.url ?? '';
 
     if (pendingRequests.has(requestKey)) {
-      console.warn('Busy processing an existing API request.');
-      return Promise.reject({message: 'Busy processing an existing API request.'});
+      console.warn(requestKey + 'Busy processing an existing API request.');
+      return Promise.reject({resultCode: 999, message: requestKey + 'Busy processing an existing API request.'});
     }
     // 로컬 스토리지 또는 세션 스토리지에서 JWT 토큰을 가져옴
-    const token = localStorage.getItem('jwt');
+    const token = localStorage?.getItem('jwt');
 
     // 토큰이 존재하면 Authorization 헤더에 Bearer 토큰을 추가
     if (token) {
@@ -53,7 +53,6 @@ api.interceptors.response.use(
   async response => {
     document.body.style.pointerEvents = 'auto';
     const requestKey = response.config.url ?? '';
-    console.log('request packet delete: ' + requestKey);
     pendingRequests.delete(requestKey);
 
     // 정상 응답인 경우 그대로 반환
@@ -76,7 +75,6 @@ api.interceptors.response.use(
       window.location.href = getLocalizedLink('/auth');
     }
     const requestKey = error?.config?.url ?? '';
-    console.log('request packet delete: ' + requestKey);
     pendingRequests.delete(requestKey);
     return Promise.reject(error);
   },

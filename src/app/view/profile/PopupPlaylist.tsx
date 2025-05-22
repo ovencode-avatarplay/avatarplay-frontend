@@ -58,7 +58,7 @@ import {
 } from '@/app/NetWork/CommonNetwork';
 import SharePopup from '@/components/layout/shared/SharePopup';
 import getLocalizedText from '@/utils/getLocalizedText';
-import { VisibilityType } from '@/app/NetWork/ContentNetwork';
+import {VisibilityType} from '@/app/NetWork/ContentNetwork';
 
 type Props = {
   onClose: () => void;
@@ -459,7 +459,8 @@ const TabContentComponent = ({
                   urlLinkKey: one.urlLinkKey,
                   isMyFeed: false,
                   profileType: ProfileType.PD,
-                  profileVisibilityType: VisibilityType.Private
+                  profileVisibilityType: VisibilityType.Private,
+                  visibilityType: VisibilityType.Private,
                 }}
                 onOpenContentMenu={onOpenContentMenu}
                 urlLinkThumbnail={getLocalizedLink(`/main/homefeed/` + one.urlLinkKey)}

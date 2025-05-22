@@ -73,7 +73,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
   };
 
   const routeProfile = async () => {
-    const jwtToken = localStorage.getItem('jwt');
+    const jwtToken = localStorage?.getItem('jwt');
     console.log('jwtToken : ', jwtToken);
     if (!jwtToken) {
       pushLocalizedRoute('/auth', router);
@@ -108,7 +108,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
       //await signOut({callbackUrl: process.env.NEXT_PUBLIC_APP_URL});
       await supabase.auth.signOut();
       setAuth(null);
-      localStorage.removeItem('jwt');
+      localStorage?.removeItem('jwt');
       dispatch(updateProfile(null));
       setUserMetaData(null);
       setIsLogin(false);
@@ -244,7 +244,7 @@ const HamburgerBar: React.FC<HamburgerBarProps> = ({open, onClose, isLeft = true
           {renderMenuItem('', 'Story (tmp)', routeStory)}
           {renderMenuItem('', 'Character (tmp)', routeCharacter)}
           {renderMenuItem('', 'Prompt (tmp)', routePrompt)}
-          {renderMenuItem('', 'Workroom', routeWorkroom)}
+          {/* {renderMenuItem('', 'Workroom', routeWorkroom)} */}
           {/*
           {renderMenuItem('', getLocalizedText('common_button_supportandabout'), () => {
             setSupportOpen(!supportOpen);

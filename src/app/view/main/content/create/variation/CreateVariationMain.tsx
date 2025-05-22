@@ -1,5 +1,3 @@
-interface Props {}
-
 import CreateDrawerHeader from '@/components/create/CreateDrawerHeader';
 import styles from './CreateVariationMain.module.css';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
@@ -17,7 +15,12 @@ import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGal
 import useCustomRouter from '@/utils/useCustomRouter';
 import DropDownMenu, {DropDownMenuItem} from '@/components/create/DropDownMenu';
 
-const CreateVariationMain: React.FC<Props> = ({}) => {
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+
+const CreateVariationMain: React.FC<Props> = ({open, onClose}) => {
   const {back} = useCustomRouter();
 
   //#region Pre Define

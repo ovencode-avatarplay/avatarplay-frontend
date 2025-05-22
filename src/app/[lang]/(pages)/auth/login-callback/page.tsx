@@ -3,7 +3,7 @@
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {supabase} from '@/utils/supabaseClient';
-import {useSignalR} from '@hooks/useSignalR';
+//import {useSignalR} from '@hooks/useSignalR';
 import {setStar} from '@/redux-store/slices/Currency';
 import {useDispatch} from 'react-redux';
 import {CircularProgress, Box, Typography} from '@mui/material';
@@ -22,7 +22,7 @@ export default function LoginCallback() {
   };
 
   // ✅ SignalR 연결
-  useSignalR(token ?? '');
+  //useSignalR(token ?? '');
 
   useEffect(() => {
     const init = async () => {

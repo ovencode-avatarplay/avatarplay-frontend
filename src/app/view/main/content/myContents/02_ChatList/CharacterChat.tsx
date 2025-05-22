@@ -31,6 +31,7 @@ const tags = [
   'common_tag_sports',
   'common_tag_star',
   'common_tag_brand',
+  'common_filterinterest_dating',
 ];
 interface Props {
   name?: string;
@@ -84,6 +85,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
     setOffset(0);
     setHasMore(true);
     setAlreadyReceivedProfileIds([]);
+    setChatList([]);
   }, [filterValue, selectedTag, sortValue]);
 
   const handlePinToggle = async (roomId: number, isFix: boolean) => {
@@ -103,7 +105,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
 
   const optionItems: SelectDrawerArrowItem[] = [
     {
-      name: 'Favorites /Unfavorites',
+      name: selectedRoom?.isBookmark ? 'Unfavorites' : 'Favorites',
       arrowName: '',
       onClick: async () => {
         if (selectedRoom) {
@@ -111,11 +113,16 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             const response = await bookmark({
               interactionType: InteractionType.Character,
               typeValueId: selectedRoom.characterProfileId,
-              isBookMark: true,
+              isBookMark: !selectedRoom.isBookmark,
             });
 
             if (response?.data) {
               // UI 업데이트 로직이 필요한 경우 여기에 추가
+              setChatList(prevList =>
+                prevList.map(room =>
+                  room.chatRoomId === selectedRoom.chatRoomId ? {...room, isBookmark: !room.isBookmark} : room,
+                ),
+              );
             }
             setOpenOption(false);
           } catch (e) {
@@ -125,7 +132,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       },
     },
     {
-      name: 'Pin to Top / Unpin ',
+      name: selectedRoom?.isPinFix ? 'Unpin' : 'Pin to Top',
       arrowName: '',
       onClick: () => {
         if (selectedRoomId) {
@@ -253,7 +260,7 @@ const CharacterChat: React.FC<Props> = ({name}) => {
       await sendLeaveChatRoom({
         chatRoomType: ChatRoomType.Character,
         dmRoomId: 0,
-        characterUrlLinkKey: selectedRoom.urlLinkKey,
+        characterUrlLinkKey: selectedRoom.profileUrlLinkKey,
       });
 
       // 채팅방 목록에서 제거
@@ -303,10 +310,11 @@ const CharacterChat: React.FC<Props> = ({name}) => {
             isOption={true}
             isPin={item.isPinFix}
             roomid={item.chatRoomId.toString()}
+            profileUrlLinkKey={item.profileUrlLinkKey}
             onClickOption={() => handleRoomSelect(item.chatRoomId)}
-            urlLinkKey={item.urlLinkKey}
           />
         ))}
+        <div style={{marginBottom: '80px'}}></div>
         <div ref={observerRef} style={{height: '1px'}}></div>
       </div>
 

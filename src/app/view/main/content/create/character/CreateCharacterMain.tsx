@@ -904,7 +904,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
               // onGalleryChoose={() => {
               //   setGalleryOpen(true);
               // }}
-              uploadType={UploadMediaState.CharacterImage}
+              uploadType={UploadMediaState.Character}
             />
           )}
         </div>
@@ -1086,7 +1086,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
           onChoose={() => {
             setSelectImageTypeOpen(false);
           }}
-          uploadType={UploadMediaState.TriggerImage}
+          uploadType={UploadMediaState.Character}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && (
@@ -1097,7 +1097,7 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
             setVideoUploadOpen(false);
           }}
           setContentVideoUrl={handlerSetVideo}
-          uploadType={UploadMediaState.TriggerVideo}
+          uploadType={UploadMediaState.Character}
         />
       )}
       {!selectImageTypeOpen && imgUploadType === 'Upload' && mediaUploadOpen && (

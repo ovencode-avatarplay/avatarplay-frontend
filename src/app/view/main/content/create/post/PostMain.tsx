@@ -118,6 +118,7 @@ const PostMain: React.FC<Props> = ({id}) => {
               setSelectedTags(existingFeed.hashTag ? existingFeed.hashTag.split(',') : []);
               setSelectedVisibility(existingFeed.isPinFix ? VisibilityType.Public : VisibilityType.Private);
               setIsNsfw(existingFeed.isBookmark || false);
+              setSelectedVisibility(existingFeed.visibilityType);
             }
           }
         } catch (error) {
@@ -582,7 +583,7 @@ const PostMain: React.FC<Props> = ({id}) => {
             setIsOpenSelectDrawer(false);
           }}
           multiple={true}
-          uploadType={UploadMediaState.FeedImage}
+          uploadType={UploadMediaState.Feed}
         />
       )}
       {mediaType === 'video' && (
@@ -597,7 +598,7 @@ const PostMain: React.FC<Props> = ({id}) => {
           onChoose={() => {
             setIsOpenSelectDrawer(false);
           }}
-          uploadType={UploadMediaState.FeedVideo}
+          uploadType={UploadMediaState.Feed}
         />
       )}
     </div>

@@ -86,21 +86,6 @@ const AddContent: React.FC<AddContentProps> = ({setText, handleSend}) => {
     setText(price);
     // handleSend();
   };
-  const getDmChatMediaState = (file: File): UploadMediaState => {
-    const mimeType = file.type;
-
-    if (mimeType.startsWith('image/')) {
-      return UploadMediaState.DmChatImage;
-    }
-    if (mimeType.startsWith('video/')) {
-      return UploadMediaState.DmChatVideo;
-    }
-    if (mimeType.startsWith('audio/')) {
-      return UploadMediaState.DmChatAudio;
-    }
-
-    return UploadMediaState.None;
-  };
 
   const handleMediaUpload = async () => {
     const input = document.createElement('input');
@@ -112,29 +97,28 @@ const AddContent: React.FC<AddContentProps> = ({setText, handleSend}) => {
       if (!file) return;
 
       try {
-        const mediaState = getDmChatMediaState(file); // ✅ 자동 판별
-
         const req: MediaUploadReq = {
-          mediaState,
+          mediaState: UploadMediaState.Chat,
         };
-        console.log;
-        if (mediaState === UploadMediaState.DmChatImage) {
-          req.imageList = [file]; // ✅ 이미지 → imageList
-        } else {
-          req.file = file; // ✅ 영상/오디오 → file
+
+        req.fileList = [file];
+        let chatState = MediaState.None;
+
+        const fileType = file.type; // MIME type (예: "image/png", "audio/mpeg", "video/mp4")
+        const fileName = file.name.toLowerCase();
+
+        if (fileType.startsWith('image/') || /\.(png|jpe?g|gif|webp)$/i.test(fileName)) {
+          chatState = MediaState.Image;
+        } else if (fileType.startsWith('audio/') || /\.(mp3|wav|m4a|aac)$/i.test(fileName)) {
+          chatState = MediaState.Audio;
+        } else if (fileType.startsWith('video/') || /\.(mp4|mov|webm|avi)$/i.test(fileName)) {
+          chatState = MediaState.Video;
         }
 
         const response = await sendUpload(req);
 
-        let uploadedUrl;
-        if (mediaState === UploadMediaState.DmChatImage) {
-          uploadedUrl = response.data?.imageUrlList[0];
-        } else uploadedUrl = response.data?.url;
+        let uploadedUrl = response.data?.mediaUploadInfoList[0].url;
         if (uploadedUrl) {
-          let chatState = MediaState.None;
-          if (mediaState == UploadMediaState.DmChatAudio) chatState = MediaState.Audio;
-          else if (mediaState == UploadMediaState.DmChatImage) chatState = MediaState.Image;
-          else if (mediaState == UploadMediaState.DmChatVideo) chatState = MediaState.Video;
           handleSend(chatState, uploadedUrl);
         } else {
           dataToast.open('추후 제공 예정');

@@ -60,6 +60,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const reelsWrapperRef = useRef<HTMLDivElement>(null);
   const [isProfile, setIsProfile] = useState(false); // 현재 슬라이드 인덱스
+  const [isFirstFetch, setIsFirstFetch] = useState(true);
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -93,85 +94,93 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   // API 호출
   const fetchRecommendFeed = async () => {
-    dispatch(setBottomNavColor(0));
-    if (isSpecificProfile) {
-      const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
-      let result = null;
+    try {
+      dispatch(setBottomNavColor(0));
+      if (isSpecificProfile) {
+        const isPD = [ProfileType.PD, ProfileType.User].includes(profileType);
+        let result = null;
 
-      if (isPD) {
-        result = await getProfilePdTabInfo(
-          profileUrlLinkKey,
-          PdProfileTabType.Feed,
-          feedSortType,
-          {
-            feedMediaType: feedMediaType,
-            channelTabType: 0,
-            characterTabType: 0,
-            contentTabType: 0,
-            sharedTabType: 0,
-          },
-          0,
-          1000,
-        );
-      } else {
-        result = await getProfileCharacterTabInfo(
-          profileUrlLinkKey,
-          CharacterProfileTabType.Feed,
-          feedSortType,
-          {
-            feedMediaType: feedMediaType,
-            channelTabType: 0,
-            characterTabType: 0,
-            contentTabType: 0,
-            sharedTabType: 0,
-          },
-          0,
-          1000,
-        );
-      } //TODO : 1000개로 임시 처리, oh, feed가 많은 경우 일부만 뿌리고 id를 찾아서 보여주는 처리가 필요해보임, 무한 스크롤
+        if (isPD) {
+          result = await getProfilePdTabInfo(
+            profileUrlLinkKey,
+            PdProfileTabType.Feed,
+            feedSortType,
+            {
+              feedMediaType: feedMediaType,
+              channelTabType: 0,
+              characterTabType: 0,
+              contentTabType: 0,
+              sharedTabType: 0,
+            },
+            0,
+            1000,
+          );
+        } else {
+          result = await getProfileCharacterTabInfo(
+            profileUrlLinkKey,
+            CharacterProfileTabType.Feed,
+            feedSortType,
+            {
+              feedMediaType: feedMediaType,
+              channelTabType: 0,
+              characterTabType: 0,
+              contentTabType: 0,
+              sharedTabType: 0,
+            },
+            0,
+            1000,
+          );
+        } //TODO : 1000개로 임시 처리, oh, feed가 많은 경우 일부만 뿌리고 id를 찾아서 보여주는 처리가 필요해보임, 무한 스크롤
 
-      const mergedFeeds = result?.feedInfoList || [];
-      setAllFeeds(mergedFeeds); // 전체 데이터 저장
-      const indexContent = mergedFeeds.findIndex(v => v.id == idContent);
-      setInfo(mergedFeeds.slice(0, indexContent + 6)); // ✅ indexContent 위치까지 + 1~2개만 미리 렌더
+        const mergedFeeds = result?.feedInfoList || [];
+        setAllFeeds(mergedFeeds); // 전체 데이터 저장
+        const indexContent = mergedFeeds.findIndex(v => v.id == idContent);
+        setInfo(mergedFeeds.slice(0, indexContent + 6)); // ✅ indexContent 위치까지 + 1~2개만 미리 렌더
 
-      setCurrentSlideIndex(indexContent);
+        setCurrentSlideIndex(indexContent);
 
-      const wrapper = reelsWrapperRef.current;
-      if (!wrapper) {
-        return;
+        const wrapper = reelsWrapperRef.current;
+        if (!wrapper) {
+          return;
+        }
+
+        setTimeout(() => {
+          const sectionHeight = wrapper.clientHeight; //58 : header , 48 : footer
+          const scrollY = sectionHeight * indexContent;
+          wrapper.scrollTo(0, scrollY);
+          handleScroll();
+        }, 100);
       }
 
-      setTimeout(() => {
-        const sectionHeight = wrapper.clientHeight; //58 : header , 48 : footer
-        const scrollY = sectionHeight * indexContent;
-        wrapper.scrollTo(0, scrollY);
-        handleScroll();
-      }, 100);
-    }
+      if (!isSpecificProfile) {
+        try {
+          const lang = getCurrentLanguage();
+          const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
+          const firstFeed = initialFeed || (result?.data?.feedInfoList?.[0] ?? null);
+          if (firstFeed?.id) {
+            viewFeed(firstFeed.id);
+          }
+          if (result.resultCode === 0 && result.data) {
+            const feeds = result.data.feedInfoList;
 
-    if (!isSpecificProfile) {
-      try {
-        const lang = getCurrentLanguage();
-        const result = await sendGetRecommendFeed({recommendState: recommendState, languageType: lang});
-        const firstFeed = initialFeed || (result?.data?.feedInfoList?.[0] ?? null);
-        if (firstFeed?.id) {
-          viewFeed(firstFeed.id);
+            // initialFeed가 있다면 feeds 배열 앞에 추가
+            const mergedFeeds = initialFeed
+              ? [initialFeed, ...feeds.filter(feed => feed.id !== initialFeed.id)]
+              : feeds;
+
+            setAllFeeds(mergedFeeds); // 전체 데이터 저장
+            setInfo(mergedFeeds.slice(0, 6)); // ✅ 초기 렌더링용 첫 2개
+          }
+        } catch (error) {
+          setAllFeeds([]);
+          setInfo([]);
+          console.error('Failed to fetch recommended feed:', error);
         }
-        if (result.resultCode === 0 && result.data) {
-          const feeds = result.data.feedInfoList;
-
-          // initialFeed가 있다면 feeds 배열 앞에 추가
-          const mergedFeeds = initialFeed ? [initialFeed, ...feeds.filter(feed => feed.id !== initialFeed.id)] : feeds;
-
-          setAllFeeds(mergedFeeds); // 전체 데이터 저장
-          setInfo(mergedFeeds.slice(0, 6)); // ✅ 초기 렌더링용 첫 2개
-        }
-      } catch (error) {
-        setAllFeeds([]);
-        setInfo([]);
-        console.error('Failed to fetch recommended feed:', error);
       }
+    } catch (error) {
+      console.error('Failed to fetch recommended feed:', error);
+    } finally {
+      setIsFirstFetch(false);
     }
   };
 
@@ -256,7 +265,7 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
 
   useEffect(() => {
     const currentItem = allFeeds[currentSlideIndex];
-    setIsMute(true);
+
     // ✅ URL 변경 (딜레이 적용)
     if (currentItem && currentItem.urlLinkKey) {
       if (urlUpdateTimeoutRef.current) {
@@ -343,6 +352,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   };
 
   const loadMoreFeeds = async () => {
+    if (isFirstFetch) {
+      return;
+    }
     try {
       const lang = getCurrentLanguage();
 

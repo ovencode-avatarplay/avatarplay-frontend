@@ -77,7 +77,7 @@ const Comment: React.FC<Props> = ({
   const handleSendAddComment = async (feedId: number, parentCommentId: number, content: string) => {
     const payload = {
       typeValueId: feedId,
-      type: CommentContentType.Feed,
+      type: commentType,
       comment: content, // 댓글 내용
       parentCommentId: parentCommentId,
     };

@@ -186,6 +186,10 @@ export enum MediaState {
   Image = 1,
   Video = 2,
   Audio = 3,
+  Document = 4,
+  Subtitle = 5,
+  Folder = 6,
+  Workroom = 7,
 }
 
 export const getProfileInfo = async (urlLinkKey: string) => {
@@ -198,12 +202,17 @@ export const getProfileInfo = async (urlLinkKey: string) => {
       `${process.env.NEXT_PUBLIC_CHAT_API_URL}/api/v1/Profile/get`,
       data,
     );
-    if (resProfileSelect.status != 200) return;
+    if (resProfileSelect.status != 200) return resProfileSelect.data;
 
-    return resProfileSelect?.data;
-  } catch (e) {
-    //alert('api 에러' + e);
-    console.log('api 에러');
+    return resProfileSelect.data;
+  } catch (e: any) {
+    // alert('api 에러' + e);
+    console.log('api 에러', e);
+    return {
+      resultCode: e?.errorCode || 0, // 응답 코드
+      resultMessage: e?.message || '', // 응답 메시지
+      data: null,
+    };
   }
 };
 export interface GetPdTabInfoeReq {
@@ -429,7 +438,7 @@ export const followProfile = async (profileId: number, isFollow: boolean) => {
       return null;
     }
 
-    return res.data?.data;
+    return res.data.resultCode;
   } catch (e) {
     console.error('Follow API 요청 실패:', e);
     return null;

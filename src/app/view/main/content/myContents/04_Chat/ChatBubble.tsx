@@ -9,7 +9,7 @@ import {BoldTranslator, LineArrowSwap, LineCopy, LineDelete, LineEdit, LinePrevi
 import {MediaState} from '@/app/NetWork/ChatMessageNetwork';
 import {pushLocalizedRoute} from '@/utils/UrlMove';
 import {useRouter} from 'next/navigation';
-import {useSignalR} from '@/hooks/useSignalR';
+import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
 import {ChatState} from '@/app/NetWork/ChatNetwork';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 
@@ -46,8 +46,9 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [localIsDeleted, setLocalIsDeleted] = useState(isDeleted);
   const [localChatState, setLocalChatState] = useState(chatState);
 
-  const jwt = localStorage.getItem('jwt');
-  const {deleteMessage} = useSignalR(jwt || '');
+  const jwt = localStorage?.getItem('jwt');
+  const signalR = useSignalRContext();
+  const {deleteMessage} = signalR || {};
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [dataToast, setDataToast] = useAtom(ToastMessageAtom);
@@ -59,21 +60,36 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
     }
 
     try {
-      await deleteMessage(id);
-      setLocalIsDeleted(true);
-      setLocalChatState(ChatState.Delete);
+      if (deleteMessage) {
+        await deleteMessage(id);
+        setLocalIsDeleted(true);
+        setLocalChatState(ChatState.Delete);
+        setIsMenuOpen(false);
+        setBlurMode(false);
+        setSelectedBubbleId(null);
+      }
+    } catch (error) {
+      console.error('메시지 삭제 실패:', error);
+    }
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      dataToast.open('메시지가 클립보드에 복사되었습니다.', ToastType.Normal);
       setIsMenuOpen(false);
       setBlurMode(false);
       setSelectedBubbleId(null);
     } catch (error) {
-      console.error('메시지 삭제 실패:', error);
+      console.error('클립보드 복사 실패:', error);
+      dataToast.open('클립보드 복사에 실패했습니다.', ToastType.Error);
     }
   };
 
   const items: DropdownItem[] = [
     {
       label: 'Copy',
-      onClick: () => {}, // TODO
+      onClick: handleCopy,
       icon: LineCopy.src,
     },
     {

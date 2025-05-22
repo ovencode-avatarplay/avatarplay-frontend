@@ -101,7 +101,7 @@ const CharacterGallery: React.FC<CharacterGalleryProps> = ({
       }
 
       const req: MediaUploadReq = {
-        mediaState: UploadMediaState.GalleryImage,
+        mediaState: UploadMediaState.Character,
         fileList: [file],
       };
 

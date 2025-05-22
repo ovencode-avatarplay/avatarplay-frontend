@@ -3,7 +3,7 @@ import styles from './VideoUpload.module.css'; // 필요 시 새로운 스타일
 import {UploadMediaState, MediaUploadReq, sendUpload} from '@/app/NetWork/ImageNetwork';
 import SelectDrawer, {SelectDrawerItem} from '@/components/create/SelectDrawer';
 import LoadingOverlay from '@/components/create/LoadingOverlay';
-import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
+// import UploadFromWorkroom from '@/app/view/studio/workroom/UploadFromWorkroom';
 import {MediaState} from '@/app/NetWork/ProfileNetwork';
 
 interface Props {
@@ -23,7 +23,7 @@ const VideoUpload: React.FC<Props> = ({
   onClose,
   onChoose,
   multiple = false,
-  uploadType = UploadMediaState.ContentVideo,
+  uploadType = UploadMediaState.None,
 }) => {
   const [videoUrl, setVideoUrl] = useState(''); // 비디오 업로드가 성공했는지 확인하기위해 비디오 하나를 내부에서 체크
 
@@ -106,13 +106,13 @@ const VideoUpload: React.FC<Props> = ({
         handleChooseFile();
       },
     },
-    {
-      name: 'Workroom',
-      blockAutoClose: true,
-      onClick: () => {
-        setWorkroomOpen(true);
-      },
-    },
+    // {
+    //   name: 'Workroom',
+    //   blockAutoClose: true,
+    //   onClick: () => {
+    //     setWorkroomOpen(true);
+    //   },
+    // },
   ];
 
   return (
@@ -131,14 +131,14 @@ const VideoUpload: React.FC<Props> = ({
         }}
         selectedIndex={0}
       />
-      <UploadFromWorkroom
+      {/* <UploadFromWorkroom
         open={workroomOpen}
         onClose={() => setWorkroomOpen(false)}
         onSelect={handleOnWorkroomItemSelect}
         multiple={multiple}
         onSelectMultiple={handleOnWorkroomItemSelectMultiple}
         mediaStateFilter={MediaState.Video}
-      />
+      /> */}
       <LoadingOverlay loading={loading} />
     </div>
   );

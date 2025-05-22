@@ -299,7 +299,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
             className={`${styles.messageBubbleArea} ${isBlur && styles.blur}`}
             ref={scrollRef}
             sx={{
-              height: `calc(100% - ${chatBarCount > 0 ? chatBarCount * 8 : 0}vh - ${aiChatHeight}px)`,
+              height: `calc(100% - 20px - 50px - ${aiChatHeight}px)`,
             }}
           >
             <Box onClick={() => setSelectedBubbleIndex(null)}>
