@@ -49,6 +49,7 @@ import {
   BookMarkReq,
   CommentContentType,
   InteractionType,
+  ReportType,
   sendDisLike,
   sendLike,
   sendReport,
@@ -797,7 +798,8 @@ const ViewerSeriesContent: React.FC<Props> = ({
       const response = await sendReport({
         interactionType: InteractionType.Contents, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
         typeValueId: info?.contentId, // 신고 대상 ID
-        isReport: true, // true = 신고, false = 취소
+        reportType: ReportType.Other, // 신고 유형
+        reportContent: '', // 신고 내용
       });
     } catch (error) {
       console.error('🚨 신고 API 호출 오류:', error);

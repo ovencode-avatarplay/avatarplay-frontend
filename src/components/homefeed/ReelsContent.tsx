@@ -46,6 +46,7 @@ import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import ReportDrawer from '../report/ReportDrawer';
 
 interface ReelsContentProps {
   item: FeedInfo;
@@ -81,7 +82,8 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShare, setIsShare] = useState(false);
   const [isImageModal, setIsImageModal] = useState(false);
-  const [isReportModal, setIsRefortModal] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const playerRef = useRef<ReactPlayer>(null); // ReactPlayer 참조 생성
   const swiperRef = useRef<SwiperClass | null>(null);
@@ -144,22 +146,11 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
     {
       name: 'Report',
       onClick: () => {
-        handleReport();
-        dataToast.open(getLocalizedText('common_alert_110'), ToastType.Normal);
+        setIsReportOpen(true);
+        setIsMoreOpen(false);
       },
     },
   ];
-  const handleReport = async () => {
-    try {
-      const response = await sendReport({
-        interactionType: InteractionType.Feed, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
-        typeValueId: item.id, // 신고 대상 ID
-        isReport: true, // true = 신고, false = 취소
-      });
-    } catch (error) {
-      console.error('🚨 신고 API 호출 오류:', error);
-    }
-  };
 
   const handleLikeFeed = async (feedId: number, isLike: boolean) => {
     try {
@@ -596,7 +587,7 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
             <div
               className={styles.noneTextButton}
               onClick={() => {
-                setIsRefortModal(true);
+                setIsMoreOpen(true);
               }}
             >
               <img src={BoldMore.src} className={styles.button}></img>
@@ -667,14 +658,25 @@ const ReelsContent: React.FC<ReelsContentProps> = ({
         mediaData={imageMediaData}
       ></ChatMediaDialog>
       <SelectDrawer
-        isOpen={isReportModal}
+        isOpen={isMoreOpen}
         items={selectReportItem}
         onClose={() => {
-          setIsRefortModal(false);
+          setIsMoreOpen(false);
         }}
         isCheck={false}
         selectedIndex={0}
       ></SelectDrawer>
+      <ReportDrawer
+        open={isReportOpen}
+        onClose={() => {
+          setIsReportOpen(false);
+        }}
+        reportData={{
+          reportType: InteractionType.Feed,
+          reportContentId: item.id,
+          reportContentUrl: item.urlLinkKey,
+        }}
+      />
     </div>
   );
 };

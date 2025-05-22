@@ -17,7 +17,6 @@ import CharacterCreateSequence from './CreateCharacterSequence';
 import CharacterImageSet from './CharacterImageSet';
 import CharacterCreateBasic from './CharacterCreateBasic';
 import CharacterCreateLLM from './CharacterCreateLLM';
-import CharacterCreateMedia from './CharacterCreateMedia';
 import CharacterCreateEventTrigger from './CharacterCreateEventTrigger';
 import CharacterCreateConversation from './CharacterCreateConversation';
 import CharacterCreatePolicy from './CharacterCreatePolicy';
@@ -44,8 +43,6 @@ import ImageUpload from '@/components/create/ImageUpload';
 import ImagePreViewer from '@/components/layout/shared/ImagePreViewer';
 import SelectDrawer from '@/components/create/SelectDrawer';
 import VideoUpload from '@/components/create/VideoUpload';
-import {profile} from 'console';
-import CharacterGalleryModal from '@/app/view/studio/characterDashboard/CharacterGalleryModal';
 import CharacterGalleryGrid from '@/app/view/studio/characterDashboard/CharacterGalleryGrid';
 import {GalleryCategory} from '@/app/view/studio/characterDashboard/CharacterGalleryData';
 import CharacterGalleryToggle from '@/app/view/studio/characterDashboard/CharacterGalleryToggle';
@@ -373,13 +370,23 @@ const CreateCharacterMain: React.FC<CreateCharacterProps> = ({id, isUpdate = fal
   };
 
   const CheckEssential = () => {
-    if (mainimageUrl === '') return false;
+    if (mainimageUrl === '') {
+      // setSelectedSplitMenu(0);
+      return false;
+    }
 
-    if (characterName === '') return false;
+    if (characterName === '') {
+      setSelectedSplitMenu(0);
+      return false;
+    }
 
-    if (description === '') return false;
+    if (description === '') {
+      setSelectedSplitMenu(0);
+      return false;
+    }
 
     if (positionCountryList.length < 1) {
+      setSelectedSplitMenu(3);
       return false;
     }
 

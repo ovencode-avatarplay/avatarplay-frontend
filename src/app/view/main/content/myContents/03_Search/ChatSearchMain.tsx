@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, KeyboardEvent} from 'react';
+import React, {useState, useRef, useEffect, KeyboardEvent, use} from 'react';
 import styles from './ChatSearchMain.module.css';
 import CustomDrawer from '@/components/layout/shared/CustomDrawer';
 import {Drawer} from '@mui/material';
@@ -81,6 +81,10 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     // 1. 리스트를 먼저 비움
     setFavoriteList([]);
     setNormalList([]);
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
     setOffset(0);
     setHasMore(true);
     setFavoriteOpen(false);
@@ -112,11 +116,22 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setSearchText('');
     setIsInputFocused(false);
     setFavoriteOpen(false);
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+    setOffset(0);
+    setHasMore(true);
     onClose();
   };
-
+  useEffect(() => {
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
+  }, [searchText]);
   // 기존 handleSearch는 사용하지 않음, 대신 fetchMore 사용
-  const fetchMore = async (isRefreshAll = false) => {
+  const fetchMore = async (isRefreshAll = false, isSearchTextChange = false) => {
     setIsPagingLoading(true);
     setIsLoading(true);
     setError(null);
@@ -126,21 +141,16 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     const keyword = searchText;
 
     try {
-      if (isRefreshAll) {
-        switch (selectedTag) {
-          case 'Following':
-            setFollowingProfileIds([]);
-            break;
-          case 'Character':
-            setCharacterProfileIds([]);
-            break;
-          case 'Friend':
-            setFriendProfileIds([]);
-            break;
-          case 'People':
-            setPeopleProfileIds([]);
-            break;
-        }
+      if (isRefreshAll || isSearchTextChange) {
+        // 모든 상태 초기화를 한 곳에서 처리
+        setFavoriteList([]);
+        setNormalList([]);
+        setOffset(0);
+        setHasMore(true);
+        setFollowingProfileIds([]);
+        setCharacterProfileIds([]);
+        setFriendProfileIds([]);
+        setPeopleProfileIds([]);
       }
 
       if (selectedTag === 'Following') {
@@ -151,7 +161,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: followingProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : followingProfileIds,
         });
         if (response.data) {
           newFavoriteList = response.data.favoriteCharacterList || [];
@@ -165,7 +175,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           nagativeFilterTags: negativeFiltersRef.current.map(f => f.key),
           isAdults: isAdultRef.current,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: characterProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : characterProfileIds,
         });
         if (response.data) {
           newNormalList = response.data.recommendCharacterList || [];
@@ -174,7 +184,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         const response = await sendGetSearchFriendList({
           search: keyword,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: friendProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : friendProfileIds,
         });
         if (response.data) {
           newFavoriteList = response.data.favoriteFriendList || [];
@@ -184,7 +194,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         const response = await sendGetSearchPeopleList({
           search: keyword,
           page: {offset: currentOffset, limit: LIMIT},
-          alreadyReceivedProfileIds: peopleProfileIds,
+          alreadyReceivedProfileIds: isSearchTextChange ? [] : peopleProfileIds,
         });
         if (response.data) {
           newNormalList = response.data.recommendPeopleList || [];
@@ -250,9 +260,14 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
     setHasMore(true);
     setFavoriteList([]);
     setNormalList([]);
+
+    setFollowingProfileIds([]);
+    setCharacterProfileIds([]);
+    setFriendProfileIds([]);
+    setPeopleProfileIds([]);
     setIsInputFocused(false);
     setSearchText(keyword);
-    fetchMore(true);
+    fetchMore(true, true);
   };
 
   // 최근 검색어 선택 시
@@ -498,7 +513,8 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
           let badgeType = BadgeType.None;
           if (character.characterIP === CharacterIP.Original) badgeType = BadgeType.Original;
           else if (character.characterIP === CharacterIP.Fan) badgeType = BadgeType.Fan;
-          let followState = selectedTag === 'People' ? FollowState.AddFriend : FollowState.Follow;
+          let followState =
+            selectedTag === 'People' ? character.followState || FollowState.AddFriend : FollowState.Follow;
 
           return (
             <MessageProfile
@@ -538,6 +554,7 @@ const ChatSearchMain: React.FC<Props> = ({isOpen, onClose}) => {
         {renderCharacterList(
           selectedTag === 'Following' || selectedTag === 'Friend' ? [...favoriteList, ...normalList] : normalList,
         )}
+
         {/* 무한 스크롤 트리거용 div */}
         {hasMore && <div ref={observerRef} style={{height: 1}} />}
         {isPagingLoading && (

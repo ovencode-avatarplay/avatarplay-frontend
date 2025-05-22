@@ -5,8 +5,10 @@ import {useRouter} from 'next/navigation';
 import {supabase} from '@/utils/supabaseClient';
 //import {useSignalR} from '@hooks/useSignalR';
 import {setStar} from '@/redux-store/slices/Currency';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {CircularProgress, Box, Typography} from '@mui/material';
+import {RootState} from '@/redux-store/ReduxStore';
+import {setLastUrlLink} from '@/redux-store/slices/CommonRedux';
 
 export default function LoginCallback() {
   const router = useRouter();
@@ -20,6 +22,8 @@ export default function LoginCallback() {
     dispatch(setStar(payload.amount));
     console.log(`💎 ${payload.amount} 루비를 선물 받았습니다!`);
   };
+
+  const lastUrlLink = useSelector((state: RootState) => state.commonRedux.lastUrlLink);
 
   // ✅ SignalR 연결
   //useSignalR(token ?? '');
@@ -51,7 +55,12 @@ export default function LoginCallback() {
   useEffect(() => {
     if (token) {
       const redirectTimer = setTimeout(() => {
-        router.replace('/ko/main/homefeed');
+        if (lastUrlLink !== '') {
+          router.replace(lastUrlLink);
+          dispatch(setLastUrlLink(''));
+        } else {
+          router.replace('/ko/main/homefeed');
+        }
       }, 1000); // 1초 후 리다이렉트
 
       return () => clearTimeout(redirectTimer);
