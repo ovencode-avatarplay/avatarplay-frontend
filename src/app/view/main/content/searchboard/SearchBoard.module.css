@@ -28,10 +28,12 @@
     height: calc(100vh - 58px);  
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;  
+    overscroll-behavior: contain;
   }
 .scrollArea
 { 
     height: 100%; 
+    overscroll-behavior: contain;
 }
 
 /* .scrollArea::-webkit-scrollbar {

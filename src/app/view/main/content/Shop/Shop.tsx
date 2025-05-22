@@ -14,6 +14,9 @@ import {setSelectedIndex} from '@/redux-store/slices/MainControl';
 import {sendCreateLinkReq} from '@/app/NetWork/PaymentNetwork';
 import {Session, UserMetadata} from '@supabase/supabase-js';
 import {supabase} from '@/utils/supabaseClient';
+import CustomDrawer from '@/components/layout/shared/CustomDrawer';
+import CustomButton from '@/components/layout/shared/CustomButton';
+import getLocalizedText from '@/utils/getLocalizedText';
 
 export const dummyBannerList: BannerUrlList[] = [
   {
@@ -53,40 +56,49 @@ export const dummyBannerList: BannerUrlList[] = [
   },
 ];
 
-const rubyItems = [
-  {id: 1, amount: 5, bonus: 5, price: 3},
-  {id: 2, amount: 10, bonus: 10, price: 5},
-  {id: 3, amount: 20, bonus: 20, price: 10},
-  {id: 4, amount: 50, bonus: 50, price: 20},
-  {id: 5, amount: 100, bonus: 100, price: 30},
-  {id: 6, amount: 200, bonus: 200, price: 50},
-  {id: 7, amount: 500, bonus: 500, price: 100},
-  {id: 8, amount: 1000, bonus: 1000, price: 200},
-  {id: 9, amount: 2000, bonus: 2000, price: 400},
-  {id: 10, amount: 5000, bonus: 5000, price: 1000},
-  {id: 11, amount: 10000, bonus: 10000, price: 2000},
-  {id: 12, amount: 20000, bonus: 20000, price: 4000},
-  {id: 13, amount: 50000, bonus: 50000, price: 10000},
-  {id: 14, amount: 100000, bonus: 100000, price: 20000},
-  {id: 15, amount: 200000, bonus: 200000, price: 40000},
+export interface ItemData {
+  id: number;
+  amount: number;
+  bonus: number;
+  price: number;
+  type: number;
+  name: string;
+}
+
+const rubyItems: ItemData[] = [
+  {id: 1, amount: 5, bonus: 5, price: 3, type: 1, name: 'Ruby 5'},
+  {id: 2, amount: 10, bonus: 10, price: 5, type: 1, name: 'Ruby 10'},
+  {id: 3, amount: 20, bonus: 20, price: 10, type: 1, name: 'Ruby 20'},
+  {id: 4, amount: 50, bonus: 50, price: 20, type: 1, name: 'Ruby 50'},
+  {id: 5, amount: 100, bonus: 100, price: 30, type: 1, name: 'Ruby 100'},
+  {id: 6, amount: 200, bonus: 200, price: 50, type: 1, name: 'Ruby 200'},
+  {id: 7, amount: 500, bonus: 500, price: 100, type: 1, name: 'Ruby 500'},
+  {id: 8, amount: 1000, bonus: 1000, price: 200, type: 1, name: 'Ruby 1000'},
+  {id: 9, amount: 2000, bonus: 2000, price: 400, type: 1, name: 'Ruby 2000'},
+  {id: 10, amount: 5000, bonus: 5000, price: 1000, type: 1, name: 'Ruby 5000'},
+  {id: 11, amount: 10000, bonus: 10000, price: 2000, type: 1, name: 'Ruby 10000'},
+  {id: 12, amount: 20000, bonus: 20000, price: 4000, type: 1, name: 'Ruby 20000'},
+  {id: 13, amount: 50000, bonus: 50000, price: 10000, type: 1, name: 'Ruby 50000'},
+  {id: 14, amount: 100000, bonus: 100000, price: 20000, type: 1, name: 'Ruby 100000'},
+  {id: 15, amount: 200000, bonus: 200000, price: 40000, type: 1, name: 'Ruby 200000'},
 ];
 
-const starItems = [
-  {id: 1, amount: 5, bonus: 5, price: 3},
-  {id: 2, amount: 10, bonus: 10, price: 5},
-  {id: 3, amount: 20, bonus: 20, price: 10},
-  {id: 4, amount: 50, bonus: 50, price: 20},
-  {id: 5, amount: 100, bonus: 100, price: 30},
-  {id: 6, amount: 200, bonus: 200, price: 50},
-  {id: 7, amount: 500, bonus: 500, price: 100},
-  {id: 8, amount: 1000, bonus: 1000, price: 200},
-  {id: 9, amount: 2000, bonus: 2000, price: 400},
-  {id: 10, amount: 5000, bonus: 5000, price: 1000},
-  {id: 11, amount: 10000, bonus: 10000, price: 2000},
-  {id: 12, amount: 20000, bonus: 20000, price: 4000},
-  {id: 13, amount: 50000, bonus: 50000, price: 10000},
-  {id: 14, amount: 100000, bonus: 100000, price: 20000},
-  {id: 15, amount: 200000, bonus: 200000, price: 40000},
+const starItems: ItemData[] = [
+  {id: 1, amount: 5, bonus: 5, price: 3, type: 2, name: 'Star 5'},
+  {id: 2, amount: 10, bonus: 10, price: 5, type: 2, name: 'Star 10'},
+  {id: 3, amount: 20, bonus: 20, price: 10, type: 2, name: 'Star 20'},
+  {id: 4, amount: 50, bonus: 50, price: 20, type: 2, name: 'Star 50'},
+  {id: 5, amount: 100, bonus: 100, price: 30, type: 2, name: 'Star 100'},
+  {id: 6, amount: 200, bonus: 200, price: 50, type: 2, name: 'Star 200'},
+  {id: 7, amount: 500, bonus: 500, price: 100, type: 2, name: 'Star 500'},
+  {id: 8, amount: 1000, bonus: 1000, price: 200, type: 2, name: 'Star 1000'},
+  {id: 9, amount: 2000, bonus: 2000, price: 400, type: 2, name: 'Star 2000'},
+  {id: 10, amount: 5000, bonus: 5000, price: 1000, type: 2, name: 'Star 5000'},
+  {id: 11, amount: 10000, bonus: 10000, price: 2000, type: 2, name: 'Star 10000'},
+  {id: 12, amount: 20000, bonus: 20000, price: 4000, type: 2, name: 'Star 20000'},
+  {id: 13, amount: 50000, bonus: 50000, price: 10000, type: 2, name: 'Star 50000'},
+  {id: 14, amount: 100000, bonus: 100000, price: 20000, type: 2, name: 'Star 100000'},
+  {id: 15, amount: 200000, bonus: 200000, price: 40000, type: 2, name: 'Star 200000'},
 ];
 
 const planData = [
@@ -123,6 +135,7 @@ const Shop: React.FC = () => {
   const dataCurrencyInfo = useSelector((state: RootState) => state.currencyInfo);
 
   const [itemIdList, setItemIdList] = useState<number[]>([]);
+  const [purchaseDrawerOpen, setPurchaseDrawerOpen] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -150,6 +163,42 @@ const Shop: React.FC = () => {
     if (res) {
       console.log(res);
     }
+    setPurchaseDrawerOpen(true);
+  };
+
+  const renderPurchaseDrawer = (itemData: ItemData) => {
+    return (
+      <CustomDrawer
+        title="Purchase"
+        open={purchaseDrawerOpen}
+        onClose={() => {
+          setPurchaseDrawerOpen(false);
+        }}
+      >
+        <div className={styles.purchaseContent}>
+          <div className={styles.purchaseTitle}>
+            <img className={styles.purchaseTitleIcon} src={itemData.type == 1 ? BoldRuby.src : BoldStar.src} />
+            <div className={styles.purchaseTitleText}>{itemData.name}</div>
+            <div className={styles.purchaseTitleAmount}>{itemData.amount}</div>
+            <div className={styles.purchaseTitleBonus}>{itemData.bonus}</div>
+          </div>
+          <div className={styles.priceArea}>
+            <div className={styles.priceText}>{itemData.price}</div>
+          </div>
+          <div className={styles.purchaseDesc}>{getLocalizedText('TODO : PurchaseDesc')}</div>
+          <CustomButton
+            size="Large"
+            type="Primary"
+            state="Normal"
+            onClick={() => {
+              handleOnClickBuy(itemData.id, itemData.amount);
+            }}
+          >
+            {getLocalizedText('TODO : Purchase')}
+          </CustomButton>
+        </div>
+      </CustomDrawer>
+    );
   };
 
   return (
@@ -198,6 +247,7 @@ const Shop: React.FC = () => {
           )}
         </div>
       </div>
+      {renderPurchaseDrawer(rubyItems[0])}
     </div>
   );
 };

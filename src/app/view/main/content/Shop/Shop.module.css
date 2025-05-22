@@ -143,3 +143,70 @@
       border: 2px solid white; 
     }
     
+
+    .purchaseDrawerContent
+    {
+      display: flex;
+      flex-direction: column;
+      align-items: center; 
+    }
+
+    .purchaseContent
+    {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .purchaseTitle
+    {
+      display: flex;
+      flex-direction: row;
+
+    }
+
+    .purchaseTitleIcon
+    {
+      width: 24px;
+      height: 24px;
+    }
+
+    .purchaseTitleText
+    {
+
+    }
+
+    .purchaseTitleAmount
+    {
+      
+    } 
+
+    .purchaseTitleBonus
+    {
+
+    }
+
+    .priceArea
+    {
+
+    }
+    
+    .priceText
+    {
+
+    }
+
+    .purchaseDesc
+    {
+
+    }
+
+    .purchaseButton
+    {
+
+    }
+
+    .purchaseButtonText
+    {
+
+    }

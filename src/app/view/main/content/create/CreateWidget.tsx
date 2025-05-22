@@ -32,11 +32,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   const router = useRouter();
   const dataProfile = useSelector((state: RootState) => state.profile);
   const dispatch = useDispatch();
-  const [startY, setStartY] = useState<number | null>(null);
-  const [translateY, setTranslateY] = useState(0);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartY(e.touches[0].clientY);
-  };
+
   const [data, setData] = useState<{
     profileList: ProfileSimpleInfo[];
     indexSharedTab: number;
@@ -61,24 +57,6 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
 
     data.profileList = profileList;
     setData({...data});
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (startY !== null) {
-      const currentY = e.touches[0].clientY;
-      const distance = Math.max(currentY - startY, 0);
-      setTranslateY(distance);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    const threshold = 100;
-    if (translateY > threshold) {
-      onClose();
-    } else {
-      setTranslateY(0);
-    }
-    setStartY(null);
   };
 
   const handleClickCharacter = () => {
@@ -108,12 +86,7 @@ const CreateWidget: React.FC<Props> = ({open, onClose}) => {
   */
   return (
     <CustomDrawer open={open} onClose={onClose}>
-      <div
-        className={styles.widgetBox}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+      <div className={styles.widgetBox}>
         <div className={styles.drawerArea}>
           <div className={styles.drawerTitle}>{getLocalizedText('common_alert_016')}</div>
           <div className={styles.buttonArea}>
