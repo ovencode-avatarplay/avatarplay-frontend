@@ -10,8 +10,9 @@ import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
 import {InteractionType, ReportType, sendReport} from '@/app/NetWork/CommonNetwork';
 import {getLocalizedLink} from '@/utils/UrlMove';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/redux-store/ReduxStore';
+import {setLastUrlLink} from '@/redux-store/slices/CommonRedux';
 
 export interface ReportData {
   reportType: InteractionType;
@@ -35,9 +36,12 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (open) {
       if (dataProfile.currentProfile === null || dataProfile.currentProfile === undefined) {
+        dispatch(setLastUrlLink(window.location.href));
         window.location.href = getLocalizedLink('/auth');
       } else {
         setIsOpen(true);
