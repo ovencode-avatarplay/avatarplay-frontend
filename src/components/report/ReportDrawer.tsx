@@ -3,15 +3,18 @@ import CustomDrawer from '../layout/shared/CustomDrawer';
 import CustomInput from '../layout/shared/CustomInput';
 import CustomRadioButton from '../layout/shared/CustomRadioButton';
 import styles from './ReportDrawer.module.css';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import CustomButton from '../layout/shared/CustomButton';
 import CustomCheckbox from '../layout/shared/CustomCheckBox';
 import {useAtom} from 'jotai';
 import {ToastMessageAtom, ToastType} from '@/app/Root';
-import {InteractionType, sendReport} from '@/app/NetWork/CommonNetwork';
+import {InteractionType, ReportType, sendReport} from '@/app/NetWork/CommonNetwork';
+import {getLocalizedLink} from '@/utils/UrlMove';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/redux-store/ReduxStore';
 
 export interface ReportData {
-  reportType: number;
+  reportType: InteractionType;
   reportContentId: number;
   reportContentUrl?: string;
 }
@@ -19,7 +22,7 @@ export interface ReportData {
 interface ReportDrawerProps {
   open: boolean;
   onClose: () => void;
-  reportData?: ReportData;
+  reportData: ReportData;
 }
 
 const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) => {
@@ -28,14 +31,38 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
   const [selectedValue, setSelectedValue] = useState<number>(0);
   const [input, setInput] = useState<string[]>(['', '', '', '', '']);
   const [agreement, setAgreement] = useState<boolean>(false);
+  const dataProfile = useSelector((state: RootState) => state.profile);
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (open) {
+      if (dataProfile.currentProfile === null || dataProfile.currentProfile === undefined) {
+        window.location.href = getLocalizedLink('/auth');
+      } else {
+        setIsOpen(true);
+      }
+    } else {
+      setIsOpen(false);
+    }
+  }, [open]);
 
   const handleReport = async () => {
     try {
       const response = await sendReport({
-        interactionType: reportData?.reportType || 0, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
-        typeValueId: reportData?.reportContentId || 0, // 신고 대상 ID
-        isReport: true, // true = 신고, false = 취소
+        interactionType: reportData.reportType, // 예: 댓글 = 1, 피드 = 2 등 서버 정의에 따라
+        typeValueId: reportData.reportContentId, // 신고 대상 ID
+        reportType: selectedValue, // 신고 유형
+        reportContent: input[selectedValue] || '', // 신고 내용
       });
+
+      if (response.resultCode === 200) {
+        dataToast.open(
+          getLocalizedText('TODO : Your report has been successfully received and will be reviewed shortly.'),
+          ToastType.Normal,
+        );
+        onClose();
+      }
     } catch (error) {
       console.error('🚨 신고 API 호출 오류:', error);
     }
@@ -113,7 +140,7 @@ const ReportDrawer: React.FC<ReportDrawerProps> = ({open, onClose, reportData}) 
   };
 
   return (
-    <CustomDrawer open={open} onClose={onClose}>
+    <CustomDrawer open={isOpen} onClose={onClose}>
       <div className={styles.reportDrawer}>
         <h1 className={styles.reportDrawerTitle}>{getLocalizedText('TODO : Report')}</h1>
         <p className={styles.reportDrawerDesc}>{getLocalizedText('TODO : Please Select a reason for the report')}</p>

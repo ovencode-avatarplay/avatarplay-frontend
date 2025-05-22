@@ -105,9 +105,9 @@ import {PortfolioListPopup} from './ProfileUpdate';
 import CustomButton from '@/components/layout/shared/CustomButton';
 import ReactDOM from 'react-dom';
 import {sendCheckDMChatLinkKey} from '@/app/NetWork/ChatMessageNetwork';
-import LoadingOverlay from '@/components/create/LoadingOverlay'; 
+import LoadingOverlay from '@/components/create/LoadingOverlay';
 import CustomPopup from '@/components/layout/shared/CustomPopup';
-import ReportDrawer from '@/components/report/ReportDrawer'; 
+import ReportDrawer from '@/components/report/ReportDrawer';
 
 const mappingStrToGlobalTextKey = {
   Feed: 'common_label_feed',
@@ -1325,7 +1325,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
           setIsReportOpen(false);
         }}
         reportData={{
-          reportType: 0,
+          reportType: InteractionType.Character,
           reportContentId: data.profileId,
           reportContentUrl: data.urlLinkKey,
         }}
@@ -2538,18 +2538,18 @@ export const TabContentComponentWrap = ({
         onClose={() => {
           setData(v => ({...v, isShareOpened: false}));
         }}
-      ></SharePopup> 
+      ></SharePopup>
       <ReportDrawer
         open={isReportOpen}
         onClose={() => {
           setIsReportOpen(false);
         }}
         reportData={{
-          reportType: 0,
+          reportType: InteractionType.Character,
           reportContentId: profileId,
           reportContentUrl: profileUrlLinkKey,
         }}
-      /> 
+      />
       {isDeletePopupOpen &&
         ReactDOM.createPortal(
           <CustomPopup
@@ -2571,7 +2571,7 @@ export const TabContentComponentWrap = ({
             ]}
           />,
           document.body,
-        )} 
+        )}
     </>
   );
 };
