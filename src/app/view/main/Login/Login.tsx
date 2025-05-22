@@ -1,9 +1,9 @@
 'use client';
-
+import {useState} from 'react';
 import {supabase} from 'utils/supabaseClient';
 import Image from 'next/image';
-import styles from './Login.module.css';
-import {AppleLogo, FacebookLogo, GoogleLogo, KakatalkLogo, LineClose} from '@ui/Icons';
+import styles from './Login.module.scss';
+import {AppleLogo, FacebookLogo, GoogleLogo, KakatalkLogo, EmailLogo, LineClose} from '@ui/Icons';
 import {useRouter} from 'next/navigation';
 import {getBrowserLanguage} from '@/utils/browserInfo';
 import {getLangUrlCode} from '@/configs/i18n';
@@ -16,6 +16,8 @@ const Login = () => {
   const {back} = useCustomRouter();
   const Header = 'Login';
   const Common = 'Common';
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const handleOAuthLogin = async (provider: 'google' | 'kakao' | 'facebook' | 'apple') => {
     const langCode = getLangUrlCode(getBrowserLanguage());
     await supabase.auth.signInWithOAuth({
@@ -26,6 +28,19 @@ const Login = () => {
     });
 
     //이부분에 signalIR 연결
+  };
+
+ const handleEmailLogin = async () => {
+    const {data, error} = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert('로그인 실패: ' + error.message);
+    } else {
+      router.push('/'); // 로그인 성공 후 이동할 경로
+    }
   };
   const router = useRouter();
 
@@ -76,6 +91,30 @@ const Login = () => {
           <Image src={AppleLogo} width={24} height={24} alt="Apple" />
           {getLocalizedText('common_button_continuewithapple')}{' '}
         </button>
+        <hr className={styles.divider} />
+        <div className={styles.emailLoginSection}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.emailInput}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.emailInput}
+          />
+          <button className={styles.buttonSocial} onClick={handleEmailLogin}>
+            <Image src={EmailLogo} width={24} height={24} alt="Email" />
+            {getLocalizedText('common_button_continuewithemail')}
+          </button>
+        </div>
+        <a href="register" rel="noopener noreferrer">
+          {getLocalizedText('login001_label_register')}
+        </a>
       </div>
 
       <div className={styles.policy}>

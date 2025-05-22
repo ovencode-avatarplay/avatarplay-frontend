@@ -177,6 +177,7 @@ import EmojiNormal from "./Custom/emoji_normal.svg";
 import EmojiConfused from "./Custom/emoji_confused.svg";
 import EmojiCuriosity from "./Custom/emoji_curiosity.svg";
 import Emoticon from "./Custom/Emoticon.svg";
+import EmailLogo from "./Custom/FaceBookLogo.svg";
 import VideoFrame from "./Custom/Video_Frame.svg";
 import AudioWave from "./Custom/wpf_audio-wave.svg";
 
@@ -350,6 +351,7 @@ export {
   EmojiNormal,
   EmojiConfused,
   EmojiCuriosity,
+  EmailLogo,
   LineFriendList,
   LineSearchThin,
   LineCam,
