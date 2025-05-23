@@ -14,11 +14,15 @@ type DeleteMessageCallback = (payload: any) => void;
 type DMErrorCallback = (error: {code: string; message: string}) => void;
 type SenderGiftCallback = (payload: any) => void;
 type ReceiverGiftCallback = (payload: any) => void;
+type UnreadNotiCallback = (payload: {hasUnread: boolean}) => void;
+type GiftStarErrorCallback = (payload: {message: string}) => void;
 
 // 여러곳에서 중복처리 해야하는 경우 여기에 등록해서 처리.
 type SignalREventCallbacks = {
   onSenderGiftStar?: SenderGiftCallback;
   onReceiverGiftStar?: ReceiverGiftCallback;
+  onUnreadNotiReddot?: UnreadNotiCallback;
+  onGiftStarError?: GiftStarErrorCallback;
 };
 
 let globalConnection: HubConnection | null = null;
@@ -82,6 +86,18 @@ export function useSignalR(token: string, callbacks: SignalREventCallbacks = {})
     connectionRef.current?.on('ReceiveDMError', callback);
   }, []);
 
+  const onUnreadNotiReddot = useCallback((callback: UnreadNotiCallback) => {
+    connectionRef.current?.on('ReceiveUnreadNotiReddot', payload => {
+      console.log('🔴 읽지 않은 알림 표시:', payload);
+      dispatch(setUnread(payload.hasUnread));
+      callback(payload);
+    });
+  }, [dispatch]);
+
+  const onGiftStarError = useCallback((callback: GiftStarErrorCallback) => {
+    connectionRef.current?.on('ReceiveGiftStarError', callback);
+  }, []);
+
   useEffect(() => {
     // 선물 보내기 이벤트 핸들러 등록
     connectionRef.current?.off('SenderGiftStar');
@@ -91,6 +107,7 @@ export function useSignalR(token: string, callbacks: SignalREventCallbacks = {})
       if (typeof amount === 'number') {
         dispatch(setStar(amount));
       }
+      callbacks.onSenderGiftStar?.(payload);
     });
 
     // 선물 받기 이벤트 핸들러 등록
@@ -101,6 +118,7 @@ export function useSignalR(token: string, callbacks: SignalREventCallbacks = {})
       if (typeof amount === 'number') {
         dispatch(setStar(amount));
       }
+      callbacks.onReceiverGiftStar?.(payload);
     });
 
     // 알림 핸들러는 항상 등록
@@ -109,10 +127,38 @@ export function useSignalR(token: string, callbacks: SignalREventCallbacks = {})
       console.log('🔔 알림 수신됨 (auto):', payload);
       dispatch(setUnread(true));
     });
-  }, [dispatch]);
+
+    // 읽지 않은 알림 표시 핸들러
+    connectionRef.current?.off('ReceiveUnreadNotiReddot');
+    connectionRef.current?.on('ReceiveUnreadNotiReddot', payload => {
+      console.log('🔴 읽지 않은 알림 표시:', payload);
+      dispatch(setUnread(payload.hasUnread));
+      callbacks.onUnreadNotiReddot?.(payload);
+    });
+
+    // 선물 에러 핸들러
+    connectionRef.current?.off('ReceiveGiftStarError');
+    connectionRef.current?.on('ReceiveGiftStarError', payload => {
+      console.log('❌ 선물 에러:', payload);
+      callbacks.onGiftStarError?.(payload);
+    });
+
+    return () => {
+      // 컴포넌트 언마운트 시 이벤트 핸들러 제거
+      connectionRef.current?.off('SenderGiftStar');
+      connectionRef.current?.off('ReceiverGiftStar');
+      connectionRef.current?.off('ReceiveNotification');
+      connectionRef.current?.off('ReceiveUnreadNotiReddot');
+      connectionRef.current?.off('ReceiveGiftStarError');
+    };
+  }, [dispatch, callbacks]);
 
   const sendGiftStar = async (giftProfileId: number, giftStar: number) => {
     await connectionRef.current?.invoke('SendGiftStar', giftProfileId, giftStar);
+  };
+
+  const clearNotificationCache = async () => {
+    await connectionRef.current?.invoke('ClearNotificationCache');
   };
 
   return {
@@ -146,6 +192,9 @@ export function useSignalR(token: string, callbacks: SignalREventCallbacks = {})
     onGift,
     onMessageDeleted,
     onDMError,
+    onUnreadNotiReddot,
+    onGiftStarError,
     sendGiftStar,
+    clearNotificationCache,
   };
 }

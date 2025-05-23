@@ -9,6 +9,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CircularProgress, Box, Typography} from '@mui/material';
 import {RootState} from '@/redux-store/ReduxStore';
 import {setLastUrlLink} from '@/redux-store/slices/CommonRedux';
+import {sendGetNotiReddot} from '@/app/NetWork/NotificationNetwork';
+import {setUnread} from '@/redux-store/slices/Notification';
+import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
 
 export default function LoginCallback() {
   const router = useRouter();
@@ -17,13 +20,8 @@ export default function LoginCallback() {
   const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
-  // 💎 루비 선물 수신
-  const onGift = (payload: any) => {
-    dispatch(setStar(payload.amount));
-    console.log(`💎 ${payload.amount} 루비를 선물 받았습니다!`);
-  };
-
   const lastUrlLink = useSelector((state: RootState) => state.commonRedux.lastUrlLink);
+  const signalR = useSignalRContext();
 
   // ✅ SignalR 연결
   //useSignalR(token ?? '');
@@ -41,6 +39,22 @@ export default function LoginCallback() {
         }
 
         setToken(accessToken);
+
+        // 알림 레드닷 상태 확인
+        try {
+          const response = await sendGetNotiReddot();
+          if (response.data?.isNotifiactionReddot !== undefined) {
+            dispatch(setUnread(response.data.isNotifiactionReddot));
+            //TODO: 슬라이스에 잘 들어가는지 나중에 확인 필요
+          }
+          if (response.data?.isNotifiactionReddot === false) {
+            dispatch(setUnread(false));
+            // 서버의 알림 캐시 클리어
+            await signalR?.clearNotificationCache();
+          }
+        } catch (err) {
+          console.error('알림 레드닷 상태 확인 중 오류:', err);
+        }
       } catch (err) {
         setError('로그인 처리 중 오류가 발생했습니다.');
         console.error('Login error:', err);
@@ -65,7 +79,7 @@ export default function LoginCallback() {
 
       return () => clearTimeout(redirectTimer);
     }
-  }, [token, router]);
+  }, [token, router, lastUrlLink, dispatch]);
 
   if (error) {
     return (

@@ -223,3 +223,29 @@
   filter: brightness(0) saturate(100%)
 }
 
+.allReadBtn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8c9299;
+  font-size: 12px;
+  padding: 0;
+}
+
+.checkIcon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) saturate(100%) invert(65%) sepia(6%) saturate(390%) hue-rotate(166deg) brightness(81%) contrast(76%);
+  margin-right: 6px;
+}
+
+.allReadText {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #8c9299;
+}
+

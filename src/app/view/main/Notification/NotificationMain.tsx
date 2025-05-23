@@ -2,14 +2,16 @@ import React, {useState, useEffect} from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import styles from './NotificationMain.module.css';
-import {LineClose, LineSetting} from '@ui/Icons';
+import {LineCheck, LineClose, LineSetting} from '@ui/Icons';
 import Notice from './Notice';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {Settings} from '@mui/icons-material';
 import {useDispatch} from 'react-redux';
 import {setUnread} from '@/redux-store/slices/Notification';
-import {sendGetNotificationList, NotificationInfo, NotificationSystemType} from '@/app/NetWork/NotificationNetwork';
+import {sendGetNotificationList, NotificationInfo, NotificationSystemType, sendGetNewNotificationList, sendReadAllNotification, sendGetNotiReddot} from '@/app/NetWork/NotificationNetwork';
+import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
+
 
 interface NotificationMainProps {
   open: boolean;
@@ -23,6 +25,7 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
   const [notifications, setNotifications] = useState<NotificationInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const signalR = useSignalRContext();
 
   const fetchNotifications = async () => {
     try {
@@ -43,10 +46,38 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
     }
   };
 
+  const fetchNewNotifications = async () => {
+    try {
+      const lastId = notifications.length > 0 ? notifications[0].id : 0;
+      const response = await sendGetNewNotificationList({
+        lastNotificationId: lastId,
+        systemType: NotificationSystemType.All,
+      });
+      const notificationList = response?.data?.notificationList;
+      if (notificationList && notificationList.length > 0) {
+        setNotifications(prev => [...notificationList, ...prev]);
+      }
+    } catch (error) {
+      console.error('새로운 알림을 불러오는데 실패했습니다:', error);
+    }
+  };
+
+  const handleReadAll = async () => {
+    try {
+      await sendReadAllNotification();
+      setNotifications(prev => prev.map(noti => ({ ...noti, isRead: true })));
+    } catch (error) {
+      console.error('모두 읽기 처리 중 오류:', error);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       dispatch(setUnread(false));
       fetchNotifications();
+      
+      const interval = setInterval(fetchNewNotifications, 3000);
+      return () => clearInterval(interval);
     }
   }, [open, dispatch]);
 
@@ -66,12 +97,25 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
   });
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={async () => {
+      onClose();
+      try {
+        const response = await sendGetNotiReddot();
+        if (response.data?.isNotifiactionReddot === false) {
+          await signalR?.clearNotificationCache();
+        }
+      } catch (err) {
+        console.error('알림 레드닷 상태 확인 중 오류:', err);
+      }
+    }}>
       <div className={styles.modalContainer}>
         <div className={styles.header}>
           <CustomArrowHeader title="Notification" onClose={onClose}>
-            <button className={styles.settingBtn}>
-              <img src={LineSetting.src} alt="setting" style={{width: 24, height: 24}} />
+            <button className={styles.allReadBtn} onClick={handleReadAll}>
+              <span className={styles.checkIcon} aria-hidden="true" >
+                <img src={LineCheck.src} alt="check" style={{width: 24, height: 24}} />
+              </span>
+              <span className={styles.allReadText}>모두읽음</span>
             </button>
           </CustomArrowHeader>
         </div>
