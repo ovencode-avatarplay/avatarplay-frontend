@@ -35,6 +35,7 @@ export default function ChatPage() {
       <div className="fixed inset-0 flex items-center justify-center bg-white">
         <div className="flex flex-col items-center justify-center p-8 rounded-lg shadow-lg bg-white">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">봇 방지를 위해 캡챠를 완료해주세요</h2>
+
           <div className="w-full flex justify-center">
             <Turnstile
               siteKey="0x4AAAAAABeUkzEB8lSdVkm6"
