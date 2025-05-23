@@ -1153,16 +1153,16 @@ const Workroom: React.FC<Props> = ({}) => {
           await getWorkroomDashBoard();
           break;
         case 'Folders':
-          await getWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10}, true);
+          await getWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10}, false);
           break;
         case 'Image':
-          await getWorkroomFiles(MediaState.Image, {offset: 0, limit: 10}, true);
+          await getWorkroomFiles(MediaState.Image, {offset: 0, limit: 10}, false);
           break;
         case 'Video':
-          await getWorkroomFiles(MediaState.Video, {offset: 0, limit: 10}, true);
+          await getWorkroomFiles(MediaState.Video, {offset: 0, limit: 10}, false);
           break;
         case 'Audio':
-          await getWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10}, true);
+          await getWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10}, false);
           break;
       }
     } else if (selectedTag === 'favorite') {
@@ -1171,20 +1171,34 @@ const Workroom: React.FC<Props> = ({}) => {
           await getFavoriteWorkroomDashboard();
           break;
         case 'Folders':
-          await getFavoriteWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10}, true);
+          await getFavoriteWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10}, false);
           break;
         case 'Image':
-          await getFavoriteWorkroomFiles(MediaState.Image, {offset: 0, limit: 10}, true);
+          await getFavoriteWorkroomFiles(MediaState.Image, {offset: 0, limit: 10}, false);
           break;
         case 'Video':
-          await getFavoriteWorkroomFiles(MediaState.Video, {offset: 0, limit: 10}, true);
+          await getFavoriteWorkroomFiles(MediaState.Video, {offset: 0, limit: 10}, false);
           break;
         case 'Audio':
-          await getFavoriteWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10}, true);
+          await getFavoriteWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10}, false);
           break;
       }
     } else if (selectedTag === 'aiHistory') {
-      await getAiHistory();
+      await getAiHistory({offset: 0, limit: 10}, true);
+    }
+  };
+
+  const refreshWorkroomDataItems = async (
+    fileType: MediaState,
+    page?: PaginationRequest | undefined,
+    blockRequestMore?: boolean,
+  ) => {
+    if (selectedTag === 'work') {
+      await getWorkroomFiles(fileType, page, blockRequestMore);
+    } else if (selectedTag === 'favorite') {
+      await getFavoriteWorkroomFiles(fileType, page, blockRequestMore);
+    } else if (selectedTag === 'aiHistory') {
+      await getAiHistory(page, blockRequestMore);
     }
   };
 
@@ -1401,26 +1415,39 @@ const Workroom: React.FC<Props> = ({}) => {
         imageSize: '1024x1024',
         isUploaded: false,
       },
-      profileId: 520,
+      profileId: 520 | 0,
     }));
 
-  const getAiHistory = async () => {
+  const getAiHistory = async (page?: PaginationRequest | undefined, blockRequestMore?: boolean) => {
     try {
-      setHasWorkroomResult(true);
+      if (workroomLoading || !hasWorkroomResult) return;
+      setWorkroomLoading(true);
 
-      let payload: GetMyCharacterAiImagesReq = {
-        page: {
-          offset: 0,
-          limit: 10,
-        },
+      let pagination: PaginationRequest = page || {offset: 0, limit: 10};
+
+      const payload: GetMyCharacterAiImagesReq = {
+        page: pagination,
       };
+
       const response = await sendGetMyCharacterAiImages(payload);
 
       if (response.data) {
-        setAiHistoryData(convertAiImageListToWorkroomItems(response.data.characterAiImageList));
+        const items = response.data.characterAiImageList || [];
+        const convertedItems = convertAiImageListToWorkroomItems(items);
+
+        if (convertedItems.length === 0 || blockRequestMore) {
+          setHasWorkroomResult(false);
+        }
+
+        setAiHistoryData(prev => (prev ? [...prev, ...convertedItems] : convertedItems));
+      } else {
+        throw new Error('No AI image history data in response');
       }
     } catch (error) {
       console.error('Error get ai history:', error);
+      setHasWorkroomResult(false);
+    } finally {
+      setWorkroomLoading(false);
     }
   };
 
@@ -1563,7 +1590,10 @@ const Workroom: React.FC<Props> = ({}) => {
         handleItemClick={handleItemClick}
         filterWorkroomData={filterWorkroomData}
         handleDeleteItem={handleDeletePopupOpen}
-        getWorkroomFiles={getWorkroomFiles}
+        getWorkroomFiles={
+          refreshWorkroomDataItems
+          // getWorkroomFiles
+        }
         workroomLoading={workroomLoading}
         hasWorkroomResult={hasWorkroomResult}
         blockRequestMore={blockRequestMore}
