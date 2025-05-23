@@ -5,9 +5,10 @@ import {NotificationInfo, NotificationContentType} from '@/app/NetWork/Notificat
 
 interface NoticeProps {
   notification: NotificationInfo;
+  onClick: () => void;
 }
 
-const Notice: React.FC<NoticeProps> = ({notification}) => {
+const Notice: React.FC<NoticeProps> = ({notification, onClick}) => {
   const getActions = (notification: NotificationInfo): NotificationAction[] | undefined => {
     switch (notification.contentType) {
       case NotificationContentType.AddFriend:
@@ -36,7 +37,7 @@ const Notice: React.FC<NoticeProps> = ({notification}) => {
   };
 
   return (
-    <div className={styles.list}>
+    <div className={styles.list} onClick={onClick}>
       <NotificationItem
         key={notification.id}
         avatar={notification.senderProfileIconUrl}

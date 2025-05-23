@@ -9,7 +9,7 @@ import CustomArrowHeader from '@/components/layout/shared/CustomArrowHeader';
 import {Settings} from '@mui/icons-material';
 import {useDispatch} from 'react-redux';
 import {setUnread} from '@/redux-store/slices/Notification';
-import {sendGetNotificationList, NotificationInfo, NotificationSystemType, sendGetNewNotificationList, sendReadAllNotification, sendGetNotiReddot} from '@/app/NetWork/NotificationNetwork';
+import {sendGetNotificationList, NotificationInfo, NotificationSystemType, sendGetNewNotificationList, sendReadAllNotification, sendGetNotiReddot, sendReadNotification} from '@/app/NetWork/NotificationNetwork';
 import {useSignalRContext} from '@/app/view/main/SignalREventInjector';
 
 
@@ -71,6 +71,15 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
     }
   };
 
+  const handleNotificationClick = async (notification: NotificationInfo) => {
+    try {
+      await sendReadNotification({ notificationId: notification.id });
+      setNotifications(prev => prev.map(noti => noti.id === notification.id ? { ...noti, isRead: true } : noti));
+    } catch (error) {
+      console.error('알림 읽기 처리 중 오류:', error);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       dispatch(setUnread(false));
@@ -129,7 +138,7 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
         {loading ? (
           <div className={styles.loading}>로딩 중...</div>
         ) : (
-          filteredNotifications.map(notification => <Notice key={notification.id} notification={notification} />)
+          filteredNotifications.map(notification => <Notice key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification)} />)
         )}
       </div>
     </Modal>
