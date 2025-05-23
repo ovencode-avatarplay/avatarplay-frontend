@@ -90,9 +90,9 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
       console.error('Login error:', err);
     } 
   };
+ 
   React.useEffect(() => {
     dispatch(setSelectedIndex(0));
-    init();
   }, []);
 
   const isSpecificProfile = !!profileUrlLinkKey;
@@ -117,7 +117,11 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
     }
     return null; // JWT가 없을 경우 null 반환
   };
-
+  React.useEffect(() => {
+    if(getEmailFromJwt())
+    init();
+  }, [getEmailFromJwt()]);
+  
   // API 호출
   const fetchRecommendFeed = async () => {
     try {
