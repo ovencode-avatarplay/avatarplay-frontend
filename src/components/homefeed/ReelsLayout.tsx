@@ -26,6 +26,9 @@ import formatText from '@/utils/formatText';
 import getLocalizedText from '@/utils/getLocalizedText';
 import CustomPopup from '../layout/shared/CustomPopup';
 import useCustomRouter from '@/utils/useCustomRouter';
+import { sendGetNotiReddot } from '@/app/NetWork/NotificationNetwork';
+import { setUnread } from '@/redux-store/slices/Notification';
+import { useSignalRContext } from '@/app/view/main/SignalREventInjector';
 export enum RecommendState {
   Following = 1,
   ForYou = 0,
@@ -64,9 +67,32 @@ const ReelsLayout: React.FC<ReelsLayoutProps> = ({
   const [selectedTab, setSelectedTab] = useState<RecommendState>(recommendState);
   const router = useRouter();
   const dispatch = useDispatch();
-
+  
+  const signalR = useSignalRContext();
+  const init = async () => {
+    try {
+      // 알림 레드닷 상태 확인
+      try {
+        const response = await sendGetNotiReddot();
+        if (response.data?.isNotifiactionReddot !== undefined) {
+          dispatch(setUnread(response.data.isNotifiactionReddot));
+          //TODO: 슬라이스에 잘 들어가는지 나중에 확인 필요
+        }
+        if (response.data?.isNotifiactionReddot === false) {
+          dispatch(setUnread(false));
+          // 서버의 알림 캐시 클리어
+          await signalR?.clearNotificationCache();
+        }
+      } catch (err) {
+        console.error('알림 레드닷 상태 확인 중 오류:', err);
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+    } 
+  };
   React.useEffect(() => {
     dispatch(setSelectedIndex(0));
+    init();
   }, []);
 
   const isSpecificProfile = !!profileUrlLinkKey;
