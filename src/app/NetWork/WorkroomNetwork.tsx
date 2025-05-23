@@ -154,11 +154,28 @@ export const sendGetFavoriteWorkroomDashboard = async (
 export interface GetFavoriteWorkroomFilesReq {
   fileType: MediaState;
   page: PaginationRequest;
+  sortType: WorkroomSortType;
 }
 
 export interface GetFavoriteWorkroomFilesRes {
   items: WorkroomFileInfo[];
 }
+
+export const sendGetFavoriteWorkroomFiles = async (
+  req: GetFavoriteWorkroomFilesReq,
+): Promise<ResponseAPI<GetFavoriteWorkroomFilesRes>> => {
+  try {
+    const response = await api.post<ResponseAPI<GetFavoriteWorkroomFilesRes>>('/WorkRoom/getFavoriteFilesByType', req);
+    if (response.data.resultCode === 0) {
+      return response.data;
+    } else {
+      throw new Error(`GetFavoriteWorkroomFilesRes Error: ${response.data.resultCode}`);
+    }
+  } catch (error: any) {
+    console.error('Error getting favorite workroom files:', error);
+    throw new Error('Failed to get favorite workroom files. Please try again.');
+  }
+};
 
 export interface AiImageInfo {
   characterId: number;
@@ -188,60 +205,5 @@ export const sendGetMyCharacterAiImages = async (
   } catch (error: any) {
     console.error('Error getting my character ai images:', error);
     throw new Error('Failed to get my character ai images. Please try again.');
-  }
-};
-
-export interface GetFavoriteWorkroomDashBoardReq {}
-
-export interface GetFavoriteWorkroomDashBoardRes {
-  latestFiles: WorkroomFileInfo[];
-  latestFolders: WorkroomFileInfo[];
-  latestImages: WorkroomFileInfo[];
-  latestVideos: WorkroomFileInfo[];
-  latestAudios: WorkroomFileInfo[];
-}
-
-export const sendGetFavoriteWorkroomDashBoard = async (
-  req: GetFavoriteWorkroomDashBoardReq,
-): Promise<ResponseAPI<GetFavoriteWorkroomDashBoardRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<GetFavoriteWorkroomDashBoardRes>>(
-      '/WorkRoom/getFavoriteWorkroomDashboard',
-      req,
-    );
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`GetFavoriteWorkroomDashBoardRes Error: ${response.data.resultCode}`);
-    }
-  } catch (error: any) {
-    console.error('Error getting favorite workroom dashboard:', error);
-    throw new Error('Failed to get favorite workroom dashboard. Please try again.');
-  }
-};
-
-export interface GetFavoriteWorkroomFilesReq {
-  fileType: MediaState;
-  page: PaginationRequest;
-  sortType: WorkroomSortType;
-}
-
-export interface GetFavoriteWorkroomFilesRes {
-  items: WorkroomFileInfo[];
-}
-
-export const sendGetFavoriteWorkroomFiles = async (
-  req: GetFavoriteWorkroomFilesReq,
-): Promise<ResponseAPI<GetFavoriteWorkroomFilesRes>> => {
-  try {
-    const response = await api.post<ResponseAPI<GetFavoriteWorkroomFilesRes>>('/WorkRoom/getFavoriteFilesByType', req);
-    if (response.data.resultCode === 0) {
-      return response.data;
-    } else {
-      throw new Error(`GetFavoriteWorkroomFilesRes Error: ${response.data.resultCode}`);
-    }
-  } catch (error: any) {
-    console.error('Error getting favorite workroom files:', error);
-    throw new Error('Failed to get favorite workroom files. Please try again.');
   }
 };

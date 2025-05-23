@@ -24,6 +24,7 @@ interface WorkroomDataItemsProps {
   workroomLoading: boolean;
   getWorkroomFiles: (fileType: MediaState, page?: PaginationRequest | undefined, blockRequestMore?: boolean) => void;
   hasWorkroomResult: boolean;
+  blockRequestMore?: boolean;
 }
 
 const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
@@ -45,6 +46,7 @@ const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
   workroomLoading,
   getWorkroomFiles,
   hasWorkroomResult,
+  blockRequestMore = false,
 }) => {
   const filteredData = filterWorkroomData(data, option);
 
@@ -53,7 +55,7 @@ const WorkroomDataItems: React.FC<WorkroomDataItemsProps> = ({
 
   const lastElement = useRef<HTMLLIElement | null>(null);
   useEffect(() => {
-    if (workroomLoading || !hasWorkroomResult) return;
+    if (workroomLoading || !hasWorkroomResult || blockRequestMore) return;
 
     if (observer.current) observer.current.disconnect();
 

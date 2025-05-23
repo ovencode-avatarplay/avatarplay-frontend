@@ -44,6 +44,7 @@ const WorkroomFavorite: React.FC<Props> = ({
               true,
               {favorite: true, trash: false, limit: 4},
               true,
+              true,
             )}
             {renderCategorySection(
               'TODO : Image',
@@ -52,6 +53,7 @@ const WorkroomFavorite: React.FC<Props> = ({
               imageData,
               detailView,
               {favorite: true, trash: false, limit: 4},
+              true,
               true,
             )}
             {renderCategorySection(
@@ -62,6 +64,7 @@ const WorkroomFavorite: React.FC<Props> = ({
               detailView,
               {favorite: true, trash: false, limit: 4},
               true,
+              true,
             )}
             {renderCategorySection(
               'TODO : Audio',
@@ -70,6 +73,7 @@ const WorkroomFavorite: React.FC<Props> = ({
               audioData,
               true,
               {favorite: true, trash: false, limit: 4},
+              true,
               true,
             )}
           </>

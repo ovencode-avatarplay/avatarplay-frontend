@@ -75,6 +75,7 @@ const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
                 true,
                 {filterArea: false, limit: 4, trash: false},
                 true,
+                true,
               )}
               {renderCategorySection(
                 'TODO : Image',
@@ -83,6 +84,7 @@ const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
                 imageData,
                 detailView,
                 {filterArea: false, limit: 4},
+                true,
                 true,
               )}
               {renderCategorySection(
@@ -93,6 +95,7 @@ const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
                 detailView,
                 {filterArea: false, limit: 4},
                 true,
+                true,
               )}
               {renderCategorySection(
                 'TODO : Audio',
@@ -101,6 +104,7 @@ const WorkroomMyWork: React.FC<WorkroomMyWorkProps> = ({
                 audioData,
                 true,
                 {filterArea: false, limit: 4},
+                true,
                 true,
               )}
             </>

@@ -58,6 +58,11 @@ import {
   sendGetWorkroomFiles,
   WorkroomSortType,
   WorkroomFileInfo,
+  sendGetFavoriteWorkroomDashboard,
+  sendGetFavoriteWorkroomFiles,
+  sendGetMyCharacterAiImages,
+  GetMyCharacterAiImagesReq,
+  AiImageInfo,
 } from '@/app/NetWork/WorkroomNetwork';
 import {MediaUploadReq, sendUpload, sendUploadWorkroomFolder, UploadMediaState} from '@/app/NetWork/ImageNetwork';
 import WorkroomUploadState, {UploadStateItem} from './WorkroomUploadState';
@@ -1148,18 +1153,38 @@ const Workroom: React.FC<Props> = ({}) => {
           await getWorkroomDashBoard();
           break;
         case 'Folders':
-          await getWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10});
+          await getWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10}, true);
           break;
         case 'Image':
-          await getWorkroomFiles(MediaState.Image, {offset: 0, limit: 10});
+          await getWorkroomFiles(MediaState.Image, {offset: 0, limit: 10}, true);
           break;
         case 'Video':
-          await getWorkroomFiles(MediaState.Video, {offset: 0, limit: 10});
+          await getWorkroomFiles(MediaState.Video, {offset: 0, limit: 10}, true);
           break;
         case 'Audio':
-          await getWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10});
+          await getWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10}, true);
           break;
       }
+    } else if (selectedTag === 'favorite') {
+      switch (tagStates.favorite) {
+        case 'All':
+          await getFavoriteWorkroomDashboard();
+          break;
+        case 'Folders':
+          await getFavoriteWorkroomFiles(MediaState.Folder, {offset: 0, limit: 10}, true);
+          break;
+        case 'Image':
+          await getFavoriteWorkroomFiles(MediaState.Image, {offset: 0, limit: 10}, true);
+          break;
+        case 'Video':
+          await getFavoriteWorkroomFiles(MediaState.Video, {offset: 0, limit: 10}, true);
+          break;
+        case 'Audio':
+          await getFavoriteWorkroomFiles(MediaState.Audio, {offset: 0, limit: 10}, true);
+          break;
+      }
+    } else if (selectedTag === 'aiHistory') {
+      await getAiHistory();
     }
   };
 
@@ -1263,6 +1288,139 @@ const Workroom: React.FC<Props> = ({}) => {
       setHasWorkroomResult(false);
     } finally {
       setWorkroomLoading(false);
+    }
+  };
+
+  const getFavoriteWorkroomDashboard = async () => {
+    try {
+      setHasWorkroomResult(true);
+      const response = await sendGetFavoriteWorkroomDashboard({});
+
+      if (response.data) {
+        setFileData(convertToWorkroomItems(response.data.latestFiles));
+        setFolderData(convertToWorkroomItems(response.data.latestFolders));
+        setImageData(convertToWorkroomItems(response.data.latestImages));
+        setVideoData(convertToWorkroomItems(response.data.latestVideos));
+        setAudioData(convertToWorkroomItems(response.data.latestAudios));
+      }
+    } catch (error) {
+      console.error('Error get Workroom DashBoard:', error);
+    }
+  };
+
+  const getFavoriteWorkroomFiles = async (
+    fileType: MediaState,
+    page?: PaginationRequest | undefined,
+    blockRequestMore?: boolean,
+  ) => {
+    if (workroomLoading || !hasWorkroomResult) return;
+    setWorkroomLoading(true);
+
+    try {
+      let pagination: PaginationRequest = {
+        offset: 0,
+        limit: 10,
+      };
+
+      if (page) {
+        pagination = page;
+      } else {
+        switch (fileType) {
+          case MediaState.Folder:
+            pagination = {offset: folderData.length, limit: 10};
+            break;
+          case MediaState.Image:
+            pagination = {offset: imageData.length, limit: 10};
+            break;
+          case MediaState.Video:
+            pagination = {offset: videoData.length, limit: 10};
+            break;
+          case MediaState.Audio:
+            pagination = {offset: audioData.length, limit: 10};
+            break;
+          default:
+            pagination = {offset: 0, limit: 10};
+        }
+      }
+
+      const response = await sendGetFavoriteWorkroomFiles({
+        fileType,
+        page: pagination,
+        sortType: WorkroomSortType.Newest,
+      });
+
+      if (response.data) {
+        const newItems = convertToWorkroomItems(response.data.items || []);
+
+        switch (fileType) {
+          case MediaState.Folder:
+            setFolderData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+          case MediaState.Image:
+            setImageData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+          case MediaState.Video:
+            setVideoData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+          case MediaState.Audio:
+            setAudioData(prev => (prev ? [...prev, ...newItems] : newItems));
+            break;
+        }
+
+        if (newItems.length === 0 || blockRequestMore) {
+          setHasWorkroomResult(false);
+        }
+      } else {
+        throw new Error(`No Workroom Files in response: ${fileType}`);
+        setHasWorkroomResult(false);
+      }
+    } catch (error) {
+      console.error('Error get Workroom Files:', error);
+      setHasWorkroomResult(false);
+    } finally {
+      setWorkroomLoading(false);
+    }
+  };
+
+  const convertAiImageListToWorkroomItems = (list: AiImageInfo[] = []): WorkroomItemInfo[] =>
+    list.map(item => ({
+      id: item.characterId,
+      name: item.imageUrl,
+      detail: '',
+      mediaState: MediaState.Image,
+      folderLocation: [item.characterId],
+      imgUrl: item.imageUrl,
+      updateAt: 'time',
+      favorite: false,
+      generatedInfo: {
+        generatedType: GalleryCategory.Portrait,
+        generateModel: 'Test Model',
+        positivePrompt: 'Test Positive Prompt',
+        negativePrompt: 'Test Negative Prompt',
+        seed: -1,
+        imageSize: '1024x1024',
+        isUploaded: false,
+      },
+      profileId: 520,
+    }));
+
+  const getAiHistory = async () => {
+    try {
+      setHasWorkroomResult(true);
+
+      let payload: GetMyCharacterAiImagesReq = {
+        page: {
+          offset: 0,
+          limit: 10,
+        },
+      };
+      const response = await sendGetMyCharacterAiImages(payload);
+
+      if (response.data) {
+        setAiHistoryData(convertAiImageListToWorkroomItems(response.data.characterAiImageList));
+      }
+    } catch (error) {
+      console.error('Error get ai history:', error);
     }
   };
 
@@ -1385,6 +1543,7 @@ const Workroom: React.FC<Props> = ({}) => {
     detailView: boolean,
     option: RenderDataItemsOptions,
     detailViewButton?: boolean,
+    blockRequestMore?: boolean,
   ) => {
     const filteredData = filterWorkroomData(data, option);
 
@@ -1407,6 +1566,7 @@ const Workroom: React.FC<Props> = ({}) => {
         getWorkroomFiles={getWorkroomFiles}
         workroomLoading={workroomLoading}
         hasWorkroomResult={hasWorkroomResult}
+        blockRequestMore={blockRequestMore}
       />
     );
   };
@@ -1419,6 +1579,7 @@ const Workroom: React.FC<Props> = ({}) => {
     detailView: boolean,
     options: RenderDataItemsOptions,
     hideEmpty?: boolean,
+    blockRequestMore?: boolean,
   ) => {
     return (
       <WorkroomCategorySection
@@ -1426,7 +1587,7 @@ const Workroom: React.FC<Props> = ({}) => {
         tagKey={tagKey}
         tagValue={tagValue}
         dataLength={data.length}
-        renderDataItems={() => renderDataItems(data, detailView, options)}
+        renderDataItems={() => renderDataItems(data, detailView, options, false, blockRequestMore)}
         onClickTag={tag => handleTagClick(tagKey, tag)}
         hideEmpty={hideEmpty}
       />
