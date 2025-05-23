@@ -116,6 +116,7 @@ const mappingStrToGlobalTextKey = {
   Shared: 'common_label_shared',
   Contents: 'common_label_contents',
   Game: 'common_label_game',
+  Universe: 'common_label_universe',
 };
 
 export enum eTabFavoritesType {
@@ -166,7 +167,7 @@ export enum eTabCharacterOtherType {
 }
 export enum eTabChannelType {
   Feed,
-  Info = 90,
+  Universe = 90,
   Contents = 1,
   Character = 3,
   Game,
@@ -174,7 +175,7 @@ export enum eTabChannelType {
 
 export enum eTabChannelOtherType {
   Feed,
-  Info = 90,
+  Universe = 90,
   Contents = 1,
   Character = 3,
   Game,
@@ -530,7 +531,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
         return;
       }
       resProfileTabInfo = {dataResPdInfo: resPdInfo?.data};
-    } else if (isChannel && indexTab == eTabChannelOtherType.Info) {
+    } else if (isChannel && indexTab == eTabChannelOtherType.Universe) {
       const resChannelInfo = await getChannelInfo({channelProfileId: profileId});
       if (resChannelInfo?.resultCode != 0) {
         console.error('api error : ', resChannelInfo?.resultMessage);
@@ -739,7 +740,7 @@ const ProfileBase = React.memo(({urlLinkKey = '', onClickBack = () => {}, isPath
       // }
       else if (data.indexTab == eTabChannelType.Contents) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.contentInfoList?.length;
-      } else if (data.indexTab == eTabChannelOtherType.Info) {
+      } else if (data.indexTab == eTabChannelOtherType.Universe) {
         isEmptyTab = false;
       } else if (data.indexTab == eTabChannelType.Character) {
         isEmptyTab = !data?.profileTabInfo?.[data.indexTab]?.characterInfoList?.length;
@@ -2185,6 +2186,7 @@ export const TabHeaderWrapComponent = ({
     return [];
   };
   const tabHeaderList = getTabHeaderList(profileType, isMine);
+  console.log('tabHeaderList : ', tabHeaderList);
   return (
     <>
       <TabHeaderComponent
@@ -2806,7 +2808,7 @@ const TabContentComponent = ({
     );
   }
 
-  if (isChannel && tabIndex == eTabChannelOtherType.Info) {
+  if (isChannel && tabIndex == eTabChannelOtherType.Universe) {
     const channelInfo = profileTabInfo?.[tabIndex]?.channelInfo;
     const tagList = channelInfo?.tags || [];
 
