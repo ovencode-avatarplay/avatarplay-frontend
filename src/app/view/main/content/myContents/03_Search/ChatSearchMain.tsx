@@ -32,7 +32,7 @@ import {useAtom} from 'jotai';
 import SwipeTagList from '@/components/layout/shared/SwipeTagList';
 import {LineArrowDown} from '@ui/Icons';
 
-const tags = ['Following', 'Character', 'Friend', 'People'];
+const tags = ['Following', 'Character' /*, 'Friend', 'People'*/];
 const popularTags = ['Romance', 'Fantasy', 'AI Friend'];
 
 interface Props {

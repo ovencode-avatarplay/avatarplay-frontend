@@ -46,9 +46,9 @@ const HeaderNavBar = () => {
             >
               <img className={styles.rewardIcon} src={LineSearchThin.src} />
             </button>
-            <button className={styles.notification} onClick={() => {}}>
+            {/* <button className={styles.notification} onClick={() => {}}>
               <img className={styles.notificationIcon} src={LineFriendList.src} />
-            </button>
+            </button> */}
             <Image
               src={LineMenu.src}
               alt="Ham"
