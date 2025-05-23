@@ -105,21 +105,29 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
     }
   });
 
-  return (
-    <Modal open={open} onClose={async () => {
-      onClose();
-      try {
-        const response = await sendGetNotiReddot();
-        if (response.data?.isNotifiactionReddot === false) {
-          await signalR?.clearNotificationCache();
-        }
-      } catch (err) {
-        console.error('알림 레드닷 상태 확인 중 오류:', err);
+  const handleClose = async () => {
+    try {
+      const response = await sendGetNotiReddot();
+      if (response.data?.isNotifiactionReddot === true) {
+       dispatch(setUnread(true));
       }
-    }}>
+      if (response.data?.isNotifiactionReddot === false) {
+        dispatch(setUnread(false));
+        await signalR?.clearNotificationCache();
+      }
+    } catch (err) {
+      console.error('알림 레드닷 상태 확인 중 오류:', err);
+    } finally {
+      onClose();
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <div style={{height: '100dvh', backgroundColor: 'white'}}> 
       <div className={styles.modalContainer}>
         <div className={styles.header}>
-          <CustomArrowHeader title="Notification" onClose={onClose}>
+          <CustomArrowHeader title="Notification" onClose={handleClose}>
             <button className={styles.allReadBtn} onClick={handleReadAll}>
               <span className={styles.checkIcon} aria-hidden="true" >
                 <img src={LineCheck.src} alt="check" style={{width: 24, height: 24}} />
@@ -140,6 +148,7 @@ export default function NotificationMain({open, onClose}: NotificationMainProps)
         ) : (
           filteredNotifications.map(notification => <Notice key={notification.id} notification={notification} onClick={() => handleNotificationClick(notification)} />)
         )}
+      </div>
       </div>
     </Modal>
   );
