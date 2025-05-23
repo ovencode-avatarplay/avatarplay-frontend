@@ -4,11 +4,17 @@ import '@/app/reset.css';
 import {Suspense} from 'react';
 import GlobalPopupRenderer from './NetWork/networkPopup/GlobalPopupRenderer';
 import 'swiper/css';
+import Script from 'next/script';
 
 export default async function Layout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <head>
+        {/* 외부 스크립트*/}
+        <Script src="https://democpay.payple.kr/js/v1/payment.js" strategy="beforeInteractive" />
+        <Script src="https://code.jquery.com/jquery-3.6.0.min.js" strategy="beforeInteractive" />
+        <Script src="https://unpkg.com/axios/dist/axios.min.js" strategy="beforeInteractive" />
+        <Script src="https://demo-gpay.payple.kr/common/js/gpay-1.0.1.js" strategy="beforeInteractive" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&family=Noto+Sans+JP&family=Noto+Sans+SC&family=Noto+Sans+TC&display=swap"
